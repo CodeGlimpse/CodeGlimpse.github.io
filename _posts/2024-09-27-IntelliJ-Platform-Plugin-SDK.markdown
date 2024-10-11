@@ -29,6 +29,8 @@ Copied by [IntelliJ Platform Plugin SDK][jetbrains].
   - _**[Code Samples][Code Samples]**_
   - _**[Getting Help][Getting Help]**_
   - _**[Content Updates][Content Updates]**_
+- _**插件**_
+  - _**[Quick Start Guide][Quick Start Guide]**_
 
 [jetbrains]: https://plugins.jetbrains.com/docs/intellij/welcome.html
 [Home]: /Intellij/home
@@ -44,3 +46,4 @@ Copied by [IntelliJ Platform Plugin SDK][jetbrains].
 [Code Samples]: /Intellij/Code-Sample
 [Getting Help]: /Intellij/Getting-Help
 [Content Updates]: https://plugins.jetbrains.com/docs/intellij/content-updates.html
+[Quick Start Guide]: /Intellij/Quick-Start-Guide

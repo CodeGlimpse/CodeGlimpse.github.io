@@ -29,6 +29,8 @@ last-title: Java教程
   - _**[Code Samples][Code Samples]**_: 代码示例
   - _**[Getting Help][Getting Help]**_: 获取帮助
   - _**[Content Updates][Content Updates]**_: 内容更新
+- _**插件**_
+  - _**[Quick Start Guide][Quick Start Guide]**_: 快速开始
 
 [jetbrains]: https://plugins.jetbrains.com/docs/intellij/welcome.html
 [Home]: /zh/Intellij/home
@@ -44,3 +46,4 @@ last-title: Java教程
 [Code Samples]: /zh/Intellij/Code-Sample
 [Getting Help]: /zh/Intellij/Getting-Help
 [Content Updates]: https://plugins.jetbrains.com/docs/intellij/content-updates.html
+[Quick Start Guide]: /zh/Intellij/Quick-Start-Guide

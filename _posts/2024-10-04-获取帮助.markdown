@@ -11,6 +11,8 @@ menu-url: /zh/Intellij
 menu-title: IntelliJ平台插件SDK文档
 last-url: /zh/Intellij/Code-Sample
 last-title: 代码示例
+next-url: /zh/Intellij/Quick-Start-Guide
+next-title: 快速开始
 ---
 
 # 获取帮助

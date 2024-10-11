@@ -1,0 +1,28 @@
+---
+layout: post
+title: "快速开始"
+date: 2024-10-11 12:25:00 +0800
+categories: jekyll update
+permalink: /zh/Intellij/Quick-Start-Guide
+background: '/assets/images/banner.jpg'
+language: "zh"
+item: post
+menu-url: /zh/Intellij
+menu-title: IntelliJ平台插件SDK文档
+last-url: /zh/Intellij/Getting-Help
+last-title: 获取帮助
+---
+
+# 快速入门指南
+
+本节介绍使用 IntelliJ 平台的基础知识。它将使您熟悉工作环境、项目结构和常用的 API 组件。
+
+- 实现插件的替代方案
+- 所需经验
+- 插件类型
+- 开发插件
+- 插件结构
+- 在 Kotlin 中实现插件
+- 插件签名
+- IDE 开发实例
+- 插件开发常见问题

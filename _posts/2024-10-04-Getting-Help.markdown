@@ -11,6 +11,8 @@ menu-url: /Intellij
 menu-title: IntelliJ Platform Plugin SDK
 last-url: /Intellij/Code-Sample
 last-title: Code Samples
+next-url: /Intellij/Quick-Start-Guide
+next-title: Quick Start Guide
 ---
 
 # Getting Help

@@ -28,6 +28,7 @@ Copied by [IntelliJ Platform Plugin SDK][jetbrains].
     - _**[Code of Conduct][Code of Conduct]**_
   - _**[Code Samples][Code Samples]**_
   - _**[Getting Help][Getting Help]**_
+  - _**[Content Updates][Content Updates]**_
 
 [jetbrains]: https://plugins.jetbrains.com/docs/intellij/welcome.html
 [Home]: /Intellij/home
@@ -42,3 +43,4 @@ Copied by [IntelliJ Platform Plugin SDK][jetbrains].
 [Code of Conduct]: /Intellij/Code-of-Conduct
 [Code Samples]: /Intellij/Code-Sample
 [Getting Help]: /Intellij/Getting-Help
+[Content Updates]: https://plugins.jetbrains.com/docs/intellij/content-updates.html

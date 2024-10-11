@@ -4,6 +4,6 @@
 layout: home
 background: '/assets/images/banner.jpg'
 language: "en"
-title: Li Bochen's Blog
+title: Code Glimpse
 description: This is my personal website, if you want to contact me, please send my email.
 ---

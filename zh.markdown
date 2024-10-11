@@ -5,6 +5,6 @@ layout: home
 permalink: /zh/
 background: '/assets/images/banner.jpg'
 language: "zh"
-title: 李博晨的博客
+title: Code Glimpse
 description: 这是我的个人博客，如果你想联系我，请给我发邮件。
 ---

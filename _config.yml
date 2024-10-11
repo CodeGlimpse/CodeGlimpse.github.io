@@ -1,8 +1,8 @@
-title: Li Bochen's Blog
-zh-title: 李博晨的博客
+title: Code Glimpse
+zh-title: Code Glimpse
 email: libochen@codeglimpse.top
-author: Li Bochen
-zh-author: 李博晨
+author: Code Glimpse
+zh-author: Code Glimpse
 description: >- # this means to ignore newlines until "baseurl:"
   This is my personal website, if you want to contact me, please send my email.
 footer_text: Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://startbootstrap.com/theme/clean-blog-jekyll">jekyll-theme-clean-blog</a> theme.

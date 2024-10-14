@@ -11,6 +11,8 @@ menu-url: /Intellij
 menu-title: IntelliJ Platform Plugin SDK
 last-url: /Intellij/Getting-Help
 last-title: Getting Help
+next-url: /Intellij/Plugin-Alternatives
+next-title: Plugin Alternatives
 ---
 
 # Quick Start Guide

@@ -31,6 +31,7 @@ Copied by [IntelliJ Platform Plugin SDK][jetbrains].
   - _**[Content Updates][Content Updates]**_
 - _**插件**_
   - _**[Quick Start Guide][Quick Start Guide]**_
+    - _**[Plugin Alternatives][Plugin Alternatives]**_
 
 [jetbrains]: https://plugins.jetbrains.com/docs/intellij/welcome.html
 [Home]: /Intellij/home
@@ -47,3 +48,4 @@ Copied by [IntelliJ Platform Plugin SDK][jetbrains].
 [Getting Help]: /Intellij/Getting-Help
 [Content Updates]: https://plugins.jetbrains.com/docs/intellij/content-updates.html
 [Quick Start Guide]: /Intellij/Quick-Start-Guide
+[Plugin Alternatives]: /Intellij/Plugin-Alternatives

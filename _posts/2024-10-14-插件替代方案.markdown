@@ -1,0 +1,56 @@
+---
+layout: post
+title: "插件替代方案"
+date: 2024-10-14 10:35:00 +0800
+categories: jekyll update
+permalink: /zh/Intellij/Plugin-Alternatives
+background: '/assets/images/banner.jpg'
+language: "zh"
+item: post
+menu-url: /zh/Intellij
+menu-title: IntelliJ平台插件SDK文档
+last-url: /zh/Intellij/Quick-Start-Guide
+last-title: 快速开始
+---
+
+# 实现插件的替代方案
+
+在某些情况下，实施实际的 IntelliJ Platform 插件可能有点矫枉过正，使用下面列出的替代方法之一可能会在更短的时间内为您提供所需的功能。如果您需要特定于项目域、约定或实践的功能，则可以避免实现和发布插件所需的所有步骤，并将这些功能作为项目或 IDE 配置文件的一部分提供。
+
+在开始 IntelliJ Platform 插件开发之前，请定义您的要求，并验证下述任何替代方案是否可以涵盖这些要求。只有当所描述的解决方案在您的情况下不足，并且有大量开发人员可以从中受益时，才考虑实施实际的插件。
+
+## 结构搜索和替换检查
+
+结构搜索和替换 （SSR） 功能允许定义搜索模式，这些模式不仅基于文本信息，还基于搜索到的代码片段的结构，无论其格式或注释如何。SSR 模板可用于创建自定义检查，这可以作为编程代码检查的替代方案。根据要求，检查可以报告与给定模板匹配的代码片段的问题，但也可以提供快速修复，将报告的片段替换为配置的替换模板。所有检查元数据（如名称、问题工具提示和描述）都是可配置的。单个检查可以使用多个搜索和替换模板。
+
+创建并配置 SSR 检查后，可以通过检查配置文件与其他团队成员共享。
+
+只能为提供 SSR 支持的语言创建 SSR 检查。要验证给定语言是否支持 SSR，请调用 **编辑 \|查找 \|在支持该语言的 IDE 中执行 Search Structurally...** 操作，并检查它是否存在于 **Language** 选择列表中。
+
+> 请参阅 I(J)nspector 博客，了解实用的 SSR 模板示例。
+
+## IDE 脚本控制台
+
+IDE 脚本控制台可用于自动化 IDE 的功能和提取所需的信息，例如，有关当前项目的信息。默认情况下，脚本可以访问 IntelliJ 平台 API，并且可以在 Kotlin、JavaScript 或 Groovy 中实现，但也可以使用符合 JCR-223 规范的其他语言。
+
+创建的脚本存储在 IDE 配置目录中，不能作为项目文件或配置的一部分共享。
+
+## Flora 插件
+
+Flora 插件允许将特定于项目的扩展开发为 Kotlin 脚本 **（*.kts）** 或 JavaScript **（*.js）** 文件。Flora 扩展可以访问所有可用的 IntelliJ 平台 API，就像常规插件一样。
+
+每个扩展都由一个文件表示，并直接存储在项目的 **.plugins** 目录中。通过将 **.plugins** 目录添加到 VCS，可以轻松地与其他团队成员共享扩展。此外，在 **设置 \|构建、执行、部署 \|必需插件** 并将此配置作为项目的一部分共享，无需任何手动设置即可轻松向团队提供其他 IDE 功能。
+
+> 请注意，Flora 插件处于实验状态。
+
+## Live插件
+
+LivePlugin 允许在运行时扩展基于 IntelliJ 的 IDE 功能，而无需重新启动 IDE。它添加了一个新的 **Plugins** 工具窗口，其中列出了所有可用的扩展并允许管理它们。扩展可以用 Kotlin 或 Groovy 实现，并直接在 IDE 中进行编辑。扩展可以使用所有 IntelliJ 平台 API 和其他 LivePlugin API，从而缩短常见用例。
+
+创建的扩展存储在 IDE 级别，可以作为纯文件、GitHub gist 或存储库与其他团队成员共享。此外，如果它们存储在项目的 **.live-plugins** 目录中，并且启用了 LivePlugin 的 **Run Project Specific Plugins** 选项，则此目录中的所有扩展将在项目打开时自动加载，并在项目关闭时卸载。
+
+> 有关更多信息，请参阅 LivePlugin 描述、演示和扩展示例。
+
+## PhpStorm 高级元数据
+
+PhpStorm 支持描述方法和函数行为的特殊元数据文件。此信息用于使用现有的 IDE 功能，例如代码完成、导航、查找用法等。元数据文件可以是工程文件的一部分，这使得通过版本控制在团队成员之间共享元数据文件变得容易。

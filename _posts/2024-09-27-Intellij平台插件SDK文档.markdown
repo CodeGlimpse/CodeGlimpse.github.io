@@ -31,6 +31,7 @@ last-title: Java教程
   - _**[Content Updates][Content Updates]**_: 内容更新
 - _**插件**_
   - _**[Quick Start Guide][Quick Start Guide]**_: 快速开始
+    - _**[Plugin Alternatives][Plugin Alternatives]**_: 插件替代方案
 
 [jetbrains]: https://plugins.jetbrains.com/docs/intellij/welcome.html
 [Home]: /zh/Intellij/home
@@ -47,3 +48,4 @@ last-title: Java教程
 [Getting Help]: /zh/Intellij/Getting-Help
 [Content Updates]: https://plugins.jetbrains.com/docs/intellij/content-updates.html
 [Quick Start Guide]: /zh/Intellij/Quick-Start-Guide
+[Plugin Alternatives]: /zh/Intellij/Plugin-Alternatives

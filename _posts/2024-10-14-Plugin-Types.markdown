@@ -27,7 +27,7 @@ The most common types of plugins include:
 - User interface add-ons
 - Themes
 
-> Plugin Alternatives
+> ##### Plugin Alternatives
 > 
 > In some cases, implementing an actual IntelliJ Platform plugin might not be necessary, as alternative solutions exist.
 

@@ -31,6 +31,6 @@ Please keep in mind that the IntelliJ Platform is a large project, and while we 
 
 It's highly recommended to get familiar with the Explore the IntelliJ Platform API section before you start the plugin implementation.
 
-> Plugin Alternatives
+> ##### Plugin Alternatives
 > 
 > In some cases, implementing an actual IntelliJ Platform plugin might not be necessary, as alternative solutions exist.

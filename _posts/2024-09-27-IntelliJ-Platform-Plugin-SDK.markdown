@@ -33,6 +33,7 @@ Copied by [IntelliJ Platform Plugin SDK][jetbrains].
   - _**[Quick Start Guide][Quick Start Guide]**_
     - _**[Plugin Alternatives][Plugin Alternatives]**_
     - _**[Required Experience][Required Experience]**_
+    - _**[Plugin Types][Plugin Types]**_
 
 [jetbrains]: https://plugins.jetbrains.com/docs/intellij/welcome.html
 [Home]: /Intellij/home
@@ -51,3 +52,4 @@ Copied by [IntelliJ Platform Plugin SDK][jetbrains].
 [Quick Start Guide]: /Intellij/Quick-Start-Guide
 [Plugin Alternatives]: /Intellij/Plugin-Alternatives
 [Required Experience]: /Intellij/Required-Experience
+[Plugin Types]: /Intellij/Plugin-types

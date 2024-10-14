@@ -33,6 +33,7 @@ last-title: Java教程
   - _**[Quick Start Guide][Quick Start Guide]**_: 快速开始
     - _**[Plugin Alternatives][Plugin Alternatives]**_: 插件替代方案
     - _**[Required Experience][Required Experience]**_: 所需经验
+    - _**[Plugin Types][Plugin Types]**_: 插件类型
 
 [jetbrains]: https://plugins.jetbrains.com/docs/intellij/welcome.html
 [Home]: /zh/Intellij/home
@@ -51,3 +52,4 @@ last-title: Java教程
 [Quick Start Guide]: /zh/Intellij/Quick-Start-Guide
 [Plugin Alternatives]: /zh/Intellij/Plugin-Alternatives
 [Required Experience]: /zh/Intellij/Required-Experience
+[Plugin Types]: /zh/Intellij/Plugin-types

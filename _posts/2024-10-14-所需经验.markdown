@@ -11,8 +11,8 @@ menu-url: /zh/Intellij
 menu-title: IntelliJ平台插件SDK文档
 last-url: /zh/Intellij/Plugin-Alternatives
 last-title: 插件替代方案
-next-url: /zh/Intellij/
-next-title: 
+next-url: /zh/Intellij/Plugin-Types
+next-title: 插件类型
 ---
 
 # 所需经验

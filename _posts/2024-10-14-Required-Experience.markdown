@@ -11,8 +11,8 @@ menu-url: /Intellij
 menu-title: IntelliJ Platform Plugin SDK
 last-url: /Intellij/Plugin-Alternatives
 last-title: Plugin Alternatives
-next-url: /Intellij/
-next-title: 
+next-url: /Intellij/Plugin-Types
+next-title: Plugin Types
 ---
 
 # Required Experience

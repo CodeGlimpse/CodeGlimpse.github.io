@@ -1,0 +1,75 @@
+---
+layout: post
+title: "插件类型"
+date:  2024-10-14 16:20:35 +0800
+categories: jekyll update
+permalink: /zh/Intellij/Plugin-Types
+background: '/assets/images/banner.jpg'
+language: "zh"
+item: post
+menu-url: /zh/Intellij
+menu-title: IntelliJ平台插件SDK文档
+last-url: /zh/Intellij/Required-Experience
+last-title: 所需经验
+next-url: /zh/Intellij/
+next-title: 
+---
+
+# 插件类型
+
+基于 IntelliJ 平台的产品可以通过添加插件进行修改和调整以实现自定义目的。所有可下载的插件都可以从 JetBrains Marketplace 获得。
+
+最常见的插件类型包括：
+
+- Custom 语言支持
+- 框架集成
+- 工具集成
+- 用户界面插件
+- 主题
+
+> 插件替代品
+>
+> 在某些情况下，可能不需要实现实际的 IntelliJ Platform 插件，因为存在其他解决方案。
+
+## 自定义语言支持
+
+自定义语言支持提供了使用特定编程语言的基本功能，其中包括：
+
+- 文件类型识别
+- 词汇分析
+- 语法高亮
+- 格式化
+- 代码洞察和代码完成
+- 检查和快速修复
+- 意图操作
+
+插件还可以增强现有（捆绑的）自定义语言，例如，通过提供额外的检查、意图或任何其他功能。
+
+请参阅 自定义语言支持教程 以了解有关该主题的更多信息。
+
+## 框架集成
+
+框架集成包括改进的代码洞察功能（对于给定框架来说是典型的），以及直接从 IDE 使用特定于框架的功能的选项。有时，它还包括自定义语法或 DSL 的语言支持元素。
+
+- 特定代码洞察
+- 直接访问特定于框架的功能
+
+请参阅 IntelliJ-HCL 作为框架集成的示例。更多参考插件可以在 JetBrains Marketplace 上找到。
+
+## 工具集成
+
+工具集成使直接从 IDE 操作第三方工具和组件成为可能，而无需切换上下文，这意味着：
+
+- 实施其他操作
+- 相关 UI 组件
+- 访问外部资源
+
+请参阅 Gerrit 集成插件 作为示例。
+
+## 用户界面附加组件
+
+此类别中的插件将对 IDE 的标准用户界面应用各种更改。一些新添加的组件是交互式的并提供新功能，而其他组件仅限于视觉修改。Foldable ProjectView 插件可以作为示例。
+
+## 主题
+
+主题使设计人员能够自定义内置 IDE UI 元素的外观。

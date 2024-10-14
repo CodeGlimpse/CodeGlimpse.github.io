@@ -11,6 +11,8 @@ menu-url: /zh/Intellij
 menu-title: IntelliJ平台插件SDK文档
 last-url: /zh/Intellij/Quick-Start-Guide
 last-title: 快速开始
+next-url: /zh/Intellij/Required-Experience
+next-title: 插件替代方案
 ---
 
 # 实现插件的替代方案

@@ -34,6 +34,7 @@ Copied by [IntelliJ Platform Plugin SDK][jetbrains].
     - _**[Plugin Alternatives][Plugin Alternatives]**_
     - _**[Required Experience][Required Experience]**_
     - _**[Plugin Types][Plugin Types]**_
+  - _**[Developing a Plugin][Developing a Plugin]**_
 
 [jetbrains]: https://plugins.jetbrains.com/docs/intellij/welcome.html
 [Home]: /Intellij/home
@@ -53,3 +54,4 @@ Copied by [IntelliJ Platform Plugin SDK][jetbrains].
 [Plugin Alternatives]: /Intellij/Plugin-Alternatives
 [Required Experience]: /Intellij/Required-Experience
 [Plugin Types]: /Intellij/Plugin-types
+[Developing a Plugin]: /Intellij/Developing-a-Plugin

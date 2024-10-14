@@ -11,8 +11,8 @@ menu-url: /zh/Intellij
 menu-title: IntelliJ平台插件SDK文档
 last-url: /zh/Intellij/Required-Experience
 last-title: 所需经验
-next-url: /zh/Intellij/
-next-title: 
+next-url: /zh/Intellij/Developing-a-Plugin
+next-title: 开发一个插件
 ---
 
 # 插件类型

@@ -1,0 +1,66 @@
+---
+layout: post
+title: "开发一个插件"
+date:  2024-10-14 17:03:08 +0800
+categories: jekyll update
+permalink: /zh/Intellij/Developing-a-Plugin
+background: '/assets/images/banner.jpg'
+language: "zh"
+item: post
+menu-url: /zh/Intellij
+menu-title: IntelliJ平台插件SDK文档
+last-url: /zh/Intellij/Plugin-Types
+last-title: 插件类型
+next-url: /zh/Intellij/
+next-title: 
+---
+
+# 开发插件
+
+可以使用 IntelliJ IDEA Community Edition 或 IntelliJ IDEA Ultimate 作为 IDE 来开发 IntelliJ 平台插件。强烈建议始终使用最新的可用版本，因为 _Plugin DevKit_ 的插件开发工具支持将继续支持新功能。
+
+在开始实际开发之前，请确保了解实现最佳插件用户体验 （UX） 的所有要求。
+
+> ##### 插件替代品
+>
+> 在某些情况下，可能不需要实现实际的 IntelliJ Platform 插件，因为存在其他解决方案。
+
+## Gradle 插件
+
+构建 IntelliJ 平台插件的推荐解决方案是将 Gradle 与专用 Gradle 插件结合使用：IntelliJ Platform Gradle 插件 （2.x） 或 Gradle IntelliJ 插件 （1.x）。
+
+> ##### Gradle 插件
+> 必须根据目标平台版本选择 Gradle 插件。
+>
+> - 2024.2+：需要 IntelliJ 平台 Gradle 插件 （2.x）
+> - 2022.3+：推荐的 IntelliJ 平台 Gradle 插件 （2.x），需要 Gradle IntelliJ 插件 （1.x） 版本 1.10.1+（当前版本：1.17.4）
+
+IntelliJ IDEA Ultimate 和 Community 版本提供了支持基于 Gradle 的插件开发所需的插件：_Gradle 和 Plugin DevKit_。要验证这些插件是否已安装并启用，请参阅有关管理插件的帮助部分。
+
+_Plugin DevKit_ 插件与 IntelliJ IDEA 捆绑在一起，直到 2023.2。
+
+> ##### 插件 DevKit 可用性
+>
+> 使用 IntelliJ IDEA 2023.3 或更高版本时，必须从 JetBrains Marketplace（插件主页）安装 _Plugin DevKit_ 插件，因为它不再与 IDE 捆绑在一起。
+
+Gradle 插件管理插件项目的依赖项 - 基本 IDE 和其他插件依赖项。它提供了使用插件运行 IDE 以及将插件打包并发布到 JetBrains Marketplace 的任务。为了确保插件不受 API 更改的影响（API 更改可能发生在平台的主要版本之间），您可以根据其他 IDE 和版本快速验证您的插件。
+
+创建基于 Gradle 的新 IntelliJ Platform 插件项目有两种主要方法：
+
+- New Project Wizard 中提供的专用生成器 – 它创建一个包含所有必需文件的最小插件项目
+- GitHub 上提供的 IntelliJ 平台插件模板 – 除了所需的项目文件外，它还包括 GitHub Actions CI 工作流的配置
+
+本文档部分介绍使用 **New Project** 向导生成的插件结构，但使用 _IntelliJ Platform Plugin Template_ 生成的项目涵盖所有描述的文件和目录。请参阅 IntelliJ 平台插件模板 ，了解有关此方法的优势和使用说明的更多信息。
+
+### 替代品
+
+旧的 DevKit 项目模型和工作流程在现有项目中仍受支持，建议用于创建主题插件。了解如何将 DevKit 插件迁移到 Gradle。
+
+专用的 SBT 插件可用于以 Scala 实现的插件。
+
+## 插件开发工作流程
+
+- 创建基于 Gradle 的插件项目
+- 配置 Gradle IntelliJ 插件
+    - 添加 Kotlin 支持
+- 发布插件

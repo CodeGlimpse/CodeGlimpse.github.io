@@ -34,6 +34,7 @@ last-title: Java教程
     - _**[Plugin Alternatives][Plugin Alternatives]**_: 插件替代方案
     - _**[Required Experience][Required Experience]**_: 所需经验
     - _**[Plugin Types][Plugin Types]**_: 插件类型
+  - _**[Developing a Plugin][Developing a Plugin]**_: 开发一个插件
 
 [jetbrains]: https://plugins.jetbrains.com/docs/intellij/welcome.html
 [Home]: /zh/Intellij/home
@@ -53,3 +54,4 @@ last-title: Java教程
 [Plugin Alternatives]: /zh/Intellij/Plugin-Alternatives
 [Required Experience]: /zh/Intellij/Required-Experience
 [Plugin Types]: /zh/Intellij/Plugin-types
+[Developing a Plugin]: /zh/Intellij/Developing-a-Plugin

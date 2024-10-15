@@ -11,8 +11,8 @@ menu-url: /Intellij
 menu-title: IntelliJ Platform Plugin SDK
 last-url: /Intellij/Plugin-Types
 last-title: Plugin Types
-next-url: /Intellij/
-next-title: 
+next-url: /Intellij/Creating-a-Plugin-Gradle-Project
+next-title: Creating a Plugin Gradle Project
 ---
 
 # Developing a Plugin
@@ -32,8 +32,8 @@ The recommended solution for building IntelliJ Platform plugins is using Gradle 
 > ##### Gradle Plugin
 > The Gradle plugin must be chosen depending on the target platform version.
 >
-> - 2024.2+:  Requires IntelliJ Platform Gradle Plugin (2.x)
-> - 2022.3+:  Recommended IntelliJ Platform Gradle Plugin (2.x), Requires Gradle IntelliJ Plugin (1.x) version 1.10.1+ (current: 1.17.4)
+> - 2024.2+:  **Requires** IntelliJ Platform Gradle Plugin (2.x)
+> - 2022.3+:  **Recommended** IntelliJ Platform Gradle Plugin (2.x), **Requires** Gradle IntelliJ Plugin (1.x) version 1.10.1+ (current: 1.17.4)
 
 The IntelliJ IDEA Ultimate and Community editions provide the necessary plugins to support Gradle-based plugin development: _Gradle and Plugin DevKit_. To verify these plugins are installed and enabled, see the help section about Managing Plugins.
 

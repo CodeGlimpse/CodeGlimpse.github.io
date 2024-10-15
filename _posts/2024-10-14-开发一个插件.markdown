@@ -11,8 +11,8 @@ menu-url: /zh/Intellij
 menu-title: IntelliJ平台插件SDK文档
 last-url: /zh/Intellij/Plugin-Types
 last-title: 插件类型
-next-url: /zh/Intellij/
-next-title: 
+next-url: /zh/Intellij/Developing-a-Plugin
+next-title: 创建插件Gradle工程
 ---
 
 # 开发插件
@@ -32,8 +32,8 @@ next-title:
 > ##### Gradle 插件
 > 必须根据目标平台版本选择 Gradle 插件。
 >
-> - 2024.2+：需要 IntelliJ 平台 Gradle 插件 （2.x）
-> - 2022.3+：推荐的 IntelliJ 平台 Gradle 插件 （2.x），需要 Gradle IntelliJ 插件 （1.x） 版本 1.10.1+（当前版本：1.17.4）
+> - 2024.2+：**需要** IntelliJ 平台 Gradle 插件 （2.x）
+> - 2022.3+：**推荐** IntelliJ 平台 Gradle 插件 （2.x），**需要** Gradle IntelliJ 插件 （1.x） 版本 1.10.1+（当前版本：1.17.4）
 
 IntelliJ IDEA Ultimate 和 Community 版本提供了支持基于 Gradle 的插件开发所需的插件：_Gradle 和 Plugin DevKit_。要验证这些插件是否已安装并启用，请参阅有关管理插件的帮助部分。
 

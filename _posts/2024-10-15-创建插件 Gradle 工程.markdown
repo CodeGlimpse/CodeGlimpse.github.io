@@ -1,0 +1,168 @@
+---
+layout: post
+title: "创建插件Gradle工程"
+date:  2024-10-15 15:31:29 +0800
+categories: jekyll update
+permalink: /zh/Intellij/Creating-a-Plugin-Gradle-Project
+background: '/assets/images/banner.jpg'
+language: "zh"
+item: post
+menu-url: /zh/Intellij
+menu-title: IntelliJ平台插件SDK文档
+last-url: /zh/Intellij/Developing-a-Plugin
+last-title: 开发一个插件
+next-url: /zh/Intellij/
+next-title: 
+---
+
+# 创建插件 Gradle 工程
+
+本文档页面介绍了使用 New Project Wizard 生成的基于 Gradle 的插件项目，但使用 IntelliJ Platform Plugin Template 生成的项目涵盖了所有描述的文件和目录。
+
+> ##### 仅限Gradle IntelliJ 插件 （1.x）
+>
+> 本页仅涵盖 Gradle IntelliJ 插件 （1.x）。    
+> 请参阅 IntelliJ 平台 Gradle 插件 （2.x） 参考。稍后将提供它的专用页面。
+
+## 使用 New Project Wizard 创建插件
+
+> ##### Gradle 插件
+>
+> 必须根据目标平台版本选择 Gradle 插件。
+>
+> - 2024.2+：**需要** IntelliJ 平台 Gradle 插件 （2.x）
+> - 2022.3+：**推荐** IntelliJ 平台 Gradle 插件 （2.x），**需要** Gradle IntelliJ 插件 （1.x） 版本 1.10.1+（当前版本：1.17.4）
+
+#### 创建 IDE 插件
+
+_Plugin DevKit_ 插件与 IntelliJ IDEA 捆绑在一起，直到 2023.2. 。
+
+> ##### 插件 DevKit 可用性
+>
+> 使用 IntelliJ IDEA 2023.3 或更高版本时，必须从 JetBrains Marketplace（插件主页）安装 _Plugin DevKit_ 插件，因为它不再与 IDE 捆绑在一起。
+
+通过 **文件 \|新建 \|项目...** 操作并提供以下信息：
+
+1. 从左侧列表中选择 **IDE Plugin** 生成器类型。
+2. 指定项目 **名称** 和 **位置**。
+3. 在项目 **Type** 中选择 **Plugin** 选项。
+4.  _仅限IntelliJ IDEA 中早于 2023.1. 的：_   
+   选择插件将用于实现的 **语言**。对于此示例，请选择 **Kotlin** 选项。如需了解详情，另请参阅面向插件开发者的 Kotlin。
+   > ##### 使用 Kotlin 和 Java 源代码
+   > 使用 IntelliJ IDEA 2023.1 或更高版本生成的项目支持开箱即用的 Kotlin 和 Java 源代码。项目生成器会自动创建 **$PLUGIN_DIR$/src/main/kotlin** 源目录。要添加 Java 源，请手动创建 **$PLUGIN_DIR$/src/main/java** 目录。
+5. 提供 **Group**，它通常是一个倒置的公司域（例如 `com.example.mycompany`）。它用于项目的 Gradle 构建脚本中的 `project.group` 属性值。
+6. 提供 **Artifact**，这是构建项目构件的默认名称（不含版本）。它还用于项目的 settings.gradle.kts 文件中的 Gradle 属性 `rootProject.name` 值。在本例中，输入 `my_plugin`。
+7. 选择 **JDK** 17.此 JDK 将是用于运行 Gradle 的默认 JRE，以及用于编译插件源代码的 JDK 版本。
+
+   > ##### IDE 和 Java 版本
+   > 必须根据目标平台版本设置 Java 版本。
+   > - 2024.2+：Java 21
+   > - 2022.2+：Java 17（博客网站）
+   > - 2020.3+：Java 11（博客网站）
+   
+8. 提供所有信息后，单击 **Create** 按钮生成项目。
+
+### 由向导生成的 Gradle IntelliJ 平台插件的组件
+
+对于使用上述步骤创建的示例 `my_plugin` ，_IDE Plugin_ 生成器创建以下目录内容：
+
+![](/assets/images/Intellij/Creating%20a%20Plugin%20Gradle%20Project.png)
+
+- 默认的 IntelliJ 平台 **build.gradle.kts** 文件（请参阅下一段）。
+- **gradle.properties** 文件，其中包含 Gradle 构建脚本使用的属性。
+- **settings.gradle.kts** 文件，其中包含*rootProject.name*的定义和所需的存储库。
+- Gradle Wrapper 文件，特别是 **gradle-wrapper.properties** 文件，该文件指定要用于构建插件的 Gradle 版本。如果需要，IntelliJ IDEA Gradle 插件会下载此文件中指定的 Gradle 版本。
+- 默认 **main** 目录下的 **META-INF** 目录包含插件配置文件和插件徽标。
+- _Run Plugin_ 运行配置。
+
+生成的 `my_plugin` 项目 **build.gradle.kts** 文件：
+
+
+```
+plugins {
+  id("java")
+  id("org.jetbrains.kotlin.jvm") version "1.9.21"
+  id("org.jetbrains.intellij") version "1.17.4"
+}
+
+group = "com.example"
+version = "1.0-SNAPSHOT"
+
+repositories {
+  mavenCentral()
+}
+
+// Configure Gradle IntelliJ Plugin
+// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
+intellij {
+  version.set("2022.2.5")
+  type.set("IC") // Target IDE Platform
+
+  plugins.set(listOf(/* Plugin Dependencies */))
+}
+
+tasks {
+  // Set the JVM compatibility versions
+  withType<JavaCompile> {
+    sourceCompatibility = "17"
+    targetCompatibility = "17"
+  }
+  withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions.jvmTarget = "17"
+  }
+
+  patchPluginXml {
+    sinceBuild.set("222")
+    untilBuild.set("232.*")
+  }
+
+  signPlugin {
+    certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
+    privateKey.set(System.getenv("PRIVATE_KEY"))
+    password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
+  }
+
+  publishPlugin {
+    token.set(System.getenv("PUBLISH_TOKEN"))
+  }
+}
+```
+
+- 明确声明了三个 Gradle 插件：
+   - Gradle Java 插件 （`java`）。
+   - Kotlin Gradle 插件 （`org.jetbrains.kotlin.jvm`）。
+   - Gradle IntelliJ 插件 （1.x） （`org.jetbrains.intellij`）。
+- New Project 向导中的 **Group** 是 `project.group` 值。
+- 注入 `sourceCompatibility` 行以强制使用 Java 17 JDK 编译 Java 源代码。
+- `intellij.version`和`intellij.type`属性的值指定要用于构建插件的 IntelliJ 平台的版本和类型。
+- 插件依赖项的空占位符列表。
+- `patchPluginXml.sinceBuild`和`patchPluginXml.untilBuild`属性的值，用于指定插件兼容的 IDE 版本的最低和最高版本。
+- 初始 `signPlugin` 和 `publishPlugin` 任务配置。有关更多信息，请参阅使用 Gradle 发布插件部分。
+
+> 考虑使用 IntelliJ 平台插件模板，该模板还提供 GitHub Actions 涵盖的 CI 设置。
+
+#### 插件 Gradle 属性和插件配置文件元素
+
+通常，Gradle 属性 `rootProject.name` 和 `project.group` 与相应的插件配置文件 **plugin.xml** 元素 `<name>` 和 `<id>` 不匹配。这不是 IntelliJ 平台的原因，而是它们提供不同的功能。
+
+`<name>` 元素（用作插件的显示名称）通常与 `rootProject.name` 相同，但可以更具解释性。
+
+`<id>` 必须是所有插件的唯一标识符，通常是指定的 **Group** 和 **Artifact** 的串联。请注意，在不丢失现有安装的自动更新的情况下，不可能更改已发布插件的 **<id>**。
+
+## 使用 runIde Gradle 任务运行插件
+
+Gradle 项目从 IDE 的 Gradle Tool 窗口运行。
+
+### 向项目添加代码
+
+在运行 `my_plugin` 之前，可以添加一些代码以提供简单的功能。有关添加菜单动作的分步说明，请参阅创建动作教程。
+
+### 执行插件
+
+_IDE Plugin_生成器会自动_Run Plugin_创建可通过 **Run \|Run...** 操作，也可以在 **Run Configurations** 节点下的 **Gradle** 工具窗口中找到。
+
+要直接执行 Gradle 的`runIde`任务，请打开 **Gradle** 工具窗口，然后在 **Tasks** 节点下搜索 **runIde** 任务。如果它不在列表中，请点击 Gradle 工具窗口顶部工具栏中的重新导入按钮。当 **runIde** 任务可见时，双击它以执行。
+
+要在 _独立的_ IDE 实例中调试插件，请参阅如何调试您自己的 IntelliJ IDEA 实例博客文章。
+
+> 有关如何使用基于 Gradle 的项目的更多信息，请参阅 IntelliJ IDEA 帮助中的在 IntelliJ IDEA 中使用 Gradle 视频和使用 Gradle 任务。

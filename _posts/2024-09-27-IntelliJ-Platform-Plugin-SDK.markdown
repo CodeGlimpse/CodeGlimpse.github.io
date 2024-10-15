@@ -35,6 +35,7 @@ Copied by [IntelliJ Platform Plugin SDK][jetbrains].
     - _**[Required Experience][Required Experience]**_
     - _**[Plugin Types][Plugin Types]**_
   - _**[Developing a Plugin][Developing a Plugin]**_
+    - _**[Creating a Plugin Gradle Project][Creating a Plugin Gradle Project]**_
 
 [jetbrains]: https://plugins.jetbrains.com/docs/intellij/welcome.html
 [Home]: /Intellij/home
@@ -52,6 +53,7 @@ Copied by [IntelliJ Platform Plugin SDK][jetbrains].
 [Content Updates]: https://plugins.jetbrains.com/docs/intellij/content-updates.html
 [Quick Start Guide]: /Intellij/Quick-Start-Guide
 [Plugin Alternatives]: /Intellij/Plugin-Alternatives
-[Required Experience]: /Intellij/Required-Experience
+[Required Experience]: /Intellij/Required-Experience 
 [Plugin Types]: /Intellij/Plugin-types
 [Developing a Plugin]: /Intellij/Developing-a-Plugin
+[Creating a Plugin Gradle Project]: /Intellij/Creating-a-Plugin-Gradle-Project

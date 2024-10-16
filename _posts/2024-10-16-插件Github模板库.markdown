@@ -1,0 +1,34 @@
+---
+layout: post
+title: "插件Github模板库"
+date:  2024-10-16 10:07:32 +0800
+categories: jekyll update
+permalink: /zh/Intellij/Plugin-GitHub-Template
+background: '/assets/images/banner.jpg'
+language: "zh"
+item: post
+menu-url: /zh/Intellij
+menu-title: IntelliJ平台插件SDK文档
+last-url: /zh/Intellij/Creating-a-Plugin-Gradle-Project
+last-title: 创建插件Gradle工程
+next-url: /zh/Intellij/
+next-title: 
+---
+
+# IntelliJ 平台插件模板
+
+IntelliJ 平台插件模板是使用 New Project Wizard 创建新的基于 Gradle 的 IntelliJ 平台插件的替代解决方案。
+
+IntelliJ Platform Plugin Template 是一个 GitHub 存储库，它提供了一个纯样板模板，以便更轻松地创建基于 Gradle 的新插件项目。
+
+此模板的主要目标是通过预配置项目基架和 CI、链接到适当的文档页面并保持一切井井有条，为新手和有经验的开发人员加快插件开发的设置阶段。
+
+> 注意：此模板使用 IntelliJ Platform Gradle 插件 （2.x）。
+
+GitHub 模板允许您从基架创建新存储库，而无需复制和粘贴内容、克隆存储库或手动清除历史记录。您所要做的就是单击 GitHub 项目页面上的 **Use this template** 按钮（您必须使用您的 GitHub 帐户登录）。之后，将触发 GitHub Actions 工作流以覆盖或删除任何特定于模板的配置，例如插件名称、当前更改日志等。
+
+完成后，项目就可以克隆到您的本地环境并使用 IntelliJ IDEA 打开。
+
+有关更多详细信息，请参阅 IntelliJ Platform Plugin Template 项目文档。
+
+> _Busy Plugin Developer. Episode 0_ 网络研讨会详细介绍并展示了如何使用 IntelliJ 平台插件模板。

@@ -11,8 +11,8 @@ menu-url: /zh/Intellij
 menu-title: IntelliJ平台插件SDK文档
 last-url: /zh/Intellij/Developing-a-Plugin
 last-title: 开发一个插件
-next-url: /zh/Intellij/
-next-title: 
+next-url: /zh/Intellij/Plugin-GitHub-Template
+next-title: 插件Github模板库
 ---
 
 # 创建插件 Gradle 工程

@@ -11,8 +11,8 @@ menu-url: /Intellij
 menu-title: IntelliJ Platform Plugin SDK
 last-url: /Intellij/Developing-a-Plugin
 last-title: Developing a Plugin
-next-url: /Intellij/
-next-title: 
+next-url: /Intellij/Plugin-GitHub-Template
+next-title: Plugin GitHub Template
 ---
 
 # Creating a Plugin Gradle Project

@@ -37,6 +37,7 @@ Copied by [IntelliJ Platform Plugin SDK][jetbrains].
   - _**[Developing a Plugin][Developing a Plugin]**_
     - _**[Creating a Plugin Gradle Project][Creating a Plugin Gradle Project]**_
       - _**[Plugin GitHub Template][Plugin GitHub Template]**_
+      - _**[Migrating DevKit Plugin to Gradle][Migrating DevKit Plugin to Gradle]**_
 
 [jetbrains]: https://plugins.jetbrains.com/docs/intellij/welcome.html
 [Home]: /Intellij/home
@@ -59,3 +60,4 @@ Copied by [IntelliJ Platform Plugin SDK][jetbrains].
 [Developing a Plugin]: /Intellij/Developing-a-Plugin
 [Creating a Plugin Gradle Project]: /Intellij/Creating-a-Plugin-Gradle-Project
 [Plugin GitHub Template]: /Intellij/Plugin-GitHub-Template
+[Migrating DevKit Plugin to Gradle]: /Intellij/Migrating-DevKit-Plugin-to-Gradle

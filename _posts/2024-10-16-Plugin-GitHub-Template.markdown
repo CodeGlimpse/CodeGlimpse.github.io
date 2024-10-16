@@ -11,8 +11,8 @@ menu-url: /Intellij
 menu-title: IntelliJ Platform Plugin SDK
 last-url: /Intellij/Creating-a-Plugin-Gradle-Project
 last-title: Creating a Plugin Gradle Project
-next-url: /Intellij/
-next-title: 
+next-url: /Intellij/Migrating-DevKit-Plugin-to-Gradle
+next-title: Migrating DevKit Plugin to Gradle
 ---
 
 # IntelliJ Platform Plugin Template

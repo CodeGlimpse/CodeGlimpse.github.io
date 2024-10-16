@@ -11,8 +11,8 @@ menu-url: /zh/Intellij
 menu-title: IntelliJ平台插件SDK文档
 last-url: /zh/Intellij/Creating-a-Plugin-Gradle-Project
 last-title: 创建插件Gradle工程
-next-url: /zh/Intellij/
-next-title: 
+next-url: /zh/Intellij/Migrating-DevKit-Plugin-to-Gradle
+next-title: 将 DevKit 插件迁移到 Gradle
 ---
 
 # IntelliJ 平台插件模板

@@ -37,6 +37,9 @@ last-title: Java教程
   - _**[Developing a Plugin][Developing a Plugin]**_: 开发一个插件
     - _**[Creating a Plugin Gradle Project][Creating a Plugin Gradle Project]**_: 创建插件Gradle工程
       - _**[Plugin GitHub Template][Plugin GitHub Template]**_: 插件GitHub模板库
+      - _**[Migrating DevKit Plugin to Gradle][Migrating DevKit Plugin to Gradle]**_
+
+
 
 [jetbrains]: https://plugins.jetbrains.com/docs/intellij/welcome.html
 [Home]: /zh/Intellij/home
@@ -59,3 +62,4 @@ last-title: Java教程
 [Developing a Plugin]: /zh/Intellij/Developing-a-Plugin
 [Creating a Plugin Gradle Project]: /zh/Intellij/Creating-a-Plugin-Gradle-Project
 [Plugin GitHub Template]: /zh/Intellij/Plugin-GitHub-Template
+[Migrating DevKit Plugin to Gradle]: /zh/Intellij/Migrating-DevKit-Plugin-to-Gradle

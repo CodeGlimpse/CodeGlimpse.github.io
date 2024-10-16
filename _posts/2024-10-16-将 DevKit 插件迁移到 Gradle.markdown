@@ -11,8 +11,8 @@ menu-url: /zh/Intellij
 menu-title: IntelliJ平台插件SDK文档
 last-url: /zh/Intellij/Plugin-GitHub-Template
 last-title: 插件Github模板库
-next-url: /zh/Intellij/
-next-title: 
+next-url: /zh/Intellij/Configuring-Gradle-IntelliJ-Plugin
+next-title: 配置Gradle IntelliJ插件
 ---
 
 # 将 DevKit 插件迁移到 Gradle

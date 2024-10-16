@@ -37,7 +37,8 @@ last-title: Java教程
   - _**[Developing a Plugin][Developing a Plugin]**_: 开发一个插件
     - _**[Creating a Plugin Gradle Project][Creating a Plugin Gradle Project]**_: 创建插件Gradle工程
       - _**[Plugin GitHub Template][Plugin GitHub Template]**_: 插件GitHub模板库
-      - _**[Migrating DevKit Plugin to Gradle][Migrating DevKit Plugin to Gradle]**_
+      - _**[Migrating DevKit Plugin to Gradle][Migrating DevKit Plugin to Gradle]**_: 将 DevKit 插件迁移到 Gradle
+    - _**[Configuring Gradle IntelliJ Plugin][Configuring Gradle IntelliJ Plugin]**_: 配置Gradle IntelliJ插件
 
 
 
@@ -63,3 +64,4 @@ last-title: Java教程
 [Creating a Plugin Gradle Project]: /zh/Intellij/Creating-a-Plugin-Gradle-Project
 [Plugin GitHub Template]: /zh/Intellij/Plugin-GitHub-Template
 [Migrating DevKit Plugin to Gradle]: /zh/Intellij/Migrating-DevKit-Plugin-to-Gradle
+[Configuring Gradle IntelliJ Plugin]: /zh/Intellij/Configuring-Gradle-IntelliJ-Plugin

@@ -39,6 +39,7 @@ last-title: Java教程
       - _**[Plugin GitHub Template][Plugin GitHub Template]**_: 插件GitHub模板库
       - _**[Migrating DevKit Plugin to Gradle][Migrating DevKit Plugin to Gradle]**_: 将 DevKit 插件迁移到 Gradle
     - _**[Configuring Gradle IntelliJ Plugin][Configuring Gradle IntelliJ Plugin]**_: 配置Gradle IntelliJ插件
+      - _**[Configuring Kotlin Support][Configuring Kotlin Support]**_: 配置 Kotlin 支持
 
 
 
@@ -65,3 +66,4 @@ last-title: Java教程
 [Plugin GitHub Template]: /zh/Intellij/Plugin-GitHub-Template
 [Migrating DevKit Plugin to Gradle]: /zh/Intellij/Migrating-DevKit-Plugin-to-Gradle
 [Configuring Gradle IntelliJ Plugin]: /zh/Intellij/Configuring-Gradle-IntelliJ-Plugin
+[Configuring Kotlin Support]: /zh/Intellij/Configuring-Kotlin-Support

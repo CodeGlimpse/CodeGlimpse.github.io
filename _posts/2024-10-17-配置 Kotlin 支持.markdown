@@ -1,0 +1,264 @@
+---
+layout: post
+title: "配置 Kotlin 支持"
+date:  2024-10-17 16:18:34 +0800
+categories: jekyll update
+permalink: /zh/Intellij/Configuring-Kotlin-Support
+background: '/assets/images/banner.jpg'
+language: "zh"
+item: post
+menu-url: /zh/Intellij
+menu-title: IntelliJ平台插件SDK文档
+last-url: /zh/Intellij/Configuring-Gradle-IntelliJ-Plugin
+last-title: 配置Gradle IntelliJ插件
+next-url: /zh/Intellij/
+next-title: 
+---
+
+# 配置 Kotlin 支持
+
+> 主页链接: [Kotlin](https://kotlinlang.org/?_gl=1*6684a6*_gcl_au*MTc1NjE0ODc0OC4xNzI3ODMyMzM4*_ga*MTYxMDcwNjg1NS4xNzI3ODMyMzQx*_ga_9J976DJZ68*MTcyOTE1MzAzNC4zMy4xLjE3MjkxNTMwNDAuNTQuMC4w)
+> 项目模板: [IntelliJ Platform Plugin Template](/Intellij/Plugin-GitHub-Template)
+
+本页介绍了如何使用 Kotlin 编程语言开发插件。
+
+> ##### 对 Kotlin 代码进行操作
+> 要在IDE中_实现_在Kotlin代码上运行的插件，请配置Kotlin插件依赖关系（`org.jetbrain.Kotlin`）。
+> 另请参阅 UAST，了解如何支持多种 JVM 语言，包括 Kotlin。
+
+## 在 Kotlin 中开发插件的优势
+
+使用 Kotlin 为 IntelliJ 平台编写插件与在 Java 中编写插件非常相似。可以使用 J2K 转换器（Kotlin 插件的一部分）将现有 Java 类转换为其 Kotlin 等效类。
+
+除了 null 安全、类型安全构建器和 Kotlin 协程之外，Kotlin 语言还为插件开发提供了许多便捷的功能，使插件更易于阅读和维护。与适用于 Android 的 Kotlin 非常相似，IntelliJ 平台广泛使用回调，在 Kotlin 中可以直接表示为 lambda。
+
+Kotlin 类可以与现有 Java 代码混合在一个项目中。当某些 API 需要使用上述 Kotlin 协程时，这可能会派上用场。
+
+### 添加扩展
+
+同样，可以使用扩展自定义 IntelliJ Platform 中内部类的行为。例如，通常的做法是保护 logging 语句以避免参数构造的成本，导致使用日志时出现以下仪式：
+
+```
+if(logger.isDebugEnabled()){
+    logger.
+
+debug("..."+expensiveComputation());
+    }
+```
+
+在 Kotlin 中，我们可以通过声明以下扩展方法来更简洁地实现相同的结果：
+
+```
+inline fun Logger.debug(lazyMessage: () -> String) {
+  if (isDebugEnabled) {
+    debug(lazyMessage())
+  }
+}
+```
+
+现在我们可以直接写：
+
+```
+logger.debug { "..." + expensiveComputation() }
+```
+
+获得轻量级日志记录的所有好处，同时减少代码冗长性。
+
+通过练习，您将能够识别 IntelliJ 平台中的许多惯用语，这些惯用语可以使用 Kotlin 进行简化。
+
+### Kotlin 中的 UI 表单
+
+IntelliJ 平台提供了一个类型安全的 DSL，用于以声明方式构建 UI 表单。
+
+> 不支持将 UI Designer 插件与 Kotlin 结合使用
+
+### Kotlin 协程
+
+Kotlin 协程是一种轻量级且易于实现的线程替代方案，具有许多优势。
+
+## 添加 Kotlin 支持
+
+> IntelliJ Platform Plugin Template 提供使用 Kotlin 的预配置项目。
+
+IntelliJ IDEA 捆绑了必要的 Kotlin 插件，无需进一步配置。有关详细说明，请参阅 Kotlin 文档。
+
+### Kotlin Gradle 插件
+
+向基于 Gradle 的项目添加 Kotlin 源文件编译支持需要添加和配置 Kotlin JVM Gradle 插件。
+
+请参阅使用 Gradle IntelliJ 插件 （1.x） 的示例插件kotlin_demo中的 **build.gradle.kts**：
+
+```
+plugins {
+  id("java")
+  id("org.jetbrains.intellij") version "1.17.4"
+  id("org.jetbrains.kotlin.jvm") version "1.9.25"
+}
+
+group = "org.intellij.sdk"
+version = "2.0.0"
+
+repositories {
+  mavenCentral()
+}
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_17
+}
+
+// See https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
+intellij {
+  version.set("2023.3.7")
+}
+
+tasks {
+  buildSearchableOptions {
+    enabled = false
+  }
+
+  patchPluginXml {
+    version.set("${project.version}")
+    sinceBuild.set("233")
+    untilBuild.set("242.*")
+  }
+
+  compileKotlin {
+    kotlinOptions.jvmTarget = "17"
+  }
+
+  compileTestKotlin {
+    kotlinOptions.jvmTarget = "17"
+  }
+}
+```
+
+### Kotlin 标准库 （stdlib）
+
+从 Kotlin 1.4 开始，会自动添加对标准库 stdlib 的依赖项（API 文档）。在几乎所有情况下，都没有必要将其包含在插件分发中，因为平台已经捆绑了它。
+
+要选择退出，请在 **gradle.properties** 中添加以下行：
+
+> kotlin.stdlib.default.dependency = false
+
+#### Gradle 检查
+
+此 Gradle 属性是否存在，将通过相应的 Gradle 任务进行检查：
+
+- IntelliJ 平台 Gradle 插件 （2.x）：`verifyPlugin`任务
+- Gradle IntelliJ 插件 （1.x）：`verifyPluginConfiguration`任务
+
+如果该属性不存在，则在插件配置验证期间将报告警告。要将 stdlib 捆绑到插件分发中，请明确指定 `kotlin.stdlib.default.dependency = true`。
+
+#### stdlib – 杂项
+
+如果插件支持多个平台版本，则它必须以最低的捆绑 stdlib 版本为目标（请参阅下表），或者必须在插件分发中提供特定版本。
+
+有关更多详细信息，请参阅对标准库的依赖性。
+
+> ##### 在测试中添加 stdlib
+>
+> 如果您需要将 Kotlin 标准库添加到您的 **测试项目** 依赖项中，请参阅 "如何测试 JVM 语言？" 部分。
+
+| IntelliJ 平台版本（最新更新） | 捆绑的 stdlib 版本 |
+|---------------------|---------------|
+| 2024.2              | 1.9.24        |
+| 2024.1              | 1.9.22        |
+| 2023.3              | 1.9.21        |
+| 2023.2              | 1.8.20        |
+| 2023.1              | 1.8.0         |
+| 2022.3              | 1.7.22        |
+| 2022.2              | 1.6.21        |
+| 2022.1              | 1.6.10        |
+
+点击 [这里](https://www.jetbrains.com/legal/third-party-software/?_gl=1*12sybgx*_gcl_au*MTc1NjE0ODc0OC4xNzI3ODMyMzM4*_ga*MTYxMDcwNjg1NS4xNzI3ODMyMzQx*_ga_9J976DJZ68*MTcyOTIyOTk5MC4zNS4xLjE3MjkyMzAwMTUuMzUuMC4w) 查看更早版本。
+
+#### Kotlin 协程库 （kotlinx.coroutines）
+
+插件必须始终使用目标 IDE 中的捆绑库，而不是捆绑自己的版本。请确保它也不是通过传递依赖项添加的（请参阅 Gradle 用户指南中的 View and Debug 依赖项）。
+
+从 2024.2 开始，捆绑了带有额外补丁的自定义 fork。
+
+请参阅 Kotlin 协程，了解如何在插件中使用它们。
+
+| IntelliJ 平台版本 | 捆绑的 kotlinx-coroutines 版本 |
+|---------------|---------------------------|
+| 2024.2        | 1.8.0                     |
+| 2024.1        | 1.7.3                     |
+
+#### 其他捆绑的 Kotlin 库
+
+通常，强烈建议始终使用捆绑库版本。
+
+请参阅第三方软件和许可证，了解所有捆绑库的概述。
+
+#### 增量编译
+
+Kotlin Gradle 插件支持增量编译，这允许跟踪源文件中的更改，以便编译器仅处理更新的代码。
+
+##### Kotlin 1.9.0 及更高版本
+
+无需执行任何操作。
+
+删除 **gradle.properties** 中额外的 'kotlin.incremental.useClasspathSnapshot=false' 属性（如果存在）。
+
+##### Kotlin 1.8.20
+
+> 请考虑使用 Kotlin 1.9.0 或更高版本（此问题已得到解决）。
+
+Kotlin `1.8.20` 具有一种新的增量编译方法，该方法默认处于启用状态。遗憾的是，它与 IntelliJ 平台不兼容 — 在读取大型 JAR 文件（如 **app.jar** 或 **3rd-party-rt.jar**）时，会导致`Out of Memory`异常：
+
+```
+Execution failed for task ':compileKotlin'.
+> Failed to transform app.jar to match attributes {artifactType=classpath-entry-snapshot, org.gradle.libraryelements=jar, org.gradle.usage=java-runtime}.
+   > Execution failed for ClasspathEntrySnapshotTransform: .../lib/app.jar.
+      > Java heap space
+```
+
+为避免此异常，请在 **gradle.properties** 中添加以下行：
+
+```
+kotlin.incremental.useClasspathSnapshot=false
+```
+
+### 插件实现说明
+
+#### 不要用 'object' 而是 'class'
+
+插件 _may_ 使用 Kotlin 类（class 关键字）来实现插件配置文件中的声明。注册扩展时，平台使用依赖项注入框架在运行时实例化这些类。因此，插件 _必须_ 不使用 Kotlin 对象（'object' 关键字）来实现任何 **plugin.xml** 声明。管理扩展的生命周期是平台的责任，将这些类实例化为 Kotlin 单例可能会导致问题。
+
+一个值得注意的例外是 'com.intellij.openapi.fileTypes.FileType' （'com.intellij.fileType' 扩展点），另请参阅下面的检查说明。
+
+通过这些检查突出了问题 （2023.2）：
+
+- 插件 DevKit \|代码 \|注册为 Kotlin 代码的扩展的 Kotlin 对象
+- 插件 DevKit \|插件描述符 \|扩展类是 **plugin.xml** 的 Kotlin 对象
+
+#### 不要在扩展中使用 'companion object'
+
+一旦您尝试加载其包含的类，Kotlin 的`companion object`总是被创建，并且扩展点实现的创建成本应该很低。为避免不必要的类加载（从而减慢 IDE 启动速度），扩展中的 `companion object` 必须仅包含简单的常量或 logger。其他任何内容都必须是顶级声明或存储在 `object` 中。
+
+使用**Plugin DevKit \| Code \| Companion object in extensions**以突出显示此类问题 （2023.3）。
+
+### Kotlin 代码常见问题解答
+
+#### 测试 K2 模式
+
+参见 [在本地 K2 中测试](https://kotlin.github.io/analysis-api/testing-in-k2-locally.html)。
+
+#### 分析 API
+
+Analysis API 是一个功能强大的库，用于分析 Kotlin 中的代码。它构建在 Kotlin PSI 语法树之上，提供对各种语义信息的访问，包括引用目标、表达式类型、声明范围、诊断等。
+
+有关详细信息，请参阅 Kotlin 分析 API 文档。
+
+#### 杂项
+
+[如何缩短参考文献](https：//intellij-support.jetbrains.com/hc/en-us/community/posts/360010025120-Add-new-parameter-into-kotlin-data-class-from-IDEA-plugin？page=1&_gl=1*a4fe17*_gcl_au*MTc1NjE0ODc0OC4xNzI3ODMyMzM4*_ga*MTYxMDcwNjg1NS4xNzI3ODMyMzQx*_ga_9J976DJZ68*MTcyOTIyOTk5MC4zNS4xLjE3MjkyMzAwMTUuMzUuMC4w#community_comment_360002950760)
+
+### 用 Kotlin 实现的示例插件
+
+有许多基于 IntelliJ 平台构建的开源 Kotlin 插件。有关使用 Kotlin 实现的插件的最新示例的现成来源，开发人员可以从这些项目中寻找灵感：
+
+- [TeXiFy IDEA](https://github.com/Hannah-Sten/TeXiFy-IDEA)
+- [Deno](https://github.com/JetBrains/intellij-plugins/tree/idea/242.23339.11/Deno)
+- [Rust](https://github.com/intellij-rust/intellij-rust)

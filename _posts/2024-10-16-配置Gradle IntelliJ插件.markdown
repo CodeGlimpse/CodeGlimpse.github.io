@@ -11,8 +11,8 @@ menu-url: /zh/Intellij
 menu-title: IntelliJ平台插件SDK文档
 last-url: /zh/Intellij/Migrating-DevKit-Plugin-to-Gradle
 last-title: 将 DevKit 插件迁移到 Gradle
-next-url: /zh/Intellij/
-next-title: 
+next-url: /zh/Intellij/Configuring-Kotlin-Support
+next-title: 配置 Kotlin 支持
 ---
 
 # 配置 Gradle IntelliJ 插件

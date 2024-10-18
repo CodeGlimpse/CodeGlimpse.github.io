@@ -39,6 +39,7 @@ Copied by [IntelliJ Platform Plugin SDK][jetbrains].
       - _**[Plugin GitHub Template][Plugin GitHub Template]**_
       - _**[Migrating DevKit Plugin to Gradle][Migrating DevKit Plugin to Gradle]**_
     - _**[Configuring Gradle IntelliJ Plugin][Configuring Gradle IntelliJ Plugin]**_
+      - _**[Configuring Kotlin Support][Configuring Kotlin Support]**_
 
 [jetbrains]: https://plugins.jetbrains.com/docs/intellij/welcome.html
 [Home]: /Intellij/home
@@ -63,3 +64,4 @@ Copied by [IntelliJ Platform Plugin SDK][jetbrains].
 [Plugin GitHub Template]: /Intellij/Plugin-GitHub-Template
 [Migrating DevKit Plugin to Gradle]: /Intellij/Migrating-DevKit-Plugin-to-Gradle
 [Configuring Gradle IntelliJ Plugin]: /Intellij/Configuring-Gradle-IntelliJ-Plugin
+[Configuring Kotlin Support]: /Intellij/Configuring-Kotlin-Support

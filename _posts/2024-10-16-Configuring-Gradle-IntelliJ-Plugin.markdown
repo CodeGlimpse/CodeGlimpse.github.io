@@ -11,8 +11,8 @@ menu-url: /Intellij
 menu-title: IntelliJ Platform Plugin SDK
 last-url: /Intellij/Migrating-DevKit-Plugin-to-Gradle
 last-title: Migrating DevKit Plugin to Gradle
-next-url: /Intellij/
-next-title: 
+next-url: /Intellij/Configuring-Kotlin-Support
+next-title: Configuring Kotlin Support
 ---
 
 # Configuring Gradle IntelliJ Plugin

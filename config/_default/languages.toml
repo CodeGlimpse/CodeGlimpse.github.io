@@ -1,12 +1,18 @@
 # Rename this file to languages.toml to enable multilingual support
-[en]
-languageName = "English"
-languagedirection = "ltr"
-title = "Example Site"
-weight = 1
-
 [zh-cn]
 languageName = "简体中文"
 languagedirection = "ltr"
-title = "示例网站"
+title = "CodeGlimpse的个人博客"
+contentDir = "content/zh-cn"
 weight = 1
+[zh-cn.params]
+subtitle = "我的数字花园 🌱 - 基于 GitHub Pages 搭建的博客与文档。欢迎分享想法！"
+
+[en]
+languageName = "English"
+languagedirection = "ltr"
+title = "Personal Blogs for CodeGlimpse"
+contentDir = "content/en"
+weight = 2
+[en.params]
+subtitle = "My digital garden 🌱 - A blog and docs built with GitHub Pages. Thoughts welcome!"

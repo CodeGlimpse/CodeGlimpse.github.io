@@ -1,6 +1,7 @@
 ---
 title: Python的下载及安装
 description: 关于Python语言环境的下载以及安装教程
+slug: python-install
 date: 2025-09-20 21:40:00+0000
 image: banner.jpg
 categories:

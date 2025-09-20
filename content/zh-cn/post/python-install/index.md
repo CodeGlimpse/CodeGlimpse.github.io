@@ -8,7 +8,6 @@ categories:
   - Tutorials
 tags:
   - Python
-weight: 1
 ---
 
 # Python的下载及安装

@@ -5,9 +5,9 @@ slug: python-install
 date: 2025-09-20 21:40:00+0000
 image: banner.jpg
 categories:
-  - Tutorials
+    - Tutorials
 tags:
-  - Python
+    - Python
 ---
 
 # Python的下载及安装

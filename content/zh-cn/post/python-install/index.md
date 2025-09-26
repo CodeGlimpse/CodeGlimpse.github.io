@@ -1,6 +1,6 @@
 ---
-title: Python的下载及安装
-description: 关于Python语言环境的下载以及安装教程
+title: Python 下载与安装教程
+description: 一站式详解 Windows、macOS 及 Linux 系统下的 Python 多种安装方案
 slug: python-install
 date: 2025-09-20 21:40:00+0800
 image: banner.jpg
@@ -10,9 +10,9 @@ tags:
     - Python
 ---
 
-# Python的下载及安装
+# Python的下载及安装教程
 
-Python是一种解释型、高级和通用的编程语言。Python的设计理念强调代码的可读性，并显著使用了大量空格。本文将作为一个信息丰富的指南，让您清楚地了解如何下载及安装python语言环境。
+Python是一种解释型、高级和通用的编程语言。Python的设计理念强调代码的可读性，并显著使用了大量空格。本文将作为一个信息丰富的指南，让您清楚地了解如何搭建Python环境。
 
 ## Python的下载
 
@@ -26,11 +26,13 @@ Python是一种解释型、高级和通用的编程语言。Python的设计理�
 
 ## Python的安装
 
+下面是不同平台中Python的安装方式，您可以根据需要选择适合自己的安装方式。
+
 ### Windows
 
-#### 手动安装
+Windows平台是最常用的平台，下面将介绍如下几种安装方式。
 
-##### 极简版
+#### 极简手动安装
 
 1. 运行安装包，建议勾选下面两项：
    第一个表示以管理员权限安装Python
@@ -45,24 +47,22 @@ Python是一种解释型、高级和通用的编程语言。Python的设计理�
 1. 运行安装包，依旧建议勾选下面两项：
    ![安装界面](1.png)
 2. 点击 **Customize installation**
-3. 根据需要选择可选功能
+3. 根据需要选择可选功能：
    ![可选功能](3.png)
    - Documentation：安装Python的文档和帮助文件。这个可以根据需要勾选
    - pip：安装Python包管理工具。非常关键，必选
-   - tcl/tk and IDLE：其中tcl/tk是两个图形用户界面，而IDLE的名字是Integrated Development Environment and Learning
-   - Environment（集成开发环境和学习环境），是一个python自带的ide。不过我们更推荐使用pycharm作为ide进行学习。
+   - tcl/tk and IDLE：其中tcl/tk是两个图形用户界面，而IDLE的名字是Integrated Development Environment and Learning，集成开发环境和学习环境，是一个python自带的ide。不过我们更推荐使用pycharm作为ide进行学习。
    - Python test suite：Python官方提供的一套用于测试Python解释器和标准库的测试套件。虽然初学一般不需要用到，但是这个套件还是很有用的，建议勾选。
-   - py launcher for all users（requires admin privileges）：首先py launcher可以保证用户在命令行里使用python命令启动python，而后半句for
-   - all users是询问是否为电脑上的所有用户安装上python，而这一步需要管理员权限，对应的是括号里的那句话。
+   - py launcher：可以保证用户在命令行里使用python命令启动python 
+   - for all users（requires admin privileges）：询问是否为电脑上的所有用户勾选 py launcher，这个操作需要管理员权限，对应的是括号里的提示。
 4. 点击 **Next**
-5. 根据需要选择高级选项
+5. 根据需要选择高级选项：
    ![高级选项](4.png)
    - Install Python 3.12 for all users：为所有用户安装。一般对使用没有影响，但是还是建议勾选
    - Associate files with Python（requires the 'py' launcher）：让系统自动将 Python 关联到特定的文件类型。使得在文件资源管理器中双击
    - Python 脚本文件时，系统会自动使用 Python 解释器来运行这些脚本。这个可以按需勾选，不过一般后续会将文件关联到Pycharm
    - Create shortcuts for installed applications：创建桌面快捷方式。一般不需要勾选
-   - Add Python to environment variables：选择这个选项会将 Python 解释器的路径添加到系统的环境变量中，这样就可以在命令行中直接运行
-   - Python 解释器而不需要输入完整的路径。这个推荐勾选
+   - Add Python to environment variables：选择这个选项会将 Python 解释器的路径添加到系统的环境变量中，这样就可以在命令行中直接运行 Python 解释器而不需要输入完整的路径。这个推荐勾选
    - Precompile standard library：对 Python 标准库进行预编译，以提高标准库模块的导入速度。这个可勾可不勾
    - Download debugging symbols：给开发人员和调试人员用的调试符号。按需勾选
    - Download debug binaries（requires VS 2017 or later）：给开发人员和调试人员用的调试版本的二进制文件。按需勾选
@@ -71,9 +71,7 @@ Python是一种解释型、高级和通用的编程语言。Python的设计理�
 8. 点击 **Close** ，完成安装！
    ![安装完成](2.png)
 
-#### 静默安装/自动安装
-
-##### 极简安装
+#### 极简静默安装/自动安装
 
 1. 找到安装包，右键点击**属性**
 2. 记录下**文件名**以及**位置**中的安装包路径
@@ -94,10 +92,10 @@ Python是一种解释型、高级和通用的编程语言。Python的设计理�
 5. 等待几分钟后在开始菜单检查是否安装完成
    ![check](8.png)
 
-##### 自定义安装
+##### 自定义脚本安装
 
 1. 新建文本文件，命名为 `unattend.xml`
-2. 填写内容
+2. 填写内容：
 
     ```xml
     <Options>
@@ -159,13 +157,13 @@ Python是一种解释型、高级和通用的编程语言。Python的设计理�
 
         其中，值通常是 0 来禁用某个特性， 1 来启用某个特性或路径
 
-3. 运行安装命令
+3. 运行安装命令：
    ```bat
    cd C:\Users\user\Desktop
    python-3.13.7-amd64.exe /quiet .\unattend.xml
     ```
    
-4. 验证安装
+4. 验证安装：
    ```bat
    python -V 
     ```

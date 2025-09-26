@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tutorials on Personal Blogs for Fernweh</title><link>https://blog.codeglimpse.top/en/categories/tutorials/</link><description>Recent content in Tutorials on Personal Blogs for Fernweh</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 26 Sep 2025 16:40:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/en/categories/tutorials/index.xml" rel="self" type="application/rss+xml"/><item><title>How to Download and Install Python</title><link>https://blog.codeglimpse.top/en/p/python-install/</link><pubDate>Fri, 26 Sep 2025 16:40:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/p/python-install/</guid><description>&lt;img src="https://blog.codeglimpse.top/en/p/python-install/banner.jpg" alt="Featured image of post How to Download and Install Python" /&gt;&lt;h1 id="how-to-download-and-install-python"&gt;How to Download and Install Python
+&lt;/h1&gt;&lt;p&gt;Python is an interpreted, high-level and general-purpose programming language. Python’s design philosophy emphasizes
+code readability with its notable use of significant whitespace. This article will serve as an informative guide and
+give you a clear understanding of how to set up a Python environment.&lt;/p&gt;
+&lt;h2 id="download-python-installation-packages"&gt;Download Python Installation Packages
+&lt;/h2&gt;&lt;p&gt;&lt;a class="link" href="https://www.python.org/downloads/" target="_blank" rel="noopener"
+&gt;Python official website&lt;/a&gt; provides various versions of Python installation packages
+for selection. Of course, considering that the speed of connecting to the Python official website in somewhere may be
+slow, I recommend using a mirror site to download the Python installation package.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a class="link" href="https://mirrors.aliyun.com/python-release/" target="_blank" rel="noopener"
+&gt;Alibaba Mirror Site&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://mirrors.ustc.edu.cn/python/" target="_blank" rel="noopener"
+&gt;USTC Mirror Site&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&amp;hellip;..&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;If you know of other mirror sites, please &lt;a class="link" href="mailto:libochen@codeglimpse.top" &gt;contact me&lt;/a&gt; to update them!&lt;/p&gt;
+&lt;h2 id="python-installation"&gt;Python installation
+&lt;/h2&gt;&lt;h3 id="windows"&gt;Windows
+&lt;/h3&gt;&lt;h4 id="the-simplest-manual-installation"&gt;The Simplest Manual Installation
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;Run the installer and select the following two options:
+The first option installs Python with administrator privileges.
+The second option automatically adds Python to your system environment path (highly recommended).
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/1.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/1_hu_f4f49cd52bd194d9.png 480w, https://blog.codeglimpse.top/en/p/python-install/1_hu_d76b93e57f9064ed.png 1024w"
+loading="lazy"
+alt="Install Page"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Install Now&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Close&lt;/strong&gt; , Installation complete!
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/2.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/2_hu_4c105e39875b064c.png 480w, https://blog.codeglimpse.top/en/p/python-install/2_hu_e884941f78a09995.png 1024w"
+loading="lazy"
+alt="Install Complete"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h5 id="customize-installation"&gt;Customize installation
+&lt;/h5&gt;&lt;ol&gt;
+&lt;li&gt;Run the installer, still recommended to select the following two options:
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/1.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/1_hu_f4f49cd52bd194d9.png 480w, https://blog.codeglimpse.top/en/p/python-install/1_hu_d76b93e57f9064ed.png 1024w"
+loading="lazy"
+alt="Install Page"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Customize installation&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Choose optional features as needed:
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/3.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/3_hu_2f19553966b84280.png 480w, https://blog.codeglimpse.top/en/p/python-install/3_hu_e33c702d7268a9f5.png 1024w"
+loading="lazy"
+alt="Optional Features"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;
+&lt;ul&gt;
+&lt;li&gt;Documentation: Documentation and help files for installing Python. Select this option only needed&lt;/li&gt;
+&lt;li&gt;pip: Python package management tool. Very important, must choose&lt;/li&gt;
+&lt;li&gt;tcl/tk and IDLE: tcl/tk and IDLE are two graphical user interfaces, IDLE is Integrated Development Environment and
+Learning，a python IDE that comes with it. However, we recommend using Pycharm as an IDE for learning.&lt;/li&gt;
+&lt;li&gt;Python test suite: Provides a set of test suites for testing Python interpreters and standard libraries. Although
+beginners generally do not need to use it, this kit is still very useful, it is recommended to choose it.&lt;/li&gt;
+&lt;li&gt;py launcher: Ensure user starts python using python commands in the command line&lt;/li&gt;
+&lt;li&gt;for all users（requires admin privileges）: Ask if choose &amp;lsquo;py launcher&amp;rsquo; for all users on the computer. Recommended
+to choose&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Next&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Choose advanced option as needed:
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/4.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/4_hu_5c30d0f6e8c1b4d3.png 480w, https://blog.codeglimpse.top/en/p/python-install/4_hu_a74ac4ce209f42e4.png 1024w"
+loading="lazy"
+alt="Advanced options"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;
+&lt;ul&gt;
+&lt;li&gt;Install Python 3.12 for all users: Generally has no effect on use, but still recommended to choose it&lt;/li&gt;
+&lt;li&gt;Associate files with Python (requires the &amp;lsquo;py&amp;rsquo; launcher): Enable the system to automatically associate Python with
+specific file types. When double click Python script files in File Explorer, the system will automatically use the
+Python interpreter to run these scripts. This can be chosen as needed, but usually the file will be associated
+with Pycharm later on&lt;/li&gt;
+&lt;li&gt;Create shortcuts for installed applications: Create desktop shortcuts. Generally, there is no need to choose&lt;/li&gt;
+&lt;li&gt;Add Python to environment variables: Selecting this option adds the path to the Python interpreter to the system&amp;rsquo;s
+environment variables, so that the Python interpreter can be run directly from the command line without having to
+enter the full path. Recommended to choose&lt;/li&gt;
+&lt;li&gt;Precompile standard library: Pre-compiled the Python standard library to improve the import speed of standard
+library modules. This can be chosen or not&lt;/li&gt;
+&lt;li&gt;Download debugging symbols: Debug symbols for developers and debuggers. Choose only need&lt;/li&gt;
+&lt;li&gt;Download debug binaries (requires VS 2017 or later): A binary file for debug versions for developers and
+debuggers. Choose only need&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Select the directory for installation&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Install&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Close&lt;/strong&gt; , Complete the installation
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/2.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/2_hu_4c105e39875b064c.png 480w, https://blog.codeglimpse.top/en/p/python-install/2_hu_e884941f78a09995.png 1024w"
+loading="lazy"
+alt="Install Complete"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="the-simplest-silent-installationautomatic-installation"&gt;The Simplest silent installation/automatic installation
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Find the installation package, right-click &lt;strong&gt;Properties&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Record the &lt;strong&gt;File Name&lt;/strong&gt; and the installation package path in the &lt;strong&gt;Location&lt;/strong&gt;.
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/5.png"
+width="403"
+height="540"
+srcset="https://blog.codeglimpse.top/en/p/python-install/5_hu_800c639d74df1bdb.png 480w, https://blog.codeglimpse.top/en/p/python-install/5_hu_fe772c5ff7d960cf.png 1024w"
+loading="lazy"
+alt="Properties"
+class="gallery-image"
+data-flex-grow="74"
+data-flex-basis="179px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Type &lt;code&gt;cmd&lt;/code&gt; in the bottom-left corner of the desktop to open the command prompt as an administrator
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/6.png"
+width="781"
+height="681"
+srcset="https://blog.codeglimpse.top/en/p/python-install/6_hu_e0c69f214929979b.png 480w, https://blog.codeglimpse.top/en/p/python-install/6_hu_47f37bf1d3f13915.png 1024w"
+loading="lazy"
+alt="cmd"
+class="gallery-image"
+data-flex-grow="114"
+data-flex-basis="275px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Enter the following commands in sequence:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bat" data-lang="bat"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;cd&lt;/span&gt; C:\Users\user\Desktop
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python-3.13.7-amd64.exe /quiet InstallAllUsers=1 PrependPath=1
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;Attention: &lt;br&gt;
+  Replace C:\Users\user\Desktop with the installation package path from Step 2.&lt;br&gt;
+  Replace python-3.13.7-amd64.exe with the filename from Step 2. (don&amp;rsquo;t forget the .exe)&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src="https://blog.codeglimpse.top/en/p/python-install/7.png"
+width="976"
+height="510"
+srcset="https://blog.codeglimpse.top/en/p/python-install/7_hu_5b9019b91b2324bf.png 480w, https://blog.codeglimpse.top/en/p/python-install/7_hu_471650c200671600.png 1024w"
+loading="lazy"
+alt="install"
+class="gallery-image"
+data-flex-grow="191"
+data-flex-basis="459px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;After waiting a few minutes, check in the Start menu to see if the installation is complete.
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/8.png"
+width="754"
+height="694"
+srcset="https://blog.codeglimpse.top/en/p/python-install/8_hu_bf33e7da52b99614.png 480w, https://blog.codeglimpse.top/en/p/python-install/8_hu_11bd7f9731c5682c.png 1024w"
+loading="lazy"
+alt="check"
+class="gallery-image"
+data-flex-grow="108"
+data-flex-basis="260px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h5 id="custom-script-installation"&gt;Custom Script Installation
+&lt;/h5&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Create a new text file and name it as &lt;code&gt;unattend.xml&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Fill in the content:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;span class="lnt"&gt;24
+&lt;/span&gt;&lt;span class="lnt"&gt;25
+&lt;/span&gt;&lt;span class="lnt"&gt;26
+&lt;/span&gt;&lt;span class="lnt"&gt;27
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Options&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;InstallAllUsers&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;TargetDir&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;C:\Python313&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;DefaultAllUsersTargetDir&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;C:\Python313&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;DefaultJustForMeTargetDir&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;C:\Python313&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;DefaultCustomTargetDir&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;C:\Python313&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;AssociateFiles&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;CompileAll&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;PrependPath&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;AppendPath&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Shortcuts&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_doc&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_debug&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_dev&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_exe&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_launcher&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;InstallLauncherAllUsers&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_lib&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_pip&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_symbols&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_tcltk&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_test&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_tools&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;LauncherOnly&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;SimpleInstall&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;SimpleInstallDescription&amp;#34;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&amp;lt;/Option&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/Options&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;strong&gt;Name&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;Description&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;Default&lt;/strong&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;InstallAllUsers&lt;/td&gt;
+&lt;td&gt;Perform a system-wide installation.&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;TargetDir&lt;/td&gt;
+&lt;td&gt;The installation directory&lt;/td&gt;
+&lt;td&gt;Selected based on InstallAllUsers&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DefaultAllUsersTargetDir&lt;/td&gt;
+&lt;td&gt;The default installation directory for all-user installs&lt;/td&gt;
+&lt;td&gt;%ProgramFiles%\Python X.Y or %ProgramFiles(x86)%\Python X.Y&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DefaultJustForMeTargetDir&lt;/td&gt;
+&lt;td&gt;The default install directory for just-for-me installs&lt;/td&gt;
+&lt;td&gt;%LocalAppData%\Programs\Python\PythonXY or %LocalAppData%\Programs\PythonXY-32 or %LocalAppData%\Programs\PythonXY-64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DefaultCustomTargetDir&lt;/td&gt;
+&lt;td&gt;The default custom install directory displayed in the UI&lt;/td&gt;
+&lt;td&gt;(empty)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;AssociateFiles&lt;/td&gt;
+&lt;td&gt;Create file associations if the launcher is also installed&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CompileAll&lt;/td&gt;
+&lt;td&gt;Compile all .py files to .pyc&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;PrependPath&lt;/td&gt;
+&lt;td&gt;Prepend install and Scripts directories to PATH and add .PY to PATHEXT&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;AppendPath&lt;/td&gt;
+&lt;td&gt;Append install and Scripts directories to PATH and add .PY to PATHEXT&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Shortcuts&lt;/td&gt;
+&lt;td&gt;Create shortcuts for the interpreter, documentation and IDLE if installed&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_doc&lt;/td&gt;
+&lt;td&gt;Install Python manual&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_debug&lt;/td&gt;
+&lt;td&gt;Install debug binaries&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_dev&lt;/td&gt;
+&lt;td&gt;Install developer headers and libraries. Omitting this may lead to an unusable installation.&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_exe&lt;/td&gt;
+&lt;td&gt;Install python.exe and related files. Omitting this may lead to an unusable installation.&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_launcher&lt;/td&gt;
+&lt;td&gt;Install Python Launcher for Windows&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;InstallLauncherAllUsers&lt;/td&gt;
+&lt;td&gt;Installs the launcher for all users. Also requires Include_launcher to be set to 1&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_lib&lt;/td&gt;
+&lt;td&gt;Install standard library and extension modules. Omitting this may lead to an unusable installation.&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_pip&lt;/td&gt;
+&lt;td&gt;Install bundled pip and setuptools&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_symbols&lt;/td&gt;
+&lt;td&gt;Install debugging symbols (*.pdb)&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_tcltk&lt;/td&gt;
+&lt;td&gt;Install Tcl/Tk support and IDLE&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_test&lt;/td&gt;
+&lt;td&gt;Install standard library test suite&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_tools&lt;/td&gt;
+&lt;td&gt;Install utility scripts&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;LauncherOnly&lt;/td&gt;
+&lt;td&gt;Only installs the launcher. This will override most other options.&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SimpleInstall&lt;/td&gt;
+&lt;td&gt;Disable most install UI&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SimpleInstallDescription&lt;/td&gt;
+&lt;td&gt;A custom message to display when the simplified install UI is used&lt;/td&gt;
+&lt;td&gt;(empty)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre&gt;&lt;code&gt; Usually, the value is typically 0 to disable a feature, and 1 to enable a feature or path.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Run the installation command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bat" data-lang="bat"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;cd&lt;/span&gt; C:\Users\user\Desktop
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python-3.13.7-amd64.exe /quiet .\unattend.xml
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Verify Installation:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bat" data-lang="bat"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python -V
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ol&gt;</description></item></channel></rss>

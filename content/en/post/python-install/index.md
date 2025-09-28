@@ -192,9 +192,9 @@ To check if your macOS has Python installed, open Terminal and do something like
 - Run `python3 --version` If the version is 3.x.*, Python 3 is pre-installed
 
 > **Note：**
-> Recent versions of macOS include a **python3** command in `/usr/bin/python3` that links to a usually older and incomplete version of Python provided by and for use by the Apple development tools, **Xcode** or the **Command Line Tools for Xcode**
-> You should never modify or attempt to delete this installation, as it is Apple-controlled and is used by Apple-provided or third-party software
-> If you choose to install a newer Python version from `python.org`, you will have two different but functional Python installations on your computer that can co-exist
+> Recent versions of macOS include a **python3** command in `/usr/bin/python3` that links to a usually older and incomplete version of Python provided by and for use by the Apple development tools, **Xcode** or the **Command Line Tools for Xcode**<br>
+> You should never modify or attempt to delete this installation, as it is Apple-controlled and is used by Apple-provided or third-party software<br>
+> If you choose to install a newer Python version from `python.org`, you will have two different but functional Python installations on your computer that can co-exist<br>
 > The default installer options should ensure that its **python3** will be used instead of the system **python3**
 
 Here are a few common installation methods for Python, and you can choose the one that suits you according to your needs.
@@ -243,3 +243,58 @@ To install Python on macOS using Homebrew, follow these steps:
 4. Run Brew Link Python or Brew Link python@3. XX (replace XX with the correct version number) - Then restart the Terminal application to make sure the application is working properly
    ![Link Python](19.png)
 5. Once the installation is complete, you can run the `python -–version` or `python3 –-version` command to verify the installation
+
+
+## Linux
+The simplest way to install Python on a Linux system is to use the package manager. Below are methods for installing Python with different package managers:
+
+### Debian / Ubuntu / Mint
+For Debian / Ubuntu / Mint systems, Python is typically installed using the apt package manager:
+
+```bash
+sudo apt update # Refresh the system's package database to ensure you get the latest versions
+sudo apt upgrade # Update all installed packages to their latest versions to avoid compatibility issues
+sudo apt install python3 # Install Python 3
+sudo apt install python3-pip # Install Python 3's pip package manager
+sudo apt install python3-dev python3-venv build-essential # Install Python3 development tools and virtual environment
+sudo chown -R $USER:$USER ~/.local # Resolve permission issues
+sudo rm /var/lib/apt/lists/lock
+sudo rm /var/cache/apt/archives/lock # Resolve lock file issues
+```
+
+### CentOS / Fedora / Red Hat
+
+#### yum
+For older CentOS / Fedora / Red Hat systems, Python is typically installed using the yum package manager:
+```bash
+sudo yum update # Refresh the system's package database for the latest versions
+sudo yum install epel-release # Install the EPEL repository (optional)
+sudo yum install python3 # Install Python3
+sudo yum clean all
+sudo yum repolist # Clean and validate repository configuration
+```
+
+#### dnf
+For newer CentOS / Fedora / Red Hat systems, Python is typically installed using the dnf package manager:
+```bash
+sudo dnf update # Refresh the system's package database to obtain the latest versions
+sudo dnf install python3 # Install Python3
+sudo dnf groupinstall “Development Tools” # Install development tools
+sudo dnf install python3-pip # Install Python3's pip package manager
+```
+
+### Arch Linux
+For Arch Linux systems, Python is typically installed using the pacman package manager:
+```bash
+sudo pacman -Syu # Refresh the system's package database to obtain the latest versions
+sudo pacman -S python python-pip # Install Python3 and the pip package manager for Python3
+```
+
+### SUSE / openSUSE
+For SUSE / openSUSE systems, Python is typically installed using the zypper package manager:
+```bash
+sudo zypper refresh # Refresh the system's package database to obtain the latest versions
+sudo zypper install python3 python3-pip # Install Python 3 and the pip package manager for Python 3
+sudo zypper install python3-devel python3-virtualenv build-essentials # Install Python 3 development tools and virtual environments
+```
+

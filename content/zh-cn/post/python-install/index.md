@@ -178,9 +178,9 @@ Python是一种解释型、高级和通用的编程语言。Python的设计理�
 - 运行 `python3 --version` 如果显示版本为 3.x.*，说明系统预装了Python 3
 
 > **注意：**
-> 最近几个版本的 macOS 都包括一个 **python3** 命令 `/usr/bin/python3`，它链接到一个供 Apple 开发工具 **Xcode** 或 **Command Line Tools for Xcode** 使用的通常较老旧且不完整的 Python 版本
-> 你绝不应该修改或试图删除此安装版，因为它是由 Apple 控制且由 Apple 提供的或第三方的软件所使用
-> 如果你选择安装一个来自 `python.org` 的更新的 Python 版本，在你的计算机上将有两个不相同但均能正常运行的 Python 安装版共存。
+> 最近几个版本的 macOS 都包括一个 **python3** 命令 `/usr/bin/python3`，它链接到一个供 Apple 开发工具 **Xcode** 或 **Command Line Tools for Xcode** 使用的通常较老旧且不完整的 Python 版本<br>
+> 你绝不应该修改或试图删除此安装版，因为它是由 Apple 控制且由 Apple 提供的或第三方的软件所使用<br>
+> 如果你选择安装一个来自 `python.org` 的更新的 Python 版本，在你的计算机上将有两个不相同但均能正常运行的 Python 安装版共存<br>
 > 默认安装程序选项应当会确保使用它的 **python3** 而不是系统的 **python3**
 
 下面是Python的几种常见安装方式，您可以根据需要选择适合自己的安装方式。
@@ -229,3 +229,55 @@ Python是一种解释型、高级和通用的编程语言。Python的设计理�
 4. 运行 brew link python 或 brew link python@3.XX （将 XX 替换为正确的版本号）- 然后重新启动「终端」应用程序，以确保应用程序正常工作
    ![链接python](19.png)
 5. 安装完成后，可以运行 `python -–version` 或 `python3 –-version` 命令来验证安装
+
+## Linux
+在 Linux 系统上安装 Python 的最简单方法是使用包管理器。下面是不同包管理器安装Python 的方法：
+
+### Debian / Ubuntu / Mint
+对于Debian / Ubuntu / Mint系统，一般使用 apt 包管理器来安装 Python：
+```bash
+sudo apt update #刷新系统的软件包数据库，以确保您获得最新版本
+sudo apt upgrade #将所有已安装的软件包更新至最新版本，避免兼容性问题
+sudo apt install python3 #安装Python3
+sudo apt install python3-pip #安装Python3的 pip 包管理器
+sudo apt install python3-dev python3-venv build-essential #安装Python3的 开发工具 和 虚拟环境
+sudo chown -R $USER:$USER ~/.local #解决权限问题
+sudo rm /var/lib/apt/lists/lock
+sudo rm /var/cache/apt/archives/lock # 解决锁文件问题
+```
+
+### CentOS / Fedora / Red Hat
+
+#### yum
+对于早期的 CentOS / Fedora / Red Hat 系统，一般使用 yum 包管理器来安装 Python：
+```bash
+sudo yum update #刷新系统的软件包数据库，以获得最新版本
+sudo yum install epel-release # 安装 EPEL 源（可选）
+sudo yum install python3 # 安装 Python3
+sudo yum clean all
+sudo yum repolist # 清理并验证存储库配置
+```
+
+#### dnf
+对于较新的 CentOS / Fedora / Red Hat 系统，一般使用 dnf 包管理器来安装 Python：
+```bash
+sudo dnf update # 刷新系统的软件包数据库，以获得最新版本
+sudo dnf install python3 # 安装 Python3
+sudo dnf groupinstall "Development Tools" # 安装开发工具
+sudo dnf install python3-pip # 安装 Python3 的 pip 包管理器
+```
+
+### Arch Linux
+对于 Arch Linux 系统，一般使用 pacman 包管理器来安装 Python：
+```bash
+sudo pacman -Syu # 刷新系统的软件包数据库，以获得最新版本
+sudo pacman -S python python-pip # 安装 Python3 和 Python3 的 pip 包管理器
+```
+
+### SUSE / openSUSE
+对于 SUSE / openSUSE 系统，一般使用 zypper 包管理器来安装 Python：
+```bash
+sudo zypper refresh # 刷新系统的软件包数据库，以获得最新版本
+sudo zypper install python3 python3-pip # 安装 Python3 和 Python3 的 pip 包管理器
+sudo zypper install python3-devel python3-virtualenv build-essentials # 安装 Python3 的开发工具和虚拟环境
+```

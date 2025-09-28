@@ -2,7 +2,7 @@
 title: Python 下载与安装教程
 description: 一站式详解 Windows、macOS 及 Linux 系统下的 Python 多种安装方案
 slug: python-install
-date: 2025-09-20 21:40:00+0800
+date: 2025-09-28 16:20:00+0800
 image: banner.jpg
 categories:
     - Tutorials

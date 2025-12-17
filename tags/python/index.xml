@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Python on Fernweh的个人博客</title><link>https://blog.codeglimpse.top/tags/python/</link><description>Recent content in Python on Fernweh的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 28 Sep 2025 16:20:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/tags/python/index.xml" rel="self" type="application/rss+xml"/><item><title>Python 下载与安装教程</title><link>https://blog.codeglimpse.top/p/python-install/</link><pubDate>Sun, 28 Sep 2025 16:20:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/python-install/</guid><description>&lt;img src="https://blog.codeglimpse.top/p/python-install/banner.jpg" alt="Featured image of post Python 下载与安装教程" /&gt;&lt;h1 id="python的下载及安装教程"&gt;Python的下载及安装教程
+&lt;/h1&gt;&lt;p&gt;Python是一种解释型、高级和通用的编程语言。Python的设计理念强调代码的可读性，并显著使用了大量空格。本文将作为一个信息丰富的指南，让您清楚地了解如何搭建Python环境。&lt;/p&gt;
+&lt;h2 id="windows"&gt;Windows
+&lt;/h2&gt;&lt;h3 id="下载python安装程序"&gt;下载Python安装程序
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="https://www.python.org/downloads/windows/" target="_blank" rel="noopener"
+&gt;Python for Windows&lt;/a&gt;提供了各种版本的Python安装包可供选择。当然，鉴于国内连接Python官网的速度可能很慢，我推荐使用镜像站下载Python安装包。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a class="link" href="https://mirrors.aliyun.com/python-release/windows" target="_blank" rel="noopener"
+&gt;阿里镜像站&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://mirrors.ustc.edu.cn/python/" target="_blank" rel="noopener"
+&gt;中科大镜像站&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&amp;hellip;..&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;如您了解其他镜像站欢迎&lt;a class="link" href="mailto:libochen@codeglimpse.top" &gt;联系我&lt;/a&gt;更新！&lt;/p&gt;
+&lt;h3 id="安装python"&gt;安装Python
+&lt;/h3&gt;&lt;p&gt;下面是Python的几种常见安装方式，您可以根据需要选择适合自己的安装方式。&lt;/p&gt;
+&lt;h4 id="极简手动安装"&gt;极简手动安装
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;运行安装包，建议勾选下面两项：
+第一个表示以管理员权限安装Python
+第二个表示自动添加Python的环境路径（强烈建议勾选）
+&lt;img src="https://blog.codeglimpse.top/p/python-install/1.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/p/python-install/1_hu_f4f49cd52bd194d9.png 480w, https://blog.codeglimpse.top/p/python-install/1_hu_d76b93e57f9064ed.png 1024w"
+loading="lazy"
+alt="安装界面"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/li&gt;
+&lt;li&gt;点击 &lt;strong&gt;Install Now&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;点击 &lt;strong&gt;Close&lt;/strong&gt; ，完成安装！
+&lt;img src="https://blog.codeglimpse.top/p/python-install/2.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/p/python-install/2_hu_4c105e39875b064c.png 480w, https://blog.codeglimpse.top/p/python-install/2_hu_e884941f78a09995.png 1024w"
+loading="lazy"
+alt="安装完成"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="自定义安装"&gt;自定义安装
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;运行安装包，依旧建议勾选下面两项：
+&lt;img src="https://blog.codeglimpse.top/p/python-install/1.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/p/python-install/1_hu_f4f49cd52bd194d9.png 480w, https://blog.codeglimpse.top/p/python-install/1_hu_d76b93e57f9064ed.png 1024w"
+loading="lazy"
+alt="安装界面"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/li&gt;
+&lt;li&gt;点击 &lt;strong&gt;Customize installation&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;根据需要选择可选功能：
+&lt;img src="https://blog.codeglimpse.top/p/python-install/3.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/p/python-install/3_hu_2f19553966b84280.png 480w, https://blog.codeglimpse.top/p/python-install/3_hu_e33c702d7268a9f5.png 1024w"
+loading="lazy"
+alt="可选功能"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;
+&lt;ul&gt;
+&lt;li&gt;Documentation：安装Python的文档和帮助文件。这个可以根据需要勾选&lt;/li&gt;
+&lt;li&gt;pip：安装Python包管理工具。非常关键，必选&lt;/li&gt;
+&lt;li&gt;tcl/tk and IDLE：其中tcl/tk是两个图形用户界面，而IDLE的名字是Integrated Development Environment and Learning，集成开发环境和学习环境，是一个python自带的ide。不过我们更推荐使用pycharm作为ide进行学习。&lt;/li&gt;
+&lt;li&gt;Python test suite：Python官方提供的一套用于测试Python解释器和标准库的测试套件。虽然初学一般不需要用到，但是这个套件还是很有用的，建议勾选。&lt;/li&gt;
+&lt;li&gt;py launcher：可以保证用户在命令行里使用python命令启动python&lt;/li&gt;
+&lt;li&gt;for all users（requires admin privileges）：询问是否为电脑上的所有用户勾选 py launcher，这个操作需要管理员权限，对应的是括号里的提示。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;点击 &lt;strong&gt;Next&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;根据需要选择高级选项：
+&lt;img src="https://blog.codeglimpse.top/p/python-install/4.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/p/python-install/4_hu_5c30d0f6e8c1b4d3.png 480w, https://blog.codeglimpse.top/p/python-install/4_hu_a74ac4ce209f42e4.png 1024w"
+loading="lazy"
+alt="高级选项"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;
+&lt;ul&gt;
+&lt;li&gt;Install Python 3.12 for all users：为所有用户安装。一般对使用没有影响，但是还是建议勾选&lt;/li&gt;
+&lt;li&gt;Associate files with Python（requires the &amp;lsquo;py&amp;rsquo; launcher）：让系统自动将 Python 关联到特定的文件类型。使得在文件资源管理器中双击&lt;/li&gt;
+&lt;li&gt;Python 脚本文件时，系统会自动使用 Python 解释器来运行这些脚本。这个可以按需勾选，不过一般后续会将文件关联到Pycharm&lt;/li&gt;
+&lt;li&gt;Create shortcuts for installed applications：创建桌面快捷方式。一般不需要勾选&lt;/li&gt;
+&lt;li&gt;Add Python to environment variables：选择这个选项会将 Python 解释器的路径添加到系统的环境变量中，这样就可以在命令行中直接运行 Python 解释器而不需要输入完整的路径。这个推荐勾选&lt;/li&gt;
+&lt;li&gt;Precompile standard library：对 Python 标准库进行预编译，以提高标准库模块的导入速度。这个可勾可不勾&lt;/li&gt;
+&lt;li&gt;Download debugging symbols：给开发人员和调试人员用的调试符号。按需勾选&lt;/li&gt;
+&lt;li&gt;Download debug binaries（requires VS 2017 or later）：给开发人员和调试人员用的调试版本的二进制文件。按需勾选&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;选择安装目录，建议路径中不要含有中文，否则可能会导致安装失败。&lt;/li&gt;
+&lt;li&gt;点击 &lt;strong&gt;Install&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;点击 &lt;strong&gt;Close&lt;/strong&gt; ，完成安装！
+&lt;img src="https://blog.codeglimpse.top/p/python-install/2.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/p/python-install/2_hu_4c105e39875b064c.png 480w, https://blog.codeglimpse.top/p/python-install/2_hu_e884941f78a09995.png 1024w"
+loading="lazy"
+alt="安装完成"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="极简静默安装自动安装"&gt;极简静默安装/自动安装
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;找到安装包，右键点击&lt;strong&gt;属性&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;记录下&lt;strong&gt;文件名&lt;/strong&gt;以及&lt;strong&gt;位置&lt;/strong&gt;中的安装包路径
+&lt;img src="https://blog.codeglimpse.top/p/python-install/5.png"
+width="465"
+height="669"
+srcset="https://blog.codeglimpse.top/p/python-install/5_hu_f3177612e3462d8e.png 480w, https://blog.codeglimpse.top/p/python-install/5_hu_aec5d9ba5a923dd1.png 1024w"
+loading="lazy"
+alt="属性"
+class="gallery-image"
+data-flex-grow="69"
+data-flex-basis="166px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在桌面左下角输入 &lt;code&gt;cmd&lt;/code&gt; ，以管理员身份打开命令行
+&lt;img src="https://blog.codeglimpse.top/p/python-install/6.png"
+width="780"
+height="681"
+srcset="https://blog.codeglimpse.top/p/python-install/6_hu_2f7eb2878318c26f.png 480w, https://blog.codeglimpse.top/p/python-install/6_hu_66527f3bd2ebde2e.png 1024w"
+loading="lazy"
+alt="cmd"
+class="gallery-image"
+data-flex-grow="114"
+data-flex-basis="274px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;依次输入如下命令：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bat" data-lang="bat"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;cd&lt;/span&gt; C:\Users\user\Desktop
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python-3.13.7-amd64.exe /quiet InstallAllUsers=1 PrependPath=1
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;注意：&lt;br&gt;
+  请将 C:\Users\user\Desktop 替换为第2步中位置中的安装包路径&lt;br&gt;
+  请将 python-3.13.7-amd64.exe 替换为第2步中文件名 + .exe&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src="https://blog.codeglimpse.top/p/python-install/7.png"
+width="976"
+height="586"
+srcset="https://blog.codeglimpse.top/p/python-install/7_hu_bcde5faeb81254d8.png 480w, https://blog.codeglimpse.top/p/python-install/7_hu_7daea94e68538e7b.png 1024w"
+loading="lazy"
+alt="install"
+class="gallery-image"
+data-flex-grow="166"
+data-flex-basis="399px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;等待几分钟后在开始菜单检查是否安装完成
+&lt;img src="https://blog.codeglimpse.top/p/python-install/8.png"
+width="790"
+height="789"
+srcset="https://blog.codeglimpse.top/p/python-install/8_hu_cb48b2a2d758dd3f.png 480w, https://blog.codeglimpse.top/p/python-install/8_hu_b306558e7e398836.png 1024w"
+loading="lazy"
+alt="check"
+class="gallery-image"
+data-flex-grow="100"
+data-flex-basis="240px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="自定义脚本安装"&gt;自定义脚本安装
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;新建文本文件，命名为 &lt;code&gt;unattend.xml&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;填写内容：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;span class="lnt"&gt;24
+&lt;/span&gt;&lt;span class="lnt"&gt;25
+&lt;/span&gt;&lt;span class="lnt"&gt;26
+&lt;/span&gt;&lt;span class="lnt"&gt;27
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Options&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;InstallAllUsers&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;TargetDir&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;C:\Python313&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;DefaultAllUsersTargetDir&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;C:\Python313&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;DefaultJustForMeTargetDir&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;C:\Python313&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;DefaultCustomTargetDir&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;C:\Python313&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;AssociateFiles&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;CompileAll&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;PrependPath&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;AppendPath&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Shortcuts&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_doc&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_debug&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_dev&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_exe&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_launcher&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;InstallLauncherAllUsers&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_lib&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_pip&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_symbols&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_tcltk&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_test&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_tools&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;LauncherOnly&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;SimpleInstall&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;SimpleInstallDescription&amp;#34;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&amp;lt;/Option&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/Options&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;名称&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;th&gt;默认值&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;InstallAllUsers&lt;/td&gt;
+&lt;td&gt;为所有用户安装。&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;TargetDir&lt;/td&gt;
+&lt;td&gt;安装目录&lt;/td&gt;
+&lt;td&gt;基于InstallAllUsers选择&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DefaultAllUsersTargetDir&lt;/td&gt;
+&lt;td&gt;为所有用户安装时的默认安装路径&lt;/td&gt;
+&lt;td&gt;%ProgramFiles%\Python X.Y 或 %ProgramFiles(x86)%\Python X.Y&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DefaultJustForMeTargetDir&lt;/td&gt;
+&lt;td&gt;仅为当前用户安装时的默认安装路径&lt;/td&gt;
+&lt;td&gt;%LocalAppData%\Programs\Python\PythonXY 或 %LocalAppData%\Programs\Python\PythonXY-32 或 %LocalAppData%\Programs\Python\PythonXY-64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DefaultCustomTargetDir&lt;/td&gt;
+&lt;td&gt;UI中显示的默认自定义安装目录&lt;/td&gt;
+&lt;td&gt;（空）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;AssociateFiles&lt;/td&gt;
+&lt;td&gt;如果还安装了启动器，则创建文件关联。&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CompileAll&lt;/td&gt;
+&lt;td&gt;将所有 .py 文件编译为 .pyc 。&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;PrependPath&lt;/td&gt;
+&lt;td&gt;将安装和脚本目录添加到 PATH 并将 .PY 添加到 PATHEXT&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;AppendPath&lt;/td&gt;
+&lt;td&gt;将安装和脚本目录添加到 PATH 并将 .PY 添加到 PATHEXT&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Shortcuts&lt;/td&gt;
+&lt;td&gt;如果已安装，为解释器，文档和IDLE创建快捷方式&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_doc&lt;/td&gt;
+&lt;td&gt;安装Python手册&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_debug&lt;/td&gt;
+&lt;td&gt;安装调试二进制文件&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_dev&lt;/td&gt;
+&lt;td&gt;安装开发者头文件和库文件。 省略这一步可能导致安装不可用。&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_exe&lt;/td&gt;
+&lt;td&gt;安装 python.exe 以及相关文件。忽略此项可能会导致安装不可用。&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_launcher&lt;/td&gt;
+&lt;td&gt;安装适用于Windows的Python启动器&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;InstallLauncherAllUsers&lt;/td&gt;
+&lt;td&gt;为所有用户安装启动器。还需要 Include_launcher 被设定为1&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_lib&lt;/td&gt;
+&lt;td&gt;安装标准库和扩展模块。 省略这一步可能导致安装不可用。&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_pip&lt;/td&gt;
+&lt;td&gt;安装捆绑的pip和setuptools&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_symbols&lt;/td&gt;
+&lt;td&gt;安装调试符号集 (*.pdb)&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_tcltk&lt;/td&gt;
+&lt;td&gt;安装Tcl/Tk 支持和IDLE&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_test&lt;/td&gt;
+&lt;td&gt;安装标准库测试套件&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_tools&lt;/td&gt;
+&lt;td&gt;安装实用程序脚本&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;LauncherOnly&lt;/td&gt;
+&lt;td&gt;仅安装启动器。这将覆盖大多数其他选项。&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SimpleInstall&lt;/td&gt;
+&lt;td&gt;禁用大多数安装UI&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SimpleInstallDescription&lt;/td&gt;
+&lt;td&gt;使用简化安装UI时显示的自定义消息。&lt;/td&gt;
+&lt;td&gt;（空）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre&gt;&lt;code&gt; 其中，值通常是 0 来禁用某个特性， 1 来启用某个特性或路径
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;运行安装命令：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bat" data-lang="bat"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;cd&lt;/span&gt; C:\Users\user\Desktop
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python-3.13.7-amd64.exe /quiet .\unattend.xml
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;验证安装：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bat" data-lang="bat"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python -V
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="macos"&gt;MacOS
+&lt;/h2&gt;&lt;p&gt;对于MacOS系统，我们需要先检查系统是否预装了python环境。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果您使用的是 macOS Monterey 12.2 或更早版本，可能已经预装了 Python 2.7。但是最新版本已经升级到了 Python 3，相比 Python 2.7 具有显著的功能改进和更高的安全性。此外，Python 2.7 已经过时，官方已经不再支持。&lt;/li&gt;
+&lt;li&gt;如果您使用的是 macOS Monterey 12.3 或更高版本，Apple 已经完全移除了 Python 2.7，需要重新安装 Python 才能继续使用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;要检查您的 MacOS 是否安装Python，请打开 &lt;strong&gt;终端&lt;/strong&gt; 并进行如下操作：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;运行 &lt;code&gt;python --version&lt;/code&gt; 如果显示版本为 2.7.*，说明系统预装了Python 2.7&lt;/li&gt;
+&lt;li&gt;运行 &lt;code&gt;python3 --version&lt;/code&gt; 如果显示版本为 3.x.*，说明系统预装了Python 3&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;注意：&lt;/strong&gt;
+最近几个版本的 macOS 都包括一个 &lt;strong&gt;python3&lt;/strong&gt; 命令 &lt;code&gt;/usr/bin/python3&lt;/code&gt;，它链接到一个供 Apple 开发工具 &lt;strong&gt;Xcode&lt;/strong&gt; 或 &lt;strong&gt;Command Line Tools for Xcode&lt;/strong&gt; 使用的通常较老旧且不完整的 Python 版本&lt;br&gt;
+你绝不应该修改或试图删除此安装版，因为它是由 Apple 控制且由 Apple 提供的或第三方的软件所使用&lt;br&gt;
+如果你选择安装一个来自 &lt;code&gt;python.org&lt;/code&gt; 的更新的 Python 版本，在你的计算机上将有两个不相同但均能正常运行的 Python 安装版共存&lt;br&gt;
+默认安装程序选项应当会确保使用它的 &lt;strong&gt;python3&lt;/strong&gt; 而不是系统的 &lt;strong&gt;python3&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;下面是Python的几种常见安装方式，您可以根据需要选择适合自己的安装方式。&lt;/p&gt;
+&lt;h3 id="通过官方安装程序安装-python"&gt;通过官方安装程序安装 Python
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;下载 Python 安装程序：
+访问Python官网的macOS下载地址：&lt;a class="link" href="https://www.python.org/downloads/macos/" target="_blank" rel="noopener"
+&gt;Python for macOS&lt;/a&gt;
+或者可以访问镜像网站下载安装程序：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://mirrors.aliyun.com/python-release/macos" target="_blank" rel="noopener"
+&gt;阿里镜像站&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://mirrors.ustc.edu.cn/python/" target="_blank" rel="noopener"
+&gt;中科大镜像站&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&amp;hellip;..&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如您了解其他镜像站欢迎&lt;a class="link" href="mailto:libochen@codeglimpse.top" &gt;联系我&lt;/a&gt;更新！&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;安装程序下载完后，打开「访达」- 在「下载」文件夹中找到该 .pkg 文件 – 双击打开以开始安装。
+&lt;img src="https://blog.codeglimpse.top/p/python-install/9.png"
+width="621"
+height="442"
+srcset="https://blog.codeglimpse.top/p/python-install/9_hu_5605e4860ea75825.png 480w, https://blog.codeglimpse.top/p/python-install/9_hu_1e9ee4d52293c604.png 1024w"
+loading="lazy"
+alt="安装器界面"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;点击 &lt;strong&gt;继续&lt;/strong&gt; 将显示安装程序的 Read Me文档。 在其他重要信息之外，Read Me 文档会写明将要安装的 Python 版本以及它所支持的 macOS 版本
+&lt;img src="https://blog.codeglimpse.top/p/python-install/10.png"
+width="622"
+height="442"
+srcset="https://blog.codeglimpse.top/p/python-install/10_hu_f1c4bd2fc302cf1.png 480w, https://blog.codeglimpse.top/p/python-install/10_hu_c63e87ce2cd17e17.png 1024w"
+loading="lazy"
+alt="重要信息"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;点击 &lt;strong&gt;继续&lt;/strong&gt; 将会显示 Python 软件及其他随附软件的授权许可。你需要选择 &lt;strong&gt;同意&lt;/strong&gt; 该许可证才能继续下一步安装
+&lt;img src="https://blog.codeglimpse.top/p/python-install/11.png"
+width="621"
+height="444"
+srcset="https://blog.codeglimpse.top/p/python-install/11_hu_9014b3356ae1187f.png 480w, https://blog.codeglimpse.top/p/python-install/11_hu_dfae92437a17934b.png 1024w"
+loading="lazy"
+alt="授权许可"
+class="gallery-image"
+data-flex-grow="139"
+data-flex-basis="335px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;接受许可证条款后，下一步是选择您的安装类型。在大多数情况下，默认的标准安装操作就是最适合您的安装类型。如果您需要自定义安装，关于自定义安装的介绍请参考 &lt;a class="link" href="#%e8%87%aa%e5%ae%9a%e4%b9%89%e5%ae%89%e8%a3%85" &gt;Windows自定义安装&lt;/a&gt;
+&lt;img src="https://blog.codeglimpse.top/p/python-install/12.png"
+width="621"
+height="444"
+srcset="https://blog.codeglimpse.top/p/python-install/12_hu_a773c66674cb2d38.png 480w, https://blog.codeglimpse.top/p/python-install/12_hu_ab4212dbbb26a24b.png 1024w"
+loading="lazy"
+alt="安装类型"
+class="gallery-image"
+data-flex-grow="139"
+data-flex-basis="335px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;不论您选择接受默认安装配置还是自定义安装配置，点击 &lt;strong&gt;安装&lt;/strong&gt; 按钮即可开始安装过程。您可能会被要求提供安装软件所需的必要权限。您需要提供拥有 Administrator （管理员）权限的 macOS 用户名和密码，因为 Python 会面向电脑中的所有用户安装。
+&lt;img src="https://blog.codeglimpse.top/p/python-install/13.png"
+width="619"
+height="444"
+srcset="https://blog.codeglimpse.top/p/python-install/13_hu_2ef506778914b78c.png 480w, https://blog.codeglimpse.top/p/python-install/13_hu_d28e92213588c127.png 1024w"
+loading="lazy"
+alt="安装完成"
+class="gallery-image"
+data-flex-grow="139"
+data-flex-basis="334px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在弹出的文件夹中找到并双击 Install Certificates.command 图标或在 /Applications/Python 3.13/ 找到该文件并双击来完成安装
+&lt;img src="https://blog.codeglimpse.top/p/python-install/14.png"
+width="921"
+height="439"
+srcset="https://blog.codeglimpse.top/p/python-install/14_hu_e29c57e46dcab718.png 480w, https://blog.codeglimpse.top/p/python-install/14_hu_ff44147a22ee8bab.png 1024w"
+loading="lazy"
+alt="安装证书"
+class="gallery-image"
+data-flex-grow="209"
+data-flex-basis="503px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;这会开启一个临时的 Terminal 命令行窗口，使用新安装的 Python 下载并安装SSL根证书供其使用
+&lt;img src="https://blog.codeglimpse.top/p/python-install/15.png"
+width="1110"
+height="622"
+srcset="https://blog.codeglimpse.top/p/python-install/15_hu_8f9b1fc4746b8d55.png 480w, https://blog.codeglimpse.top/p/python-install/15_hu_2f6a3b987a133a62.png 1024w"
+loading="lazy"
+alt="终端窗口"
+class="gallery-image"
+data-flex-grow="178"
+data-flex-basis="428px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果 &lt;strong&gt;进程已完成&lt;/strong&gt; 字样出现在了终端的窗口中，那么安装就顺利完成。您可以关闭该终端窗口和安装器窗口。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="使用-homebrew-安装-python"&gt;使用 Homebrew 安装 Python
+&lt;/h3&gt;&lt;p&gt;在 macOS 上安装 Python 的另一种方法是使用 Homebrew。Homebrew 是 macOS 的第三方软件包管理器，允许使用「终端」快速安装应用程序，为 macOS 提供了类似 Linux 的包管理体验。
+有趣的是，Homebrew 需要 Python 的支持才能正常工作。因此，要安装 Homebrew 需要系统有可用的 Python 支持，也就是前文提到的 Apple 系统开发者工具使用到的旧版本Python。
+要使用 Homebrew 在 macOS 上安装 Python，请按照以下步骤进行操作：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;打开「终端」应用程序 – 运行 &lt;code&gt;brew --version&lt;/code&gt;命令检查是否已安装 Homebrew
+&lt;img src="https://blog.codeglimpse.top/p/python-install/16.png"
+width="1810"
+height="918"
+srcset="https://blog.codeglimpse.top/p/python-install/16_hu_fd48b840bb0c90da.png 480w, https://blog.codeglimpse.top/p/python-install/16_hu_b2a6981ecb6af0c6.png 1024w"
+loading="lazy"
+alt="终端"
+class="gallery-image"
+data-flex-grow="197"
+data-flex-basis="473px"
+&gt;&lt;/li&gt;
+&lt;li&gt;如果已经安装 Homebrew，请直接跳到第四步
+如果没有安装 Homebrew，请在「终端」中运行以下命令安装 Homebrew：
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/bin/bash -c &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;img src="https://blog.codeglimpse.top/p/python-install/17.png"
+width="1200"
+height="609"
+srcset="https://blog.codeglimpse.top/p/python-install/17_hu_bc6882e9ad6e6d16.png 480w, https://blog.codeglimpse.top/p/python-install/17_hu_a8cfe786f794701e.png 1024w"
+loading="lazy"
+alt="安装brew"
+class="gallery-image"
+data-flex-grow="197"
+data-flex-basis="472px"
+&gt;&lt;/li&gt;
+&lt;li&gt;安装好 Homebrew 后，就可以使用它来安装 Python：
+&lt;img src="https://blog.codeglimpse.top/p/python-install/18.png"
+width="1000"
+height="508"
+srcset="https://blog.codeglimpse.top/p/python-install/18_hu_5dd1f87d6b34ba85.png 480w, https://blog.codeglimpse.top/p/python-install/18_hu_31037497c0461639.png 1024w"
+loading="lazy"
+alt="安装python"
+class="gallery-image"
+data-flex-grow="196"
+data-flex-basis="472px"
+&gt;&lt;/li&gt;
+&lt;li&gt;运行 brew link python 或 brew link &lt;a class="link" href="mailto:python@3.XX" &gt;python@3.XX&lt;/a&gt; （将 XX 替换为正确的版本号）- 然后重新启动「终端」应用程序，以确保应用程序正常工作
+&lt;img src="https://blog.codeglimpse.top/p/python-install/19.png"
+width="1810"
+height="918"
+srcset="https://blog.codeglimpse.top/p/python-install/19_hu_a18af954793d8aba.png 480w, https://blog.codeglimpse.top/p/python-install/19_hu_c11cb16f1cdd5526.png 1024w"
+loading="lazy"
+alt="链接python"
+class="gallery-image"
+data-flex-grow="197"
+data-flex-basis="473px"
+&gt;&lt;/li&gt;
+&lt;li&gt;安装完成后，可以运行 &lt;code&gt;python -–version&lt;/code&gt; 或 &lt;code&gt;python3 –-version&lt;/code&gt; 命令来验证安装&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="linux"&gt;Linux
+&lt;/h2&gt;&lt;p&gt;在 Linux 系统上安装 Python 的最简单方法是使用包管理器。下面是不同包管理器安装Python 的方法：&lt;/p&gt;
+&lt;h3 id="debian--ubuntu--mint"&gt;Debian / Ubuntu / Mint
+&lt;/h3&gt;&lt;p&gt;对于Debian / Ubuntu / Mint系统，一般使用 apt 包管理器来安装 Python：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt update &lt;span class="c1"&gt;#刷新系统的软件包数据库，以确保您获得最新版本&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt upgrade &lt;span class="c1"&gt;#将所有已安装的软件包更新至最新版本，避免兼容性问题&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install python3 &lt;span class="c1"&gt;#安装Python3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install python3-pip &lt;span class="c1"&gt;#安装Python3的 pip 包管理器&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install python3-dev python3-venv build-essential &lt;span class="c1"&gt;#安装Python3的 开发工具 和 虚拟环境&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo chown -R &lt;span class="nv"&gt;$USER&lt;/span&gt;:&lt;span class="nv"&gt;$USER&lt;/span&gt; ~/.local &lt;span class="c1"&gt;#解决权限问题&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo rm /var/lib/apt/lists/lock
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo rm /var/cache/apt/archives/lock &lt;span class="c1"&gt;# 解决锁文件问题&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="centos--fedora--red-hat"&gt;CentOS / Fedora / Red Hat
+&lt;/h3&gt;&lt;h4 id="yum"&gt;yum
+&lt;/h4&gt;&lt;p&gt;对于早期的 CentOS / Fedora / Red Hat 系统，一般使用 yum 包管理器来安装 Python：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum update &lt;span class="c1"&gt;#刷新系统的软件包数据库，以获得最新版本&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum install epel-release &lt;span class="c1"&gt;# 安装 EPEL 源（可选）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum install python3 &lt;span class="c1"&gt;# 安装 Python3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum clean all
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum repolist &lt;span class="c1"&gt;# 清理并验证存储库配置&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="dnf"&gt;dnf
+&lt;/h4&gt;&lt;p&gt;对于较新的 CentOS / Fedora / Red Hat 系统，一般使用 dnf 包管理器来安装 Python：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf update &lt;span class="c1"&gt;# 刷新系统的软件包数据库，以获得最新版本&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf install python3 &lt;span class="c1"&gt;# 安装 Python3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf groupinstall &lt;span class="s2"&gt;&amp;#34;Development Tools&amp;#34;&lt;/span&gt; &lt;span class="c1"&gt;# 安装开发工具&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf install python3-pip &lt;span class="c1"&gt;# 安装 Python3 的 pip 包管理器&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="arch-linux"&gt;Arch Linux
+&lt;/h3&gt;&lt;p&gt;对于 Arch Linux 系统，一般使用 pacman 包管理器来安装 Python：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo pacman -Syu &lt;span class="c1"&gt;# 刷新系统的软件包数据库，以获得最新版本&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo pacman -S python python-pip &lt;span class="c1"&gt;# 安装 Python3 和 Python3 的 pip 包管理器&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="suse--opensuse"&gt;SUSE / openSUSE
+&lt;/h3&gt;&lt;p&gt;对于 SUSE / openSUSE 系统，一般使用 zypper 包管理器来安装 Python：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo zypper refresh &lt;span class="c1"&gt;# 刷新系统的软件包数据库，以获得最新版本&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo zypper install python3 python3-pip &lt;span class="c1"&gt;# 安装 Python3 和 Python3 的 pip 包管理器&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo zypper install python3-devel python3-virtualenv build-essentials &lt;span class="c1"&gt;# 安装 Python3 的开发工具和虚拟环境&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>

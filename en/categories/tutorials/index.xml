@@ -1,0 +1,710 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tutorials on Personal Blogs for Fernweh</title><link>https://blog.codeglimpse.top/en/categories/tutorials/</link><description>Recent content in Tutorials on Personal Blogs for Fernweh</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sun, 28 Sep 2025 16:20:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/en/categories/tutorials/index.xml" rel="self" type="application/rss+xml"/><item><title>How to Download and Install Python</title><link>https://blog.codeglimpse.top/en/p/python-install/</link><pubDate>Sun, 28 Sep 2025 16:20:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/p/python-install/</guid><description>&lt;img src="https://blog.codeglimpse.top/en/p/python-install/banner.jpg" alt="Featured image of post How to Download and Install Python" /&gt;&lt;h1 id="how-to-download-and-install-python"&gt;How to Download and Install Python
+&lt;/h1&gt;&lt;p&gt;Python is an interpreted, high-level and general-purpose programming language. Python’s design philosophy emphasizes
+code readability with its notable use of significant whitespace. This article will serve as an informative guide and
+give you a clear understanding of how to set up a Python environment.&lt;/p&gt;
+&lt;h2 id="windows"&gt;Windows
+&lt;/h2&gt;&lt;h3 id="download-python-installation-packages"&gt;Download Python Installation Packages
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="https://www.python.org/downloads/windows/" target="_blank" rel="noopener"
+&gt;Python for Windows&lt;/a&gt; provides various versions of Python installation packages
+for selection. Of course, considering that the speed of connecting to the Python official website in somewhere may be
+slow, I recommend using a mirror site to download the Python installation package.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a class="link" href="https://mirrors.aliyun.com/python-release/windows" target="_blank" rel="noopener"
+&gt;Alibaba Mirror Site&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://mirrors.ustc.edu.cn/python/" target="_blank" rel="noopener"
+&gt;USTC Mirror Site&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&amp;hellip;..&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;If you know of other mirror sites, please &lt;a class="link" href="mailto:libochen@codeglimpse.top" &gt;contact me&lt;/a&gt; to update them!&lt;/p&gt;
+&lt;h3 id="install-python"&gt;install Python
+&lt;/h3&gt;&lt;p&gt;Here are a few common installation methods for Python, you can choose the one that suits you according to your needs.&lt;/p&gt;
+&lt;h4 id="the-simplest-manual-installation"&gt;The Simplest Manual Installation
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;Run the installer and select the following two options:
+The first option installs Python with administrator privileges.
+The second option automatically adds Python to your system environment path (highly recommended).
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/1.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/1_hu_f4f49cd52bd194d9.png 480w, https://blog.codeglimpse.top/en/p/python-install/1_hu_d76b93e57f9064ed.png 1024w"
+loading="lazy"
+alt="Install Page"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Install Now&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Close&lt;/strong&gt; , Installation complete!
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/2.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/2_hu_4c105e39875b064c.png 480w, https://blog.codeglimpse.top/en/p/python-install/2_hu_e884941f78a09995.png 1024w"
+loading="lazy"
+alt="Install Complete"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="customize-installation"&gt;Customize installation
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;Run the installer, still recommended to select the following two options:
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/1.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/1_hu_f4f49cd52bd194d9.png 480w, https://blog.codeglimpse.top/en/p/python-install/1_hu_d76b93e57f9064ed.png 1024w"
+loading="lazy"
+alt="Install Page"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Customize installation&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Choose optional features as needed:
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/3.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/3_hu_2f19553966b84280.png 480w, https://blog.codeglimpse.top/en/p/python-install/3_hu_e33c702d7268a9f5.png 1024w"
+loading="lazy"
+alt="Optional Features"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;
+&lt;ul&gt;
+&lt;li&gt;Documentation: Documentation and help files for installing Python. Select this option only needed&lt;/li&gt;
+&lt;li&gt;pip: Python package management tool. Very important, must choose&lt;/li&gt;
+&lt;li&gt;tcl/tk and IDLE: tcl/tk and IDLE are two graphical user interfaces, IDLE is Integrated Development Environment and
+Learning，a python IDE that comes with it. However, we recommend using Pycharm as an IDE for learning.&lt;/li&gt;
+&lt;li&gt;Python test suite: Provides a set of test suites for testing Python interpreters and standard libraries. Although
+beginners generally do not need to use it, this kit is still very useful, it is recommended to choose it.&lt;/li&gt;
+&lt;li&gt;py launcher: Ensure user starts python using python commands in the command line&lt;/li&gt;
+&lt;li&gt;for all users（requires admin privileges）: Ask if choose &amp;lsquo;py launcher&amp;rsquo; for all users on the computer. Recommended
+to choose&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Next&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Choose advanced option as needed:
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/4.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/4_hu_5c30d0f6e8c1b4d3.png 480w, https://blog.codeglimpse.top/en/p/python-install/4_hu_a74ac4ce209f42e4.png 1024w"
+loading="lazy"
+alt="Advanced options"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;
+&lt;ul&gt;
+&lt;li&gt;Install Python 3.12 for all users: Generally has no effect on use, but still recommended to choose it&lt;/li&gt;
+&lt;li&gt;Associate files with Python (requires the &amp;lsquo;py&amp;rsquo; launcher): Enable the system to automatically associate Python with
+specific file types. When double click Python script files in File Explorer, the system will automatically use the
+Python interpreter to run these scripts. This can be chosen as needed, but usually the file will be associated
+with Pycharm later on&lt;/li&gt;
+&lt;li&gt;Create shortcuts for installed applications: Create desktop shortcuts. Generally, there is no need to choose&lt;/li&gt;
+&lt;li&gt;Add Python to environment variables: Selecting this option adds the path to the Python interpreter to the system&amp;rsquo;s
+environment variables, so that the Python interpreter can be run directly from the command line without having to
+enter the full path. Recommended to choose&lt;/li&gt;
+&lt;li&gt;Precompile standard library: Pre-compiled the Python standard library to improve the import speed of standard
+library modules. This can be chosen or not&lt;/li&gt;
+&lt;li&gt;Download debugging symbols: Debug symbols for developers and debuggers. Choose only need&lt;/li&gt;
+&lt;li&gt;Download debug binaries (requires VS 2017 or later): A binary file for debug versions for developers and
+debuggers. Choose only need&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Select the directory for installation&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Install&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Close&lt;/strong&gt; , Complete the installation
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/2.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/2_hu_4c105e39875b064c.png 480w, https://blog.codeglimpse.top/en/p/python-install/2_hu_e884941f78a09995.png 1024w"
+loading="lazy"
+alt="Install Complete"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="the-simplest-silent-installationautomatic-installation"&gt;The Simplest silent installation/automatic installation
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Find the installation package, right-click &lt;strong&gt;Properties&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Record the &lt;strong&gt;File Name&lt;/strong&gt; and the installation package path in the &lt;strong&gt;Location&lt;/strong&gt;.
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/5.png"
+width="403"
+height="540"
+srcset="https://blog.codeglimpse.top/en/p/python-install/5_hu_800c639d74df1bdb.png 480w, https://blog.codeglimpse.top/en/p/python-install/5_hu_fe772c5ff7d960cf.png 1024w"
+loading="lazy"
+alt="Properties"
+class="gallery-image"
+data-flex-grow="74"
+data-flex-basis="179px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Type &lt;code&gt;cmd&lt;/code&gt; in the bottom-left corner of the desktop to open the command prompt as an administrator
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/6.png"
+width="781"
+height="681"
+srcset="https://blog.codeglimpse.top/en/p/python-install/6_hu_e0c69f214929979b.png 480w, https://blog.codeglimpse.top/en/p/python-install/6_hu_47f37bf1d3f13915.png 1024w"
+loading="lazy"
+alt="cmd"
+class="gallery-image"
+data-flex-grow="114"
+data-flex-basis="275px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Enter the following commands in sequence:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bat" data-lang="bat"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;cd&lt;/span&gt; C:\Users\user\Desktop
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python-3.13.7-amd64.exe /quiet InstallAllUsers=1 PrependPath=1
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;Attention: &lt;br&gt;
+  Replace C:\Users\user\Desktop with the installation package path from Step 2.&lt;br&gt;
+  Replace python-3.13.7-amd64.exe with the filename from Step 2. (don&amp;rsquo;t forget the .exe)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src="https://blog.codeglimpse.top/en/p/python-install/7.png"
+width="976"
+height="510"
+srcset="https://blog.codeglimpse.top/en/p/python-install/7_hu_5b9019b91b2324bf.png 480w, https://blog.codeglimpse.top/en/p/python-install/7_hu_471650c200671600.png 1024w"
+loading="lazy"
+alt="install"
+class="gallery-image"
+data-flex-grow="191"
+data-flex-basis="459px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;After waiting a few minutes, check in the Start menu to see if the installation is complete.
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/8.png"
+width="754"
+height="694"
+srcset="https://blog.codeglimpse.top/en/p/python-install/8_hu_bf33e7da52b99614.png 480w, https://blog.codeglimpse.top/en/p/python-install/8_hu_11bd7f9731c5682c.png 1024w"
+loading="lazy"
+alt="check"
+class="gallery-image"
+data-flex-grow="108"
+data-flex-basis="260px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="custom-script-installation"&gt;Custom Script Installation
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Create a new text file and name it as &lt;code&gt;unattend.xml&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Fill in the content:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;span class="lnt"&gt;24
+&lt;/span&gt;&lt;span class="lnt"&gt;25
+&lt;/span&gt;&lt;span class="lnt"&gt;26
+&lt;/span&gt;&lt;span class="lnt"&gt;27
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Options&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;InstallAllUsers&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;TargetDir&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;C:\Python313&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;DefaultAllUsersTargetDir&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;C:\Python313&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;DefaultJustForMeTargetDir&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;C:\Python313&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;DefaultCustomTargetDir&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;C:\Python313&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;AssociateFiles&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;CompileAll&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;PrependPath&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;AppendPath&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Shortcuts&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_doc&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_debug&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_dev&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_exe&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_launcher&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;InstallLauncherAllUsers&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_lib&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_pip&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_symbols&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_tcltk&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_test&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_tools&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;LauncherOnly&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;SimpleInstall&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;SimpleInstallDescription&amp;#34;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&amp;lt;/Option&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/Options&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;strong&gt;Name&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;Description&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;Default&lt;/strong&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;InstallAllUsers&lt;/td&gt;
+&lt;td&gt;Perform a system-wide installation.&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;TargetDir&lt;/td&gt;
+&lt;td&gt;The installation directory&lt;/td&gt;
+&lt;td&gt;Selected based on InstallAllUsers&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DefaultAllUsersTargetDir&lt;/td&gt;
+&lt;td&gt;The default installation directory for all-user installs&lt;/td&gt;
+&lt;td&gt;%ProgramFiles%\Python X.Y or %ProgramFiles(x86)%\Python X.Y&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DefaultJustForMeTargetDir&lt;/td&gt;
+&lt;td&gt;The default install directory for just-for-me installs&lt;/td&gt;
+&lt;td&gt;%LocalAppData%\Programs\Python\PythonXY or %LocalAppData%\Programs\PythonXY-32 or %LocalAppData%\Programs\PythonXY-64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DefaultCustomTargetDir&lt;/td&gt;
+&lt;td&gt;The default custom install directory displayed in the UI&lt;/td&gt;
+&lt;td&gt;(empty)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;AssociateFiles&lt;/td&gt;
+&lt;td&gt;Create file associations if the launcher is also installed&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CompileAll&lt;/td&gt;
+&lt;td&gt;Compile all .py files to .pyc&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;PrependPath&lt;/td&gt;
+&lt;td&gt;Prepend install and Scripts directories to PATH and add .PY to PATHEXT&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;AppendPath&lt;/td&gt;
+&lt;td&gt;Append install and Scripts directories to PATH and add .PY to PATHEXT&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Shortcuts&lt;/td&gt;
+&lt;td&gt;Create shortcuts for the interpreter, documentation and IDLE if installed&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_doc&lt;/td&gt;
+&lt;td&gt;Install Python manual&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_debug&lt;/td&gt;
+&lt;td&gt;Install debug binaries&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_dev&lt;/td&gt;
+&lt;td&gt;Install developer headers and libraries. Omitting this may lead to an unusable installation.&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_exe&lt;/td&gt;
+&lt;td&gt;Install python.exe and related files. Omitting this may lead to an unusable installation.&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_launcher&lt;/td&gt;
+&lt;td&gt;Install Python Launcher for Windows&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;InstallLauncherAllUsers&lt;/td&gt;
+&lt;td&gt;Installs the launcher for all users. Also requires Include_launcher to be set to 1&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_lib&lt;/td&gt;
+&lt;td&gt;Install standard library and extension modules. Omitting this may lead to an unusable installation.&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_pip&lt;/td&gt;
+&lt;td&gt;Install bundled pip and setuptools&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_symbols&lt;/td&gt;
+&lt;td&gt;Install debugging symbols (*.pdb)&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_tcltk&lt;/td&gt;
+&lt;td&gt;Install Tcl/Tk support and IDLE&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_test&lt;/td&gt;
+&lt;td&gt;Install standard library test suite&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_tools&lt;/td&gt;
+&lt;td&gt;Install utility scripts&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;LauncherOnly&lt;/td&gt;
+&lt;td&gt;Only installs the launcher. This will override most other options.&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SimpleInstall&lt;/td&gt;
+&lt;td&gt;Disable most install UI&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SimpleInstallDescription&lt;/td&gt;
+&lt;td&gt;A custom message to display when the simplified install UI is used&lt;/td&gt;
+&lt;td&gt;(empty)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre&gt;&lt;code&gt; Usually, the value is typically 0 to disable a feature, and 1 to enable a feature or path.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Run the installation command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bat" data-lang="bat"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;cd&lt;/span&gt; C:\Users\user\Desktop
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python-3.13.7-amd64.exe /quiet .\unattend.xml
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Verify Installation:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bat" data-lang="bat"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python -V
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="macos"&gt;MacOS
+&lt;/h2&gt;&lt;p&gt;For macOS, we need to check whether the system has a pre-installed python environment.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If you&amp;rsquo;re using macOS Monterey 12.2 or earlier, you may already have Python 2.7 pre-installed. However, the latest version has been upgraded to Python 3, which has significant improvements and improved security compared to Python 2.7. Additionally, Python 2.7 is outdated and no longer officially supported&lt;/li&gt;
+&lt;li&gt;If you are using macOS Monterey 12.3 or later, Apple has completely removed Python 2.7 and will need to install Python manually&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;To check if your macOS has Python installed, open Terminal and do something like this:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Run &lt;code&gt;python --version&lt;/code&gt; If the version is 2.7.*, Python 2.7 is pre-installed&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;python3 --version&lt;/code&gt; If the version is 3.x.*, Python 3 is pre-installed&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Note：&lt;/strong&gt;
+Recent versions of macOS include a &lt;strong&gt;python3&lt;/strong&gt; command in &lt;code&gt;/usr/bin/python3&lt;/code&gt; that links to a usually older and incomplete version of Python provided by and for use by the Apple development tools, &lt;strong&gt;Xcode&lt;/strong&gt; or the &lt;strong&gt;Command Line Tools for Xcode&lt;/strong&gt;&lt;br&gt;
+You should never modify or attempt to delete this installation, as it is Apple-controlled and is used by Apple-provided or third-party software&lt;br&gt;
+If you choose to install a newer Python version from &lt;code&gt;python.org&lt;/code&gt;, you will have two different but functional Python installations on your computer that can co-exist&lt;br&gt;
+The default installer options should ensure that its &lt;strong&gt;python3&lt;/strong&gt; will be used instead of the system &lt;strong&gt;python3&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Here are a few common installation methods for Python, and you can choose the one that suits you according to your needs.&lt;/p&gt;
+&lt;h3 id="install-python-through-the-official-installer"&gt;Install Python through the official installer
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Download the Python installer:
+Visit the macOS download address on the Python official website: &lt;a class="link" href="https://www.python.org/downloads/macos/" target="_blank" rel="noopener"
+&gt;Python for macOS&lt;/a&gt;
+Alternatively, you can download the installer by visiting the mirror website:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://mirrors.aliyun.com/python-release/macos" target="_blank" rel="noopener"
+&gt;Alibaba Mirror Site&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://mirrors.ustc.edu.cn/python/" target="_blank" rel="noopener"
+&gt;USTC Mirror Site&lt;/a&gt;、&lt;/li&gt;
+&lt;li&gt;&amp;hellip;..&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If you know of other mirror sites, please &lt;a class="link" href="mailto:libochen@codeglimpse.top" &gt;contact me&lt;/a&gt; to update them!&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;After the installer is downloaded, open the Finder - find the .pkg file in the Downloads folder – double-click to open it to start the installation
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/9.png"
+width="800"
+height="595"
+srcset="https://blog.codeglimpse.top/en/p/python-install/9_hu_2acd1a3233fb3d35.png 480w, https://blog.codeglimpse.top/en/p/python-install/9_hu_33af1a1b94d1c889.png 1024w"
+loading="lazy"
+alt="Installer Page"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="322px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Clicking on the &lt;strong&gt;Continue&lt;/strong&gt; button brings up the &lt;strong&gt;Read Me&lt;/strong&gt; for this installer. Besides other important information, the &lt;strong&gt;Read Me&lt;/strong&gt; documents which Python version is going to be installed and on what versions of macOS it is supported
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/10.png"
+width="800"
+height="608"
+srcset="https://blog.codeglimpse.top/en/p/python-install/10_hu_c5095a7c53ab8df7.png 480w, https://blog.codeglimpse.top/en/p/python-install/10_hu_277f0424c2cd71b.png 1024w"
+loading="lazy"
+alt="Important Information"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="315px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Clicking on &lt;strong&gt;Continue&lt;/strong&gt; proceeds to display the license for Python and for other included software. You will then need to &lt;strong&gt;Agree&lt;/strong&gt; to the license terms before proceeding to the next step
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/11.png"
+width="800"
+height="595"
+srcset="https://blog.codeglimpse.top/en/p/python-install/11_hu_f341c3f22e1e1527.png 480w, https://blog.codeglimpse.top/en/p/python-install/11_hu_89ed4a946b908fb.png 1024w"
+loading="lazy"
+alt="Software License"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="322px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;After the license terms are accepted, the next step is the &lt;strong&gt;Installation Type&lt;/strong&gt; display. For most uses, the standard set of installation operations is appropriate. If you need to customize the installation, please refer to the introduction of &lt;a class="link" href="#customize-installation" &gt;Windows customize installation&lt;/a&gt;
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/12.png"
+width="800"
+height="595"
+srcset="https://blog.codeglimpse.top/en/p/python-install/12_hu_2dd4ece4cdfa927a.png 480w, https://blog.codeglimpse.top/en/p/python-install/12_hu_8efe27ed4896220f.png 1024w"
+loading="lazy"
+alt="Installation Type"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="322px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In either case, clicking &lt;strong&gt;Install&lt;/strong&gt; will begin the install process by asking permission to install new software. A macOS user name with &lt;code&gt;Administrator&lt;/code&gt; privilege is needed as the installed Python will be available to all users of the Mac
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/13.png"
+width="800"
+height="608"
+srcset="https://blog.codeglimpse.top/en/p/python-install/13_hu_ca051cb9e5376ab4.png 480w, https://blog.codeglimpse.top/en/p/python-install/13_hu_ce216795ecf0b715.png 1024w"
+loading="lazy"
+alt="Installation Completed"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="315px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Locate and double-click the &lt;strong&gt;Install Certificates.command&lt;/strong&gt; icon in the folder that pops up or find the file in &lt;code&gt;/Applications/Python 3.13/&lt;/code&gt; and double-click to complete the installation
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/14.png"
+width="800"
+height="483"
+srcset="https://blog.codeglimpse.top/en/p/python-install/14_hu_120abba1ce404920.png 480w, https://blog.codeglimpse.top/en/p/python-install/14_hu_c75ca8fe5f8fda21.png 1024w"
+loading="lazy"
+alt="Install Certificate"
+class="gallery-image"
+data-flex-grow="165"
+data-flex-basis="397px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;This will open a temporary &lt;strong&gt;Terminal&lt;/strong&gt; shell window that will use the new Python to download and install SSL root certificates for its use
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/15.png"
+width="800"
+height="691"
+srcset="https://blog.codeglimpse.top/en/p/python-install/15_hu_ad8f3de18224ca50.png 480w, https://blog.codeglimpse.top/en/p/python-install/15_hu_2a7bf04bc526607f.png 1024w"
+loading="lazy"
+alt="Terminal Command"
+class="gallery-image"
+data-flex-grow="115"
+data-flex-basis="277px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If &lt;code&gt;Successfully installed certifi&lt;/code&gt; and &lt;code&gt;update complete&lt;/code&gt; appears in the terminal window, the installation is complete. Close this terminal window and the installer window&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="install-python-with-homebrew"&gt;Install Python with Homebrew
+&lt;/h3&gt;&lt;p&gt;Another way to install Python on macOS is to use Homebrew. Homebrew is a third-party package manager for macOS that allows for quick application installation using Terminal, providing macOS with a Linux-like package management experience.
+Interestingly, Homebrew requires support for Python to work properly. Therefore, installing Homebrew requires available Python support, which is the older version of Python used by Apple&amp;rsquo;s system developer tools mentioned earlier.
+To install Python on macOS using Homebrew, follow these steps:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Open the &lt;strong&gt;Terminal&lt;/strong&gt; application – Run the &lt;code&gt;brew --version&lt;/code&gt; command to check if Homebrew is installed:
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/16.png"
+width="1810"
+height="918"
+srcset="https://blog.codeglimpse.top/en/p/python-install/16_hu_fd48b840bb0c90da.png 480w, https://blog.codeglimpse.top/en/p/python-install/16_hu_b2a6981ecb6af0c6.png 1024w"
+loading="lazy"
+alt="Terminal"
+class="gallery-image"
+data-flex-grow="197"
+data-flex-basis="473px"
+&gt;&lt;/li&gt;
+&lt;li&gt;If Homebrew is already installed, skip straight to step 4
+If Homebrew is not installed, run the following command in Terminal to install Homebrew:
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/bin/bash -c &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;img src="https://blog.codeglimpse.top/en/p/python-install/17.png"
+width="1200"
+height="609"
+srcset="https://blog.codeglimpse.top/en/p/python-install/17_hu_bc6882e9ad6e6d16.png 480w, https://blog.codeglimpse.top/en/p/python-install/17_hu_a8cfe786f794701e.png 1024w"
+loading="lazy"
+alt="Install Homebrew"
+class="gallery-image"
+data-flex-grow="197"
+data-flex-basis="472px"
+&gt;&lt;/li&gt;
+&lt;li&gt;Once you have Homebrew installed, you can use it to install Python:
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/18.png"
+width="1000"
+height="508"
+srcset="https://blog.codeglimpse.top/en/p/python-install/18_hu_5dd1f87d6b34ba85.png 480w, https://blog.codeglimpse.top/en/p/python-install/18_hu_31037497c0461639.png 1024w"
+loading="lazy"
+alt="Install Python"
+class="gallery-image"
+data-flex-grow="196"
+data-flex-basis="472px"
+&gt;&lt;/li&gt;
+&lt;li&gt;Run Brew Link Python or Brew Link python@3. XX (replace XX with the correct version number) - Then restart the Terminal application to make sure the application is working properly
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/19.png"
+width="1810"
+height="918"
+srcset="https://blog.codeglimpse.top/en/p/python-install/19_hu_a18af954793d8aba.png 480w, https://blog.codeglimpse.top/en/p/python-install/19_hu_c11cb16f1cdd5526.png 1024w"
+loading="lazy"
+alt="Link Python"
+class="gallery-image"
+data-flex-grow="197"
+data-flex-basis="473px"
+&gt;&lt;/li&gt;
+&lt;li&gt;Once the installation is complete, you can run the &lt;code&gt;python -–version&lt;/code&gt; or &lt;code&gt;python3 –-version&lt;/code&gt; command to verify the installation&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="linux"&gt;Linux
+&lt;/h2&gt;&lt;p&gt;The simplest way to install Python on a Linux system is to use the package manager. Below are methods for installing Python with different package managers:&lt;/p&gt;
+&lt;h3 id="debian--ubuntu--mint"&gt;Debian / Ubuntu / Mint
+&lt;/h3&gt;&lt;p&gt;For Debian / Ubuntu / Mint systems, Python is typically installed using the apt package manager:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt update &lt;span class="c1"&gt;# Refresh the system&amp;#39;s package database to ensure you get the latest versions&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt upgrade &lt;span class="c1"&gt;# Update all installed packages to their latest versions to avoid compatibility issues&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install python3 &lt;span class="c1"&gt;# Install Python 3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install python3-pip &lt;span class="c1"&gt;# Install Python 3&amp;#39;s pip package manager&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install python3-dev python3-venv build-essential &lt;span class="c1"&gt;# Install Python3 development tools and virtual environment&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo chown -R &lt;span class="nv"&gt;$USER&lt;/span&gt;:&lt;span class="nv"&gt;$USER&lt;/span&gt; ~/.local &lt;span class="c1"&gt;# Resolve permission issues&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo rm /var/lib/apt/lists/lock
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo rm /var/cache/apt/archives/lock &lt;span class="c1"&gt;# Resolve lock file issues&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="centos--fedora--red-hat"&gt;CentOS / Fedora / Red Hat
+&lt;/h3&gt;&lt;h4 id="yum"&gt;yum
+&lt;/h4&gt;&lt;p&gt;For older CentOS / Fedora / Red Hat systems, Python is typically installed using the yum package manager:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum update &lt;span class="c1"&gt;# Refresh the system&amp;#39;s package database for the latest versions&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum install epel-release &lt;span class="c1"&gt;# Install the EPEL repository (optional)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum install python3 &lt;span class="c1"&gt;# Install Python3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum clean all
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum repolist &lt;span class="c1"&gt;# Clean and validate repository configuration&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="dnf"&gt;dnf
+&lt;/h4&gt;&lt;p&gt;For newer CentOS / Fedora / Red Hat systems, Python is typically installed using the dnf package manager:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf update &lt;span class="c1"&gt;# Refresh the system&amp;#39;s package database to obtain the latest versions&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf install python3 &lt;span class="c1"&gt;# Install Python3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf groupinstall “Development Tools” &lt;span class="c1"&gt;# Install development tools&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf install python3-pip &lt;span class="c1"&gt;# Install Python3&amp;#39;s pip package manager&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="arch-linux"&gt;Arch Linux
+&lt;/h3&gt;&lt;p&gt;For Arch Linux systems, Python is typically installed using the pacman package manager:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo pacman -Syu &lt;span class="c1"&gt;# Refresh the system&amp;#39;s package database to obtain the latest versions&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo pacman -S python python-pip &lt;span class="c1"&gt;# Install Python3 and the pip package manager for Python3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="suse--opensuse"&gt;SUSE / openSUSE
+&lt;/h3&gt;&lt;p&gt;For SUSE / openSUSE systems, Python is typically installed using the zypper package manager:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo zypper refresh &lt;span class="c1"&gt;# Refresh the system&amp;#39;s package database to obtain the latest versions&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo zypper install python3 python3-pip &lt;span class="c1"&gt;# Install Python 3 and the pip package manager for Python 3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo zypper install python3-devel python3-virtualenv build-essentials &lt;span class="c1"&gt;# Install Python 3 development tools and virtual environments&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>

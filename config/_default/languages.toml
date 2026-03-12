@@ -49,28 +49,28 @@ weight = 2
         [[en.menu.main]]
             identifier = "home"
             name = "Home"
-            url = "/"
+            url = "/en/"
             weight = 1
             [en.menu.main.params]
                 icon = "home"
         [[en.menu.main]]
             identifier = "archives"
             name = "Archives"
-            url = "/archives/"
+            url = "/en/archives/"
             weight = 2
             [en.menu.main.params]
                 icon = "archives"
         [[en.menu.main]]
             identifier = "search"
             name = "Search"
-            url = "/search/"
+            url = "/en/search/"
             weight = 3
             [en.menu.main.params]
                 icon = "search"
         [[en.menu.main]]
             identifier = "links"
             name = "Links"
-            url = "/links/"
+            url = "/en/links/"
             weight = 4
             [en.menu.main.params]
                 icon = "link"

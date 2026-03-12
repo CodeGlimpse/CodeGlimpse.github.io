@@ -16,3 +16,10 @@ disqusShortname = ""
 
 [pagination]
 pagerSize = 5
+
+[outputs]
+    home = ["HTML", "RSS", "JSON"]
+    page = ["HTML"]
+    section = ["HTML", "RSS"]
+    taxonomy = ["HTML", "RSS"]
+    term = ["HTML", "RSS"]

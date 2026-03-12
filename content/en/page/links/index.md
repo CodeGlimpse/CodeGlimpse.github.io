@@ -9,11 +9,6 @@ links:
     description: Email is the most widely used communication tool.
     website: mailto:libochen@codeglimpse.top
     image: mail.png
-menu:
-    main: 
-        weight: 4
-        params:
-            icon: link
 
 comments: false
 ---

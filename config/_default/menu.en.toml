@@ -30,6 +30,14 @@
     [main.params]
         icon = "link"
 
+[[main]]
+    identifier = "tools"
+    name = "Tools"
+    url = "/en/tools/"
+    weight = 5
+    [main.params]
+        icon = "tool"
+
 [[social]]
     identifier = "github"
     name = "GitHub"
@@ -40,6 +48,6 @@
 [[social]]
     identifier = "email"
     name = "Email"
-    url = "/en/links/"
+    url = "mailto:libochen@codeglimpse.top"
     [social.params]
         icon = "mail"

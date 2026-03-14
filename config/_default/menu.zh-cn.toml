@@ -30,6 +30,14 @@
     [main.params]
         icon = "link"
 
+[[main]]
+    identifier = "tools"
+    name = "工具"
+    url = "/tools/"
+    weight = 5
+    [main.params]
+        icon = "tool"
+
 [[social]]
     identifier = "github"
     name = "GitHub"

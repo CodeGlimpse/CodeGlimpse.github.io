@@ -1,0 +1,6 @@
+<div class="tool-wrapper" id="tool-{{ .Get "id" }}" data-lang="{{ .Page.Language.Lang }}">
+    <div class="tool-loader">加载中...</div>
+</div>
+
+{{ $js := resources.Get (printf "js/tools/%s.js" (.Get "id")) | js.Build }}
+<script src="{{ $js.RelPermalink }}" defer></script>

@@ -1,3 +1,73 @@
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+
+    .tool-card {
+        background: var(--card-background);
+        border-radius: var(--card-border-radius);
+        padding: 2rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-decoration: none;
+        color: inherit;
+
+        &:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-l2);
+            border-color: var(--accent-color);
+        }
+
+        .tool-info {
+            .tool-header {
+                display: flex;
+                align-items: center;
+                margin-bottom: 1.5rem;
+                color: var(--accent-color);
+
+                svg {
+                    width: 24px;
+                    height: 24px;
+                    margin-right: 1rem;
+                }
+
+                .tool-title {
+                    margin: 0;
+                    font-size: 2rem;
+                    font-weight: bold;
+                    color: var(--card-text-color-main);
+                }
+            }
+
+            .tool-desc {
+                font-size: 1.4rem;
+                color: var(--card-text-color-tertiary);
+                line-height: 1.6;
+                margin-bottom: 2rem;
+            }
+        }
+
+        .tool-action {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 1.4rem;
+
+            svg {
+                width: 18px;
+                height: 18px;
+                margin-left: 0.5rem;
+            }
+        }
+    }
+}
+
 .tool-wrapper {
     width: 80%;
     margin: 2rem 10%;

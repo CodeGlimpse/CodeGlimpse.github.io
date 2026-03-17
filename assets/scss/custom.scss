@@ -1,3 +1,28 @@
+/** 
+ * Custom variables
+ */
+:root {
+    --primary-color: #007bff;
+    --primary-color-rgb: 0, 123, 255;
+
+    --content-bg: #ffffff;
+    --content-color: #212529;
+    --content-h-color: #343a40;
+    --content-border-color: #dee2e6;
+
+    --border-radius: 0.75rem;
+}
+
+[data-scheme="dark"] {
+    --primary-color: #0088ff;
+    --primary-color-rgb: 0, 136, 255;
+
+    --content-bg: #1a1a1a;
+    --content-color: #d8d8d8;
+    --content-h-color: #c2c2c2;
+    --content-border-color: #3a3a3a;
+}
+
 /*
     You can add your own custom styles here.
 */

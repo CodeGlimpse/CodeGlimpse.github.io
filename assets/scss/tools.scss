@@ -1,8 +1,52 @@
+.search-wrapper {
+    position: relative;
+
+    #tool-search {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 5rem;
+        border-radius: var(--border-radius);
+        border: 1px solid var(--content-border-color);
+        background-color: var(--content-bg);
+        color: var(--content-color);
+        font-size: 2rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+
+        &::placeholder {
+            color: var(--content-h-color);
+            opacity: 0.5;
+        }
+
+        &:focus {
+            outline: none;
+            transform: translateY(-1px);
+        }
+    }
+
+    .icon-tabler-search {
+        position: absolute;
+        left: 1.2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--content-h-color);
+        width: 20px;
+        height: 20px;
+        pointer-events: none;
+        transition: color 0.3s;
+    }
+
+}
+
+.search-divider {
+    border: none;
+    border-top: 1.5px solid var(--content-border-color);
+    margin: 1px 0;
+}
+
 .tools-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 2rem;
-    padding: 2rem 0;
 
     .tool-card {
         background: var(--card-background);

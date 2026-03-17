@@ -8,6 +8,17 @@
     </div>
 </header>
 
+<div class="search-wrapper">
+    <input type="search" id="tool-search" placeholder="搜索工具...">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-search">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <circle cx="10" cy="10" r="7"></circle>
+        <line x1="21" y1="21" x2="15" y2="15"></line>
+    </svg>
+</div>
+
+<hr class="search-divider">
+
 <div class="tools-grid">
     {{ range .Pages }}
     <a href="{{ .RelPermalink }}" class="tool-card">
@@ -35,4 +46,6 @@
 <div class="article-content">
     {{ .Content }}
 </div>
+{{ $searchJS := resources.Get "js/tools/search.js" | resources.Minify }}
+<script src="{{ $searchJS.RelPermalink }}" defer></script>
 {{ end }}

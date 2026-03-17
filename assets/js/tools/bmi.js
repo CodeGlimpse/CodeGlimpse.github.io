@@ -34,6 +34,53 @@
     const t = i18n[lang] || i18n['en'];
 
     container.innerHTML = `
+        <style>
+            #tool-bmi .tool-container { display: flex; flex-direction: column; gap: 1rem; max-width: 400px; margin: 0 auto; }
+            #tool-bmi .input-group { display: flex; flex-direction: column; gap: 0.5rem; }
+            #tool-bmi .input-group label { font-weight: bold; font-size: 1.8rem; color: var(--card-text-color-main); }
+            #tool-bmi .input-group input {
+                padding: 1.5rem;
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+                background: var(--body-background);
+                color: var(--card-text-color-main);
+                font-size: 1.2rem;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+            #tool-bmi .input-group input:focus { border-color: var(--accent-color); }
+            #tool-bmi .btn-calc {
+                margin-top: 1rem;
+                padding: 0.8rem;
+                background: var(--accent-color);
+                color: #fff;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-weight: bold;
+                font-size: 2rem;
+                transition: opacity 0.2s;
+            }
+            #tool-bmi .btn-calc:hover { opacity: 0.9; }
+            #tool-bmi .result-box {
+                margin-top: 1rem;
+                padding: 1.5rem;
+                text-align: center;
+                border-radius: 8px;
+                background: var(--body-background);
+                border: 1px dashed var(--border-color);
+            }
+            #tool-bmi .bmi-value { font-size: 2rem; font-weight: bold; display: block; color: var(--accent-color); }
+            #tool-bmi .bmi-status {
+                display: inline-block;
+                margin-top: 0.8rem;
+                padding: 0.3rem 1.2rem;
+                border-radius: 20px;
+                color: #fff;
+                font-size: 1.5rem;
+                font-weight: bold;
+            }
+        </style>
         <div class="tool-container">
             <div class="input-group">
                 <label>${t.labelHeight}</label>

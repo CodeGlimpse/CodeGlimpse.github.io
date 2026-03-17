@@ -6,7 +6,7 @@ title = "Fernweh的个人博客"
 contentDir = "content/zh-cn"
 weight = 1
     [zh-cn.params.sidebar]
-        subtitle = "我的数字花园 🌱 - 基于 GitHub Pages 搭建的博客与文档。欢迎分享想法！"
+        subtitle = "我的数字花园 🌱 - 基于 GitHub Pages 搭建的博客网站。欢迎分享想法！"
 
 [en]
 languageName = "English"
@@ -15,4 +15,4 @@ title = "Personal Blogs for Fernweh"
 contentDir = "content/en"
 weight = 2
     [en.params.sidebar]
-        subtitle = "My digital garden 🌱 - A blog and docs built with GitHub Pages. Thoughts welcome!"
+        subtitle = "My digital garden 🌱 - A blog website built with GitHub Pages. Thoughts welcome!"

@@ -3,8 +3,10 @@ title: "How to Completely Uninstall OpenClaw"
 date: 2026-03-18T17:22:00+08:00
 draft: false
 description: "This article provides detailed steps and automated scripts for completely uninstalling OpenClaw and its related components on Windows, Linux, and macOS."
-categories: ["Tutorials"]
-tags: ["OpenClaw", "Uninstall", "Cleanup"]
+categories:
+    - Tutorials
+tags:
+    - OpenClaw
 ---
 
 OpenClaw, a recently popular AI agent, is very convenient to install and use. However, recent news has also revealed that this tool poses significant security risks and may not be suitable for enterprise environments or computers containing personal privacy. Nevertheless, due to the unique installation method of OpenClaw, it may not be easy to uninstall it. This article will provide a detailed guide to teach you how to uninstall OpenClaw.

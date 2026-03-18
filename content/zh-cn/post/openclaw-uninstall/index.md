@@ -3,8 +3,10 @@ title: "如何彻底卸载 OpenClaw 小龙虾"
 date: 2026-03-18T17:22:00+08:00
 draft: false
 description: "本文提供了在 Windows、Linux 和 macOS 系统上彻底卸载 OpenClaw 的详细步骤和自动化脚本。"
-categories: ["教程"]
-tags: ["OpenClaw", "卸载", "清理"]
+categories:
+    - Tutorials
+tags:
+    - OpenClaw
 ---
 
 OpenClaw 小龙虾，一个最近爆火的AI代理，它的安装和使用都非常方便。然而，在最近的新闻中我们同时也发现，这款工具有很大的安全风险，可能并不适合企业环境或者包含个人隐私的计算机中。但是，由于OpenClaw 小龙虾的安装方式与常规软件并不相同，所以我们可能并不是很轻易地就可以将其卸载，本文将提供详细的操作指南来教会大家卸载小龙虾。

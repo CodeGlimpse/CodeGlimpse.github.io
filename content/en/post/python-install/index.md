@@ -3,7 +3,6 @@ title: How to Download and Install Python
 description: One-stop guide to multiple Python installation methods on Windows, macOS, and Linux
 slug: python-install
 date: 2025-09-28 16:20:00+0800
-image: banner.jpg
 categories:
   - Tutorials
 tags:

@@ -14,9 +14,11 @@ param(
     [switch]$Silent  # Silent mode
 )
 
-# Set console encoding
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-[Console]::InputEncoding = [System.Text.Encoding]::UTF8
+# Set console encoding only if running in an interactive session
+if ($Host.UI.RawUI) {
+    [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+    [Console]::InputEncoding = [System.Text.Encoding]::UTF8
+}
 
 $ErrorActionPreference = "Continue"
 
@@ -58,10 +60,10 @@ function Find-NodePath {
     # Get all user profiles from C:\Users, ignore common non-user dirs
     $userDirs = Get-ChildItem -Path (Join-Path $env:SystemDrive 'Users') -Directory -Exclude 'Public', 'Default', 'All Users' -ErrorAction SilentlyContinue
     foreach ($userDir in $userDirs) {
-        # Common paths where node/npm might be found
+        # Use parentheses to ensure each Join-Path is evaluated independently
         $nodePaths = @(
-            Join-Path $userDir.FullName 'AppData\Roaming\npm',
-            Join-Path $userDir.FullName 'AppData\Local\Programs\nodejs'
+            (Join-Path $userDir.FullName 'AppData\Roaming\npm'),
+            (Join-Path $userDir.FullName 'AppData\Local\Programs\nodejs')
         )
         foreach ($path in $nodePaths) {
             $nodeExe = Join-Path $path 'node.exe'

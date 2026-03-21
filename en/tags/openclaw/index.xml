@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>OpenClaw on Personal Blogs for Fernweh</title><link>https://blog.codeglimpse.top/en/tags/openclaw/</link><description>Recent content in OpenClaw on Personal Blogs for Fernweh</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Wed, 18 Mar 2026 17:22:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/en/tags/openclaw/index.xml" rel="self" type="application/rss+xml"/><item><title>How to Completely Uninstall OpenClaw</title><link>https://blog.codeglimpse.top/en/p/how-to-completely-uninstall-openclaw/</link><pubDate>Wed, 18 Mar 2026 17:22:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/p/how-to-completely-uninstall-openclaw/</guid><description>&lt;p&gt;OpenClaw, a recently popular AI agent, is very convenient to install and use. However, recent news has also revealed that this tool poses significant security risks and may not be suitable for enterprise environments or computers containing personal privacy. Nevertheless, due to the unique installation method of OpenClaw, it may not be easy to uninstall it. This article will provide a detailed guide to teach you how to uninstall OpenClaw.&lt;/p&gt;
+&lt;p&gt;We will cover manual removal steps and provide recommended automated cleanup scripts for Windows, Linux, and macOS.&lt;/p&gt;
+&lt;h2 id="why-is-a-complete-uninstall-necessary"&gt;Why is a Complete Uninstall Necessary?
+&lt;/h2&gt;&lt;p&gt;In some cases, a simple &lt;code&gt;npm uninstall&lt;/code&gt; may not be enough to remove all traces of OpenClaw. Remnants can include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Lingering configuration files&lt;/li&gt;
+&lt;li&gt;Active background processes&lt;/li&gt;
+&lt;li&gt;Caches stored in various user directories&lt;/li&gt;
+&lt;li&gt;Paths added to environment variables&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="automated-uninstallation-recommended"&gt;Automated Uninstallation (Recommended)
+&lt;/h2&gt;&lt;p&gt;To streamline the process, we have developed automated cleanup scripts for each platform. These scripts are designed to detect your Node.js environment, terminate any related processes, and remove the global packages.&lt;/p&gt;
+&lt;h3 id="windows-powershell"&gt;Windows (PowerShell)
+&lt;/h3&gt;&lt;p&gt;Open PowerShell with administrator privileges and execute the following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;irm &lt;/span&gt;&lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="p"&gt;//&lt;/span&gt;&lt;span class="n"&gt;blog&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;codeglimpse&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;top&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;openclaw-uninstall&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="n"&gt;CleanupOpenClawForWindows&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;ps1&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;iex
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="linux-bash"&gt;Linux (Bash)
+&lt;/h3&gt;&lt;p&gt;Open your terminal and run the following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -sSL https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForLinux.sh &lt;span class="p"&gt;|&lt;/span&gt; bash
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="macos-bash"&gt;macOS (Bash)
+&lt;/h3&gt;&lt;p&gt;Open your terminal and run the following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -sSL https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForMacOS.sh &lt;span class="p"&gt;|&lt;/span&gt; bash
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="manual-uninstallation-guide"&gt;Manual Uninstallation Guide
+&lt;/h2&gt;&lt;p&gt;If you prefer to handle the uninstallation manually, please follow the steps below:&lt;/p&gt;
+&lt;h3 id="1-terminate-running-processes"&gt;1. Terminate Running Processes
+&lt;/h3&gt;&lt;p&gt;Ensure no OpenClaw-related Node.js processes are active. You can use Task Manager on Windows or the &lt;code&gt;top&lt;/code&gt;/&lt;code&gt;ps&lt;/code&gt; commands on Linux and macOS to find and terminate them.&lt;/p&gt;
+&lt;h3 id="2-uninstall-global-packages"&gt;2. Uninstall Global Packages
+&lt;/h3&gt;&lt;p&gt;Use your preferred package manager to execute the uninstall command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Using npm&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm uninstall -g openclaw openclaw-cn
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Using pnpm&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm uninstall -g openclaw openclaw-cn
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="3-clean-up-residual-files"&gt;3. Clean Up Residual Files
+&lt;/h3&gt;&lt;p&gt;Check the following locations and delete any folders related to OpenClaw:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Windows&lt;/strong&gt;: &lt;code&gt;C:\Users\&amp;lt;YourUsername&amp;gt;\AppData\Roaming\npm\node_modules\openclaw&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Linux/macOS&lt;/strong&gt;: &lt;code&gt;/usr/local/lib/node_modules/openclaw&lt;/code&gt; or &lt;code&gt;~/.npm-global/lib/node_modules/openclaw&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="frequently-asked-questions"&gt;Frequently Asked Questions
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Q: I&amp;rsquo;m getting a &amp;ldquo;permission denied&amp;rdquo; error when running the script.&lt;/strong&gt;
+&lt;strong&gt;A:&lt;/strong&gt; On Windows, ensure you are running PowerShell with administrator privileges. On Linux and macOS, you may need to use &lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Q: The script reports that Node.js was not found.&lt;/strong&gt;
+&lt;strong&gt;A:&lt;/strong&gt; This can happen if Node.js is not in your system&amp;rsquo;s PATH. Our scripts attempt to locate common installation directories (like those used by NVM), but you may need to ensure your environment is configured correctly.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;We hope this guide helps you successfully uninstall OpenClaw. If you have any questions, feel free to leave a comment below.&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>OpenClaw on Fernweh的个人博客</title><link>https://blog.codeglimpse.top/tags/openclaw/</link><description>Recent content in OpenClaw on Fernweh的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Wed, 18 Mar 2026 17:22:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/tags/openclaw/index.xml" rel="self" type="application/rss+xml"/><item><title>如何彻底卸载 OpenClaw 小龙虾</title><link>https://blog.codeglimpse.top/p/%E5%A6%82%E4%BD%95%E5%BD%BB%E5%BA%95%E5%8D%B8%E8%BD%BD-openclaw-%E5%B0%8F%E9%BE%99%E8%99%BE/</link><pubDate>Wed, 18 Mar 2026 17:22:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/%E5%A6%82%E4%BD%95%E5%BD%BB%E5%BA%95%E5%8D%B8%E8%BD%BD-openclaw-%E5%B0%8F%E9%BE%99%E8%99%BE/</guid><description>&lt;p&gt;OpenClaw 小龙虾，一个最近爆火的AI代理，它的安装和使用都非常方便。然而，在最近的新闻中我们同时也发现，这款工具有很大的安全风险，可能并不适合企业环境或者包含个人隐私的计算机中。但是，由于OpenClaw 小龙虾的安装方式与常规软件并不相同，所以我们可能并不是很轻易地就可以将其卸载，本文将提供详细的操作指南来教会大家卸载小龙虾。&lt;/p&gt;
+&lt;p&gt;我们将针对不同的操作系统（Windows, Linux, macOS）提供手动卸载步骤以及推荐的自动化清理脚本。&lt;/p&gt;
+&lt;h2 id="自动化卸载脚本推荐"&gt;自动化卸载脚本（推荐）
+&lt;/h2&gt;&lt;p&gt;为了简化卸载过程，我们编写了针对各平台的自动化清理脚本。这些脚本会自动检测 Node.js 环境、停止相关进程并清理全局包。&lt;/p&gt;
+&lt;h3 id="windows-powershell"&gt;Windows (PowerShell)
+&lt;/h3&gt;&lt;p&gt;以管理员权限打开 PowerShell，然后执行以下命令：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;irm &lt;/span&gt;&lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="p"&gt;//&lt;/span&gt;&lt;span class="n"&gt;blog&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;codeglimpse&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;top&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;openclaw-uninstall&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="n"&gt;CleanupOpenClawForWindows&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;ps1&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;iex
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="linux-bash"&gt;Linux (Bash)
+&lt;/h3&gt;&lt;p&gt;打开终端，然后执行以下命令：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -sSL https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForLinux.sh &lt;span class="p"&gt;|&lt;/span&gt; bash
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="macos-bash"&gt;macOS (Bash)
+&lt;/h3&gt;&lt;p&gt;打开终端，然后执行以下命令：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -sSL https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForMacOS.sh &lt;span class="p"&gt;|&lt;/span&gt; bash
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="手动卸载步骤"&gt;手动卸载步骤
+&lt;/h2&gt;&lt;p&gt;如果你更倾向于手动操作，请按照以下步骤进行：&lt;/p&gt;
+&lt;h3 id="1-停止相关进程"&gt;1. 停止相关进程
+&lt;/h3&gt;&lt;p&gt;确保没有任何 OpenClaw 相关的 Node.js 进程正在运行。你可以通过任务管理器（Windows）或 &lt;code&gt;top&lt;/code&gt;/&lt;code&gt;ps&lt;/code&gt; 命令（Linux/macOS）查找并终止它们。&lt;/p&gt;
+&lt;h3 id="2-卸载全局包"&gt;2. 卸载全局包
+&lt;/h3&gt;&lt;p&gt;使用你常用的包管理器执行卸载命令：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 使用 npm&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm uninstall -g openclaw openclaw-cn
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 使用 pnpm&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm uninstall -g openclaw openclaw-cn
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="3-清理残留文件"&gt;3. 清理残留文件
+&lt;/h3&gt;&lt;p&gt;检查以下路径并删除与 OpenClaw 相关的文件夹：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Windows&lt;/strong&gt;: &lt;code&gt;C:\Users\&amp;lt;YourUsername&amp;gt;\AppData\Roaming\npm\node_modules\openclaw&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Linux/macOS&lt;/strong&gt;: &lt;code&gt;/usr/local/lib/node_modules/openclaw&lt;/code&gt; 或 &lt;code&gt;~/.npm-global/lib/node_modules/openclaw&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="常见问题解答"&gt;常见问题解答
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Q: 运行脚本时提示权限不足？&lt;/strong&gt;
+A: 请确保在 Windows 上使用管理员权限运行，在 Linux/macOS 上使用 &lt;code&gt;sudo&lt;/code&gt;（如果需要）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Q: 脚本没有找到 Node.js 怎么办？&lt;/strong&gt;
+A: 请确保 Node.js 已正确安装在你的 PATH 环境变量中。脚本会尝试自动查找常见的安装路径（如 NVM 安装路径）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;希望这篇指南能帮助你顺利完成 OpenClaw 的卸载工作。&lt;/p&gt;</description></item></channel></rss>

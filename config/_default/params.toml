@@ -6,7 +6,7 @@ favicon = "/favicon.png"
 
 [footer]
 since = 2025
-customText = "<img src=\"signature.svg\" alt=\"人間の命がこんなに短いことは、ずっと前から知っていたのに、なぜもっと彼を理解しようとしなかったのだろう\" width=\"100%\" height=\"120\">"
+customText = "<img src=\"https://blog.codeglimpse.top/signature.svg\" alt=\"人間の命がこんなに短いことは、ずっと前から知っていたのに、なぜもっと彼を理解しようとしなかったのだろう\" width=\"100%\" height=\"120\">"
 
 [dateFormat]
 published = "Jan 02, 2006"

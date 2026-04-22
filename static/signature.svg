@@ -1,59 +1,125 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="120" viewBox="0 0 1350 120" preserveAspectRatio="xMidYMid meet">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1700 180" width="100%" height="180">
+
   <defs>
-    <!-- 1. 定义文字渐变色 (深色到浅金，用于流光效果) -->
-    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#4a5568">
-        <animate attributeName="stop-color" values="#4a5568; #d69e2e; #4a5568" dur="5s" repeatCount="indefinite" />
-      </stop>
-      <stop offset="50%" stop-color="#718096">
-        <animate attributeName="stop-color" values="#718096; #ecc94b; #718096" dur="5s" repeatCount="indefinite" />
-      </stop>
-      <stop offset="100%" stop-color="#4a5568">
-        <animate attributeName="stop-color" values="#4a5568; #d69e2e; #4a5568" dur="5s" repeatCount="indefinite" />
-      </stop>
+
+    <!-- 🌊 渐变 -->
+    <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4a5568"/>
+      <stop offset="50%" stop-color="#f6ad55"/>
+      <stop offset="100%" stop-color="#4a5568"/>
+      <animateTransform attributeName="gradientTransform"
+        type="translate"
+        from="-1 0" to="1 0"
+        dur="5s"
+        repeatCount="indefinite"/>
     </linearGradient>
 
-    <!-- 2. 定义背景粒子 -->
-    <circle id="particle" r="1.5" fill="#d69e2e" opacity="0.6">
-      <animate attributeName="cy" from="120" to="-10" dur="10s" repeatCount="indefinite" />
-      <animate attributeName="opacity" values="0; 0.6; 0" dur="10s" repeatCount="indefinite" />
-    </circle>
-    
-    <!-- 3. 滤镜：轻微的高斯模糊，让粒子更柔和 -->
-    <filter id="blurFilter">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
+    <!-- ✨ 轻量光晕（只扩散，不糊字） -->
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="1.2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+      </feMerge>
     </filter>
+
+    <!-- 🌟 粒子轻光 -->
+    <filter id="particleGlow">
+      <feGaussianBlur stdDeviation="0.8"/>
+    </filter>
+
+    <style>
+      .text {
+        font-family: 'Noto Serif JP','Yu Mincho',serif;
+        font-size: 30px;
+        letter-spacing: 3px;
+      }
+
+      /* 🖋️ 描边 */
+      .stroke {
+        fill:none;
+        stroke:#e2e8f0;
+        stroke-width:1;
+        stroke-dasharray:1600;
+        stroke-dashoffset:1600;
+        animation: draw 4s ease forwards;
+      }
+
+      @keyframes draw {
+        to { stroke-dashoffset:0; }
+      }
+
+      /* 🌟 粒子（更清晰） */
+      .particle {
+        fill:#f6ad55;
+        opacity:0;
+        filter:url(#particleGlow);
+        animation: float 12s infinite ease-in-out;
+      }
+
+      @keyframes float {
+        0%   { transform: translate(0,180px) scale(0.6); opacity:0; }
+        25%  { opacity:0.9; }
+        50%  { transform: translate(30px,60px) scale(1); }
+        75%  { opacity:0.7; }
+        100% { transform: translate(-30px,-30px) scale(0.7); opacity:0; }
+      }
+
+      .line {
+        stroke:#e2e8f0;
+        stroke-width:1;
+        opacity:0.5;
+      }
+
+    </style>
   </defs>
 
-  <!-- 背景：米白色/纸张色 -->
-  <rect width="100%" height="100%" fill="#fdfbf7" />
+  <!-- 背景 -->
+  <rect width="100%" height="100%" fill="#fdfbf7"/>
 
-  <!-- 动态背景层：粒子 -->
-  <g filter="url(#blurFilter)">
-    <use xlink:href="#particle" x="100" />
-    <use xlink:href="#particle" x="200" begin="2s" />
-    <use xlink:href="#particle" x="350" begin="4s" />
-    <use xlink:href="#particle" x="500" begin="1s" />
-    <use xlink:href="#particle" x="650" begin="3s" />
-    <use xlink:href="#particle" x="800" begin="5s" />
-    <use xlink:href="#particle" x="900" begin="2.5s" />
-  </g>
+  <!-- 线 -->
+  <line class="line" x1="5%" y1="25%" x2="95%" y2="25%"/>
+  <line class="line" x1="5%" y1="75%" x2="95%" y2="75%"/>
 
-  <!-- 文字内容 -->
-  <text x="50%" y="50%" 
-        text-anchor="middle" 
-        dominant-baseline="middle" 
-        font-family="'Noto Serif JP', 'Yu Mincho', serif" 
-        font-size="24" 
-        fill="url(#textGradient)"
-        letter-spacing="2">
-    
+  <!-- 🖋️ 描边 -->
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+        class="text stroke">
     人間の命がこんなに短いことは、ずっと前から知っていたのに、なぜもっと彼を理解しようとしなかったのだろう
-    
   </text>
-  
-  <!-- 装饰性线条：上下两条淡金色的细线 -->
-  <line x1="0" y1="20%" x2="100%" y2="20%" stroke="#e2e8f0" stroke-width="1" />
-  <line x1="0" y1="80%" x2="100%" y2="80%" stroke="#e2e8f0" stroke-width="1" />
+
+  <!-- ✨ 光晕层（单独一层） -->
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+        class="text"
+        fill="url(#flowGradient)"
+        filter="url(#softGlow)"
+        opacity="0.6">
+    人間の命がこんなに短いことは、ずっと前から知っていたのに、なぜもっと彼を理解しようとしなかったのだろう
+  </text>
+
+  <!-- ✅ 清晰主文字（关键） -->
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+        class="text"
+        fill="url(#flowGradient)">
+    人間の命がこんなに短いことは、ずっと前から知っていたのに、なぜもっと彼を理解しようとしなかったのだろう
+  </text>
+
+  <!-- 🌟 粒子（降低模糊 + 提高清晰度） -->
+  <g>
+ <circle class="particle" cx="100" cy="0" r="2.5" style="animation-delay:0s"/>
+    <circle class="particle" cx="300" cy="0" r="2.5" style="animation-delay:2s"/>
+    <circle class="particle" cx="500" cy="0" r="2.5" style="animation-delay:4s"/>
+    <circle class="particle" cx="700" cy="0" r="2.5" style="animation-delay:1s"/>
+    <circle class="particle" cx="900" cy="0" r="2.5" style="animation-delay:3s"/>
+    <circle class="particle" cx="1100" cy="0" r="2.5" style="animation-delay:5s"/>
+    <circle class="particle" cx="1300" cy="0" r="2.5" style="animation-delay:6s"/>
+    <circle class="particle" cx="1500" cy="0" r="2.5" style="animation-delay:2.5s"/>
+
+    <circle class="particle" cx="200" cy="0" r="1.2" style="animation-delay:1s"/>
+    <circle class="particle" cx="400" cy="0" r="1.2" style="animation-delay:2.5s"/>
+    <circle class="particle" cx="600" cy="0" r="1.2" style="animation-delay:3.5s"/>
+    <circle class="particle" cx="800" cy="0" r="1.2" style="animation-delay:4.5s"/>
+    <circle class="particle" cx="1000" cy="0" r="1.2" style="animation-delay:5.5s"/>
+    <circle class="particle" cx="1200" cy="0" r="1.2" style="animation-delay:6.5s"/>
+    <circle class="particle" cx="1400" cy="0" r="1.2" style="animation-delay:7.5s"/>
+  </g>
 
 </svg>

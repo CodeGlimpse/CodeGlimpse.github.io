@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="120" viewBox="0 0 1350 120" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <!-- 1. 定义文字渐变色 (深色到浅金，用于流光效果) -->
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4a5568">
+        <animate attributeName="stop-color" values="#4a5568; #d69e2e; #4a5568" dur="5s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="50%" stop-color="#718096">
+        <animate attributeName="stop-color" values="#718096; #ecc94b; #718096" dur="5s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="100%" stop-color="#4a5568">
+        <animate attributeName="stop-color" values="#4a5568; #d69e2e; #4a5568" dur="5s" repeatCount="indefinite" />
+      </stop>
+    </linearGradient>
+
+    <!-- 2. 定义背景粒子 -->
+    <circle id="particle" r="1.5" fill="#d69e2e" opacity="0.6">
+      <animate attributeName="cy" from="120" to="-10" dur="10s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0; 0.6; 0" dur="10s" repeatCount="indefinite" />
+    </circle>
+    
+    <!-- 3. 滤镜：轻微的高斯模糊，让粒子更柔和 -->
+    <filter id="blurFilter">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
+    </filter>
+  </defs>
+
+  <!-- 背景：米白色/纸张色 -->
+  <rect width="100%" height="100%" fill="#fdfbf7" />
+
+  <!-- 动态背景层：粒子 -->
+  <g filter="url(#blurFilter)">
+    <use xlink:href="#particle" x="100" />
+    <use xlink:href="#particle" x="200" begin="2s" />
+    <use xlink:href="#particle" x="350" begin="4s" />
+    <use xlink:href="#particle" x="500" begin="1s" />
+    <use xlink:href="#particle" x="650" begin="3s" />
+    <use xlink:href="#particle" x="800" begin="5s" />
+    <use xlink:href="#particle" x="900" begin="2.5s" />
+  </g>
+
+  <!-- 文字内容 -->
+  <text x="50%" y="50%" 
+        text-anchor="middle" 
+        dominant-baseline="middle" 
+        font-family="'Noto Serif JP', 'Yu Mincho', serif" 
+        font-size="24" 
+        fill="url(#textGradient)"
+        letter-spacing="2">
+    
+    人間の命がこんなに短いことは、ずっと前から知っていたのに、なぜもっと彼を理解しようとしなかったのだろう
+    
+  </text>
+  
+  <!-- 装饰性线条：上下两条淡金色的细线 -->
+  <line x1="0" y1="20%" x2="100%" y2="20%" stroke="#e2e8f0" stroke-width="1" />
+  <line x1="0" y1="80%" x2="100%" y2="80%" stroke="#e2e8f0" stroke-width="1" />
+
+</svg>

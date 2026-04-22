@@ -1,0 +1,1424 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Personal Blogs for Fernweh</title><link>https://blog.codeglimpse.top/en/</link><description>Recent content on Personal Blogs for Fernweh</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Wed, 01 Apr 2026 15:00:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/en/index.xml" rel="self" type="application/rss+xml"/><item><title>Protect Your Linux Server with Fail2ban</title><link>https://blog.codeglimpse.top/en/p/protect-your-linux-server-with-fail2ban/</link><pubDate>Wed, 01 Apr 2026 15:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/p/protect-your-linux-server-with-fail2ban/</guid><description>&lt;h2 id="what-is-fail2ban"&gt;What is Fail2ban?
+&lt;/h2&gt;&lt;p&gt;Fail2ban is an intrusion prevention software framework that protects computer servers from brute-force attacks. It works by scanning log files (e.g., &lt;code&gt;/var/log/auth.log&lt;/code&gt;) and banning IP addresses that show malicious signs, such as too many password failures, seeking for exploits, etc.&lt;/p&gt;
+&lt;h2 id="installing-fail2ban"&gt;Installing Fail2ban
+&lt;/h2&gt;&lt;p&gt;Choose the installation method according to your Linux distribution.&lt;/p&gt;
+&lt;h3 id="1-using-package-manager"&gt;1. Using Package Manager
+&lt;/h3&gt;&lt;h4 id="debian--ubuntu"&gt;Debian / Ubuntu
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt update
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install fail2ban
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="centos--rhel-using-yum-or-dnf"&gt;CentOS / RHEL (Using yum or dnf)
+&lt;/h4&gt;&lt;p&gt;On CentOS/RHEL, you typically need to install the EPEL repository first:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# CentOS 7&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum install epel-release
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum install fail2ban
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# CentOS 8 / RHEL 8 / Fedora (Using dnf)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf install epel-release
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf install fail2ban
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="2-from-source-targz"&gt;2. From Source (tar.gz)
+&lt;/h3&gt;&lt;p&gt;If you need a specific version or your distribution doesn&amp;rsquo;t provide a package, you can install from source:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Download source (replace with the latest version link)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;wget https://github.com/fail2ban/fail2ban/archive/refs/tags/1.0.2.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tar -xvzf 1.0.2.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; fail2ban-1.0.2
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Install&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo python3 setup.py install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;em&gt;Note: Source installation typically requires manual configuration of systemd service files and log paths.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;After installation, it is recommended to set Fail2ban to start on boot:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo systemctl &lt;span class="nb"&gt;enable&lt;/span&gt; fail2ban
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo systemctl start fail2ban
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="configuring-fail2ban"&gt;Configuring Fail2ban
+&lt;/h2&gt;&lt;p&gt;The default configuration file for Fail2ban is &lt;code&gt;/etc/fail2ban/jail.conf&lt;/code&gt;. However, it&amp;rsquo;s not recommended to modify this file directly, as it may be overwritten during package upgrades. Instead, you should create a local configuration file, &lt;code&gt;/etc/fail2ban/jail.local&lt;/code&gt;, or new &lt;code&gt;.conf&lt;/code&gt; files in the &lt;code&gt;/etc/fail2ban/jail.d/&lt;/code&gt; directory to override the defaults.&lt;/p&gt;
+&lt;h3 id="create-a-local-configuration-file"&gt;Create a Local Configuration File
+&lt;/h3&gt;&lt;p&gt;First, copy &lt;code&gt;jail.conf&lt;/code&gt; to &lt;code&gt;jail.local&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Now you can safely edit the &lt;code&gt;jail.local&lt;/code&gt; file.&lt;/p&gt;
+&lt;h3 id="configure-ssh-protection"&gt;Configure SSH Protection
+&lt;/h3&gt;&lt;p&gt;Open the &lt;code&gt;/etc/fail2ban/jail.local&lt;/code&gt; file and find the &lt;code&gt;[sshd]&lt;/code&gt; section. You can customize the following parameters as needed:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[sshd]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;enabled&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;ssh&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;logpath&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;%(sshd_log)s&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;backend&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;%(sshd_backend)s&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;maxretry&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;findtime&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;10m&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;bantime&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;1d&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;enabled&lt;/code&gt;: &lt;code&gt;true&lt;/code&gt; enables this jail.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;port&lt;/code&gt;: The port for the SSH service.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;logpath&lt;/code&gt;: The path to the SSH authentication log file.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;maxretry&lt;/code&gt;: The number of failures before a ban is imposed.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;findtime&lt;/code&gt;: The time window during which the failures must occur.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bantime&lt;/code&gt;: The duration for which the IP address is banned. &lt;code&gt;1d&lt;/code&gt; means one day.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="more-practical-scenarios"&gt;More Practical Scenarios
+&lt;/h3&gt;&lt;p&gt;In addition to SSH, Fail2ban can protect many other services. Add the following to &lt;code&gt;jail.local&lt;/code&gt;:&lt;/p&gt;
+&lt;h4 id="nginx-prevention-of-malicious-scans-too-many-404-errors"&gt;Nginx Prevention of Malicious Scans (Too many 404 errors)
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[nginx-404]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;enabled&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;http,https&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;filter&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;nginx-404&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;logpath&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;/var/log/nginx/access.log&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;findtime&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;600&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;maxretry&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;bantime&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;1h&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;em&gt;Note: This requires you to define an &lt;code&gt;nginx-404.conf&lt;/code&gt; filter under &lt;code&gt;/etc/fail2ban/filter.d/&lt;/code&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;h4 id="mysqlmariadb-protection"&gt;MySQL/MariaDB Protection
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[mariadb-jail]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;enabled&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;3306&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;filter&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;mysqld-auth&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;logpath&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;/var/log/mysql/error.log&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;maxretry&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="common-fail2ban-management-commands"&gt;Common Fail2ban Management Commands
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fail2ban-client&lt;/code&gt; is the primary tool for managing Fail2ban.&lt;/p&gt;
+&lt;h3 id="1-check-status"&gt;1. Check Status
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Check overall service running status&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client ping
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Check the list of enabled jails&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Check detailed status of a specific jail (e.g., sshd)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client status sshd
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="2-manage-banned-ips"&gt;2. Manage Banned IPs
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Manually ban an IP (in the sshd jail)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client &lt;span class="nb"&gt;set&lt;/span&gt; sshd banip 1.2.3.4
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Manually unban an IP&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client &lt;span class="nb"&gt;set&lt;/span&gt; sshd unbanip 1.2.3.4
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Unban an IP from all jails&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client unban 1.2.3.4
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="3-reload-configuration"&gt;3. Reload Configuration
+&lt;/h3&gt;&lt;p&gt;When you modify &lt;code&gt;.local&lt;/code&gt; files or filters, you can apply changes without restarting the entire service:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client reload
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="faq--tips"&gt;FAQ &amp;amp; Tips
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Whitelist&lt;/strong&gt;: Set &lt;code&gt;ignoreip = 127.0.0.1/8 ::1 &amp;lt;Your Fixed IP&amp;gt;&lt;/code&gt; in the &lt;code&gt;[DEFAULT]&lt;/code&gt; section to prevent locking yourself out.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Persistence&lt;/strong&gt;: By default, bans expire after a service restart. For persistence, you can configure database storage.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Email Notifications&lt;/strong&gt;: Fail2ban supports sending email alerts to administrators when an IP is banned.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="summary"&gt;Summary
+&lt;/h2&gt;&lt;p&gt;Fail2ban is a simple yet effective tool that adds a significant layer of security to your server. With proper configuration, you can greatly reduce the risk of brute-force attacks.&lt;/p&gt;</description></item><item><title>OpenClaw 2026.3.23.1 Browser Tool Overhaul: From Chrome Extension to Native DevTools MCP</title><link>https://blog.codeglimpse.top/en/p/openclaw-chrome/</link><pubDate>Tue, 24 Mar 2026 23:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/p/openclaw-chrome/</guid><description>&lt;p&gt;In the latest &lt;strong&gt;2026.3.23.1&lt;/strong&gt; release, OpenClaw has undergone a significant overhaul of its browser automation tools.&lt;/p&gt;
+&lt;p&gt;According to official documentation and recent releases from the Chrome team, OpenClaw has officially transitioned from the unstable &amp;ldquo;Extension Relay&amp;rdquo; mode to a native connection scheme based on &lt;strong&gt;Chrome DevTools MCP (Model Context Protocol)&lt;/strong&gt;. This means AI can now take over your browser in a more secure, native, and efficient manner.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="core-evolution-why-no-more-extensions"&gt;Core Evolution: Why No More Extensions?
+&lt;/h2&gt;&lt;p&gt;Before version 2026.3.23.1, OpenClaw primarily relied on a manually installed Chrome extension to bridge the connection. This approach suffered from limited permissions and unstable session synchronization.&lt;/p&gt;
+&lt;p&gt;The new version introduces two core Profile modes:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;openclaw&lt;/code&gt; Mode&lt;/strong&gt;: A fully isolated, managed browser that works out of the box with no configuration required (features an orange theme).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;user&lt;/code&gt; Mode (Upgraded from the old &lt;code&gt;chrome&lt;/code&gt; mode)&lt;/strong&gt;: Directly attaches to your active Chrome window via &lt;strong&gt;Chrome DevTools MCP&lt;/strong&gt;, achieving true &amp;ldquo;zero-extension&amp;rdquo; takeover.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id="legacy-tutorial-chrome-extension-relay"&gt;Legacy Tutorial: Chrome Extension Relay
+&lt;/h2&gt;&lt;p&gt;If you are still using an older version, the connection logic depends on a browser extension:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Install Extension&lt;/strong&gt;: Go to &lt;code&gt;chrome://extensions/&lt;/code&gt;, enable Developer Mode, and manually load the &lt;code&gt;openclaw-connector&lt;/code&gt; folder.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ID Configuration&lt;/strong&gt;: Enter the unique ID generated by the extension into your &lt;code&gt;~/.openclaw/openclaw.json&lt;/code&gt; (or the older YAML config).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Manual Authorization&lt;/strong&gt;: Before each task, you must click the extension icon in the browser and manually allow OpenClaw to connect to the current tab.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id="new-version-tutorial-devtools-mcp-remote-debugging-recommended"&gt;New Version Tutorial: DevTools MCP Remote Debugging (Recommended)
+&lt;/h2&gt;&lt;p&gt;In &lt;strong&gt;2026.3.23.1&lt;/strong&gt;, connecting to your native browser (Profile: &lt;code&gt;user&lt;/code&gt;) no longer requires an extension. Instead, it utilizes the native remote debugging capabilities built into Chrome 144+.&lt;/p&gt;
+&lt;h3 id="step-1-enable-remote-debugging-in-chrome"&gt;Step 1: Enable Remote Debugging in Chrome
+&lt;/h3&gt;&lt;p&gt;No more complex command-line arguments. You can now enable this within Chrome&amp;rsquo;s settings:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Enter &lt;code&gt;chrome://inspect/#remote-debugging&lt;/code&gt; in the Chrome address bar.&lt;/li&gt;
+&lt;li&gt;Check &lt;strong&gt;&amp;ldquo;Enable remote debugging&amp;rdquo;&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;Follow the prompts to allow incoming debugging connections.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="step-2-configure-openclaw-to-use-the-user-profile"&gt;Step 2: Configure OpenClaw to Use the &lt;code&gt;user&lt;/code&gt; Profile
+&lt;/h3&gt;&lt;p&gt;OpenClaw configuration is now unified in &lt;code&gt;~/.openclaw/openclaw.json&lt;/code&gt;. To enable native takeover, ensure your configuration looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;browser&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;enabled&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;defaultProfile&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;user&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;profiles&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;user&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;driver&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;existing-session&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;attachOnly&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;color&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;#00AA00&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="step-3-authorize-the-connection"&gt;Step 3: Authorize the Connection
+&lt;/h3&gt;&lt;p&gt;The first time you run &lt;code&gt;openclaw tool run browser&lt;/code&gt;, a native authorization dialog will pop up at the top of Chrome.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Click &lt;strong&gt;&amp;ldquo;Allow&amp;rdquo;&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;Chrome will then display a banner stating &amp;ldquo;Chrome is being controlled by automated test software,&amp;rdquo; indicating the AI has successfully taken over.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="key-technical-comparison"&gt;Key Technical Comparison
+&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style="text-align: left"&gt;Feature&lt;/th&gt;
+&lt;th style="text-align: left"&gt;Old (Extension)&lt;/th&gt;
+&lt;th style="text-align: left"&gt;New (DevTools MCP)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;Connection Protocol&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: left"&gt;Extension API Forwarding&lt;/td&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;Native CDP / MCP Protocol&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;Authentication&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: left"&gt;Extension ID Verification&lt;/td&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;System-level Chrome Popup Authorization&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;Session Sharing&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: left"&gt;Requires extension intervention&lt;/td&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;Native sharing of existing sessions&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;Security&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: left"&gt;Extension might have injection risks&lt;/td&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;Based on Chrome&amp;rsquo;s built-in security sandbox&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;System Requirements&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: left"&gt;Any Chrome version&lt;/td&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;Chrome M144 or higher&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id="upgrade-recommendations-and-notes"&gt;Upgrade Recommendations and Notes
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Version Requirements&lt;/strong&gt;: Native MCP mode requires &lt;strong&gt;Chrome M144 (Beta/Canary)&lt;/strong&gt; or higher. If you are using a stable version of Chrome with a lower version number, it is recommended to continue using the &lt;code&gt;openclaw&lt;/code&gt; managed mode.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Config Path&lt;/strong&gt;: OpenClaw configuration has moved from &lt;code&gt;config.yaml&lt;/code&gt; to the more standardized &lt;code&gt;~/.openclaw/openclaw.json&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Privacy Reminder&lt;/strong&gt;: When using &lt;code&gt;user&lt;/code&gt; mode, the AI can access all pages where you are currently logged in (e.g., GitHub, Gmail). Ensure you trust the agent before performing automated tasks.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;</description></item><item><title>Complete Guide to OpenClaw Installation and Configuration</title><link>https://blog.codeglimpse.top/en/p/openclaw-install/</link><pubDate>Mon, 23 Mar 2026 22:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/p/openclaw-install/</guid><description>&lt;h1 id="complete-guide-to-openclaw-installation-and-configuration"&gt;Complete Guide to OpenClaw Installation and Configuration
+&lt;/h1&gt;&lt;p&gt;OpenClaw is a personal AI assistant platform designed to run on your own devices. It integrates seamlessly with your favorite chat channels (such as WhatsApp, Telegram, Slack, Discord, etc.), providing a unified and &amp;ldquo;always-on&amp;rdquo; AI experience. This guide will walk you through the complete installation and configuration process.&lt;/p&gt;
+&lt;h2 id="prerequisites"&gt;Prerequisites
+&lt;/h2&gt;&lt;p&gt;Before installing OpenClaw, please ensure your system meets the following requirements:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Node.js&lt;/strong&gt;: Node 24 is highly recommended. Node 22.16+ is also supported.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Operating System&lt;/strong&gt;: macOS, Linux, or Windows (WSL2 is strongly recommended for stability).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Model API Keys&lt;/strong&gt;: You need API keys from providers like Anthropic, OpenAI, or Google.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Network&lt;/strong&gt;: A stable internet connection for downloading packages and communicating with AI models.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="installation-methods"&gt;Installation Methods
+&lt;/h2&gt;&lt;p&gt;OpenClaw offers multiple installation methods. Choose the one that best fits your technical preference.&lt;/p&gt;
+&lt;h3 id="1-recommended-installation-script-fastest"&gt;1. Recommended: Installation Script (Fastest)
+&lt;/h3&gt;&lt;p&gt;The installation script automatically detects your OS, installs Node if necessary, and guides you through the initialization.&lt;/p&gt;
+&lt;h4 id="macos--linux--wsl2"&gt;macOS / Linux / WSL2
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;openclaw&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -fsSL https://openclaw.ai/install.sh &lt;span class="p"&gt;|&lt;/span&gt; bash
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;openclaw-cn&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -fsSL https://open-claw.org.cn/install-cn.sh &lt;span class="p"&gt;|&lt;/span&gt; bash
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="windows-powershell"&gt;Windows (PowerShell)
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;openclaw&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;iwr &lt;/span&gt;&lt;span class="n"&gt;-useb&lt;/span&gt; &lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="p"&gt;//&lt;/span&gt;&lt;span class="n"&gt;openclaw&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ai&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="n"&gt;install&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;ps1&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;iex
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;openclaw-cn (Ensure Git is installed):&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;iwr &lt;/span&gt;&lt;span class="n"&gt;-useb&lt;/span&gt; &lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="p"&gt;//&lt;/span&gt;&lt;span class="nb"&gt;open-claw&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;org&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cn&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;install-cn&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;ps1&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;iex
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="2-manual-installation-via-npm-or-pnpm"&gt;2. Manual Installation via npm or pnpm
+&lt;/h3&gt;&lt;p&gt;If you prefer managing your Node environment manually, you can install the OpenClaw CLI globally.&lt;/p&gt;
+&lt;h4 id="using-npm"&gt;Using npm
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm install -g openclaw@latest
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw onboard --install-daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="using-pnpm"&gt;Using pnpm
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm add -g openclaw@latest
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm approve-builds -g
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw onboard --install-daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="3-source-installation-for-developers"&gt;3. Source Installation (For Developers)
+&lt;/h3&gt;&lt;p&gt;If you want to contribute or run from the local codebase:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;openclaw&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;git clone https://github.com/openclaw/openclaw.git
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; openclaw
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm install &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; pnpm ui:build &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; pnpm build
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm link --global
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw onboard --install-daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;openclaw-cn (using Gitee and npmmirror):&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;git clone https://gitee.com/OpenClaw-CN/openclaw-cn.git
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; openclaw-cn
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm config &lt;span class="nb"&gt;set&lt;/span&gt; registry https://registry.npmmirror.com/ &lt;span class="c1"&gt;# Set registry mirror&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm install &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; pnpm ui:build &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; pnpm build
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm link --global
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw onboard --install-daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="initialization-and-configuration-onboarding"&gt;Initialization and Configuration (Onboarding)
+&lt;/h2&gt;&lt;p&gt;After installation, the most important step is running the onboarding wizard. It will configure your workspace, gateway, and initial AI models.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw onboard --install-daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;The wizard will prompt you to:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Select Model Provider&lt;/strong&gt;: Choose between Anthropic, OpenAI, Google, etc.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Enter API Key&lt;/strong&gt;: Provide the API key for your chosen provider.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Install Daemon&lt;/strong&gt;: Install OpenClaw as a system service (recommended) to keep it running in the background.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="verifying-installation"&gt;Verifying Installation
+&lt;/h2&gt;&lt;p&gt;To ensure everything is running correctly, use the following commands:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw doctor &lt;span class="c1"&gt;# Check for configuration issues&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw status &lt;span class="c1"&gt;# Check Gateway status&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw dashboard &lt;span class="c1"&gt;# Open the browser UI&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item><item><title>Base Converter</title><link>https://blog.codeglimpse.top/en/tools/binary/</link><pubDate>Sat, 21 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/binary/</guid><description>&lt;p&gt;A simple and efficient online base converter that supports conversion between Binary (Base 2), Octal (Base 8), Decimal (Base 10), Hexadecimal (Base 16), and any custom base from 2 to 36.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-binary" data-lang="en"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/binary.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="how-to-use"&gt;How to Use
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Select Source Base&lt;/strong&gt;: Choose the base of the number you want to convert from the dropdown menu.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Enter Value&lt;/strong&gt;: Type the number into the &amp;ldquo;Input Value&amp;rdquo; field.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;View Results&lt;/strong&gt;: The tool will automatically display the converted values in Binary, Octal, Decimal, Hexadecimal, and a custom base.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Custom Base&lt;/strong&gt;: You can change the target custom base by adjusting the number in the &amp;ldquo;Custom Base&amp;rdquo; header.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Copy Results&lt;/strong&gt;: Click the &amp;ldquo;Copy&amp;rdquo; button next to any result to copy it to your clipboard.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="common-bases"&gt;Common Bases
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Binary (Base 2)&lt;/strong&gt;: Used in computer systems, consisting of only 0 and 1.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Octal (Base 8)&lt;/strong&gt;: Uses digits 0-7, often used in older computing systems.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Decimal (Base 10)&lt;/strong&gt;: The standard system used by humans, consisting of digits 0-9.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hexadecimal (Base 16)&lt;/strong&gt;: Uses digits 0-9 and letters A-F, widely used in programming and web design for color codes and memory addresses.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="base-conversion-table"&gt;Base Conversion Table
+&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Decimal&lt;/th&gt;
+&lt;th&gt;Binary&lt;/th&gt;
+&lt;th&gt;Octal&lt;/th&gt;
+&lt;th&gt;Hex&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;101&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;1010&lt;/td&gt;
+&lt;td&gt;12&lt;/td&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;15&lt;/td&gt;
+&lt;td&gt;1111&lt;/td&gt;
+&lt;td&gt;17&lt;/td&gt;
+&lt;td&gt;F&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;16&lt;/td&gt;
+&lt;td&gt;10000&lt;/td&gt;
+&lt;td&gt;20&lt;/td&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</description></item><item><title>SHA Hash Generator</title><link>https://blog.codeglimpse.top/en/tools/sha/</link><pubDate>Fri, 20 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/sha/</guid><description>&lt;p&gt;Secure Hash Algorithms (SHA) are a family of cryptographic hash functions designed by the NSA. They are widely used for security applications and data integrity verification.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-sha" data-lang="en"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/sha.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="how-to-use-sha-generator"&gt;How to Use SHA Generator
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Enter the text or string you want to hash in the input field.&lt;/li&gt;
+&lt;li&gt;Select the desired SHA algorithm (SHA-1, SHA-256, SHA-384, or SHA-512) from the dropdown.&lt;/li&gt;
+&lt;li&gt;Choose the output format (Lowercase or Uppercase).&lt;/li&gt;
+&lt;li&gt;The hash will be generated automatically as you type, or you can click the &amp;ldquo;Generate&amp;rdquo; button.&lt;/li&gt;
+&lt;li&gt;Copy the resulting hash for your use.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="available-algorithms"&gt;Available Algorithms
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;SHA-1&lt;/strong&gt;: Produces a 160-bit (40-character) hash. No longer considered secure for cryptographic purposes but still used for non-security tasks like Git checksums.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SHA-256&lt;/strong&gt;: Part of the SHA-2 family, produces a 256-bit (64-character) hash. It is currently one of the most widely used hash functions (e.g., in Bitcoin).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SHA-384&lt;/strong&gt;: A more secure version of SHA-2, producing a 384-bit (96-character) hash.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SHA-512&lt;/strong&gt;: The strongest of the SHA-2 family, producing a 512-bit (128-character) hash.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: For modern security needs, SHA-256 or higher is recommended. SHA-1 is considered weak and should be avoided for sensitive data.&lt;/p&gt;
+&lt;/blockquote&gt;</description></item><item><title>MD5 Hash Generator</title><link>https://blog.codeglimpse.top/en/tools/md5/</link><pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/md5/</guid><description>&lt;p&gt;MD5 (Message-Digest Algorithm 5) is a widely used cryptographic hash function that produces a 128-bit (16-byte) hash value. It is commonly used to verify data integrity and for checksums.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-md5" data-lang="en"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/md5.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="how-to-use-md5-hash-generator"&gt;How to Use MD5 Hash Generator
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Enter the text or string you want to hash in the input field.&lt;/li&gt;
+&lt;li&gt;The MD5 hash will be generated automatically as you type, or you can click the &amp;ldquo;Generate&amp;rdquo; button.&lt;/li&gt;
+&lt;li&gt;Copy the resulting MD5 hash for your use.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="understanding-md5"&gt;Understanding MD5
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;One-way Function&lt;/strong&gt;: MD5 is designed to be a one-way function, meaning it is computationally infeasible to reverse the process and retrieve the original input from the hash.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fixed Length&lt;/strong&gt;: Regardless of the input size, the MD5 hash is always 32 characters (hexadecimal).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Deterministic&lt;/strong&gt;: The same input will always produce the same hash value.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Sensitivity&lt;/strong&gt;: Even a tiny change in the input (like adding a single space) will result in a completely different hash.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: MD5 is no longer considered secure for cryptographic purposes such as password hashing due to vulnerabilities to collision attacks. For security-sensitive applications, use stronger algorithms like SHA-256 or bcrypt.&lt;/p&gt;
+&lt;/blockquote&gt;</description></item><item><title>How to Completely Uninstall OpenClaw</title><link>https://blog.codeglimpse.top/en/p/how-to-completely-uninstall-openclaw/</link><pubDate>Wed, 18 Mar 2026 17:22:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/p/how-to-completely-uninstall-openclaw/</guid><description>&lt;p&gt;OpenClaw, a recently popular AI agent, is very convenient to install and use. However, recent news has also revealed that this tool poses significant security risks and may not be suitable for enterprise environments or computers containing personal privacy. Nevertheless, due to the unique installation method of OpenClaw, it may not be easy to uninstall it. This article will provide a detailed guide to teach you how to uninstall OpenClaw.&lt;/p&gt;
+&lt;p&gt;We will cover manual removal steps and provide recommended automated cleanup scripts for Windows, Linux, and macOS.&lt;/p&gt;
+&lt;h2 id="why-is-a-complete-uninstall-necessary"&gt;Why is a Complete Uninstall Necessary?
+&lt;/h2&gt;&lt;p&gt;In some cases, a simple &lt;code&gt;npm uninstall&lt;/code&gt; may not be enough to remove all traces of OpenClaw. Remnants can include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Lingering configuration files&lt;/li&gt;
+&lt;li&gt;Active background processes&lt;/li&gt;
+&lt;li&gt;Caches stored in various user directories&lt;/li&gt;
+&lt;li&gt;Paths added to environment variables&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="automated-uninstallation-recommended"&gt;Automated Uninstallation (Recommended)
+&lt;/h2&gt;&lt;p&gt;To streamline the process, we have developed automated cleanup scripts for each platform. These scripts are designed to detect your Node.js environment, terminate any related processes, and remove the global packages.&lt;/p&gt;
+&lt;h3 id="windows-powershell"&gt;Windows (PowerShell)
+&lt;/h3&gt;&lt;p&gt;Open PowerShell with administrator privileges and execute the following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;irm &lt;/span&gt;&lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="p"&gt;//&lt;/span&gt;&lt;span class="n"&gt;blog&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;codeglimpse&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;top&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;openclaw-uninstall&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="n"&gt;CleanupOpenClawForWindows&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;ps1&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;iex
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="linux-bash"&gt;Linux (Bash)
+&lt;/h3&gt;&lt;p&gt;Open your terminal and run the following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -sSL https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForLinux.sh &lt;span class="p"&gt;|&lt;/span&gt; bash
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="macos-bash"&gt;macOS (Bash)
+&lt;/h3&gt;&lt;p&gt;Open your terminal and run the following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -sSL https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForMacOS.sh &lt;span class="p"&gt;|&lt;/span&gt; bash
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="manual-uninstallation-guide"&gt;Manual Uninstallation Guide
+&lt;/h2&gt;&lt;p&gt;If you prefer to handle the uninstallation manually, please follow the steps below:&lt;/p&gt;
+&lt;h3 id="1-terminate-running-processes"&gt;1. Terminate Running Processes
+&lt;/h3&gt;&lt;p&gt;Ensure no OpenClaw-related Node.js processes are active. You can use Task Manager on Windows or the &lt;code&gt;top&lt;/code&gt;/&lt;code&gt;ps&lt;/code&gt; commands on Linux and macOS to find and terminate them.&lt;/p&gt;
+&lt;h3 id="2-uninstall-global-packages"&gt;2. Uninstall Global Packages
+&lt;/h3&gt;&lt;p&gt;Use your preferred package manager to execute the uninstall command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Using npm&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm uninstall -g openclaw openclaw-cn
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Using pnpm&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm uninstall -g openclaw openclaw-cn
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="3-clean-up-residual-files"&gt;3. Clean Up Residual Files
+&lt;/h3&gt;&lt;p&gt;Check the following locations and delete any folders related to OpenClaw:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Windows&lt;/strong&gt;: &lt;code&gt;C:\Users\&amp;lt;YourUsername&amp;gt;\AppData\Roaming\npm\node_modules\openclaw&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Linux/macOS&lt;/strong&gt;: &lt;code&gt;/usr/local/lib/node_modules/openclaw&lt;/code&gt; or &lt;code&gt;~/.npm-global/lib/node_modules/openclaw&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="frequently-asked-questions"&gt;Frequently Asked Questions
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Q: I&amp;rsquo;m getting a &amp;ldquo;permission denied&amp;rdquo; error when running the script.&lt;/strong&gt;
+&lt;strong&gt;A:&lt;/strong&gt; On Windows, ensure you are running PowerShell with administrator privileges. On Linux and macOS, you may need to use &lt;code&gt;sudo&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Q: The script reports that Node.js was not found.&lt;/strong&gt;
+&lt;strong&gt;A:&lt;/strong&gt; This can happen if Node.js is not in your system&amp;rsquo;s PATH. Our scripts attempt to locate common installation directories (like those used by NVM), but you may need to ensure your environment is configured correctly.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;We hope this guide helps you successfully uninstall OpenClaw. If you have any questions, feel free to leave a comment below.&lt;/p&gt;</description></item><item><title>Color Picker &amp; Converter</title><link>https://blog.codeglimpse.top/en/tools/color/</link><pubDate>Tue, 17 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/color/</guid><description>&lt;p&gt;A simple and intuitive tool to pick colors and convert them between HEX, RGB, and HSL formats.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-color" data-lang="en"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/color.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="how-to-use"&gt;How to use
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Pick a Color&lt;/strong&gt;: Use the color picker or click the preview box to choose a color visually.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HEX Input&lt;/strong&gt;: Enter a 6-digit hex code (e.g., &lt;code&gt;#FF5733&lt;/code&gt;) to see its RGB and HSL equivalents.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RGB/HSL Inputs&lt;/strong&gt;: Adjust the individual values to fine-tune your color.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Copy&lt;/strong&gt;: Click the &lt;strong&gt;Copy&lt;/strong&gt; button next to any format to copy it to your clipboard.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="understanding-color-formats"&gt;Understanding Color Formats
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;HEX&lt;/strong&gt;: A hexadecimal representation of RGB values, commonly used in web design.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RGB&lt;/strong&gt;: Red, Green, and Blue values (0-255).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HSL&lt;/strong&gt;: Hue (0-360), Saturation (0-100%), and Lightness (0-100%). It&amp;rsquo;s often more intuitive for humans to understand than RGB.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Unix Timestamp Converter</title><link>https://blog.codeglimpse.top/en/tools/time/</link><pubDate>Mon, 16 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/time/</guid><description>&lt;p&gt;A Unix timestamp is a way to track time as a running total of seconds. This count starts at the Unix Epoch on January 1st, 1970 at UTC. This tool helps you convert between these timestamps and human-readable dates.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-time" data-lang="en"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/time.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="what-is-unix-time"&gt;What is Unix Time?
+&lt;/h3&gt;&lt;p&gt;Unix time (also known as Epoch time, POSIX time, seconds since the Epoch, or UNIX Epoch time) is a system for describing a point in time. It is the number of seconds that have elapsed since the Unix epoch, minus leap seconds; the Unix epoch is 00:00:00 UTC on 1 January 1970.&lt;/p&gt;</description></item><item><title>Base64 Encoder/Decoder</title><link>https://blog.codeglimpse.top/en/tools/base64/</link><pubDate>Sun, 15 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/base64/</guid><description>&lt;p&gt;Base64 is an encoding scheme used to represent binary data in an ASCII string format. It&amp;rsquo;s commonly used when binary data needs to be transferred over media that are designed to deal with textual data.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-base64" data-lang="en"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/base64.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="how-to-use"&gt;How to use
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;To Encode&lt;/strong&gt;: Paste your plain text into the input box and click the &lt;strong&gt;Encode&lt;/strong&gt; button.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;To Decode&lt;/strong&gt;: Paste your Base64 encoded string into the input box and click the &lt;strong&gt;Decode&lt;/strong&gt; button.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="understanding-base64"&gt;Understanding Base64
+&lt;/h3&gt;&lt;p&gt;Base64 is not encryption. It&amp;rsquo;s a way to represent data in a format that&amp;rsquo;s safe for transport.&lt;/p&gt;</description></item><item><title>BMI Calculator</title><link>https://blog.codeglimpse.top/en/tools/bmi/</link><pubDate>Sat, 14 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/bmi/</guid><description>&lt;p&gt;Body Mass Index (BMI) is a simple index of weight-for-height that is commonly used to classify underweight, overweight and obesity in adults.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-bmi" data-lang="en"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/bmi.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="bmi-categories-who-standard"&gt;BMI Categories (WHO Standard)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Underweight&lt;/strong&gt;: &amp;lt; 18.5&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Normal weight&lt;/strong&gt;: 18.5 - 24.9&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Overweight&lt;/strong&gt;: 25.0 - 29.9&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Obesity&lt;/strong&gt;: &amp;gt;= 30.0&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Note: BMI is a useful measure of overweight and obesity. It is calculated from your height and weight. BMI is an estimate of body fat and a good gauge of your risk for diseases that can occur with more body fat.&lt;/p&gt;
+&lt;/blockquote&gt;</description></item><item><title>How to Download and Install Python</title><link>https://blog.codeglimpse.top/en/p/python-install/</link><pubDate>Sun, 28 Sep 2025 16:20:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/p/python-install/</guid><description>&lt;h1 id="how-to-download-and-install-python"&gt;How to Download and Install Python
+&lt;/h1&gt;&lt;p&gt;Python is an interpreted, high-level and general-purpose programming language. Python’s design philosophy emphasizes
+code readability with its notable use of significant whitespace. This article will serve as an informative guide and
+give you a clear understanding of how to set up a Python environment.&lt;/p&gt;
+&lt;h2 id="windows"&gt;Windows
+&lt;/h2&gt;&lt;h3 id="download-python-installation-packages"&gt;Download Python Installation Packages
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="https://www.python.org/downloads/windows/" target="_blank" rel="noopener"
+&gt;Python for Windows&lt;/a&gt; provides various versions of Python installation packages
+for selection. Of course, considering that the speed of connecting to the Python official website in somewhere may be
+slow, I recommend using a mirror site to download the Python installation package.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a class="link" href="https://mirrors.aliyun.com/python-release/windows" target="_blank" rel="noopener"
+&gt;Alibaba Mirror Site&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://mirrors.ustc.edu.cn/python/" target="_blank" rel="noopener"
+&gt;USTC Mirror Site&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&amp;hellip;..&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;If you know of other mirror sites, please &lt;a class="link" href="mailto:libochen@codeglimpse.top" &gt;contact me&lt;/a&gt; to update them!&lt;/p&gt;
+&lt;h3 id="install-python"&gt;install Python
+&lt;/h3&gt;&lt;p&gt;Here are a few common installation methods for Python, you can choose the one that suits you according to your needs.&lt;/p&gt;
+&lt;h4 id="the-simplest-manual-installation"&gt;The Simplest Manual Installation
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;Run the installer and select the following two options:
+The first option installs Python with administrator privileges.
+The second option automatically adds Python to your system environment path (highly recommended).
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/1.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/1_hu_75941b03da09acbf.png 480w, https://blog.codeglimpse.top/en/p/python-install/1_hu_5a66238aca6937f8.png 1024w"
+loading="lazy"
+alt="Install Page"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Install Now&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Close&lt;/strong&gt; , Installation complete!
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/2.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/2_hu_4bafe5b8831cbf7c.png 480w, https://blog.codeglimpse.top/en/p/python-install/2_hu_99f40842cbe2f2fd.png 1024w"
+loading="lazy"
+alt="Install Complete"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="customize-installation"&gt;Customize installation
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;Run the installer, still recommended to select the following two options:
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/1.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/1_hu_75941b03da09acbf.png 480w, https://blog.codeglimpse.top/en/p/python-install/1_hu_5a66238aca6937f8.png 1024w"
+loading="lazy"
+alt="Install Page"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Customize installation&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Choose optional features as needed:
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/3.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/3_hu_420499b00cbb489e.png 480w, https://blog.codeglimpse.top/en/p/python-install/3_hu_91b3518d5a9e9620.png 1024w"
+loading="lazy"
+alt="Optional Features"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;
+&lt;ul&gt;
+&lt;li&gt;Documentation: Documentation and help files for installing Python. Select this option only needed&lt;/li&gt;
+&lt;li&gt;pip: Python package management tool. Very important, must choose&lt;/li&gt;
+&lt;li&gt;tcl/tk and IDLE: tcl/tk and IDLE are two graphical user interfaces, IDLE is Integrated Development Environment and
+Learning，a python IDE that comes with it. However, we recommend using Pycharm as an IDE for learning.&lt;/li&gt;
+&lt;li&gt;Python test suite: Provides a set of test suites for testing Python interpreters and standard libraries. Although
+beginners generally do not need to use it, this kit is still very useful, it is recommended to choose it.&lt;/li&gt;
+&lt;li&gt;py launcher: Ensure user starts python using python commands in the command line&lt;/li&gt;
+&lt;li&gt;for all users（requires admin privileges）: Ask if choose &amp;lsquo;py launcher&amp;rsquo; for all users on the computer. Recommended
+to choose&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Next&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Choose advanced option as needed:
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/4.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/4_hu_63c0ffe1eea95fbf.png 480w, https://blog.codeglimpse.top/en/p/python-install/4_hu_1de10336903c49a9.png 1024w"
+loading="lazy"
+alt="Advanced options"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;
+&lt;ul&gt;
+&lt;li&gt;Install Python 3.12 for all users: Generally has no effect on use, but still recommended to choose it&lt;/li&gt;
+&lt;li&gt;Associate files with Python (requires the &amp;lsquo;py&amp;rsquo; launcher): Enable the system to automatically associate Python with
+specific file types. When double click Python script files in File Explorer, the system will automatically use the
+Python interpreter to run these scripts. This can be chosen as needed, but usually the file will be associated
+with Pycharm later on&lt;/li&gt;
+&lt;li&gt;Create shortcuts for installed applications: Create desktop shortcuts. Generally, there is no need to choose&lt;/li&gt;
+&lt;li&gt;Add Python to environment variables: Selecting this option adds the path to the Python interpreter to the system&amp;rsquo;s
+environment variables, so that the Python interpreter can be run directly from the command line without having to
+enter the full path. Recommended to choose&lt;/li&gt;
+&lt;li&gt;Precompile standard library: Pre-compiled the Python standard library to improve the import speed of standard
+library modules. This can be chosen or not&lt;/li&gt;
+&lt;li&gt;Download debugging symbols: Debug symbols for developers and debuggers. Choose only need&lt;/li&gt;
+&lt;li&gt;Download debug binaries (requires VS 2017 or later): A binary file for debug versions for developers and
+debuggers. Choose only need&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Select the directory for installation&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Install&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Close&lt;/strong&gt; , Complete the installation
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/2.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/2_hu_4bafe5b8831cbf7c.png 480w, https://blog.codeglimpse.top/en/p/python-install/2_hu_99f40842cbe2f2fd.png 1024w"
+loading="lazy"
+alt="Install Complete"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="the-simplest-silent-installationautomatic-installation"&gt;The Simplest silent installation/automatic installation
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Find the installation package, right-click &lt;strong&gt;Properties&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Record the &lt;strong&gt;File Name&lt;/strong&gt; and the installation package path in the &lt;strong&gt;Location&lt;/strong&gt;.
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/5.png"
+width="403"
+height="540"
+srcset="https://blog.codeglimpse.top/en/p/python-install/5_hu_fb8b14e814135074.png 480w, https://blog.codeglimpse.top/en/p/python-install/5_hu_ed2442e93b6c1c01.png 1024w"
+loading="lazy"
+alt="Properties"
+class="gallery-image"
+data-flex-grow="74"
+data-flex-basis="179px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Type &lt;code&gt;cmd&lt;/code&gt; in the bottom-left corner of the desktop to open the command prompt as an administrator
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/6.png"
+width="781"
+height="681"
+srcset="https://blog.codeglimpse.top/en/p/python-install/6_hu_e8bc8d87b3d4e36a.png 480w, https://blog.codeglimpse.top/en/p/python-install/6_hu_5d2fda4a75e78618.png 1024w"
+loading="lazy"
+alt="cmd"
+class="gallery-image"
+data-flex-grow="114"
+data-flex-basis="275px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Enter the following commands in sequence:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bat" data-lang="bat"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;cd&lt;/span&gt; C:\Users\user\Desktop
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python-3.13.7-amd64.exe /quiet InstallAllUsers=1 PrependPath=1
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;Attention: &lt;br&gt;
+  Replace C:\Users\user\Desktop with the installation package path from Step 2.&lt;br&gt;
+  Replace python-3.13.7-amd64.exe with the filename from Step 2. (don&amp;rsquo;t forget the .exe)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src="https://blog.codeglimpse.top/en/p/python-install/7.png"
+width="976"
+height="510"
+srcset="https://blog.codeglimpse.top/en/p/python-install/7_hu_6889a21d3115004c.png 480w, https://blog.codeglimpse.top/en/p/python-install/7_hu_bca86daf47eca7f8.png 1024w"
+loading="lazy"
+alt="install"
+class="gallery-image"
+data-flex-grow="191"
+data-flex-basis="459px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;After waiting a few minutes, check in the Start menu to see if the installation is complete.
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/8.png"
+width="754"
+height="694"
+srcset="https://blog.codeglimpse.top/en/p/python-install/8_hu_d7792dd4e380a66.png 480w, https://blog.codeglimpse.top/en/p/python-install/8_hu_493e35c404a9ae20.png 1024w"
+loading="lazy"
+alt="check"
+class="gallery-image"
+data-flex-grow="108"
+data-flex-basis="260px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id="custom-script-installation"&gt;Custom Script Installation
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Create a new text file and name it as &lt;code&gt;unattend.xml&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Fill in the content:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;span class="lnt"&gt;24
+&lt;/span&gt;&lt;span class="lnt"&gt;25
+&lt;/span&gt;&lt;span class="lnt"&gt;26
+&lt;/span&gt;&lt;span class="lnt"&gt;27
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Options&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;InstallAllUsers&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;TargetDir&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;C:\Python313&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;DefaultAllUsersTargetDir&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;C:\Python313&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;DefaultJustForMeTargetDir&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;C:\Python313&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;DefaultCustomTargetDir&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;C:\Python313&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;AssociateFiles&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;CompileAll&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;PrependPath&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;AppendPath&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Shortcuts&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_doc&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_debug&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_dev&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_exe&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_launcher&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;InstallLauncherAllUsers&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_lib&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_pip&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_symbols&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_tcltk&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_test&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Include_tools&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;LauncherOnly&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;SimpleInstall&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;Value=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;0&amp;#34;&lt;/span&gt; &lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;Option&lt;/span&gt; &lt;span class="na"&gt;Name=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;SimpleInstallDescription&amp;#34;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&amp;lt;/Option&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/Options&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;strong&gt;Name&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;Description&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;Default&lt;/strong&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;InstallAllUsers&lt;/td&gt;
+&lt;td&gt;Perform a system-wide installation.&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;TargetDir&lt;/td&gt;
+&lt;td&gt;The installation directory&lt;/td&gt;
+&lt;td&gt;Selected based on InstallAllUsers&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DefaultAllUsersTargetDir&lt;/td&gt;
+&lt;td&gt;The default installation directory for all-user installs&lt;/td&gt;
+&lt;td&gt;%ProgramFiles%\Python X.Y or %ProgramFiles(x86)%\Python X.Y&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DefaultJustForMeTargetDir&lt;/td&gt;
+&lt;td&gt;The default install directory for just-for-me installs&lt;/td&gt;
+&lt;td&gt;%LocalAppData%\Programs\Python\PythonXY or %LocalAppData%\Programs\PythonXY-32 or %LocalAppData%\Programs\PythonXY-64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DefaultCustomTargetDir&lt;/td&gt;
+&lt;td&gt;The default custom install directory displayed in the UI&lt;/td&gt;
+&lt;td&gt;(empty)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;AssociateFiles&lt;/td&gt;
+&lt;td&gt;Create file associations if the launcher is also installed&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CompileAll&lt;/td&gt;
+&lt;td&gt;Compile all .py files to .pyc&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;PrependPath&lt;/td&gt;
+&lt;td&gt;Prepend install and Scripts directories to PATH and add .PY to PATHEXT&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;AppendPath&lt;/td&gt;
+&lt;td&gt;Append install and Scripts directories to PATH and add .PY to PATHEXT&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Shortcuts&lt;/td&gt;
+&lt;td&gt;Create shortcuts for the interpreter, documentation and IDLE if installed&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_doc&lt;/td&gt;
+&lt;td&gt;Install Python manual&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_debug&lt;/td&gt;
+&lt;td&gt;Install debug binaries&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_dev&lt;/td&gt;
+&lt;td&gt;Install developer headers and libraries. Omitting this may lead to an unusable installation.&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_exe&lt;/td&gt;
+&lt;td&gt;Install python.exe and related files. Omitting this may lead to an unusable installation.&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_launcher&lt;/td&gt;
+&lt;td&gt;Install Python Launcher for Windows&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;InstallLauncherAllUsers&lt;/td&gt;
+&lt;td&gt;Installs the launcher for all users. Also requires Include_launcher to be set to 1&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_lib&lt;/td&gt;
+&lt;td&gt;Install standard library and extension modules. Omitting this may lead to an unusable installation.&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_pip&lt;/td&gt;
+&lt;td&gt;Install bundled pip and setuptools&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_symbols&lt;/td&gt;
+&lt;td&gt;Install debugging symbols (*.pdb)&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_tcltk&lt;/td&gt;
+&lt;td&gt;Install Tcl/Tk support and IDLE&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_test&lt;/td&gt;
+&lt;td&gt;Install standard library test suite&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Include_tools&lt;/td&gt;
+&lt;td&gt;Install utility scripts&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;LauncherOnly&lt;/td&gt;
+&lt;td&gt;Only installs the launcher. This will override most other options.&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SimpleInstall&lt;/td&gt;
+&lt;td&gt;Disable most install UI&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SimpleInstallDescription&lt;/td&gt;
+&lt;td&gt;A custom message to display when the simplified install UI is used&lt;/td&gt;
+&lt;td&gt;(empty)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre&gt;&lt;code&gt; Usually, the value is typically 0 to disable a feature, and 1 to enable a feature or path.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Run the installation command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bat" data-lang="bat"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;cd&lt;/span&gt; C:\Users\user\Desktop
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python-3.13.7-amd64.exe /quiet .\unattend.xml
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Verify Installation:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bat" data-lang="bat"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python -V
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="macos"&gt;MacOS
+&lt;/h2&gt;&lt;p&gt;For macOS, we need to check whether the system has a pre-installed python environment.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If you&amp;rsquo;re using macOS Monterey 12.2 or earlier, you may already have Python 2.7 pre-installed. However, the latest version has been upgraded to Python 3, which has significant improvements and improved security compared to Python 2.7. Additionally, Python 2.7 is outdated and no longer officially supported&lt;/li&gt;
+&lt;li&gt;If you are using macOS Monterey 12.3 or later, Apple has completely removed Python 2.7 and will need to install Python manually&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;To check if your macOS has Python installed, open Terminal and do something like this:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Run &lt;code&gt;python --version&lt;/code&gt; If the version is 2.7.*, Python 2.7 is pre-installed&lt;/li&gt;
+&lt;li&gt;Run &lt;code&gt;python3 --version&lt;/code&gt; If the version is 3.x.*, Python 3 is pre-installed&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Note：&lt;/strong&gt;
+Recent versions of macOS include a &lt;strong&gt;python3&lt;/strong&gt; command in &lt;code&gt;/usr/bin/python3&lt;/code&gt; that links to a usually older and incomplete version of Python provided by and for use by the Apple development tools, &lt;strong&gt;Xcode&lt;/strong&gt; or the &lt;strong&gt;Command Line Tools for Xcode&lt;/strong&gt;&lt;br&gt;
+You should never modify or attempt to delete this installation, as it is Apple-controlled and is used by Apple-provided or third-party software&lt;br&gt;
+If you choose to install a newer Python version from &lt;code&gt;python.org&lt;/code&gt;, you will have two different but functional Python installations on your computer that can co-exist&lt;br&gt;
+The default installer options should ensure that its &lt;strong&gt;python3&lt;/strong&gt; will be used instead of the system &lt;strong&gt;python3&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Here are a few common installation methods for Python, and you can choose the one that suits you according to your needs.&lt;/p&gt;
+&lt;h3 id="install-python-through-the-official-installer"&gt;Install Python through the official installer
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Download the Python installer:
+Visit the macOS download address on the Python official website: &lt;a class="link" href="https://www.python.org/downloads/macos/" target="_blank" rel="noopener"
+&gt;Python for macOS&lt;/a&gt;
+Alternatively, you can download the installer by visiting the mirror website:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://mirrors.aliyun.com/python-release/macos" target="_blank" rel="noopener"
+&gt;Alibaba Mirror Site&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://mirrors.ustc.edu.cn/python/" target="_blank" rel="noopener"
+&gt;USTC Mirror Site&lt;/a&gt;、&lt;/li&gt;
+&lt;li&gt;&amp;hellip;..&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If you know of other mirror sites, please &lt;a class="link" href="mailto:libochen@codeglimpse.top" &gt;contact me&lt;/a&gt; to update them!&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;After the installer is downloaded, open the Finder - find the .pkg file in the Downloads folder – double-click to open it to start the installation
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/9.png"
+width="800"
+height="595"
+srcset="https://blog.codeglimpse.top/en/p/python-install/9_hu_bc40f6fa3bcf60a4.png 480w, https://blog.codeglimpse.top/en/p/python-install/9_hu_5c672be36a442214.png 1024w"
+loading="lazy"
+alt="Installer Page"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="322px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Clicking on the &lt;strong&gt;Continue&lt;/strong&gt; button brings up the &lt;strong&gt;Read Me&lt;/strong&gt; for this installer. Besides other important information, the &lt;strong&gt;Read Me&lt;/strong&gt; documents which Python version is going to be installed and on what versions of macOS it is supported
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/10.png"
+width="800"
+height="608"
+srcset="https://blog.codeglimpse.top/en/p/python-install/10_hu_74665ac6881f92a.png 480w, https://blog.codeglimpse.top/en/p/python-install/10_hu_25eb92d3fc475485.png 1024w"
+loading="lazy"
+alt="Important Information"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="315px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Clicking on &lt;strong&gt;Continue&lt;/strong&gt; proceeds to display the license for Python and for other included software. You will then need to &lt;strong&gt;Agree&lt;/strong&gt; to the license terms before proceeding to the next step
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/11.png"
+width="800"
+height="595"
+srcset="https://blog.codeglimpse.top/en/p/python-install/11_hu_76a90611f2027dcb.png 480w, https://blog.codeglimpse.top/en/p/python-install/11_hu_e9ed30ac483719af.png 1024w"
+loading="lazy"
+alt="Software License"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="322px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;After the license terms are accepted, the next step is the &lt;strong&gt;Installation Type&lt;/strong&gt; display. For most uses, the standard set of installation operations is appropriate. If you need to customize the installation, please refer to the introduction of &lt;a class="link" href="#customize-installation" &gt;Windows customize installation&lt;/a&gt;
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/12.png"
+width="800"
+height="595"
+srcset="https://blog.codeglimpse.top/en/p/python-install/12_hu_b3a70fc3643a3f78.png 480w, https://blog.codeglimpse.top/en/p/python-install/12_hu_acd30a1b79a73deb.png 1024w"
+loading="lazy"
+alt="Installation Type"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="322px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In either case, clicking &lt;strong&gt;Install&lt;/strong&gt; will begin the install process by asking permission to install new software. A macOS user name with &lt;code&gt;Administrator&lt;/code&gt; privilege is needed as the installed Python will be available to all users of the Mac
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/13.png"
+width="800"
+height="608"
+srcset="https://blog.codeglimpse.top/en/p/python-install/13_hu_8221de87a60644e1.png 480w, https://blog.codeglimpse.top/en/p/python-install/13_hu_d7aa0d8bc7f5af6f.png 1024w"
+loading="lazy"
+alt="Installation Completed"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="315px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Locate and double-click the &lt;strong&gt;Install Certificates.command&lt;/strong&gt; icon in the folder that pops up or find the file in &lt;code&gt;/Applications/Python 3.13/&lt;/code&gt; and double-click to complete the installation
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/14.png"
+width="800"
+height="483"
+srcset="https://blog.codeglimpse.top/en/p/python-install/14_hu_6e92a0ea10faf961.png 480w, https://blog.codeglimpse.top/en/p/python-install/14_hu_6142a04296938b30.png 1024w"
+loading="lazy"
+alt="Install Certificate"
+class="gallery-image"
+data-flex-grow="165"
+data-flex-basis="397px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;This will open a temporary &lt;strong&gt;Terminal&lt;/strong&gt; shell window that will use the new Python to download and install SSL root certificates for its use
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/15.png"
+width="800"
+height="691"
+srcset="https://blog.codeglimpse.top/en/p/python-install/15_hu_4771f5c143abda34.png 480w, https://blog.codeglimpse.top/en/p/python-install/15_hu_939d003a0a8ceec6.png 1024w"
+loading="lazy"
+alt="Terminal Command"
+class="gallery-image"
+data-flex-grow="115"
+data-flex-basis="277px"
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If &lt;code&gt;Successfully installed certifi&lt;/code&gt; and &lt;code&gt;update complete&lt;/code&gt; appears in the terminal window, the installation is complete. Close this terminal window and the installer window&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="install-python-with-homebrew"&gt;Install Python with Homebrew
+&lt;/h3&gt;&lt;p&gt;Another way to install Python on macOS is to use Homebrew. Homebrew is a third-party package manager for macOS that allows for quick application installation using Terminal, providing macOS with a Linux-like package management experience.
+Interestingly, Homebrew requires support for Python to work properly. Therefore, installing Homebrew requires available Python support, which is the older version of Python used by Apple&amp;rsquo;s system developer tools mentioned earlier.
+To install Python on macOS using Homebrew, follow these steps:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Open the &lt;strong&gt;Terminal&lt;/strong&gt; application – Run the &lt;code&gt;brew --version&lt;/code&gt; command to check if Homebrew is installed:
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/16.png"
+width="1810"
+height="918"
+srcset="https://blog.codeglimpse.top/en/p/python-install/16_hu_d39fd61296a70df5.png 480w, https://blog.codeglimpse.top/en/p/python-install/16_hu_35bfc275de51c58e.png 1024w"
+loading="lazy"
+alt="Terminal"
+class="gallery-image"
+data-flex-grow="197"
+data-flex-basis="473px"
+&gt;&lt;/li&gt;
+&lt;li&gt;If Homebrew is already installed, skip straight to step 4
+If Homebrew is not installed, run the following command in Terminal to install Homebrew:
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/bin/bash -c &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;img src="https://blog.codeglimpse.top/en/p/python-install/17.png"
+width="1200"
+height="609"
+srcset="https://blog.codeglimpse.top/en/p/python-install/17_hu_9f867d51444ea10d.png 480w, https://blog.codeglimpse.top/en/p/python-install/17_hu_97f980283aae4619.png 1024w"
+loading="lazy"
+alt="Install Homebrew"
+class="gallery-image"
+data-flex-grow="197"
+data-flex-basis="472px"
+&gt;&lt;/li&gt;
+&lt;li&gt;Once you have Homebrew installed, you can use it to install Python:
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/18.png"
+width="1000"
+height="508"
+srcset="https://blog.codeglimpse.top/en/p/python-install/18_hu_d7ba710921dad80d.png 480w, https://blog.codeglimpse.top/en/p/python-install/18_hu_e49ea54847bd5776.png 1024w"
+loading="lazy"
+alt="Install Python"
+class="gallery-image"
+data-flex-grow="196"
+data-flex-basis="472px"
+&gt;&lt;/li&gt;
+&lt;li&gt;Run Brew Link Python or Brew Link python@3. XX (replace XX with the correct version number) - Then restart the Terminal application to make sure the application is working properly
+&lt;img src="https://blog.codeglimpse.top/en/p/python-install/19.png"
+width="1810"
+height="918"
+srcset="https://blog.codeglimpse.top/en/p/python-install/19_hu_812a48a5bd5cb022.png 480w, https://blog.codeglimpse.top/en/p/python-install/19_hu_5c1e0f5498826ac6.png 1024w"
+loading="lazy"
+alt="Link Python"
+class="gallery-image"
+data-flex-grow="197"
+data-flex-basis="473px"
+&gt;&lt;/li&gt;
+&lt;li&gt;Once the installation is complete, you can run the &lt;code&gt;python -–version&lt;/code&gt; or &lt;code&gt;python3 –-version&lt;/code&gt; command to verify the installation&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="linux"&gt;Linux
+&lt;/h2&gt;&lt;p&gt;The simplest way to install Python on a Linux system is to use the package manager. Below are methods for installing Python with different package managers:&lt;/p&gt;
+&lt;h3 id="debian--ubuntu--mint"&gt;Debian / Ubuntu / Mint
+&lt;/h3&gt;&lt;p&gt;For Debian / Ubuntu / Mint systems, Python is typically installed using the apt package manager:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt update &lt;span class="c1"&gt;# Refresh the system&amp;#39;s package database to ensure you get the latest versions&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt upgrade &lt;span class="c1"&gt;# Update all installed packages to their latest versions to avoid compatibility issues&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install python3 &lt;span class="c1"&gt;# Install Python 3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install python3-pip &lt;span class="c1"&gt;# Install Python 3&amp;#39;s pip package manager&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install python3-dev python3-venv build-essential &lt;span class="c1"&gt;# Install Python3 development tools and virtual environment&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo chown -R &lt;span class="nv"&gt;$USER&lt;/span&gt;:&lt;span class="nv"&gt;$USER&lt;/span&gt; ~/.local &lt;span class="c1"&gt;# Resolve permission issues&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo rm /var/lib/apt/lists/lock
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo rm /var/cache/apt/archives/lock &lt;span class="c1"&gt;# Resolve lock file issues&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="centos--fedora--red-hat"&gt;CentOS / Fedora / Red Hat
+&lt;/h3&gt;&lt;h4 id="yum"&gt;yum
+&lt;/h4&gt;&lt;p&gt;For older CentOS / Fedora / Red Hat systems, Python is typically installed using the yum package manager:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum update &lt;span class="c1"&gt;# Refresh the system&amp;#39;s package database for the latest versions&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum install epel-release &lt;span class="c1"&gt;# Install the EPEL repository (optional)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum install python3 &lt;span class="c1"&gt;# Install Python3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum clean all
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo yum repolist &lt;span class="c1"&gt;# Clean and validate repository configuration&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="dnf"&gt;dnf
+&lt;/h4&gt;&lt;p&gt;For newer CentOS / Fedora / Red Hat systems, Python is typically installed using the dnf package manager:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf update &lt;span class="c1"&gt;# Refresh the system&amp;#39;s package database to obtain the latest versions&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf install python3 &lt;span class="c1"&gt;# Install Python3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf groupinstall “Development Tools” &lt;span class="c1"&gt;# Install development tools&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf install python3-pip &lt;span class="c1"&gt;# Install Python3&amp;#39;s pip package manager&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="arch-linux"&gt;Arch Linux
+&lt;/h3&gt;&lt;p&gt;For Arch Linux systems, Python is typically installed using the pacman package manager:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo pacman -Syu &lt;span class="c1"&gt;# Refresh the system&amp;#39;s package database to obtain the latest versions&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo pacman -S python python-pip &lt;span class="c1"&gt;# Install Python3 and the pip package manager for Python3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="suse--opensuse"&gt;SUSE / openSUSE
+&lt;/h3&gt;&lt;p&gt;For SUSE / openSUSE systems, Python is typically installed using the zypper package manager:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo zypper refresh &lt;span class="c1"&gt;# Refresh the system&amp;#39;s package database to obtain the latest versions&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo zypper install python3 python3-pip &lt;span class="c1"&gt;# Install Python 3 and the pip package manager for Python 3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo zypper install python3-devel python3-virtualenv build-essentials &lt;span class="c1"&gt;# Install Python 3 development tools and virtual environments&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item><item><title>Archives</title><link>https://blog.codeglimpse.top/en/archives/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/archives/</guid><description/></item><item><title>Contacts</title><link>https://blog.codeglimpse.top/en/links/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/links/</guid><description>&lt;p&gt;Here are several ways to contact me. Welcome to communicate and exchange ideas with me!&lt;/p&gt;</description></item><item><title>Search</title><link>https://blog.codeglimpse.top/en/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/search/</guid><description/></item></channel></rss>

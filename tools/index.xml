@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>工具 on Fernweh的个人博客</title><link>https://blog.codeglimpse.top/tools/</link><description>Recent content in 工具 on Fernweh的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 21 Mar 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.codeglimpse.top/tools/index.xml" rel="self" type="application/rss+xml"/><item><title>进制转换工具</title><link>https://blog.codeglimpse.top/tools/binary/</link><pubDate>Sat, 21 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/binary/</guid><description>&lt;p&gt;这是一个简单高效的在线进制转换工具，支持二进制 (Base 2)、八进制 (Base 8)、十进制 (Base 10)、十六进制 (Base 16) 以及 2 到 36 之间的任意自定义进制之间的相互转换。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-binary" data-lang="zh-cn"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/binary.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="如何使用"&gt;如何使用
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;选择源进制&lt;/strong&gt;：在下拉菜单中选择您要转换的数字的原始进制。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;输入数值&lt;/strong&gt;：在“输入数值”框中输入您要转换的数字。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;查看结果&lt;/strong&gt;：工具会自动实时显示转换为二进制、八进制、十进制、十六进制以及自定义进制后的结果。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;自定义进制&lt;/strong&gt;：您可以通过修改自定义进制栏标题旁的数字来更改目标自定义进制。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;复制结果&lt;/strong&gt;：点击每个结果右侧的“复制”按钮即可将其复制到剪贴板。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="常见进制说明"&gt;常见进制说明
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;二进制 (Base 2)&lt;/strong&gt;：计算机内部使用的进制，只有 0 和 1 两个数字。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;八进制 (Base 8)&lt;/strong&gt;：由 0-7 八个数字组成，常用于早期计算机系统。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;十进制 (Base 10)&lt;/strong&gt;：人类通用的进制，由 0-9 十个数字组成。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;十六进制 (Base 16)&lt;/strong&gt;：由 0-9 和 A-F 组成，在编程、网页设计（如颜色代码）和内存地址中广泛使用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="常用进制对照表"&gt;常用进制对照表
+&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;十进制&lt;/th&gt;
+&lt;th&gt;二进制&lt;/th&gt;
+&lt;th&gt;八进制&lt;/th&gt;
+&lt;th&gt;十六进制&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;101&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;1010&lt;/td&gt;
+&lt;td&gt;12&lt;/td&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;15&lt;/td&gt;
+&lt;td&gt;1111&lt;/td&gt;
+&lt;td&gt;17&lt;/td&gt;
+&lt;td&gt;F&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;16&lt;/td&gt;
+&lt;td&gt;10000&lt;/td&gt;
+&lt;td&gt;20&lt;/td&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</description></item><item><title>SHA 在线加密</title><link>https://blog.codeglimpse.top/tools/sha/</link><pubDate>Fri, 20 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/sha/</guid><description>&lt;p&gt;安全哈希算法（SHA）是由美国国家安全局（NSA）设计的一系列密码哈希函数。它们广泛用于安全应用和数据完整性验证。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-sha" data-lang="zh-cn"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/sha.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="如何使用-sha-生成器"&gt;如何使用 SHA 生成器
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;在输入框中输入您想要加密的文本或字符串。&lt;/li&gt;
+&lt;li&gt;从下拉菜单中选择所需的 SHA 算法（SHA-1, SHA-256, SHA-384, 或 SHA-512）。&lt;/li&gt;
+&lt;li&gt;选择输出格式（小写或大写）。&lt;/li&gt;
+&lt;li&gt;哈希值会在您输入时自动生成，或者您可以点击“生成”按钮。&lt;/li&gt;
+&lt;li&gt;复制生成的哈希值供您使用。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="可用算法"&gt;可用算法
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;SHA-1&lt;/strong&gt;：产生 160 位（40 个字符）的哈希值。虽然在密码学中已不再被认为是安全的，但仍用于非安全任务，如 Git 校验和。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SHA-256&lt;/strong&gt;：SHA-2 家族的一部分，产生 256 位（64 个字符）的哈希值。它是目前使用最广泛的哈希函数之一（例如在比特币中）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SHA-384&lt;/strong&gt;：SHA-2 的更安全版本，产生 384 位（96 个字符）的哈希值。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SHA-512&lt;/strong&gt;：SHA-2 家族中最强大的算法，产生 512 位（128 个字符）的哈希值。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;提示&lt;/strong&gt;：对于现代安全需求，建议使用 SHA-256 或更高版本。SHA-1 已被认为存在弱点，应避免用于敏感数据。&lt;/p&gt;
+&lt;/blockquote&gt;</description></item><item><title>MD5 在线加密</title><link>https://blog.codeglimpse.top/tools/md5/</link><pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/md5/</guid><description>&lt;p&gt;MD5（消息摘要算法 5）是一种广泛使用的密码哈希函数，产生 128 位（16 字节）的哈希值。它通常用于验证数据完整性和校验和。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-md5" data-lang="zh-cn"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/md5.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="如何使用-md5-生成器"&gt;如何使用 MD5 生成器
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;在输入框中输入您想要加密的文本或字符串。&lt;/li&gt;
+&lt;li&gt;MD5 哈希值会在您输入时自动生成，或者您可以点击“生成”按钮。&lt;/li&gt;
+&lt;li&gt;复制生成的 MD5 哈希值供您使用。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="了解-md5"&gt;了解 MD5
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;单向性&lt;/strong&gt;：MD5 设计为单向函数，这意味着从哈希值反推原始输入在计算上是不可行的。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;固定长度&lt;/strong&gt;：无论输入大小如何，MD5 哈希始终为 32 个字符（十六进制）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;确定性&lt;/strong&gt;：相同的输入始终会产生相同的哈希值。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;敏感性&lt;/strong&gt;：即使是输入中的微小变化（如增加一个空格）也会导致完全不同的哈希。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;提示&lt;/strong&gt;：由于容易受到碰撞攻击，MD5 不再被认为在密码哈希等加密用途中是安全的。对于安全敏感的应用，请使用 SHA-256 或 bcrypt 等更强大的算法。&lt;/p&gt;
+&lt;/blockquote&gt;</description></item><item><title>取色器与颜色转换器</title><link>https://blog.codeglimpse.top/tools/color/</link><pubDate>Tue, 17 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/color/</guid><description>&lt;p&gt;一个简单直观的工具，用于选取颜色并在 HEX、RGB 和 HSL 格式之间进行转换。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-color" data-lang="zh-cn"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/color.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="如何使用"&gt;如何使用
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;选取颜色&lt;/strong&gt;: 使用颜色选择器或点击预览框来直观地选择颜色。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HEX 输入&lt;/strong&gt;: 输入 6 位十六进制代码（例如 &lt;code&gt;#FF5733&lt;/code&gt;）以查看其对应的 RGB 和 HSL 值。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RGB/HSL 输入&lt;/strong&gt;: 调整各个数值以微调颜色。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;复制&lt;/strong&gt;: 点击任何格式旁边的 &lt;strong&gt;复制&lt;/strong&gt; 按钮将其复制到剪贴板。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="了解颜色格式"&gt;了解颜色格式
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;HEX&lt;/strong&gt;: RGB 值的十六进制表示，常用于网页设计。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RGB&lt;/strong&gt;: 红、绿、蓝数值 (0-255)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HSL&lt;/strong&gt;: 色相 (0-360)、饱和度 (0-100%) 和 亮度 (0-100%)。对于人类来说，它通常比 RGB 更直观。&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Unix 时间戳转换工具</title><link>https://blog.codeglimpse.top/tools/time/</link><pubDate>Mon, 16 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/time/</guid><description>&lt;p&gt;Unix 时间戳（Unix Timestamp）是从 Unix 纪元（1970 年 1 月 1 日 00:00:00 UTC）开始所经过的秒数。本工具可以帮助您方便地在时间戳与可读的日期时间格式之间进行转换。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-time" data-lang="zh-cn"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/time.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="什么是-unix-时间戳"&gt;什么是 Unix 时间戳？
+&lt;/h3&gt;&lt;p&gt;Unix 时间戳是从 1970 年 1 月 1 日（UTC/GMT 的午夜）开始所经过的秒数，不考虑闰秒。它被广泛应用于操作系统、数据库和编程语言中。&lt;/p&gt;</description></item><item><title>Base64 编码/解码</title><link>https://blog.codeglimpse.top/tools/base64/</link><pubDate>Sun, 15 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/base64/</guid><description>&lt;p&gt;Base64 是一种基于 64 个可打印字符来表示二进制数据的表示方法。它常用于在处理文本数据的场合，表示、传输、存储一些二进制数据。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-base64" data-lang="zh-cn"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/base64.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;编码&lt;/strong&gt;：在输入框中输入普通文本，点击 &lt;strong&gt;编码 (Encode)&lt;/strong&gt; 按钮即可。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解码&lt;/strong&gt;：在输入框中输入 Base64 编码后的字符串，点击 &lt;strong&gt;解码 (Decode)&lt;/strong&gt; 按钮即可。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="了解-base64"&gt;了解 Base64
+&lt;/h3&gt;&lt;p&gt;Base64 编码并不是加密。它只是一种数据格式转换方式，旨在确保数据在传输过程中的完整性。&lt;/p&gt;</description></item><item><title>BMI 计算器</title><link>https://blog.codeglimpse.top/tools/bmi/</link><pubDate>Sat, 14 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/bmi/</guid><description>&lt;p&gt;身体质量指数（BMI）是衡量人体肥胖程度和是否健康的一个标准。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-bmi" data-lang="zh-cn"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/bmi.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="bmi-标准对照表-中国标准"&gt;BMI 标准对照表 (中国标准)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;偏瘦&lt;/strong&gt;: &amp;lt; 18.5&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;正常&lt;/strong&gt;: 18.5 - 23.9&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;过重&lt;/strong&gt;: 24.0 - 27.9&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;肥胖&lt;/strong&gt;: &amp;gt;= 28.0&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;注意：BMI 仅作为参考，不适用于运动员、孕妇或老人等特殊人群。&lt;/p&gt;
+&lt;/blockquote&gt;</description></item></channel></rss>

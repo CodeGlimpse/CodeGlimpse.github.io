@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>OpenClaw on Fernweh的个人博客</title><link>https://blog.codeglimpse.top/tags/openclaw/</link><description>Recent content in OpenClaw on Fernweh的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 24 Mar 2026 23:00:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/tags/openclaw/index.xml" rel="self" type="application/rss+xml"/><item><title>OpenClaw 2026.3.23.1 浏览器工具重构：从 Chrome 扩展转向原生 DevTools MCP</title><link>https://blog.codeglimpse.top/p/openclaw-chrome/</link><pubDate>Tue, 24 Mar 2026 23:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/openclaw-chrome/</guid><description>&lt;p&gt;在最新的 &lt;strong&gt;2026.3.23.1&lt;/strong&gt; 版本中，OpenClaw 对浏览器自动化工具进行了重磅重构。&lt;/p&gt;
+&lt;p&gt;根据官方文档与 Chrome 团队的最新发布，OpenClaw 已正式从不稳定的“扩展插件中继（Extension Relay）”模式，转向了基于 &lt;strong&gt;Chrome DevTools MCP (Model Context Protocol)&lt;/strong&gt; 的原生连接方案。这意味着 AI 现在能以更安全、更原生、更高效的方式接管你的浏览器。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="核心演进为什么不再需要插件"&gt;核心演进：为什么不再需要插件？
+&lt;/h2&gt;&lt;p&gt;在 2026.3.23.1 之前的版本中，OpenClaw 主要依靠一个手动安装的 Chrome 扩展来桥接。这种方式存在权限受限、登录态同步不稳定等问题。&lt;/p&gt;
+&lt;p&gt;新版本引入了两种核心 Profile（配置文件）模式：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;openclaw&lt;/code&gt; 模式&lt;/strong&gt;：完全隔离的托管浏览器，无需任何配置，开箱即用（橙色主题）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;user&lt;/code&gt; 模式（原 &lt;code&gt;chrome&lt;/code&gt; 模式升级）&lt;/strong&gt;：通过 &lt;strong&gt;Chrome DevTools MCP&lt;/strong&gt; 直接附加到你当前正在使用的 Chrome 窗口，实现真正的“零插件”接管。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id="旧版本教程chrome-扩展中继-legacy"&gt;旧版本教程：Chrome 扩展中继 (Legacy)
+&lt;/h2&gt;&lt;p&gt;如果你仍在使用旧版本，其连接逻辑依赖于扩展插件：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;安装扩展&lt;/strong&gt;：需进入 &lt;code&gt;chrome://extensions/&lt;/code&gt; 开启开发者模式，手动加载 &lt;code&gt;openclaw-connector&lt;/code&gt; 文件夹。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ID 配置&lt;/strong&gt;：在 &lt;code&gt;~/.openclaw/openclaw.json&lt;/code&gt;（或旧版 YAML）中填入插件生成的唯一 ID。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;手动点击&lt;/strong&gt;：每次任务开始前，用户必须在浏览器中点击插件图标，手动允许 AI 连接到当前标签页。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id="新版本教程devtools-mcp-远程调试-推荐"&gt;新版本教程：DevTools MCP 远程调试 (推荐)
+&lt;/h2&gt;&lt;p&gt;在 &lt;strong&gt;2026.3.23.1&lt;/strong&gt; 中，连接你的原生浏览器（Profile: &lt;code&gt;user&lt;/code&gt;）不再需要插件，而是利用 Chrome 144+ 内置的远程调试能力。&lt;/p&gt;
+&lt;h3 id="第一步在-chrome-中开启远程调试"&gt;第一步：在 Chrome 中开启远程调试
+&lt;/h3&gt;&lt;p&gt;不再需要繁琐的命令行参数，现在可以通过 Chrome 内部设置开启：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;在 Chrome 地址栏输入 &lt;code&gt;chrome://inspect/#remote-debugging&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;勾选 &lt;strong&gt;&amp;ldquo;Enable remote debugging&amp;rdquo;&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;按照提示允许传入的调试连接。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="第二步配置-openclaw-使用-user-配置文件"&gt;第二步：配置 OpenClaw 使用 &lt;code&gt;user&lt;/code&gt; 配置文件
+&lt;/h3&gt;&lt;p&gt;OpenClaw 的配置现在统一在 &lt;code&gt;~/.openclaw/openclaw.json&lt;/code&gt; 中。要启用原生接管，请确保配置如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;browser&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;enabled&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;defaultProfile&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;user&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;profiles&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;user&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;driver&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;existing-session&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;attachOnly&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;color&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;#00AA00&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="第三步授权连接"&gt;第三步：授权连接
+&lt;/h3&gt;&lt;p&gt;当你第一次运行 &lt;code&gt;openclaw tool run browser&lt;/code&gt; 时，Chrome 顶部会弹出授权对话框。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;点击 &lt;strong&gt;&amp;ldquo;Allow&amp;rdquo;&lt;/strong&gt;（允许）。&lt;/li&gt;
+&lt;li&gt;此时 Chrome 会显示“Chrome 正受到自动测试软件的控制”横幅，表示 AI 已成功接管。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="关键技术点对比"&gt;关键技术点对比
+&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style="text-align: left"&gt;特性&lt;/th&gt;
+&lt;th style="text-align: left"&gt;旧版 (Extension)&lt;/th&gt;
+&lt;th style="text-align: left"&gt;新版 (DevTools MCP)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;连接协议&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: left"&gt;扩展 API 转发&lt;/td&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;原生 CDP / MCP 协议&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;认证方式&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: left"&gt;插件 ID 校验&lt;/td&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;Chrome 系统级弹窗授权&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;登录态共享&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: left"&gt;需插件介入同步&lt;/td&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;原生共享现有 Session&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;安全性&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: left"&gt;插件可能存在注入风险&lt;/td&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;基于 Chrome 内置安全沙箱&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;系统要求&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: left"&gt;任意 Chrome 版本&lt;/td&gt;
+&lt;td style="text-align: left"&gt;&lt;strong&gt;Chrome M144 或更高版本&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id="升级建议与注意事项"&gt;升级建议与注意事项
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;版本要求&lt;/strong&gt;：原生 MCP 模式需要 &lt;strong&gt;Chrome M144 (Beta/Canary)&lt;/strong&gt; 或更高版本。如果你使用的是稳定版 Chrome 且版本较低，建议继续使用 &lt;code&gt;openclaw&lt;/code&gt; 托管模式。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;配置文件路径&lt;/strong&gt;：OpenClaw 的配置已从 &lt;code&gt;config.yaml&lt;/code&gt; 转向更加标准化的 &lt;code&gt;~/.openclaw/openclaw.json&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;隐私提示&lt;/strong&gt;：使用 &lt;code&gt;user&lt;/code&gt; 模式时，AI 可以访问你已登录的所有页面（如 GitHub、Gmail）。在执行自动化任务时，请确保你信任该智能体。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;</description></item><item><title>OpenClaw 安装与配置完全指南</title><link>https://blog.codeglimpse.top/p/openclaw-install/</link><pubDate>Mon, 23 Mar 2026 22:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/openclaw-install/</guid><description>&lt;h1 id="openclaw-安装与配置完全指南"&gt;OpenClaw 安装与配置完全指南
+&lt;/h1&gt;&lt;p&gt;OpenClaw 是一款旨在运行在用户自有设备上的个人 AI 助手平台。它能与你常用的聊天频道（如 WhatsApp、Telegram、Slack、Discord 等）无缝集成，提供统一且“永不离线”的 AI 体验。本指南将带你完成完整的安装和配置过程。&lt;/p&gt;
+&lt;h2 id="前置条件"&gt;前置条件
+&lt;/h2&gt;&lt;p&gt;在安装 OpenClaw 之前，请确保你的系统满足以下要求：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Node.js&lt;/strong&gt;: 强烈推荐 Node 24 版本。Node 22.16+ 版本也可支持。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;操作系统&lt;/strong&gt;: macOS、Linux 或 Windows（为了稳定性，强烈推荐使用 WSL2）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;模型 API 密钥&lt;/strong&gt;: 你需要准备好来自 Anthropic、OpenAI 或 Google 等提供商的 API 密钥。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;网络&lt;/strong&gt;: 稳定的互联网连接，用于下载软件包以及与 AI 模型通信。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="安装方法"&gt;安装方法
+&lt;/h2&gt;&lt;p&gt;OpenClaw 提供了多种安装方式，你可以根据自己的技术偏好进行选择。&lt;/p&gt;
+&lt;h3 id="1-推荐方式安装脚本最快"&gt;1. 推荐方式：安装脚本（最快）
+&lt;/h3&gt;&lt;p&gt;安装脚本会自动检测你的操作系统，根据需要安装 Node，并引导你完成初始化过程。&lt;/p&gt;
+&lt;h4 id="macos--linux--wsl2"&gt;macOS / Linux / WSL2
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;openclaw&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -fsSL https://openclaw.ai/install.sh &lt;span class="p"&gt;|&lt;/span&gt; bash
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;openclaw-cn&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -fsSL https://open-claw.org.cn/install-cn.sh &lt;span class="p"&gt;|&lt;/span&gt; bash
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="windows-powershell"&gt;Windows (PowerShell)
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;openclaw&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;iwr &lt;/span&gt;&lt;span class="n"&gt;-useb&lt;/span&gt; &lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="p"&gt;//&lt;/span&gt;&lt;span class="n"&gt;openclaw&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ai&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="n"&gt;install&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;ps1&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;iex
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;openclaw-cn&lt;/strong&gt;(安装脚本不会在Windows原生环境自动下载Git，请确保已安装Git)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;iwr &lt;/span&gt;&lt;span class="n"&gt;-useb&lt;/span&gt; &lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="p"&gt;//&lt;/span&gt;&lt;span class="nb"&gt;open-claw&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;org&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cn&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;install-cn&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;ps1&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;iex
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="2-通过-npm-或-pnpm-手动安装"&gt;2. 通过 npm 或 pnpm 手动安装
+&lt;/h3&gt;&lt;p&gt;如果你更喜欢自己管理 Node 环境，可以全局安装 OpenClaw CLI。&lt;/p&gt;
+&lt;h4 id="使用-npm"&gt;使用 npm
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm install -g openclaw@latest
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw onboard --install-daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="使用-pnpm"&gt;使用 pnpm
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm add -g openclaw@latest
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm approve-builds -g
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw onboard --install-daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="3-源码安装针对开发者"&gt;3. 源码安装（针对开发者）
+&lt;/h3&gt;&lt;p&gt;如果你想参与贡献或从本地代码库运行：
+&lt;strong&gt;openclaw&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;git clone https://github.com/openclaw/openclaw.git
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; openclaw
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm install &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; pnpm ui:build &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; pnpm build
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm link --global
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw onboard --install-daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;openclaw-cn&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;git clone https://gitee.com/OpenClaw-CN/openclaw-cn.git
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; openclaw-cn
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm config &lt;span class="nb"&gt;set&lt;/span&gt; registry https://registry.npmmirror.com/ &lt;span class="c1"&gt;# 配置国内镜像&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm install &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; pnpm ui:build &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; pnpm build
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm link --global
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw onboard --install-daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="初始化与配置-onboarding"&gt;初始化与配置 (Onboarding)
+&lt;/h2&gt;&lt;p&gt;安装完成后，最重要的步骤是运行初始化向导。它将配置你的工作区、网关以及初始 AI 模型。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw onboard --install-daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;向导会提示你：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;选择模型提供商&lt;/strong&gt;: 在 Anthropic、OpenAI、Google 等之间进行选择。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;输入 API 密钥&lt;/strong&gt;: 输入对应提供商的 API 密钥。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;安装守护进程 (Daemon)&lt;/strong&gt;: 将 OpenClaw 安装为系统服务（推荐），使其在后台持续运行。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id="验证安装"&gt;验证安装
+&lt;/h2&gt;&lt;p&gt;要确保一切正常运行，请使用以下命令：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw doctor &lt;span class="c1"&gt;# 检查配置问题&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw status &lt;span class="c1"&gt;# Gateway 网关状态&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw dashboard &lt;span class="c1"&gt;# 打开浏览器 UI&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item><item><title>如何彻底卸载 OpenClaw 小龙虾</title><link>https://blog.codeglimpse.top/p/%E5%A6%82%E4%BD%95%E5%BD%BB%E5%BA%95%E5%8D%B8%E8%BD%BD-openclaw-%E5%B0%8F%E9%BE%99%E8%99%BE/</link><pubDate>Wed, 18 Mar 2026 17:22:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/%E5%A6%82%E4%BD%95%E5%BD%BB%E5%BA%95%E5%8D%B8%E8%BD%BD-openclaw-%E5%B0%8F%E9%BE%99%E8%99%BE/</guid><description>&lt;p&gt;OpenClaw 小龙虾，一个最近爆火的AI代理，它的安装和使用都非常方便。然而，在最近的新闻中我们同时也发现，这款工具有很大的安全风险，可能并不适合企业环境或者包含个人隐私的计算机中。但是，由于OpenClaw 小龙虾的安装方式与常规软件并不相同，所以我们可能并不是很轻易地就可以将其卸载，本文将提供详细的操作指南来教会大家卸载小龙虾。&lt;/p&gt;
+&lt;p&gt;我们将针对不同的操作系统（Windows, Linux, macOS）提供手动卸载步骤以及推荐的自动化清理脚本。&lt;/p&gt;
+&lt;h2 id="自动化卸载脚本推荐"&gt;自动化卸载脚本（推荐）
+&lt;/h2&gt;&lt;p&gt;为了简化卸载过程，我们编写了针对各平台的自动化清理脚本。这些脚本会自动检测 Node.js 环境、停止相关进程并清理全局包。&lt;/p&gt;
+&lt;h3 id="windows-powershell"&gt;Windows (PowerShell)
+&lt;/h3&gt;&lt;p&gt;以管理员权限打开 PowerShell，然后执行以下命令：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;irm &lt;/span&gt;&lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="p"&gt;//&lt;/span&gt;&lt;span class="n"&gt;blog&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;codeglimpse&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;top&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;openclaw-uninstall&lt;/span&gt;&lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="n"&gt;CleanupOpenClawForWindows&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;ps1&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;iex
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="linux-bash"&gt;Linux (Bash)
+&lt;/h3&gt;&lt;p&gt;打开终端，然后执行以下命令：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -sSL https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForLinux.sh &lt;span class="p"&gt;|&lt;/span&gt; bash
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="macos-bash"&gt;macOS (Bash)
+&lt;/h3&gt;&lt;p&gt;打开终端，然后执行以下命令：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -sSL https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForMacOS.sh &lt;span class="p"&gt;|&lt;/span&gt; bash
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="手动卸载步骤"&gt;手动卸载步骤
+&lt;/h2&gt;&lt;p&gt;如果你更倾向于手动操作，请按照以下步骤进行：&lt;/p&gt;
+&lt;h3 id="1-停止相关进程"&gt;1. 停止相关进程
+&lt;/h3&gt;&lt;p&gt;确保没有任何 OpenClaw 相关的 Node.js 进程正在运行。你可以通过任务管理器（Windows）或 &lt;code&gt;top&lt;/code&gt;/&lt;code&gt;ps&lt;/code&gt; 命令（Linux/macOS）查找并终止它们。&lt;/p&gt;
+&lt;h3 id="2-卸载全局包"&gt;2. 卸载全局包
+&lt;/h3&gt;&lt;p&gt;使用你常用的包管理器执行卸载命令：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 使用 npm&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm uninstall -g openclaw openclaw-cn
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 使用 pnpm&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm uninstall -g openclaw openclaw-cn
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="3-清理残留文件"&gt;3. 清理残留文件
+&lt;/h3&gt;&lt;p&gt;检查以下路径并删除与 OpenClaw 相关的文件夹：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Windows&lt;/strong&gt;: &lt;code&gt;C:\Users\&amp;lt;YourUsername&amp;gt;\AppData\Roaming\npm\node_modules\openclaw&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Linux/macOS&lt;/strong&gt;: &lt;code&gt;/usr/local/lib/node_modules/openclaw&lt;/code&gt; 或 &lt;code&gt;~/.npm-global/lib/node_modules/openclaw&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="常见问题解答"&gt;常见问题解答
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Q: 运行脚本时提示权限不足？&lt;/strong&gt;
+A: 请确保在 Windows 上使用管理员权限运行，在 Linux/macOS 上使用 &lt;code&gt;sudo&lt;/code&gt;（如果需要）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Q: 脚本没有找到 Node.js 怎么办？&lt;/strong&gt;
+A: 请确保 Node.js 已正确安装在你的 PATH 环境变量中。脚本会尝试自动查找常见的安装路径（如 NVM 安装路径）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;希望这篇指南能帮助你顺利完成 OpenClaw 的卸载工作。&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tools on Personal Blogs for Fernweh</title><link>https://blog.codeglimpse.top/en/tools/</link><description>Recent content in Tools on Personal Blogs for Fernweh</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sat, 21 Mar 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.codeglimpse.top/en/tools/index.xml" rel="self" type="application/rss+xml"/><item><title>Base Converter</title><link>https://blog.codeglimpse.top/en/tools/binary/</link><pubDate>Sat, 21 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/binary/</guid><description>&lt;p&gt;A simple and efficient online base converter that supports conversion between Binary (Base 2), Octal (Base 8), Decimal (Base 10), Hexadecimal (Base 16), and any custom base from 2 to 36.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-binary" data-lang="en"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/binary.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="how-to-use"&gt;How to Use
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Select Source Base&lt;/strong&gt;: Choose the base of the number you want to convert from the dropdown menu.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Enter Value&lt;/strong&gt;: Type the number into the &amp;ldquo;Input Value&amp;rdquo; field.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;View Results&lt;/strong&gt;: The tool will automatically display the converted values in Binary, Octal, Decimal, Hexadecimal, and a custom base.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Custom Base&lt;/strong&gt;: You can change the target custom base by adjusting the number in the &amp;ldquo;Custom Base&amp;rdquo; header.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Copy Results&lt;/strong&gt;: Click the &amp;ldquo;Copy&amp;rdquo; button next to any result to copy it to your clipboard.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="common-bases"&gt;Common Bases
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Binary (Base 2)&lt;/strong&gt;: Used in computer systems, consisting of only 0 and 1.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Octal (Base 8)&lt;/strong&gt;: Uses digits 0-7, often used in older computing systems.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Decimal (Base 10)&lt;/strong&gt;: The standard system used by humans, consisting of digits 0-9.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hexadecimal (Base 16)&lt;/strong&gt;: Uses digits 0-9 and letters A-F, widely used in programming and web design for color codes and memory addresses.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="base-conversion-table"&gt;Base Conversion Table
+&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Decimal&lt;/th&gt;
+&lt;th&gt;Binary&lt;/th&gt;
+&lt;th&gt;Octal&lt;/th&gt;
+&lt;th&gt;Hex&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;101&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;1010&lt;/td&gt;
+&lt;td&gt;12&lt;/td&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;15&lt;/td&gt;
+&lt;td&gt;1111&lt;/td&gt;
+&lt;td&gt;17&lt;/td&gt;
+&lt;td&gt;F&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;16&lt;/td&gt;
+&lt;td&gt;10000&lt;/td&gt;
+&lt;td&gt;20&lt;/td&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</description></item><item><title>SHA Hash Generator</title><link>https://blog.codeglimpse.top/en/tools/sha/</link><pubDate>Fri, 20 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/sha/</guid><description>&lt;p&gt;Secure Hash Algorithms (SHA) are a family of cryptographic hash functions designed by the NSA. They are widely used for security applications and data integrity verification.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-sha" data-lang="en"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/sha.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="how-to-use-sha-generator"&gt;How to Use SHA Generator
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Enter the text or string you want to hash in the input field.&lt;/li&gt;
+&lt;li&gt;Select the desired SHA algorithm (SHA-1, SHA-256, SHA-384, or SHA-512) from the dropdown.&lt;/li&gt;
+&lt;li&gt;Choose the output format (Lowercase or Uppercase).&lt;/li&gt;
+&lt;li&gt;The hash will be generated automatically as you type, or you can click the &amp;ldquo;Generate&amp;rdquo; button.&lt;/li&gt;
+&lt;li&gt;Copy the resulting hash for your use.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="available-algorithms"&gt;Available Algorithms
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;SHA-1&lt;/strong&gt;: Produces a 160-bit (40-character) hash. No longer considered secure for cryptographic purposes but still used for non-security tasks like Git checksums.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SHA-256&lt;/strong&gt;: Part of the SHA-2 family, produces a 256-bit (64-character) hash. It is currently one of the most widely used hash functions (e.g., in Bitcoin).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SHA-384&lt;/strong&gt;: A more secure version of SHA-2, producing a 384-bit (96-character) hash.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SHA-512&lt;/strong&gt;: The strongest of the SHA-2 family, producing a 512-bit (128-character) hash.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: For modern security needs, SHA-256 or higher is recommended. SHA-1 is considered weak and should be avoided for sensitive data.&lt;/p&gt;
+&lt;/blockquote&gt;</description></item><item><title>MD5 Hash Generator</title><link>https://blog.codeglimpse.top/en/tools/md5/</link><pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/md5/</guid><description>&lt;p&gt;MD5 (Message-Digest Algorithm 5) is a widely used cryptographic hash function that produces a 128-bit (16-byte) hash value. It is commonly used to verify data integrity and for checksums.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-md5" data-lang="en"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/md5.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="how-to-use-md5-hash-generator"&gt;How to Use MD5 Hash Generator
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Enter the text or string you want to hash in the input field.&lt;/li&gt;
+&lt;li&gt;The MD5 hash will be generated automatically as you type, or you can click the &amp;ldquo;Generate&amp;rdquo; button.&lt;/li&gt;
+&lt;li&gt;Copy the resulting MD5 hash for your use.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="understanding-md5"&gt;Understanding MD5
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;One-way Function&lt;/strong&gt;: MD5 is designed to be a one-way function, meaning it is computationally infeasible to reverse the process and retrieve the original input from the hash.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fixed Length&lt;/strong&gt;: Regardless of the input size, the MD5 hash is always 32 characters (hexadecimal).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Deterministic&lt;/strong&gt;: The same input will always produce the same hash value.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Sensitivity&lt;/strong&gt;: Even a tiny change in the input (like adding a single space) will result in a completely different hash.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: MD5 is no longer considered secure for cryptographic purposes such as password hashing due to vulnerabilities to collision attacks. For security-sensitive applications, use stronger algorithms like SHA-256 or bcrypt.&lt;/p&gt;
+&lt;/blockquote&gt;</description></item><item><title>Color Picker &amp; Converter</title><link>https://blog.codeglimpse.top/en/tools/color/</link><pubDate>Tue, 17 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/color/</guid><description>&lt;p&gt;A simple and intuitive tool to pick colors and convert them between HEX, RGB, and HSL formats.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-color" data-lang="en"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/color.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="how-to-use"&gt;How to use
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Pick a Color&lt;/strong&gt;: Use the color picker or click the preview box to choose a color visually.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HEX Input&lt;/strong&gt;: Enter a 6-digit hex code (e.g., &lt;code&gt;#FF5733&lt;/code&gt;) to see its RGB and HSL equivalents.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RGB/HSL Inputs&lt;/strong&gt;: Adjust the individual values to fine-tune your color.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Copy&lt;/strong&gt;: Click the &lt;strong&gt;Copy&lt;/strong&gt; button next to any format to copy it to your clipboard.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="understanding-color-formats"&gt;Understanding Color Formats
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;HEX&lt;/strong&gt;: A hexadecimal representation of RGB values, commonly used in web design.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RGB&lt;/strong&gt;: Red, Green, and Blue values (0-255).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HSL&lt;/strong&gt;: Hue (0-360), Saturation (0-100%), and Lightness (0-100%). It&amp;rsquo;s often more intuitive for humans to understand than RGB.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Unix Timestamp Converter</title><link>https://blog.codeglimpse.top/en/tools/time/</link><pubDate>Mon, 16 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/time/</guid><description>&lt;p&gt;A Unix timestamp is a way to track time as a running total of seconds. This count starts at the Unix Epoch on January 1st, 1970 at UTC. This tool helps you convert between these timestamps and human-readable dates.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-time" data-lang="en"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/time.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="what-is-unix-time"&gt;What is Unix Time?
+&lt;/h3&gt;&lt;p&gt;Unix time (also known as Epoch time, POSIX time, seconds since the Epoch, or UNIX Epoch time) is a system for describing a point in time. It is the number of seconds that have elapsed since the Unix epoch, minus leap seconds; the Unix epoch is 00:00:00 UTC on 1 January 1970.&lt;/p&gt;</description></item><item><title>Base64 Encoder/Decoder</title><link>https://blog.codeglimpse.top/en/tools/base64/</link><pubDate>Sun, 15 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/base64/</guid><description>&lt;p&gt;Base64 is an encoding scheme used to represent binary data in an ASCII string format. It&amp;rsquo;s commonly used when binary data needs to be transferred over media that are designed to deal with textual data.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-base64" data-lang="en"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/base64.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="how-to-use"&gt;How to use
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;To Encode&lt;/strong&gt;: Paste your plain text into the input box and click the &lt;strong&gt;Encode&lt;/strong&gt; button.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;To Decode&lt;/strong&gt;: Paste your Base64 encoded string into the input box and click the &lt;strong&gt;Decode&lt;/strong&gt; button.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="understanding-base64"&gt;Understanding Base64
+&lt;/h3&gt;&lt;p&gt;Base64 is not encryption. It&amp;rsquo;s a way to represent data in a format that&amp;rsquo;s safe for transport.&lt;/p&gt;</description></item><item><title>BMI Calculator</title><link>https://blog.codeglimpse.top/en/tools/bmi/</link><pubDate>Sat, 14 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/bmi/</guid><description>&lt;p&gt;Body Mass Index (BMI) is a simple index of weight-for-height that is commonly used to classify underweight, overweight and obesity in adults.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-bmi" data-lang="en"&gt;
+&lt;div class="tool-loader"&gt;加载中...&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/bmi.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="bmi-categories-who-standard"&gt;BMI Categories (WHO Standard)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Underweight&lt;/strong&gt;: &amp;lt; 18.5&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Normal weight&lt;/strong&gt;: 18.5 - 24.9&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Overweight&lt;/strong&gt;: 25.0 - 29.9&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Obesity&lt;/strong&gt;: &amp;gt;= 30.0&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Note: BMI is a useful measure of overweight and obesity. It is calculated from your height and weight. BMI is an estimate of body fat and a good gauge of your risk for diseases that can occur with more body fat.&lt;/p&gt;
+&lt;/blockquote&gt;</description></item></channel></rss>

@@ -54,7 +54,7 @@ jobs:
           npm run check:js
           npm run check:content
           npm test
-          hugo --gc --minify
+          hugo --cleanDestinationDir --gc --minify
 
       - name: Create theme update pull request
         uses: peter-evans/create-pull-request@v7

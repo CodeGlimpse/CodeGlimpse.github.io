@@ -56,7 +56,7 @@ npm run check         # 依次执行语法检查、内容检查、测试和生�
 node scripts/check-js.cjs
 node scripts/check-content.cjs
 node scripts/run-tests.cjs
-hugo --minify --gc
+hugo --cleanDestinationDir --minify --gc
 ```
 
 ## 在线工具开发

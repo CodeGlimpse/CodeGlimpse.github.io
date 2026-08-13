@@ -2,5 +2,29 @@
     <div class="tool-loader">加载中...</div>
 </div>
 
-{{ $js := resources.Get (printf "js/tools/%s.js" (.Get "id")) | js.Build }}
+{{ $clipboard := resources.Get "js/tools/clipboard.js" | js.Build }}
+<script src="{{ $clipboard.RelPermalink }}" defer></script>
+
+{{ $id := .Get "id" }}
+{{ if eq $id "binary" }}
+    {{ $core := resources.Get "js/tools/binary-core.js" | js.Build }}
+    <script src="{{ $core.RelPermalink }}" defer></script>
+{{ else if eq $id "time" }}
+    {{ $core := resources.Get "js/tools/time-core.js" | js.Build }}
+    <script src="{{ $core.RelPermalink }}" defer></script>
+{{ else if eq $id "bmi" }}
+    {{ $core := resources.Get "js/tools/bmi-core.js" | js.Build }}
+    <script src="{{ $core.RelPermalink }}" defer></script>
+{{ else if eq $id "color" }}
+    {{ $core := resources.Get "js/tools/color-core.js" | js.Build }}
+    <script src="{{ $core.RelPermalink }}" defer></script>
+{{ else if eq $id "md5" }}
+    {{ $core := resources.Get "js/tools/md5-core.js" | js.Build }}
+    <script src="{{ $core.RelPermalink }}" defer></script>
+{{ else if eq $id "sha" }}
+    {{ $core := resources.Get "js/tools/sha-core.js" | js.Build }}
+    <script src="{{ $core.RelPermalink }}" defer></script>
+{{ end }}
+
+{{ $js := resources.Get (printf "js/tools/%s.js" $id) | js.Build }}
 <script src="{{ $js.RelPermalink }}" defer></script>

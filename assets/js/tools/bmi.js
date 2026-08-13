@@ -11,6 +11,7 @@
             placeholderHeight: '例如: 175',
             placeholderWeight: '例如: 70',
             btnCalc: '开始计算',
+            errorInvalid: '请输入有效的身高和体重。',
             statusUnderweight: '偏瘦',
             statusNormal: '正常',
             statusOverweight: '过重',
@@ -23,6 +24,7 @@
             placeholderHeight: 'e.g., 175',
             placeholderWeight: 'e.g., 70',
             btnCalc: 'Calculate',
+            errorInvalid: 'Enter a valid height and weight.',
             statusUnderweight: 'Underweight',
             statusNormal: 'Normal',
             statusOverweight: 'Overweight',
@@ -80,6 +82,7 @@
                 font-size: 1.5rem;
                 font-weight: bold;
             }
+            #tool-bmi #bmi-error { min-height: 1.5rem; color: #e74c3c; text-align: center; }
         </style>
         <div class="tool-container">
             <div class="input-group">
@@ -95,6 +98,7 @@
                 <span class="bmi-value"></span>
                 <span class="bmi-status"></span>
             </div>
+            <div id="bmi-error" role="alert" aria-live="polite"></div>
         </div>
     `;
 
@@ -102,13 +106,14 @@
     const resBox = document.getElementById('bmi-result');
     const valSpan = resBox.querySelector('.bmi-value');
     const statSpan = resBox.querySelector('.bmi-status');
+    const errorSpan = document.getElementById('bmi-error');
 
     btn.onclick = () => {
-        const h = parseFloat(document.getElementById('bmi-height').value) / 100;
-        const w = parseFloat(document.getElementById('bmi-weight').value);
+        const height = document.getElementById('bmi-height').value;
+        const weight = document.getElementById('bmi-weight').value;
 
-        if (h > 0 && w > 0) {
-            const bmi = (w / (h * h)).toFixed(1);
+        try {
+            const bmi = window.CodeGlimpseBmi.calculate(height, weight).toFixed(1);
             let status = '';
             let color = '';
 
@@ -127,6 +132,12 @@
             valSpan.innerText = `BMI: ${bmi}`;
             statSpan.innerText = status;
             statSpan.style.backgroundColor = color;
+            errorSpan.textContent = '';
+        } catch (error) {
+            resBox.style.display = 'none';
+            valSpan.innerText = '';
+            statSpan.innerText = '';
+            errorSpan.textContent = t.errorInvalid;
         }
     };
 })();

@@ -169,7 +169,7 @@
 
     const getTimezones = () => {
         const now = new Date();
-        const allTz = Intl.supportedValuesOf('timeZone');
+        const allTz = window.CodeGlimpseTime.getTimezones();
         
         let dn;
         try {
@@ -286,23 +286,10 @@
     const btnToDt = document.getElementById('btn-to-dt');
     const btnToTs = document.getElementById('btn-to-ts');
 
-    function formatDate(date, tz) {
-        return new Intl.DateTimeFormat('en-GB', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false,
-            timeZone: tz
-        }).format(date).replace(/(\d+)\/(\d+)\/(\d+),?/, '$3-$2-$1');
-    }
-
     function updateCurrent() {
         const now = new Date();
         const tz = currentTzSelect.value;
-        currentDisplay.textContent = formatDate(now, tz);
+        currentDisplay.textContent = window.CodeGlimpseTime.formatDate(now, tz);
         currentSec.textContent = Math.floor(now.getTime() / 1000);
         currentMs.textContent = now.getTime();
     }
@@ -310,7 +297,7 @@
     // Initialize inputs with current time
     const initDate = new Date();
     inputTs.value = Math.floor(initDate.getTime() / 1000);
-    inputDt.value = formatDate(initDate, converterTzSelect.value);
+    inputDt.value = window.CodeGlimpseTime.formatDate(initDate, converterTzSelect.value);
 
     setInterval(updateCurrent, 1000);
     updateCurrent();
@@ -318,10 +305,12 @@
     btnToDt.onclick = () => {
         let ts = inputTs.value.trim();
         if (!ts) return;
-        let val = parseInt(ts);
-        if (isNaN(val)) { alert(t.errorInvalid); return; }
-        if (ts.length <= 11) val *= 1000;
-        inputDt.value = formatDate(new Date(val), converterTzSelect.value);
+        try {
+            const parsed = window.CodeGlimpseTime.parseTimestamp(ts);
+            inputDt.value = window.CodeGlimpseTime.formatDate(parsed.date, converterTzSelect.value);
+        } catch (error) {
+            alert(t.errorInvalid);
+        }
     };
 
     btnToTs.onclick = () => {
@@ -329,45 +318,8 @@
         if (!dtStr) return;
         
         const tz = converterTzSelect.value;
-        // Parsing with timezone is tricky with native Date.
-        // We use Intl to get components and then construct UTC date.
         try {
-            // For simple implementation, we assume YYYY-MM-DD HH:mm:ss
-            const parts = dtStr.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
-            if (!parts) throw new Error();
-            
-            const [_, y, m, d, h, min, s] = parts.map(Number);
-            
-            // Construct a date string that includes the offset for the target timezone
-            // or use a more robust approach:
-            const isoStr = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}T${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-            
-            // To handle timezone correctly without libraries:
-            const date = new Date(isoStr);
-            // This date is currently interpreted as local time.
-            // We need to adjust it so that its representation in the TARGET timezone matches the input.
-            
-            const getOffset = (date, tz) => {
-                const parts = new Intl.DateTimeFormat('en-US', {
-                    timeZone: tz,
-                    timeZoneName: 'longOffset'
-                }).formatToParts(date);
-                const offsetName = parts.find(p => p.type === 'timeZoneName').value; // e.g. "GMT+8" or "GMT-04:00"
-                const match = offsetName.match(/GMT([+-])(\d{1,2}):?(\d{2})?/);
-                if (!match) return 0;
-                const [__, sign, hours, minutes] = match;
-                const totalMinutes = parseInt(hours) * 60 + (minutes ? parseInt(minutes) : 0);
-                return (sign === '+' ? 1 : -1) * totalMinutes;
-            };
-
-            const targetOffset = getOffset(date, tz);
-            const localOffset = -date.getTimezoneOffset();
-            const diff = targetOffset - localOffset;
-            
-            const adjustedDate = new Date(date.getTime() - diff * 60000);
-            
-            if (isNaN(adjustedDate.getTime())) throw new Error();
-            inputTs.value = Math.floor(adjustedDate.getTime() / 1000);
+            inputTs.value = window.CodeGlimpseTime.dateTimeToTimestamp(dtStr, tz);
         } catch (e) {
             alert(t.errorInvalid);
         }
@@ -378,7 +330,8 @@
         if (e.target.classList.contains('copy-btn')) {
             const targetId = e.target.getAttribute('data-target');
             const text = document.getElementById(targetId).textContent;
-            navigator.clipboard.writeText(text).then(() => {
+            window.CodeGlimpseClipboard.copy(text).then(copied => {
+                if (!copied) return;
                 const originalText = e.target.textContent;
                 e.target.textContent = t.copied;
                 setTimeout(() => e.target.textContent = originalText, 1500);

@@ -318,15 +318,8 @@
             }
 
             try {
-                if (navigator.clipboard && window.isSecureContext) {
-                    await navigator.clipboard.writeText(output.value);
-                } else {
-                    output.focus();
-                    output.select();
-                    const copied = document.execCommand('copy');
-                    if (!copied) throw new Error('copy failed');
-                    output.setSelectionRange(0, 0);
-                }
+                const copied = await window.CodeGlimpseClipboard.copy(output.value);
+                if (!copied) throw new Error('copy failed');
                 setStatus('success', messages.copied);
             } catch (error) {
                 setStatus('error', messages.copyFailed);

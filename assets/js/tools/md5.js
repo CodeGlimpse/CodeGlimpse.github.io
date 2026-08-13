@@ -256,7 +256,7 @@
             resultGroup.style.display = 'none';
             return;
         }
-        let hash = md5(str);
+        let hash = window.CodeGlimpseMd5.hash(str);
         const isUpper = document.getElementById('case-upper').checked;
         if (isUpper) {
             hash = hash.toUpperCase();
@@ -280,10 +280,11 @@
     };
 
     btnCopy.onclick = () => {
-        output.select();
-        document.execCommand('copy');
-        const originalText = btnCopy.innerText;
-        btnCopy.innerText = t.copied;
-        setTimeout(() => { btnCopy.innerText = originalText; }, 2000);
+        window.CodeGlimpseClipboard.copy(output.value).then(copied => {
+            if (!copied) return;
+            const originalText = btnCopy.innerText;
+            btnCopy.innerText = t.copied;
+            setTimeout(() => { btnCopy.innerText = originalText; }, 2000);
+        });
     };
 })();

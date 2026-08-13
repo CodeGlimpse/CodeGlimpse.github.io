@@ -166,24 +166,16 @@
         if (isNaN(sourceBase) || sourceBase < 2 || sourceBase > 36) sourceBase = 10;
 
         try {
-            // Parse the input value based on source base
-            const decimalValue = BigInt('0x' + parseInt(val, sourceBase).toString(16)); // Use BigInt for precision if possible, but simple parseInt for now
-            // Standard parseInt is limited to 53-bit precision. For larger numbers, we might need a library or custom logic.
-            // But for a simple tool, standard conversion is usually enough.
-            const decimalNum = parseInt(val, sourceBase);
+            const decimalValue = window.CodeGlimpseBinary.parseInteger(val, sourceBase);
 
-            if (isNaN(decimalNum)) {
-                throw new Error('Invalid');
-            }
-
-            resultInputs[2].value = decimalNum.toString(2).toUpperCase();
-            resultInputs[8].value = decimalNum.toString(8).toUpperCase();
-            resultInputs[10].value = decimalNum.toString(10).toUpperCase();
-            resultInputs[16].value = decimalNum.toString(16).toUpperCase();
+            resultInputs[2].value = window.CodeGlimpseBinary.formatInteger(decimalValue, 2);
+            resultInputs[8].value = window.CodeGlimpseBinary.formatInteger(decimalValue, 8);
+            resultInputs[10].value = window.CodeGlimpseBinary.formatInteger(decimalValue, 10);
+            resultInputs[16].value = window.CodeGlimpseBinary.formatInteger(decimalValue, 16);
             
             let targetCustomBase = parseInt(targetCustomBaseInput.value);
             if (isNaN(targetCustomBase) || targetCustomBase < 2 || targetCustomBase > 36) targetCustomBase = 32;
-            resultInputs['custom'].value = decimalNum.toString(targetCustomBase).toUpperCase();
+            resultInputs['custom'].value = window.CodeGlimpseBinary.formatInteger(decimalValue, targetCustomBase);
 
         } catch (e) {
             Object.values(resultInputs).forEach(input => input.value = t.invalidInput);
@@ -205,11 +197,12 @@
             const targetId = btn.getAttribute('data-target');
             const input = document.getElementById(targetId);
             if (input && input.value && input.value !== t.invalidInput) {
-                input.select();
-                document.execCommand('copy');
-                const originalText = btn.innerText;
-                btn.innerText = t.copied;
-                setTimeout(() => btn.innerText = originalText, 1500);
+                window.CodeGlimpseClipboard.copy(input.value).then(copied => {
+                    if (!copied) return;
+                    const originalText = btn.innerText;
+                    btn.innerText = t.copied;
+                    setTimeout(() => btn.innerText = originalText, 1500);
+                });
             }
         });
     });

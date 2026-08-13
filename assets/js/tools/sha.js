@@ -147,18 +147,10 @@
             return;
         }
 
-        if (!window.crypto || !window.crypto.subtle) {
-            alert(t.errorCrypto);
-            return;
-        }
-
         const algo = algoSelect.value;
-        const msgUint8 = new TextEncoder().encode(str);
 
         try {
-            const hashBuffer = await crypto.subtle.digest(algo, msgUint8);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            let hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            let hashHex = await window.CodeGlimpseSha.digest(str, algo);
 
             const isUpper = document.getElementById('sha-case-upper').checked;
             if (isUpper) {
@@ -188,10 +180,11 @@
     };
 
     btnCopy.onclick = () => {
-        output.select();
-        document.execCommand('copy');
-        const originalText = btnCopy.innerText;
-        btnCopy.innerText = t.copied;
-        setTimeout(() => { btnCopy.innerText = originalText; }, 2000);
+        window.CodeGlimpseClipboard.copy(output.value).then(copied => {
+            if (!copied) return;
+            const originalText = btnCopy.innerText;
+            btnCopy.innerText = t.copied;
+            setTimeout(() => { btnCopy.innerText = originalText; }, 2000);
+        });
     };
 })();

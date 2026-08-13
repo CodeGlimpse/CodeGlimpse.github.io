@@ -149,10 +149,11 @@
     };
 
     btnCopy.onclick = () => {
-        output.select();
-        document.execCommand('copy');
-        const originalText = btnCopy.innerText;
-        btnCopy.innerText = t.copied;
-        setTimeout(() => { btnCopy.innerText = originalText; }, 2000);
+        window.CodeGlimpseClipboard.copy(output.value).then(copied => {
+            if (!copied) return;
+            const originalText = btnCopy.innerText;
+            btnCopy.innerText = t.copied;
+            setTimeout(() => { btnCopy.innerText = originalText; }, 2000);
+        });
     };
 })();

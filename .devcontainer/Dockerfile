@@ -1,6 +1,6 @@
-# Keep these versions aligned with .github/workflows/deploy.yml.
-ARG NODE_VERSION=22
-FROM mcr.microsoft.com/devcontainers/javascript-node:${NODE_VERSION}
+# Keep the Node.js major version aligned with .github/workflows/deploy.yml.
+ARG NODE_MAJOR_VERSION=22
+FROM mcr.microsoft.com/devcontainers/javascript-node:${NODE_MAJOR_VERSION}
 
 # VARIANT can be either 'hugo' for the standard version or 'hugo_extended' for the extended version.
 ARG VARIANT=hugo_extended

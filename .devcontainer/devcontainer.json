@@ -9,8 +9,8 @@
 			"VARIANT": "hugo_extended",
 			// Keep Hugo aligned with .github/workflows/deploy.yml.
 			"VERSION": "0.157.0",
-			// Keep Node aligned with .github/workflows/deploy.yml.
-			"NODE_VERSION": "22"
+			// Keep the Node.js major version aligned with .github/workflows/deploy.yml.
+			"NODE_MAJOR_VERSION": "22"
 		}
 	},
 

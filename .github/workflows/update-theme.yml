@@ -51,10 +51,12 @@ jobs:
 
       - name: Verify build
         run: |
+          npm run check:versions
           npm run check:js
           npm run check:content
           npm test
           hugo --cleanDestinationDir --gc --minify
+          npm run check:output
 
       - name: Create theme update pull request
         uses: peter-evans/create-pull-request@v7

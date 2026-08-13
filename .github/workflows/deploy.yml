@@ -57,6 +57,9 @@ jobs:
             - name: Check JavaScript syntax
               run: npm run check:js
 
+            - name: Check toolchain versions
+              run: npm run check:versions
+
             - name: Check content structure
               run: npm run check:content
 
@@ -65,6 +68,9 @@ jobs:
 
             - name: Build
               run: hugo --cleanDestinationDir --minify --gc
+
+            - name: Check build output
+              run: npm run check:output
 
             - name: Upload site artifact
               uses: actions/upload-artifact@v4

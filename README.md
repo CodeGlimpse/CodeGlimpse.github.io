@@ -46,8 +46,10 @@ hugo server -D
 npm test              # 运行工具核心逻辑测试
 npm run check:js      # 检查在线工具 JavaScript 语法
 npm run check:content # 检查内容 front matter、工具双语结构和 shortcode
+npm run check:versions # 检查 CI 与开发容器版本一致性
 npm run build         # 执行 Hugo 生产构建
-npm run check         # 依次执行语法检查、内容检查、测试和生产构建
+npm run check:output  # 检查发布目录、JSON、robots、sitemap 和工具页面
+npm run check         # 依次执行版本、语法、内容、测试、构建和输出检查
 ```
 
 直接运行等价命令：
@@ -57,6 +59,7 @@ node scripts/check-js.cjs
 node scripts/check-content.cjs
 node scripts/run-tests.cjs
 hugo --cleanDestinationDir --minify --gc
+node scripts/check-build-output.cjs
 ```
 
 ## 在线工具开发
@@ -116,6 +119,7 @@ npm run check
 - [ ] 中英文页面或工具保持同步
 - [ ] `npm run check` 通过
 - [ ] 检查生成的搜索 JSON、sitemap 和 robots.txt
+- [ ] 确认首页 JSON 未生成，搜索页 JSON 正常生成
 - [ ] 确认 `git diff` 只包含本次任务相关文件
 
 ## 贡献与安全

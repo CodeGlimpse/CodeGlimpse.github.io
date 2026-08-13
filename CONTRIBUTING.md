@@ -20,6 +20,8 @@
    npm run check
    ```
 
+   这会同时检查工具链版本、内容结构、测试、Hugo 构建产物以及 JSON、robots.txt、sitemap 和双语工具页面。
+
 5. 检查 `git diff`，确认只包含本次任务相关文件。
 6. 使用清晰、聚焦的提交信息提交变更，并创建 Pull Request。
 

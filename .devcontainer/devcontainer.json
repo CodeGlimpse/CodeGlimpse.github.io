@@ -7,11 +7,9 @@
 			// Example variants: hugo, hugo_extended
 			// Rebuild the container if it already exists to update.
 			"VARIANT": "hugo_extended",
-			// Update VERSION to pick a specific hugo version.
-			// Example versions: latest, 0.73.0, 0,71.1
-			// Rebuild the container if it already exists to update.
-			"VERSION": "latest",
-			// Update NODE_VERSION to pick the Node.js version: 12, 14
+			// Keep Hugo aligned with .github/workflows/deploy.yml.
+			"VERSION": "0.157.0",
+			// Keep Node aligned with .github/workflows/deploy.yml.
 			"NODE_VERSION": "22"
 		}
 	},
@@ -45,7 +43,7 @@
 	"remoteUser": "node",
 	"features": {
 		"ghcr.io/devcontainers/features/go:1": {
-			"version": "latest"
+			"version": "1.23.6"
 		}
 	}
 }

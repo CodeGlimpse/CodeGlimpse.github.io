@@ -55,13 +55,13 @@ jobs:
                   extended: true
 
             - name: Check JavaScript syntax
-              run: |
-                  for file in assets/js/tools/*.js; do
-                      node --check "$file"
-                  done
+              run: npm run check:js
+
+            - name: Check content structure
+              run: npm run check:content
 
             - name: Run tests
-              run: node --test tests/*.test.cjs
+              run: npm test
 
             - name: Build
               run: hugo --minify --gc

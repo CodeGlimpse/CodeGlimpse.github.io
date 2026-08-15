@@ -49,6 +49,9 @@ jobs:
       - name: Tidy go.mod, go.sum
         run: hugo mod tidy
 
+      - name: Remove generated editor cache paths
+        run: git restore --source=HEAD -- assets/jsconfig.json
+
       - name: Verify build
         run: |
           npm run check:versions
@@ -65,6 +68,9 @@ jobs:
           branch: automation/update-hugo-theme
           delete-branch: true
           base: master
+          add-paths: |
+            go.mod
+            go.sum
           title: "chore: update Hugo theme"
           body: |
             This pull request was created automatically by the scheduled theme update workflow.

@@ -107,3 +107,4 @@ jobs:
                   folder: public
                   clean: true
                   single-commit: true
+                  commit-message: "deploy: source=${{ github.sha }}"

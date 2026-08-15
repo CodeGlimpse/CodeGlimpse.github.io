@@ -117,11 +117,7 @@
         const str = input.value;
         if (!str) return;
         try {
-            // Support Unicode strings
-            const encoded = btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
-                return String.fromCharCode('0x' + p1);
-            }));
-            showResult(encoded);
+            showResult(window.CodeGlimpseBase64.encode(str));
         } catch (e) {
             console.error(e);
         }
@@ -131,11 +127,7 @@
         const str = input.value.trim();
         if (!str) return;
         try {
-            // Support Unicode strings
-            const decoded = decodeURIComponent(atob(str).split('').map((c) => {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            showResult(decoded);
+            showResult(window.CodeGlimpseBase64.decode(str));
         } catch (e) {
             alert(t.errorInvalid);
         }

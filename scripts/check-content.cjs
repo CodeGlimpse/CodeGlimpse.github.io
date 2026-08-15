@@ -4,7 +4,8 @@ const path = require('node:path');
 const projectRoot = path.resolve(__dirname, '..');
 const contentRoot = path.join(projectRoot, 'content');
 const toolsRoot = path.join(projectRoot, 'assets', 'js', 'tools');
-const languages = ['zh-cn', 'en'];
+const templatePath = path.join(projectRoot, 'layouts', 'shortcodes', 'tool.html');
+const { LANGUAGES: languages, TOOL_IDS, TOOL_REGISTRY } = require('./tool-registry.cjs');
 const errors = [];
 
 function relativePath(filePath) {
@@ -131,7 +132,13 @@ function checkFrontMatterAndPages() {
             const toolId = getToolId(filePath, fields);
             if (toolId) toolIdsByLanguage.get(info.language)?.add(toolId);
 
-            const scriptPath = path.join(toolsRoot, `${toolId}.js`);
+            const toolSpec = TOOL_REGISTRY[toolId];
+            if (!toolSpec) {
+                errors.push(`${relativePath(filePath)}: tool id "${toolId}" is not in the tool registry`);
+                continue;
+            }
+
+            const scriptPath = path.join(toolsRoot, toolSpec.script);
             if (toolId && !fs.existsSync(scriptPath)) {
                 errors.push(`${relativePath(filePath)}: tool id "${toolId}" has no matching ${relativePath(scriptPath)}`);
             }
@@ -157,6 +164,7 @@ function checkFrontMatterAndPages() {
 
 function checkToolDirectories(toolIdsByLanguage) {
     const directorySets = new Map();
+    const expectedToolIds = new Set(TOOL_IDS);
     for (const language of languages) {
         const toolsDirectory = path.join(contentRoot, language, 'tools');
         const names = collectDirectories(toolsDirectory);
@@ -166,10 +174,18 @@ function checkToolDirectories(toolIdsByLanguage) {
             if (normalized.has(key)) {
                 errors.push(`${relativePath(toolsDirectory)}: duplicate tool directory when ignoring case: ${name}`);
             }
+            if (!expectedToolIds.has(key)) {
+                errors.push(`${relativePath(toolsDirectory)}: unexpected tool directory "${name}"; add it to the tool registry first`);
+            }
             normalized.set(key, name);
 
             const pagePath = path.join(toolsDirectory, name, 'index.md');
             if (!fs.existsSync(pagePath)) errors.push(`${relativePath(pagePath)}: tool page is missing`);
+        }
+        for (const toolId of expectedToolIds) {
+            if (!normalized.has(toolId)) {
+                errors.push(`${language}: registered tool "${toolId}" is missing from ${relativePath(toolsDirectory)}`);
+            }
         }
         directorySets.set(language, new Set(normalized.keys()));
 
@@ -191,8 +207,35 @@ function checkToolDirectories(toolIdsByLanguage) {
     console.log(`Tool directories: zh-cn=${zhTools.size}, en=${enTools.size}`);
 }
 
+function checkToolImplementations() {
+    if (!fs.existsSync(templatePath)) {
+        errors.push(`missing tool shortcode template: ${relativePath(templatePath)}`);
+        return;
+    }
+
+    const template = fs.readFileSync(templatePath, 'utf8');
+    for (const toolId of TOOL_IDS) {
+        const spec = TOOL_REGISTRY[toolId];
+        const scriptPath = path.join(toolsRoot, spec.script);
+        if (!fs.existsSync(scriptPath)) {
+            errors.push(`registered tool "${toolId}" is missing implementation ${relativePath(scriptPath)}`);
+        }
+
+        if (spec.core) {
+            const corePath = path.join(toolsRoot, spec.core);
+            if (!fs.existsSync(corePath)) {
+                errors.push(`registered tool "${toolId}" is missing core implementation ${relativePath(corePath)}`);
+            }
+            if (!template.includes(`eq $id "${toolId}"`)) {
+                errors.push(`tool shortcode template does not load ${toolId} core implementation`);
+            }
+        }
+    }
+}
+
 const toolIdsByLanguage = checkFrontMatterAndPages();
 checkToolDirectories(toolIdsByLanguage);
+checkToolImplementations();
 
 if (errors.length > 0) {
     console.error(`Content structure check failed: ${errors.length} issue(s)`);

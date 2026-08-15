@@ -9,6 +9,9 @@
 {{ if eq $id "binary" }}
     {{ $core := resources.Get "js/tools/binary-core.js" | js.Build }}
     <script src="{{ $core.RelPermalink }}" defer></script>
+{{ else if eq $id "base64" }}
+    {{ $core := resources.Get "js/tools/base64-core.js" | js.Build }}
+    <script src="{{ $core.RelPermalink }}" defer></script>
 {{ else if eq $id "time" }}
     {{ $core := resources.Get "js/tools/time-core.js" | js.Build }}
     <script src="{{ $core.RelPermalink }}" defer></script>

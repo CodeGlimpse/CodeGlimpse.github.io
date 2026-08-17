@@ -12,8 +12,12 @@
             labelRgb: 'RGB (红, 绿, 蓝)',
             labelHsl: 'HSL (色相, 饱和度, 亮度)',
             placeholderHex: '#000000',
+            btnReset: '恢复默认',
+            invalidHex: '请输入有效的 6 位 HEX 颜色值',
+            reset: '已恢复默认颜色',
             copyBtn: '复制',
-            copied: '已复制'
+            copied: '已复制',
+            copyFailed: '复制失败，请手动复制'
         },
         'en': {
             labelPreview: 'Color Preview',
@@ -22,8 +26,12 @@
             labelRgb: 'RGB (Red, Green, Blue)',
             labelHsl: 'HSL (Hue, Saturation, Lightness)',
             placeholderHex: '#000000',
+            btnReset: 'Reset',
+            invalidHex: 'Enter a valid 6-digit HEX color',
+            reset: 'Default color restored',
             copyBtn: 'Copy',
-            copied: 'Copied'
+            copied: 'Copied',
+            copyFailed: 'Copy failed; please copy manually'
         }
     };
 
@@ -92,46 +100,50 @@
             <div class="color-grid">
                 <div class="preview-card">
                     <div class="input-group" style="width: 100%;">
-                        <label>${t.labelPreview}</label>
-                        <div id="color-preview" class="color-preview" style="background-color: #3b82f6;"></div>
+                        <span class="tool-label">${t.labelPreview}</span>
+                        <div id="color-preview" class="color-preview" style="background-color: #3b82f6;" role="img" aria-label="${t.labelPreview}: #3B82F6"></div>
                     </div>
                     <div class="input-group" style="width: 100%;">
-                        <label>${t.labelPicker}</label>
+                        <label class="tool-label" for="color-picker">${t.labelPicker}</label>
                         <input type="color" id="color-picker" value="#3b82f6">
                     </div>
                 </div>
                 <div class="inputs-card">
-                    <div class="input-group">
-                        <label>${t.labelHex}</label>
+                    <div class="input-group tool-field">
+                        <label class="tool-label" for="hex-input">${t.labelHex}</label>
                         <div class="copy-wrapper">
-                            <input type="text" id="hex-input" value="#3b82f6" placeholder="${t.placeholderHex}">
-                            <button class="btn-copy" data-target="hex-input">${t.copyBtn}</button>
+                            <input class="tool-input" type="text" id="hex-input" value="#3b82f6" placeholder="${t.placeholderHex}" autocomplete="off">
+                            <button type="button" class="btn-copy tool-btn tool-btn--copy" data-target="hex-input" aria-label="${t.copyBtn}: ${t.labelHex}">${t.copyBtn}</button>
                         </div>
                     </div>
                     <div class="input-group">
-                        <label>${t.labelRgb}</label>
+                        <span class="tool-label">${t.labelRgb}</span>
                         <div class="rgb-inputs">
-                            <input type="number" id="rgb-r" min="0" max="255" value="59">
-                            <input type="number" id="rgb-g" min="0" max="255" value="130">
-                            <input type="number" id="rgb-b" min="0" max="255" value="246">
+                            <input class="tool-input" type="number" id="rgb-r" min="0" max="255" value="59" aria-label="R">
+                            <input class="tool-input" type="number" id="rgb-g" min="0" max="255" value="130" aria-label="G">
+                            <input class="tool-input" type="number" id="rgb-b" min="0" max="255" value="246" aria-label="B">
                         </div>
                         <div class="copy-wrapper" style="margin-top: 0.5rem;">
-                            <input type="text" id="rgb-string" readonly value="rgb(59, 130, 246)">
-                            <button class="btn-copy" data-target="rgb-string">${t.copyBtn}</button>
+                            <input class="tool-input" type="text" id="rgb-string" aria-label="${t.labelRgb}" readonly value="rgb(59, 130, 246)">
+                            <button type="button" class="btn-copy tool-btn tool-btn--copy" data-target="rgb-string" aria-label="${t.copyBtn}: ${t.labelRgb}">${t.copyBtn}</button>
                         </div>
                     </div>
                     <div class="input-group">
-                        <label>${t.labelHsl}</label>
+                        <span class="tool-label">${t.labelHsl}</span>
                         <div class="hsl-inputs">
-                            <input type="number" id="hsl-h" min="0" max="360" value="217">
-                            <input type="number" id="hsl-s" min="0" max="100" value="91">
-                            <input type="number" id="hsl-l" min="0" max="100" value="60">
+                            <input class="tool-input" type="number" id="hsl-h" min="0" max="360" value="217" aria-label="H">
+                            <input class="tool-input" type="number" id="hsl-s" min="0" max="100" value="91" aria-label="S">
+                            <input class="tool-input" type="number" id="hsl-l" min="0" max="100" value="60" aria-label="L">
                         </div>
                         <div class="copy-wrapper" style="margin-top: 0.5rem;">
-                            <input type="text" id="hsl-string" readonly value="hsl(217, 91%, 60%)">
-                            <button class="btn-copy" data-target="hsl-string">${t.copyBtn}</button>
+                            <input class="tool-input" type="text" id="hsl-string" aria-label="${t.labelHsl}" readonly value="hsl(217, 91%, 60%)">
+                            <button type="button" class="btn-copy tool-btn tool-btn--copy" data-target="hsl-string" aria-label="${t.copyBtn}: ${t.labelHsl}">${t.copyBtn}</button>
                         </div>
                     </div>
+                    <div class="tool-actions">
+                        <button type="button" class="tool-btn tool-btn--secondary" id="color-reset">${t.btnReset}</button>
+                    </div>
+                    <div class="tool-status" id="color-status" role="status" aria-live="polite"></div>
                 </div>
             </div>
         </div>
@@ -148,6 +160,9 @@
     const hslS = document.getElementById('hsl-s');
     const hslL = document.getElementById('hsl-l');
     const hslString = document.getElementById('hsl-string');
+    const resetButton = document.getElementById('color-reset');
+    const status = document.getElementById('color-status');
+    const ui = window.CodeGlimpseToolUi;
 
     // Helper: Hex to RGB
     function hexToRgb(hex) {
@@ -181,6 +196,8 @@
         hslS.value = s;
         hslL.value = l;
         hslString.value = `hsl(${h}, ${s}%, ${l}%)`;
+        preview.setAttribute('aria-label', `${t.labelPreview}: ${hex}`);
+        hexInput.setAttribute('aria-invalid', 'false');
     }
 
     picker.addEventListener('input', (e) => {
@@ -188,6 +205,7 @@
         const rgb = hexToRgb(hex);
         const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
         updateUI(hex, rgb.r, rgb.g, rgb.b, hsl.h, hsl.s, hsl.l);
+        ui.setStatus(status, '', '');
     });
 
     hexInput.addEventListener('input', (e) => {
@@ -198,6 +216,10 @@
             const rgb = hexToRgb(hex);
             const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
             updateUI(hex, rgb.r, rgb.g, rgb.b, hsl.h, hsl.s, hsl.l);
+            ui.setStatus(status, '', '');
+        } else {
+            hexInput.setAttribute('aria-invalid', 'true');
+            ui.setStatus(status, 'error', t.invalidHex);
         }
     });
 
@@ -212,6 +234,7 @@
             const hex = rgbToHex(r, g, b);
             const hsl = rgbToHsl(r, g, b);
             updateUI(hex, r, g, b, hsl.h, hsl.s, hsl.l);
+            ui.setStatus(status, '', '');
         });
     });
 
@@ -226,6 +249,7 @@
             const rgb = hslToRgb(h, s, l);
             const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
             updateUI(hex, rgb.r, rgb.g, rgb.b, h, s, l);
+            ui.setStatus(status, '', '');
         });
     });
 
@@ -234,12 +258,18 @@
         btn.onclick = () => {
             const targetId = btn.getAttribute('data-target');
             const input = document.getElementById(targetId);
-            window.CodeGlimpseClipboard.copy(input.value).then(copied => {
-                if (!copied) return;
-                const originalText = btn.innerText;
-                btn.innerText = t.copied;
-                setTimeout(() => { btn.innerText = originalText; }, 2000);
+            ui.copy({
+                button: btn,
+                value: input.value,
+                status,
+                messages: { empty: t.invalidHex, copied: t.copied, copyFailed: t.copyFailed }
             });
         };
+    });
+
+    resetButton.addEventListener('click', () => {
+        updateUI('#3B82F6', 59, 130, 246, 217, 91, 60);
+        ui.setStatus(status, 'success', t.reset);
+        picker.focus();
     });
 })();

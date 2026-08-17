@@ -214,6 +214,16 @@ function checkToolImplementations() {
     }
 
     const template = fs.readFileSync(templatePath, 'utf8');
+    for (const commonScript of ['clipboard.js', 'tool-ui.js']) {
+        const commonPath = path.join(toolsRoot, commonScript);
+        if (!fs.existsSync(commonPath)) {
+            errors.push(`missing shared tool script: ${relativePath(commonPath)}`);
+        }
+        if (!template.includes(`js/tools/${commonScript}`)) {
+            errors.push(`tool shortcode template does not load shared script ${commonScript}`);
+        }
+    }
+
     for (const toolId of TOOL_IDS) {
         const spec = TOOL_REGISTRY[toolId];
         const scriptPath = path.join(toolsRoot, spec.script);

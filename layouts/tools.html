@@ -9,13 +9,19 @@
 </header>
 
 <div class="search-wrapper">
-    <input type="search" id="tool-search" placeholder="搜索工具...">
+    <input type="search" id="tool-search"
+        placeholder="{{ if eq .Language.Lang "zh-cn" }}搜索工具...{{ else }}Search tools...{{ end }}"
+        aria-label="{{ if eq .Language.Lang "zh-cn" }}搜索工具{{ else }}Search tools{{ end }}">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-search">
         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
         <circle cx="10" cy="10" r="7"></circle>
         <line x1="21" y1="21" x2="15" y2="15"></line>
     </svg>
 </div>
+
+<p class="tool-search-empty" id="tool-search-empty" role="status" aria-live="polite" hidden>
+    {{ if eq .Language.Lang "zh-cn" }}没有找到匹配的工具。{{ else }}No matching tools found.{{ end }}
+</p>
 
 <hr class="search-divider">
 

@@ -206,12 +206,12 @@
                     #tool-json .json-button { flex: 1 1 calc(50% - 0.8rem); }
                 }
             </style>
-            <div class="json-tool-container">
-                <div class="json-field">
-                    <label class="json-label" for="json-input">${messages.inputLabel}</label>
+            <div class="json-tool-container tool-text-tool" data-output-state="ready">
+                <div class="json-field tool-field tool-input-panel">
+                    <label class="json-label tool-label" for="json-input">${messages.inputLabel}</label>
                     <textarea id="json-input" class="json-textarea" spellcheck="false" placeholder="{\n  &quot;name&quot;: &quot;Fernweh&quot;\n}"></textarea>
                 </div>
-                <div class="json-toolbar">
+                <div class="json-toolbar tool-actions tool-action-panel">
                     <div class="json-indent">
                         <label for="json-indent-select">${messages.indentLabel}</label>
                         <select id="json-indent-select">
@@ -221,20 +221,20 @@
                         </select>
                     </div>
                     <div class="json-buttons">
-                        <button class="json-button" type="button" data-action="format">${messages.format}</button>
-                        <button class="json-button" type="button" data-action="minify">${messages.minify}</button>
-                        <button class="json-button" type="button" data-action="validate">${messages.validate}</button>
-                        <button class="json-button" type="button" data-action="escape">${messages.escape}</button>
-                        <button class="json-button" type="button" data-action="unescape">${messages.unescape}</button>
-                        <button class="json-button secondary" type="button" data-action="example">${messages.example}</button>
-                        <button class="json-button secondary" type="button" data-action="clear">${messages.clear}</button>
+                        <button class="json-button tool-btn tool-btn--primary" type="button" data-action="format">${messages.format}</button>
+                        <button class="json-button tool-btn tool-btn--primary" type="button" data-action="minify">${messages.minify}</button>
+                        <button class="json-button tool-btn tool-btn--primary" type="button" data-action="validate">${messages.validate}</button>
+                        <button class="json-button tool-btn tool-btn--primary" type="button" data-action="escape">${messages.escape}</button>
+                        <button class="json-button tool-btn tool-btn--primary" type="button" data-action="unescape">${messages.unescape}</button>
+                        <button class="json-button secondary tool-btn tool-btn--secondary" type="button" data-action="example">${messages.example}</button>
+                        <button class="json-button secondary tool-btn tool-btn--secondary" type="button" data-action="clear">${messages.clear}</button>
                     </div>
                 </div>
-                <div id="json-status" class="json-status" role="status" aria-live="polite"></div>
-                <div class="json-field json-output-wrapper">
-                    <label class="json-label" for="json-output">${messages.outputLabel}</label>
+                <div id="json-status" class="json-status tool-status" role="status" aria-live="polite"></div>
+                <div class="json-field json-output-wrapper tool-field tool-output-panel">
+                    <label class="json-label tool-label" for="json-output">${messages.outputLabel}</label>
                     <textarea id="json-output" class="json-textarea" spellcheck="false" readonly></textarea>
-                    <button class="json-button json-copy-button" type="button" data-action="copy">${messages.copy}</button>
+                    <button class="json-button json-copy-button tool-btn tool-btn--copy" type="button" data-action="copy" disabled>${messages.copy}</button>
                 </div>
             </div>
         `;
@@ -244,10 +244,15 @@
         const indentSelect = document.getElementById('json-indent-select');
         const status = document.getElementById('json-status');
         const buttons = container.querySelectorAll('[data-action]');
+        const copyButton = container.querySelector('[data-action="copy"]');
+        const ui = window.CodeGlimpseToolUi;
 
         function setStatus(type, message) {
-            status.className = `json-status ${type}`;
-            status.textContent = message;
+            ui.setStatus(status, type, message);
+        }
+
+        function updateCopyState() {
+            copyButton.disabled = !output.value;
         }
 
         function requireInput() {
@@ -267,6 +272,7 @@
                 }, null, 2);
                 output.value = '';
                 setStatus('success', messages.exampleLoaded);
+                updateCopyState();
                 return;
             }
 
@@ -274,6 +280,7 @@
                 input.value = '';
                 output.value = '';
                 setStatus('success', messages.cleared);
+                updateCopyState();
                 input.focus();
                 return;
             }
@@ -302,33 +309,30 @@
                     output.value = unescapeJsonText(input.value);
                     setStatus('success', messages.unescaped);
                 }
+                updateCopyState();
             } catch (error) {
                 const errorText = action === 'unescape'
                     ? `${messages.invalidEscaped}: ${error.message}`
                     : getErrorMessage(error, input.value, messages);
                 setStatus('error', errorText);
                 output.value = '';
+                updateCopyState();
             }
         }
 
         async function copyOutput() {
-            if (!output.value) {
-                setStatus('error', messages.required);
-                return;
-            }
-
-            try {
-                const copied = await window.CodeGlimpseClipboard.copy(output.value);
-                if (!copied) throw new Error('copy failed');
-                setStatus('success', messages.copied);
-            } catch (error) {
-                setStatus('error', messages.copyFailed);
-            }
+            await ui.copy({
+                button: copyButton,
+                value: output.value,
+                status,
+                messages: { empty: messages.required, copied: messages.copied, copyFailed: messages.copyFailed }
+            });
         }
 
         buttons.forEach((button) => {
             button.addEventListener('click', () => run(button.dataset.action));
         });
+        ui.bindShortcut(input, () => run('format'));
     }
 
     return {

@@ -1,9 +1,13 @@
 <div class="tool-wrapper" id="tool-{{ .Get "id" }}" data-lang="{{ .Page.Language.Lang }}">
-    <div class="tool-loader">加载中...</div>
+    <div class="tool-loader" role="status" aria-live="polite">
+        {{ if eq .Page.Language.Lang "zh-cn" }}加载中...{{ else }}Loading...{{ end }}
+    </div>
 </div>
 
 {{ $clipboard := resources.Get "js/tools/clipboard.js" | js.Build }}
 <script src="{{ $clipboard.RelPermalink }}" defer></script>
+{{ $ui := resources.Get "js/tools/tool-ui.js" | js.Build }}
+<script src="{{ $ui.RelPermalink }}" defer></script>
 
 {{ $id := .Get "id" }}
 {{ if eq $id "binary" }}

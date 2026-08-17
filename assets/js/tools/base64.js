@@ -13,8 +13,12 @@
             btnDecode: '解码 (Decode)',
             btnClear: '清空内容',
             errorInvalid: '错误：无效的 Base64 编码',
+            required: '请输入需要处理的内容',
+            encoded: '编码完成',
+            decoded: '解码完成',
             copyBtn: '复制结果',
-            copied: '已复制'
+            copied: '已复制',
+            copyFailed: '复制失败，请手动复制'
         },
         'en': {
             labelInput: 'Input Content',
@@ -24,8 +28,12 @@
             btnDecode: 'Decode',
             btnClear: 'Clear',
             errorInvalid: 'Error: Invalid Base64 string',
+            required: 'Enter content to process',
+            encoded: 'Encoding complete',
+            decoded: 'Decoding complete',
             copyBtn: 'Copy Result',
-            copied: 'Copied'
+            copied: 'Copied',
+            copyFailed: 'Copy failed; please copy manually'
         }
     };
 
@@ -79,20 +87,21 @@
                 cursor: pointer;
             }
         </style>
-        <div class="tool-container">
-            <div class="input-group">
-                <label>${t.labelInput}</label>
+        <div class="tool-container tool-text-tool" data-output-state="empty">
+            <div class="input-group tool-field tool-input-panel">
+                <label class="tool-label" for="base64-input">${t.labelInput}</label>
                 <textarea id="base64-input" rows="8" placeholder="${t.placeholderInput}"></textarea>
             </div>
-            <div class="button-group">
-                <button class="btn btn-primary" id="base64-encode">${t.btnEncode}</button>
-                <button class="btn btn-primary" id="base64-decode">${t.btnDecode}</button>
-                <button class="btn btn-secondary" id="base64-clear">${t.btnClear}</button>
+            <div class="button-group tool-actions tool-action-panel">
+                <button type="button" class="btn btn-primary tool-btn tool-btn--primary" id="base64-encode">${t.btnEncode}</button>
+                <button type="button" class="btn btn-primary tool-btn tool-btn--primary" id="base64-decode">${t.btnDecode}</button>
+                <button type="button" class="btn btn-secondary tool-btn tool-btn--secondary" id="base64-clear">${t.btnClear}</button>
             </div>
-            <div class="input-group result-group" id="base64-result-group" style="display: none;">
-                <label>${t.labelOutput}</label>
+            <div class="tool-status" id="base64-status" role="status" aria-live="polite"></div>
+            <div class="input-group result-group tool-field tool-output-panel" id="base64-result-group" hidden aria-hidden="true">
+                <label class="tool-label" for="base64-output">${t.labelOutput}</label>
                 <textarea id="base64-output" rows="8" readonly></textarea>
-                <button class="btn-copy" id="base64-copy">${t.copyBtn}</button>
+                <button type="button" class="btn-copy tool-btn tool-btn--copy" id="base64-copy" aria-label="${t.copyBtn}">${t.copyBtn}</button>
             </div>
         </div>
     `;
@@ -104,10 +113,14 @@
     const btnDecode = document.getElementById('base64-decode');
     const btnClear = document.getElementById('base64-clear');
     const btnCopy = document.getElementById('base64-copy');
+    const status = document.getElementById('base64-status');
+    const ui = window.CodeGlimpseToolUi;
 
     const showResult = (val) => {
         output.value = val;
-        resultGroup.style.display = 'block';
+        resultGroup.hidden = false;
+        resultGroup.setAttribute('aria-hidden', 'false');
+        ui.setOutputState(container.querySelector('.tool-text-tool'), 'ready');
         setTimeout(() => {
             output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }, 50);
@@ -115,9 +128,13 @@
 
     btnEncode.onclick = () => {
         const str = input.value;
-        if (!str) return;
+        if (!str) {
+            ui.setStatus(status, 'error', t.required);
+            return;
+        }
         try {
             showResult(window.CodeGlimpseBase64.encode(str));
+            ui.setStatus(status, 'success', t.encoded);
         } catch (e) {
             console.error(e);
         }
@@ -125,27 +142,40 @@
 
     btnDecode.onclick = () => {
         const str = input.value.trim();
-        if (!str) return;
+        if (!str) {
+            ui.setStatus(status, 'error', t.required);
+            return;
+        }
         try {
             showResult(window.CodeGlimpseBase64.decode(str));
+            ui.setStatus(status, 'success', t.decoded);
         } catch (e) {
-            alert(t.errorInvalid);
+            output.value = '';
+            resultGroup.hidden = true;
+            resultGroup.setAttribute('aria-hidden', 'true');
+            ui.setOutputState(container.querySelector('.tool-text-tool'), 'empty');
+            ui.setStatus(status, 'error', t.errorInvalid);
         }
     };
 
     btnClear.onclick = () => {
         input.value = '';
         output.value = '';
-        resultGroup.style.display = 'none';
+        resultGroup.hidden = true;
+        resultGroup.setAttribute('aria-hidden', 'true');
+        ui.setOutputState(container.querySelector('.tool-text-tool'), 'empty');
+        ui.setStatus(status, '', '');
         input.focus();
     };
 
     btnCopy.onclick = () => {
-        window.CodeGlimpseClipboard.copy(output.value).then(copied => {
-            if (!copied) return;
-            const originalText = btnCopy.innerText;
-            btnCopy.innerText = t.copied;
-            setTimeout(() => { btnCopy.innerText = originalText; }, 2000);
+        ui.copy({
+            button: btnCopy,
+            value: output.value,
+            status,
+            messages: { empty: t.required, copied: t.copied, copyFailed: t.copyFailed }
         });
     };
+
+    ui.bindShortcut(input, () => btnEncode.click());
 })();

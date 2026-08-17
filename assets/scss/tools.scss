@@ -43,6 +43,12 @@
     margin: 1px 0;
 }
 
+.tool-search-empty {
+    margin: 1.2rem 0;
+    color: var(--card-text-color-tertiary);
+    font-size: 1.4rem;
+}
+
 .tools-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -113,10 +119,197 @@
 }
 
 .tool-wrapper {
-    width: 80%;
-    margin: 2rem 10%;
-    padding: 5rem;
+    width: 100%;
+    max-width: 100%;
+    margin: 2rem 0;
+    padding: clamp(2rem, 4vw, 5rem);
+    box-sizing: border-box;
     background: var(--card-background);
     border-radius: var(--card-border-radius);
     box-shadow: var(--shadow-l1);
+    overflow: hidden;
+}
+
+.tool-wrapper .tool-loader {
+    min-height: 2.4rem;
+    color: var(--card-text-color-tertiary);
+    font-size: 1.4rem;
+}
+
+.tool-wrapper [hidden] {
+    display: none !important;
+}
+
+.tool-wrapper .tool-container {
+    width: 100%;
+    max-width: 100% !important;
+    margin: 0 !important;
+}
+
+.tool-wrapper .tool-label,
+.tool-wrapper label {
+    color: var(--card-text-color-main);
+}
+
+.tool-wrapper .tool-input,
+.tool-wrapper input:not([type="radio"]):not([type="checkbox"]):not([type="color"]),
+.tool-wrapper textarea,
+.tool-wrapper select {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.tool-wrapper .tool-input:focus,
+.tool-wrapper textarea:focus,
+.tool-wrapper select:focus,
+.tool-wrapper input:not([type="radio"]):not([type="checkbox"]):not([type="color"]):focus {
+    outline: 3px solid rgba(var(--primary-color-rgb), 0.22);
+    outline-offset: 1px;
+}
+
+.tool-wrapper .tool-btn,
+.tool-wrapper .btn-copy,
+.tool-wrapper .copy-btn,
+.tool-wrapper .json-button {
+    min-height: 4rem !important;
+    padding: 0.8rem 1.3rem !important;
+    border: 1px solid var(--accent-color) !important;
+    border-radius: 0.6rem !important;
+    background: var(--accent-color) !important;
+    color: #fff !important;
+    cursor: pointer !important;
+    font: inherit;
+    font-size: 1.35rem !important;
+    font-weight: 700 !important;
+    line-height: 1.2;
+    transition: background-color 0.2s, border-color 0.2s, opacity 0.2s, transform 0.2s;
+}
+
+.tool-wrapper .tool-btn:hover,
+.tool-wrapper .btn-copy:hover,
+.tool-wrapper .copy-btn:hover,
+.tool-wrapper .json-button:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+.tool-wrapper .tool-btn--secondary,
+.tool-wrapper .tool-btn.secondary,
+.tool-wrapper .json-button.secondary {
+    background: var(--body-background) !important;
+    color: var(--card-text-color-main) !important;
+    border-color: var(--border-color) !important;
+}
+
+.tool-wrapper .tool-btn--copy,
+.tool-wrapper .btn-copy,
+.tool-wrapper .copy-btn {
+    min-height: 3.6rem;
+    position: static !important;
+    inset: auto !important;
+    white-space: nowrap;
+}
+
+.tool-wrapper .tool-btn:focus-visible,
+.tool-wrapper .btn-copy:focus-visible,
+.tool-wrapper .copy-btn:focus-visible,
+.tool-wrapper .json-button:focus-visible {
+    outline: 3px solid rgba(var(--primary-color-rgb), 0.35);
+    outline-offset: 2px;
+}
+
+.tool-wrapper .tool-btn:disabled,
+.tool-wrapper .btn-copy:disabled,
+.tool-wrapper .copy-btn:disabled,
+.tool-wrapper .json-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
+}
+
+.tool-wrapper .tool-status {
+    min-height: 2.4rem;
+    color: var(--card-text-color-tertiary);
+    font-size: 1.3rem;
+    line-height: 1.5;
+}
+
+.tool-wrapper .tool-status.success { color: #198754; }
+.tool-wrapper .tool-status.error { color: #dc3545; }
+.tool-wrapper .tool-status.info { color: var(--accent-color); }
+
+.tool-wrapper .tool-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.tool-wrapper .tool-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-width: 0;
+}
+
+.tool-wrapper .tool-label {
+    display: block;
+    margin: 0;
+    font-size: 1.45rem;
+    font-weight: 700;
+}
+
+.tool-wrapper .tool-text-tool[data-output-state="empty"] {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "input" "actions" "status";
+    gap: 1.4rem;
+}
+
+.tool-wrapper .tool-text-tool[data-output-state="ready"] {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "input output" "actions output" "status output";
+    gap: 1.4rem 2rem;
+    align-items: start;
+}
+
+.tool-wrapper .tool-text-tool .tool-input-panel { grid-area: input; }
+.tool-wrapper .tool-text-tool .tool-output-panel { grid-area: output; min-width: 0; margin-top: 0 !important; }
+.tool-wrapper .tool-text-tool .tool-action-panel { grid-area: actions; }
+.tool-wrapper .tool-text-tool .tool-status { grid-area: status; }
+.tool-wrapper .tool-text-tool .tool-output-panel > .tool-btn--copy { display: block; margin: 0.8rem 0 0 auto; }
+
+@media (max-width: 700px) {
+    .tool-wrapper {
+        margin: 1.5rem 0;
+        padding: 1.6rem;
+    }
+
+    .tool-wrapper .tool-text-tool[data-output-state="ready"] {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "input" "actions" "status" "output";
+    }
+
+    .tool-wrapper .tool-actions > .tool-btn,
+    .tool-wrapper .tool-actions > .json-button {
+        flex: 1 1 calc(50% - 0.8rem);
+    }
+
+    #tool-binary .custom-base-group,
+    #tool-time .timezone-row,
+    #tool-time .input-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #tool-binary .result-row input,
+    #tool-time .input-field {
+        min-width: 0 !important;
+        width: 100%;
+    }
+
+    #tool-time .input-row .tool-btn {
+        width: 100%;
+    }
 }

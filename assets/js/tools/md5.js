@@ -13,6 +13,9 @@
             btnClear: '清空内容',
             copyBtn: '复制结果',
             copied: '已复制',
+            copyFailed: '复制失败，请手动复制',
+            required: '请输入需要处理的内容',
+            generated: 'MD5 已生成',
             caseLabel: '输出格式',
             caseLower: '小写',
             caseUpper: '大写'
@@ -25,6 +28,9 @@
             btnClear: 'Clear',
             copyBtn: 'Copy Result',
             copied: 'Copied',
+            copyFailed: 'Copy failed; please copy manually',
+            required: 'Enter content to process',
+            generated: 'MD5 generated',
             caseLabel: 'Output Case',
             caseLower: 'Lowercase',
             caseUpper: 'Uppercase'
@@ -218,15 +224,15 @@
                 cursor: pointer;
             }
         </style>
-        <div class="tool-container">
-            <div class="input-group">
-                <label>${t.labelInput}</label>
+        <div class="tool-container tool-text-tool" data-output-state="empty">
+            <div class="input-group tool-field tool-input-panel">
+                <label class="tool-label" for="md5-input">${t.labelInput}</label>
                 <textarea id="md5-input" rows="8" placeholder="${t.placeholderInput}"></textarea>
             </div>
-            <div class="button-group">
-                <button class="btn btn-primary" id="md5-generate">${t.btnHash}</button>
-                <button class="btn btn-secondary" id="md5-clear">${t.btnClear}</button>
-                <div class="options-group">
+            <div class="button-group tool-actions tool-action-panel">
+                <button type="button" class="btn btn-primary tool-btn tool-btn--primary" id="md5-generate">${t.btnHash}</button>
+                <button type="button" class="btn btn-secondary tool-btn tool-btn--secondary" id="md5-clear">${t.btnClear}</button>
+                <div class="options-group" role="group" aria-label="${t.caseLabel}">
                     <span>${t.caseLabel}:</span>
                     <input type="radio" id="case-lower" name="md5-case" value="lower" checked>
                     <label for="case-lower">${t.caseLower}</label>
@@ -234,10 +240,11 @@
                     <label for="case-upper">${t.caseUpper}</label>
                 </div>
             </div>
-            <div class="input-group result-group" id="md5-result-group" style="display: none;">
-                <label>${t.labelOutput}</label>
+            <div class="tool-status" id="md5-status" role="status" aria-live="polite"></div>
+            <div class="input-group result-group tool-field tool-output-panel" id="md5-result-group" hidden aria-hidden="true">
+                <label class="tool-label" for="md5-output">${t.labelOutput}</label>
                 <textarea id="md5-output" rows="2" readonly></textarea>
-                <button class="btn-copy" id="md5-copy">${t.copyBtn}</button>
+                <button type="button" class="btn-copy tool-btn tool-btn--copy" id="md5-copy" aria-label="${t.copyBtn}" disabled>${t.copyBtn}</button>
             </div>
         </div>
     `;
@@ -249,11 +256,19 @@
     const btnClear = document.getElementById('md5-clear');
     const btnCopy = document.getElementById('md5-copy');
     const caseRadios = document.getElementsByName('md5-case');
+    const status = document.getElementById('md5-status');
+    const toolLayout = container.querySelector('.tool-text-tool');
+    const ui = window.CodeGlimpseToolUi;
 
-    const updateResult = () => {
+    const updateResult = (announce = false) => {
         const str = input.value;
         if (!str) {
-            resultGroup.style.display = 'none';
+            output.value = '';
+            resultGroup.hidden = true;
+            resultGroup.setAttribute('aria-hidden', 'true');
+            btnCopy.disabled = true;
+            ui.setOutputState(toolLayout, 'empty');
+            if (announce) ui.setStatus(status, 'error', t.required);
             return;
         }
         let hash = window.CodeGlimpseMd5.hash(str);
@@ -262,29 +277,39 @@
             hash = hash.toUpperCase();
         }
         output.value = hash;
-        resultGroup.style.display = 'block';
+        resultGroup.hidden = false;
+        resultGroup.setAttribute('aria-hidden', 'false');
+        btnCopy.disabled = false;
+        ui.setOutputState(toolLayout, 'ready');
+        if (announce) ui.setStatus(status, 'success', t.generated);
     };
 
-    btnGenerate.onclick = updateResult;
-    input.oninput = updateResult;
+    btnGenerate.onclick = () => updateResult(true);
+    input.oninput = () => updateResult(false);
 
     caseRadios.forEach(radio => {
-        radio.onchange = updateResult;
+        radio.onchange = () => updateResult(false);
     });
 
     btnClear.onclick = () => {
         input.value = '';
         output.value = '';
-        resultGroup.style.display = 'none';
+        resultGroup.hidden = true;
+        resultGroup.setAttribute('aria-hidden', 'true');
+        btnCopy.disabled = true;
+        ui.setOutputState(toolLayout, 'empty');
+        ui.setStatus(status, '', '');
         input.focus();
     };
 
     btnCopy.onclick = () => {
-        window.CodeGlimpseClipboard.copy(output.value).then(copied => {
-            if (!copied) return;
-            const originalText = btnCopy.innerText;
-            btnCopy.innerText = t.copied;
-            setTimeout(() => { btnCopy.innerText = originalText; }, 2000);
+        ui.copy({
+            button: btnCopy,
+            value: output.value,
+            status,
+            messages: { empty: t.required, copied: t.copied, copyFailed: t.copyFailed }
         });
     };
+
+    ui.bindShortcut(input, () => updateResult(true));
 })();

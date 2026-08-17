@@ -21,8 +21,11 @@
             placeholderTimestamp: '输入秒或毫秒时间戳...',
             placeholderDateTime: 'YYYY-MM-DD HH:mm:ss',
             errorInvalid: '无效的输入格式',
+            required: '请输入需要转换的内容',
+            converted: '转换完成',
             copyBtn: '复制',
-            copied: '已复制'
+            copied: '已复制',
+            copyFailed: '复制失败，请手动复制'
         },
         'en': {
             titleCurrent: 'Real-time Time',
@@ -40,8 +43,11 @@
             placeholderTimestamp: 'Enter seconds or milliseconds...',
             placeholderDateTime: 'YYYY-MM-DD HH:mm:ss',
             errorInvalid: 'Invalid input format',
+            required: 'Enter a value to convert',
+            converted: 'Conversion complete',
             copyBtn: 'Copy',
-            copied: 'Copied'
+            copied: 'Copied',
+            copyFailed: 'Copy failed; please copy manually'
         }
     };
 
@@ -118,23 +124,23 @@
             <div class="tool-section">
                 <h3>${t.titleCurrent}</h3>
                 <div class="timezone-row">
-                    <label>${t.labelTimezone}:</label>
+                    <label for="current-timezone">${t.labelTimezone}:</label>
                     <select id="current-timezone"></select>
                 </div>
-                <div class="time-display-main" id="current-display">-</div>
+                <div class="time-display-main" id="current-display" aria-label="${t.labelTimeDisplay}" aria-live="off">-</div>
                 <div class="time-grid">
                     <div class="time-card">
-                        <div class="time-label">${t.labelTimestampSec}</div>
+                        <div class="time-label" id="current-sec-label">${t.labelTimestampSec}</div>
                         <div class="time-value-wrapper">
-                            <div class="time-value" id="current-sec">-</div>
-                            <button class="copy-btn" data-target="current-sec">${t.copyBtn}</button>
+                            <div class="time-value" id="current-sec" aria-labelledby="current-sec-label">-</div>
+                            <button type="button" class="copy-btn tool-btn tool-btn--copy" data-target="current-sec" aria-label="${t.copyBtn}: ${t.labelTimestampSec}">${t.copyBtn}</button>
                         </div>
                     </div>
                     <div class="time-card">
-                        <div class="time-label">${t.labelTimestampMs}</div>
+                        <div class="time-label" id="current-ms-label">${t.labelTimestampMs}</div>
                         <div class="time-value-wrapper">
-                            <div class="time-value" id="current-ms">-</div>
-                            <button class="copy-btn" data-target="current-ms">${t.copyBtn}</button>
+                            <div class="time-value" id="current-ms" aria-labelledby="current-ms-label">-</div>
+                            <button type="button" class="copy-btn tool-btn tool-btn--copy" data-target="current-ms" aria-label="${t.copyBtn}: ${t.labelTimestampMs}">${t.copyBtn}</button>
                         </div>
                     </div>
                 </div>
@@ -143,23 +149,24 @@
                 <h3>${t.titleConverter}</h3>
                 <div class="converter-group">
                     <div class="input-field converter-timezone">
-                        <div class="time-label">${t.labelConvertTimezone}</div>
+                        <label class="time-label" for="converter-timezone">${t.labelConvertTimezone}</label>
                         <select id="converter-timezone"></select>
                     </div>
                     <div class="input-row">
                         <div class="input-field">
-                            <div class="time-label">${t.labelConvertTimestamp}</div>
+                            <label class="time-label" for="input-ts">${t.labelConvertTimestamp}</label>
                             <input type="text" id="input-ts" placeholder="${t.placeholderTimestamp}">
                         </div>
-                        <button class="btn" id="btn-to-dt">${t.btnToDateTime}</button>
+                        <button type="button" class="btn tool-btn tool-btn--primary" id="btn-to-dt">${t.btnToDateTime}</button>
                     </div>
                     <div class="input-row">
                         <div class="input-field">
-                            <div class="time-label">${t.labelConvertDateTime}</div>
+                            <label class="time-label" for="input-dt">${t.labelConvertDateTime}</label>
                             <input type="text" id="input-dt" placeholder="${t.placeholderDateTime}">
                         </div>
-                        <button class="btn" id="btn-to-ts">${t.btnToTimestamp}</button>
+                        <button type="button" class="btn tool-btn tool-btn--primary" id="btn-to-ts">${t.btnToTimestamp}</button>
                     </div>
+                    <div class="tool-status" id="time-status" role="status" aria-live="polite"></div>
                 </div>
             </div>
         </div>
@@ -285,6 +292,8 @@
     const inputDt = document.getElementById('input-dt');
     const btnToDt = document.getElementById('btn-to-dt');
     const btnToTs = document.getElementById('btn-to-ts');
+    const status = document.getElementById('time-status');
+    const ui = window.CodeGlimpseToolUi;
 
     function updateCurrent() {
         const now = new Date();
@@ -304,24 +313,32 @@
 
     btnToDt.onclick = () => {
         let ts = inputTs.value.trim();
-        if (!ts) return;
+        if (!ts) {
+            ui.setStatus(status, 'error', t.required);
+            return;
+        }
         try {
             const parsed = window.CodeGlimpseTime.parseTimestamp(ts);
             inputDt.value = window.CodeGlimpseTime.formatDate(parsed.date, converterTzSelect.value);
+            ui.setStatus(status, 'success', t.converted);
         } catch (error) {
-            alert(t.errorInvalid);
+            ui.setStatus(status, 'error', t.errorInvalid);
         }
     };
 
     btnToTs.onclick = () => {
         let dtStr = inputDt.value.trim();
-        if (!dtStr) return;
+        if (!dtStr) {
+            ui.setStatus(status, 'error', t.required);
+            return;
+        }
         
         const tz = converterTzSelect.value;
         try {
             inputTs.value = window.CodeGlimpseTime.dateTimeToTimestamp(dtStr, tz);
+            ui.setStatus(status, 'success', t.converted);
         } catch (e) {
-            alert(t.errorInvalid);
+            ui.setStatus(status, 'error', t.errorInvalid);
         }
     };
 
@@ -329,13 +346,27 @@
     container.addEventListener('click', (e) => {
         if (e.target.classList.contains('copy-btn')) {
             const targetId = e.target.getAttribute('data-target');
-            const text = document.getElementById(targetId).textContent;
-            window.CodeGlimpseClipboard.copy(text).then(copied => {
-                if (!copied) return;
-                const originalText = e.target.textContent;
-                e.target.textContent = t.copied;
-                setTimeout(() => e.target.textContent = originalText, 1500);
+            const target = document.getElementById(targetId);
+            const text = 'value' in target ? target.value : target.textContent;
+            ui.copy({
+                button: e.target,
+                value: text,
+                status,
+                messages: { empty: t.required, copied: t.copied, copyFailed: t.copyFailed }
             });
+        }
+    });
+
+    inputTs.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            btnToDt.click();
+        }
+    });
+    inputDt.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            btnToTs.click();
         }
     });
 })();

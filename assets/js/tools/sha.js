@@ -13,6 +13,10 @@
             btnClear: '清空内容',
             copyBtn: '复制结果',
             copied: '已复制',
+            copyFailed: '复制失败，请手动复制',
+            required: '请输入需要处理的内容',
+            processing: '正在生成哈希值…',
+            generated: 'SHA 哈希值已生成',
             algoLabel: '算法选择',
             caseLabel: '输出格式',
             caseLower: '小写',
@@ -28,6 +32,10 @@
             btnClear: 'Clear',
             copyBtn: 'Copy Result',
             copied: 'Copied',
+            copyFailed: 'Copy failed; please copy manually',
+            required: 'Enter content to process',
+            processing: 'Generating hash…',
+            generated: 'SHA hash generated',
             algoLabel: 'Algorithm',
             caseLabel: 'Output Case',
             caseLower: 'Lowercase',
@@ -100,16 +108,16 @@
                 cursor: pointer;
             }
         </style>
-        <div class="tool-container">
-            <div class="input-group">
-                <label>${t.labelInput}</label>
+        <div class="tool-container tool-text-tool" data-output-state="empty">
+            <div class="input-group tool-field tool-input-panel">
+                <label class="tool-label" for="sha-input">${t.labelInput}</label>
                 <textarea id="sha-input" rows="8" placeholder="${t.placeholderInput}"></textarea>
             </div>
-            <div class="button-group">
-                <button class="btn btn-primary" id="sha-generate">${t.btnHash}</button>
-                <button class="btn btn-secondary" id="sha-clear">${t.btnClear}</button>
-                <div class="options-group">
-                    <span>${t.algoLabel}:</span>
+            <div class="button-group tool-actions tool-action-panel">
+                <button type="button" class="btn btn-primary tool-btn tool-btn--primary" id="sha-generate">${t.btnHash}</button>
+                <button type="button" class="btn btn-secondary tool-btn tool-btn--secondary" id="sha-clear">${t.btnClear}</button>
+                <div class="options-group" role="group" aria-label="${t.caseLabel}">
+                    <label for="sha-algo">${t.algoLabel}:</label>
                     <select id="sha-algo">
                         <option value="SHA-1">SHA-1</option>
                         <option value="SHA-256" selected>SHA-256</option>
@@ -123,10 +131,11 @@
                     <label for="sha-case-upper" style="display:inline; font-size: 1.4rem; font-weight: normal;">${t.caseUpper}</label>
                 </div>
             </div>
-            <div class="input-group result-group" id="sha-result-group" style="display: none;">
-                <label>${t.labelOutput}</label>
+            <div class="tool-status" id="sha-status" role="status" aria-live="polite"></div>
+            <div class="input-group result-group tool-field tool-output-panel" id="sha-result-group" hidden aria-hidden="true">
+                <label class="tool-label" for="sha-output">${t.labelOutput}</label>
                 <textarea id="sha-output" rows="4" readonly></textarea>
-                <button class="btn-copy" id="sha-copy">${t.copyBtn}</button>
+                <button type="button" class="btn-copy tool-btn tool-btn--copy" id="sha-copy" aria-label="${t.copyBtn}" disabled>${t.copyBtn}</button>
             </div>
         </div>
     `;
@@ -139,18 +148,33 @@
     const btnCopy = document.getElementById('sha-copy');
     const algoSelect = document.getElementById('sha-algo');
     const caseRadios = document.getElementsByName('sha-case');
+    const status = document.getElementById('sha-status');
+    const toolLayout = container.querySelector('.tool-text-tool');
+    const ui = window.CodeGlimpseToolUi;
+    let generationToken = 0;
 
-    async function generateHash() {
+    async function generateHash(announce = false) {
         const str = input.value;
         if (!str) {
-            resultGroup.style.display = 'none';
+            generationToken += 1;
+            output.value = '';
+            resultGroup.hidden = true;
+            resultGroup.setAttribute('aria-hidden', 'true');
+            btnCopy.disabled = true;
+            ui.setOutputState(toolLayout, 'empty');
+            if (announce) ui.setStatus(status, 'error', t.required);
             return;
         }
 
         const algo = algoSelect.value;
+        const requestToken = ++generationToken;
+        btnGenerate.disabled = true;
+        container.setAttribute('aria-busy', 'true');
+        if (announce) ui.setStatus(status, 'info', t.processing);
 
         try {
             let hashHex = await window.CodeGlimpseSha.digest(str, algo);
+            if (requestToken !== generationToken) return;
 
             const isUpper = document.getElementById('sha-case-upper').checked;
             if (isUpper) {
@@ -158,33 +182,57 @@
             }
 
             output.value = hashHex;
-            resultGroup.style.display = 'block';
+            resultGroup.hidden = false;
+            resultGroup.setAttribute('aria-hidden', 'false');
+            btnCopy.disabled = false;
+            ui.setOutputState(toolLayout, 'ready');
+            ui.setStatus(status, announce ? 'success' : '', announce ? t.generated : '');
         } catch (e) {
+            if (requestToken !== generationToken) return;
             console.error(e);
-            alert(t.errorAlgo);
+            output.value = '';
+            resultGroup.hidden = true;
+            resultGroup.setAttribute('aria-hidden', 'true');
+            btnCopy.disabled = true;
+            ui.setOutputState(toolLayout, 'empty');
+            ui.setStatus(status, 'error', t.errorAlgo);
+        } finally {
+            if (requestToken === generationToken) {
+                btnGenerate.disabled = false;
+                container.removeAttribute('aria-busy');
+            }
         }
     }
 
-    btnGenerate.onclick = generateHash;
-    input.oninput = generateHash;
-    algoSelect.onchange = generateHash;
+    btnGenerate.onclick = () => generateHash(true);
+    input.oninput = () => generateHash(false);
+    algoSelect.onchange = () => generateHash(false);
     caseRadios.forEach(radio => {
-        radio.onchange = generateHash;
+        radio.onchange = () => generateHash(false);
     });
 
     btnClear.onclick = () => {
         input.value = '';
         output.value = '';
-        resultGroup.style.display = 'none';
+        generationToken += 1;
+        resultGroup.hidden = true;
+        resultGroup.setAttribute('aria-hidden', 'true');
+        btnGenerate.disabled = false;
+        btnCopy.disabled = true;
+        container.removeAttribute('aria-busy');
+        ui.setOutputState(toolLayout, 'empty');
+        ui.setStatus(status, '', '');
         input.focus();
     };
 
     btnCopy.onclick = () => {
-        window.CodeGlimpseClipboard.copy(output.value).then(copied => {
-            if (!copied) return;
-            const originalText = btnCopy.innerText;
-            btnCopy.innerText = t.copied;
-            setTimeout(() => { btnCopy.innerText = originalText; }, 2000);
+        ui.copy({
+            button: btnCopy,
+            value: output.value,
+            status,
+            messages: { empty: t.required, copied: t.copied, copyFailed: t.copyFailed }
         });
     };
+
+    ui.bindShortcut(input, () => generateHash(true));
 })();

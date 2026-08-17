@@ -11,6 +11,7 @@
             placeholderHeight: '例如: 175',
             placeholderWeight: '例如: 70',
             btnCalc: '开始计算',
+            btnClear: '清空',
             errorInvalid: '请输入有效的身高和体重。',
             statusUnderweight: '偏瘦',
             statusNormal: '正常',
@@ -24,6 +25,7 @@
             placeholderHeight: 'e.g., 175',
             placeholderWeight: 'e.g., 70',
             btnCalc: 'Calculate',
+            btnClear: 'Clear',
             errorInvalid: 'Enter a valid height and weight.',
             statusUnderweight: 'Underweight',
             statusNormal: 'Normal',
@@ -85,20 +87,23 @@
             #tool-bmi #bmi-error { min-height: 1.5rem; color: #e74c3c; text-align: center; }
         </style>
         <div class="tool-container">
-            <div class="input-group">
-                <label>${t.labelHeight}</label>
-                <input type="number" id="bmi-height" placeholder="${t.placeholderHeight}">
+            <div class="input-group tool-field">
+                <label class="tool-label" for="bmi-height">${t.labelHeight}</label>
+                <input class="tool-input" type="number" id="bmi-height" min="50" max="300" step="0.1" inputmode="decimal" placeholder="${t.placeholderHeight}">
             </div>
-            <div class="input-group">
-                <label>${t.labelWeight}</label>
-                <input type="number" id="bmi-weight" placeholder="${t.placeholderWeight}">
+            <div class="input-group tool-field">
+                <label class="tool-label" for="bmi-weight">${t.labelWeight}</label>
+                <input class="tool-input" type="number" id="bmi-weight" min="1" max="1000" step="0.1" inputmode="decimal" placeholder="${t.placeholderWeight}">
             </div>
-            <button class="btn-calc" id="bmi-calc">${t.btnCalc}</button>
-            <div class="result-box" id="bmi-result" style="display: none;">
+            <div class="tool-actions">
+                <button type="button" class="btn-calc tool-btn tool-btn--primary" id="bmi-calc">${t.btnCalc}</button>
+                <button type="button" class="tool-btn tool-btn--secondary" id="bmi-clear">${t.btnClear}</button>
+            </div>
+            <div class="result-box" id="bmi-result" hidden aria-live="polite">
                 <span class="bmi-value"></span>
                 <span class="bmi-status"></span>
             </div>
-            <div id="bmi-error" role="alert" aria-live="polite"></div>
+            <div class="tool-status" id="bmi-error" role="status" aria-live="polite"></div>
         </div>
     `;
 
@@ -107,10 +112,14 @@
     const valSpan = resBox.querySelector('.bmi-value');
     const statSpan = resBox.querySelector('.bmi-status');
     const errorSpan = document.getElementById('bmi-error');
+    const heightInput = document.getElementById('bmi-height');
+    const weightInput = document.getElementById('bmi-weight');
+    const clearButton = document.getElementById('bmi-clear');
+    const ui = window.CodeGlimpseToolUi;
 
-    btn.onclick = () => {
-        const height = document.getElementById('bmi-height').value;
-        const weight = document.getElementById('bmi-weight').value;
+    function calculate() {
+        const height = heightInput.value;
+        const weight = weightInput.value;
 
         try {
             const bmi = window.CodeGlimpseBmi.calculate(height, weight).toFixed(1);
@@ -128,16 +137,36 @@
                 status = t.statusObese; color = '#e74c3c'; 
             }
 
-            resBox.style.display = 'block';
+            resBox.hidden = false;
             valSpan.innerText = `BMI: ${bmi}`;
             statSpan.innerText = status;
             statSpan.style.backgroundColor = color;
-            errorSpan.textContent = '';
+            ui.setStatus(errorSpan, '', '');
         } catch (error) {
-            resBox.style.display = 'none';
+            resBox.hidden = true;
             valSpan.innerText = '';
             statSpan.innerText = '';
-            errorSpan.textContent = t.errorInvalid;
+            ui.setStatus(errorSpan, 'error', t.errorInvalid);
         }
-    };
+    }
+
+    btn.addEventListener('click', calculate);
+    [heightInput, weightInput].forEach(input => {
+        input.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                calculate();
+            }
+        });
+    });
+
+    clearButton.addEventListener('click', () => {
+        heightInput.value = '';
+        weightInput.value = '';
+        resBox.hidden = true;
+        valSpan.innerText = '';
+        statSpan.innerText = '';
+        ui.setStatus(errorSpan, '', '');
+        heightInput.focus();
+    });
 })();

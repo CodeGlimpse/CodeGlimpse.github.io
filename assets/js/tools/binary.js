@@ -16,8 +16,10 @@
             placeholderInput: '在这里输入数值...',
             placeholderCustom: '例如: 32',
             invalidInput: '无效输入',
+            btnClear: '清空',
             copyBtn: '复制',
-            copied: '已复制'
+            copied: '已复制',
+            copyFailed: '复制失败，请手动复制'
         },
         'en': {
             labelInput: 'Input Value',
@@ -30,8 +32,10 @@
             placeholderInput: 'Enter value here...',
             placeholderCustom: 'e.g., 32',
             invalidInput: 'Invalid Input',
+            btnClear: 'Clear',
             copyBtn: 'Copy',
-            copied: 'Copied'
+            copied: 'Copied',
+            copyFailed: 'Copy failed; please copy manually'
         }
     };
 
@@ -74,9 +78,9 @@
         </style>
         <div class="tool-container">
             <div class="custom-base-group">
-                <div class="input-group">
-                    <label>${t.labelBase}</label>
-                    <select id="source-base">
+                <div class="input-group tool-field">
+                    <label class="tool-label" for="source-base">${t.labelBase}</label>
+                    <select class="tool-input" id="source-base">
                         <option value="2">2 (${t.labelBinary})</option>
                         <option value="8">8 (${t.labelOctal})</option>
                         <option value="10" selected>10 (${t.labelDecimal})</option>
@@ -84,54 +88,60 @@
                         <option value="custom">${t.labelCustom}</option>
                     </select>
                 </div>
-                <div class="input-group" id="custom-source-group" style="display: none;">
-                    <label>${t.labelCustom}</label>
-                    <input type="number" id="custom-source-base" min="2" max="36" value="32">
+                <div class="input-group tool-field" id="custom-source-group" hidden>
+                    <label class="tool-label" for="custom-source-base">${t.labelCustom}</label>
+                    <input class="tool-input" type="number" id="custom-source-base" min="2" max="36" value="32">
                 </div>
             </div>
             
-            <div class="input-group">
-                <label>${t.labelInput}</label>
-                <input type="text" id="binary-input" placeholder="${t.placeholderInput}">
+            <div class="input-group tool-field">
+                <label class="tool-label" for="binary-input">${t.labelInput}</label>
+                <input class="tool-input" type="text" id="binary-input" placeholder="${t.placeholderInput}" inputmode="text" autocomplete="off">
             </div>
+
+            <div class="tool-actions">
+                <button type="button" class="tool-btn tool-btn--secondary" id="binary-clear">${t.btnClear}</button>
+            </div>
+
+            <div class="tool-status" id="binary-status" role="status" aria-live="polite"></div>
 
             <div class="results-grid">
                 <div class="result-item">
-                    <label>${t.labelBinary}</label>
+                    <label for="res-2">${t.labelBinary}</label>
                     <div class="result-row">
-                        <input type="text" id="res-2" readonly>
-                        <button class="copy-btn" data-target="res-2">${t.copyBtn}</button>
+                        <input class="tool-input" type="text" id="res-2" readonly>
+                        <button type="button" class="copy-btn tool-btn tool-btn--copy" data-target="res-2" aria-label="${t.copyBtn}: ${t.labelBinary}" disabled>${t.copyBtn}</button>
                     </div>
                 </div>
                 <div class="result-item">
-                    <label>${t.labelOctal}</label>
+                    <label for="res-8">${t.labelOctal}</label>
                     <div class="result-row">
-                        <input type="text" id="res-8" readonly>
-                        <button class="copy-btn" data-target="res-8">${t.copyBtn}</button>
+                        <input class="tool-input" type="text" id="res-8" readonly>
+                        <button type="button" class="copy-btn tool-btn tool-btn--copy" data-target="res-8" aria-label="${t.copyBtn}: ${t.labelOctal}" disabled>${t.copyBtn}</button>
                     </div>
                 </div>
                 <div class="result-item">
-                    <label>${t.labelDecimal}</label>
+                    <label for="res-10">${t.labelDecimal}</label>
                     <div class="result-row">
-                        <input type="text" id="res-10" readonly>
-                        <button class="copy-btn" data-target="res-10">${t.copyBtn}</button>
+                        <input class="tool-input" type="text" id="res-10" readonly>
+                        <button type="button" class="copy-btn tool-btn tool-btn--copy" data-target="res-10" aria-label="${t.copyBtn}: ${t.labelDecimal}" disabled>${t.copyBtn}</button>
                     </div>
                 </div>
                 <div class="result-item">
-                    <label>${t.labelHex}</label>
+                    <label for="res-16">${t.labelHex}</label>
                     <div class="result-row">
-                        <input type="text" id="res-16" readonly>
-                        <button class="copy-btn" data-target="res-16">${t.copyBtn}</button>
+                        <input class="tool-input" type="text" id="res-16" readonly>
+                        <button type="button" class="copy-btn tool-btn tool-btn--copy" data-target="res-16" aria-label="${t.copyBtn}: ${t.labelHex}" disabled>${t.copyBtn}</button>
                     </div>
                 </div>
                 <div class="result-item">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <label>${t.labelCustom}</label>
-                        <input type="number" id="target-custom-base" min="2" max="36" value="32" style="width: 60px; padding: 0.2rem; font-size: 0.8rem;">
+                        <label for="target-custom-base">${t.labelCustom}</label>
+                        <input class="tool-input" type="number" id="target-custom-base" min="2" max="36" value="32" style="width: 7rem;">
                     </div>
                     <div class="result-row">
-                        <input type="text" id="res-custom" readonly>
-                        <button class="copy-btn" data-target="res-custom">${t.copyBtn}</button>
+                        <input class="tool-input" type="text" id="res-custom" aria-label="${t.labelCustom}" readonly>
+                        <button type="button" class="copy-btn tool-btn tool-btn--copy" data-target="res-custom" aria-label="${t.copyBtn}: ${t.labelCustom}" disabled>${t.copyBtn}</button>
                     </div>
                 </div>
             </div>
@@ -143,6 +153,9 @@
     const customSourceBaseInput = document.getElementById('custom-source-base');
     const binaryInput = document.getElementById('binary-input');
     const targetCustomBaseInput = document.getElementById('target-custom-base');
+    const clearButton = document.getElementById('binary-clear');
+    const status = document.getElementById('binary-status');
+    const ui = window.CodeGlimpseToolUi;
 
     const resultInputs = {
         2: document.getElementById('res-2'),
@@ -151,19 +164,30 @@
         16: document.getElementById('res-16'),
         custom: document.getElementById('res-custom')
     };
+    const copyButtons = [...container.querySelectorAll('.copy-btn')];
+
+    function clearResults() {
+        Object.values(resultInputs).forEach(input => { input.value = ''; });
+        copyButtons.forEach(button => { button.disabled = true; });
+    }
 
     function updateConversion() {
         const val = binaryInput.value.trim();
         if (!val) {
-            Object.values(resultInputs).forEach(input => input.value = '');
+            clearResults();
+            ui.setStatus(status, '', '');
             return;
         }
 
         let sourceBase = sourceBaseSelect.value === 'custom' 
-            ? parseInt(customSourceBaseInput.value) 
-            : parseInt(sourceBaseSelect.value);
+            ? parseInt(customSourceBaseInput.value, 10)
+            : parseInt(sourceBaseSelect.value, 10);
         
-        if (isNaN(sourceBase) || sourceBase < 2 || sourceBase > 36) sourceBase = 10;
+        if (isNaN(sourceBase) || sourceBase < 2 || sourceBase > 36) {
+            clearResults();
+            ui.setStatus(status, 'error', t.invalidInput);
+            return;
+        }
 
         try {
             const decimalValue = window.CodeGlimpseBinary.parseInteger(val, sourceBase);
@@ -173,17 +197,22 @@
             resultInputs[10].value = window.CodeGlimpseBinary.formatInteger(decimalValue, 10);
             resultInputs[16].value = window.CodeGlimpseBinary.formatInteger(decimalValue, 16);
             
-            let targetCustomBase = parseInt(targetCustomBaseInput.value);
-            if (isNaN(targetCustomBase) || targetCustomBase < 2 || targetCustomBase > 36) targetCustomBase = 32;
+            const targetCustomBase = parseInt(targetCustomBaseInput.value, 10);
+            if (isNaN(targetCustomBase) || targetCustomBase < 2 || targetCustomBase > 36) {
+                throw new RangeError(t.invalidInput);
+            }
             resultInputs['custom'].value = window.CodeGlimpseBinary.formatInteger(decimalValue, targetCustomBase);
+            copyButtons.forEach(button => { button.disabled = false; });
+            ui.setStatus(status, '', '');
 
         } catch (e) {
-            Object.values(resultInputs).forEach(input => input.value = t.invalidInput);
+            clearResults();
+            ui.setStatus(status, 'error', t.invalidInput);
         }
     }
 
     sourceBaseSelect.addEventListener('change', () => {
-        customSourceGroup.style.display = sourceBaseSelect.value === 'custom' ? 'flex' : 'none';
+        customSourceGroup.hidden = sourceBaseSelect.value !== 'custom';
         updateConversion();
     });
 
@@ -192,18 +221,23 @@
     });
 
     // Copy functionality
-    container.querySelectorAll('.copy-btn').forEach(btn => {
+    copyButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             const targetId = btn.getAttribute('data-target');
             const input = document.getElementById(targetId);
-            if (input && input.value && input.value !== t.invalidInput) {
-                window.CodeGlimpseClipboard.copy(input.value).then(copied => {
-                    if (!copied) return;
-                    const originalText = btn.innerText;
-                    btn.innerText = t.copied;
-                    setTimeout(() => btn.innerText = originalText, 1500);
-                });
-            }
+            ui.copy({
+                button: btn,
+                value: input?.value,
+                status,
+                messages: { empty: t.invalidInput, copied: t.copied, copyFailed: t.copyFailed }
+            });
         });
+    });
+
+    clearButton.addEventListener('click', () => {
+        binaryInput.value = '';
+        clearResults();
+        ui.setStatus(status, '', '');
+        binaryInput.focus();
     });
 })();

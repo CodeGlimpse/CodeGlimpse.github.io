@@ -11,6 +11,7 @@
     --content-border-color: #dee2e6;
 
     --border-radius: 0.75rem;
+    --base-font-family: var(--sys-font-family), sans-serif;
 }
 
 [data-scheme="dark"] {
@@ -27,3 +28,51 @@
     You can add your own custom styles here.
 */
 @import "tools.scss";
+
+.skip-link {
+    position: fixed;
+    inset-block-start: 1rem;
+    inset-inline-start: 1rem;
+    z-index: 10000;
+    padding: 0.8rem 1.2rem;
+    border-radius: 0.4rem;
+    background: var(--accent-color);
+    color: #fff;
+    font-weight: 700;
+    transform: translateY(-160%);
+    transition: transform 0.15s ease;
+}
+
+.skip-link:focus {
+    transform: translateY(0);
+}
+
+.theme-toggle-item {
+    width: 100%;
+}
+
+#dark-mode-toggle {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+}
+
+#toggle-menu:focus-visible,
+#dark-mode-toggle:focus-visible,
+#i18n-switch select:focus-visible,
+#main-menu a:focus-visible,
+.menu-social a:focus-visible,
+.tool-card:focus-visible,
+.search-form input:focus-visible,
+.search-form button:focus-visible {
+    outline: 3px solid rgba(var(--primary-color-rgb), 0.45);
+    outline-offset: 3px;
+}
+
+#main-content:focus {
+    outline: none;
+}

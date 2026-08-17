@@ -26,6 +26,53 @@ test.describe('online tools', () => {
         await expect(page.locator('#json-status')).toContainText('Valid JSON');
     });
 
+    test('publishes bilingual tool metadata without unused third-party assets', async ({ page }) => {
+        await page.goto('/tools/json/');
+
+        await expect(page).toHaveTitle('JSON 格式化工具 | Fernweh的个人博客');
+        await expect(page.locator('h1')).toHaveCount(1);
+        await expect(page.locator('h1')).toHaveText('JSON 格式化工具');
+        await expect(page.locator('meta[property="og:type"]')).toHaveAttribute('content', 'website');
+        await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /og-default\.png$/);
+        await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute('content', /og-default\.png$/);
+
+        const alternates = await page.locator('link[rel="alternate"][hreflang]').evaluateAll((links) => (
+            links.map((link) => link.getAttribute('hreflang')).sort()
+        ));
+        expect(alternates).toEqual(['en', 'x-default', 'zh-cn']);
+
+        const structuredData = JSON.parse(await page.locator('script[type="application/ld+json"]').textContent());
+        expect(structuredData['@type']).toBe('WebApplication');
+        expect(structuredData.inLanguage).toBe('zh-cn');
+        expect(structuredData.isAccessibleForFree).toBe(true);
+
+        await expect(page.locator('script[src*="photoswipe" i]')).toHaveCount(0);
+        await expect(page.locator('script[src*="vibrant" i]')).toHaveCount(0);
+        await expect(page.locator('link[href*="fonts.googleapis.com" i]')).toHaveCount(0);
+        await expect(page.locator('script[src*="/js/tools/json."]')).toHaveCount(1);
+    });
+
+    test('supports keyboard navigation and exposes theme state', async ({ page }) => {
+        await page.goto('/tools/json/');
+
+        const skipLink = page.locator('.skip-link');
+        await page.keyboard.press('Tab');
+        await expect(skipLink).toBeFocused();
+        await expect(skipLink).toBeVisible();
+        await skipLink.press('Enter');
+        await expect(page.locator('#main-content')).toBeFocused();
+
+        const themeToggle = page.getByRole('button', { name: '暗色模式' });
+        const initialState = await themeToggle.getAttribute('aria-pressed');
+        expect(['true', 'false']).toContain(initialState);
+        await themeToggle.press('Enter');
+        await expect(themeToggle).toHaveAttribute('aria-pressed', initialState === 'true' ? 'false' : 'true');
+
+        await expect(page.getByLabel('选择语言')).toBeVisible();
+        await expect(page.getByRole('link', { name: '工具', exact: true })).toHaveAttribute('aria-current', 'location');
+        await expect(page.locator('svg:not([aria-hidden="true"])')).toHaveCount(0);
+    });
+
     test('encodes and clears Unicode Base64 content', async ({ page }) => {
         await page.goto('/tools/base64/');
 
@@ -121,6 +168,20 @@ test.describe('online tools', () => {
         await search.fill('definitely-not-a-tool');
         await expect(page.locator('#tool-search-empty')).toBeVisible();
         await expect(page.locator('#tool-search-empty')).toContainText('No matching tools found');
+    });
+
+    test('shows a visible focus indicator on tool cards', async ({ page }) => {
+        await page.goto('/tools/');
+
+        const firstCard = page.locator('.tool-card').first();
+        await firstCard.focus();
+        const focusStyle = await firstCard.evaluate((card) => {
+            const style = window.getComputedStyle(card);
+            return { outlineStyle: style.outlineStyle, outlineWidth: style.outlineWidth };
+        });
+
+        expect(focusStyle.outlineStyle).not.toBe('none');
+        expect(Number.parseFloat(focusStyle.outlineWidth)).toBeGreaterThanOrEqual(3);
     });
 
     test('searches published content', async ({ page }) => {

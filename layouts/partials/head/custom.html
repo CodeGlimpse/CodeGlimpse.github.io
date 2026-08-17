@@ -1,0 +1,49 @@
+{{- $defaultURL := .Sites.Default.Home.Permalink -}}
+{{- range .AllTranslations -}}
+    <link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}">
+    {{- if eq .Language.Lang $.Sites.Default.Language.Lang -}}
+        {{- $defaultURL = .Permalink -}}
+    {{- end -}}
+{{- end -}}
+<link rel="alternate" hreflang="x-default" href="{{ $defaultURL }}">
+
+{{- $schema := dict
+    "@context" "https://schema.org"
+    "name" .Title
+    "url" .Permalink
+    "description" (partialCached "data/description" . .RelPermalink)
+    "inLanguage" .Language.Lang
+-}}
+
+{{- if and .IsPage (eq .Section "tools") -}}
+    {{- $schema = merge $schema (dict
+        "@type" "WebApplication"
+        "applicationCategory" "UtilitiesApplication"
+        "operatingSystem" "Any"
+        "browserRequirements" "Requires JavaScript and a modern web browser"
+        "isAccessibleForFree" true
+        "offers" (dict "@type" "Offer" "price" "0" "priceCurrency" "USD")
+    ) -}}
+{{- else if and .IsPage (eq .Section "post") -}}
+    {{- $schema = merge $schema (dict
+        "@type" "BlogPosting"
+        "headline" .Title
+        "datePublished" (.Date.Format "2006-01-02T15:04:05Z07:00")
+        "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00")
+        "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink)
+        "publisher" (dict "@type" "Organization" "name" .Site.Title "url" .Site.Home.Permalink)
+    ) -}}
+{{- else if .IsHome -}}
+    {{- $schema = merge $schema (dict
+        "@type" "WebSite"
+        "name" .Site.Title
+    ) -}}
+{{- else -}}
+    {{- $schema = merge $schema (dict "@type" "WebPage") -}}
+{{- end -}}
+
+{{- $defaultImage := resources.Get "img/og-default.png" -}}
+{{- with $defaultImage -}}
+    {{- $schema = merge $schema (dict "image" .Permalink) -}}
+{{- end -}}
+<script type="application/ld+json">{{ $schema | jsonify | safeJS }}</script>

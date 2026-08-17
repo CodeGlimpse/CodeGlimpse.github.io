@@ -60,9 +60,9 @@ site = ""
 card = "summary_large_image"
 
 [defaultImage.opengraph]
-enabled = false
-local = false
-src = ""
+enabled = true
+local = true
+src = "img/og-default.png"
 
 [colorScheme]
 toggle = true

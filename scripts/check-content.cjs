@@ -243,9 +243,33 @@ function checkToolImplementations() {
     }
 }
 
+function checkImageBudgets() {
+    const categoryRoot = path.join(contentRoot);
+    const banners = collectFiles(categoryRoot, (filePath) => (
+        path.basename(filePath).toLowerCase() === 'banner.jpg'
+        && filePath.split(path.sep).includes('categories')
+    ));
+    const maxBannerBytes = 300 * 1024;
+
+    for (const banner of banners) {
+        const size = fs.statSync(banner).size;
+        if (size > maxBannerBytes) {
+            errors.push(`${relativePath(banner)}: category banner exceeds 300 KB (${size} bytes)`);
+        }
+    }
+
+    const shareImage = path.join(projectRoot, 'assets', 'img', 'og-default.png');
+    if (!fs.existsSync(shareImage)) {
+        errors.push(`${relativePath(shareImage)}: default social sharing image is missing`);
+    } else if (fs.statSync(shareImage).size > 200 * 1024) {
+        errors.push(`${relativePath(shareImage)}: default social sharing image exceeds 200 KB`);
+    }
+}
+
 const toolIdsByLanguage = checkFrontMatterAndPages();
 checkToolDirectories(toolIdsByLanguage);
 checkToolImplementations();
+checkImageBudgets();
 
 if (errors.length > 0) {
     console.error(`Content structure check failed: ${errors.length} issue(s)`);

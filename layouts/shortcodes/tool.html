@@ -4,34 +4,35 @@
     </div>
 </div>
 
-{{ $clipboard := resources.Get "js/tools/clipboard.js" | js.Build }}
+{{ $opts := dict "minify" hugo.IsProduction }}
+{{ $clipboard := resources.Get "js/tools/clipboard.js" | js.Build $opts | fingerprint "sha256" }}
 <script src="{{ $clipboard.RelPermalink }}" defer></script>
-{{ $ui := resources.Get "js/tools/tool-ui.js" | js.Build }}
+{{ $ui := resources.Get "js/tools/tool-ui.js" | js.Build $opts | fingerprint "sha256" }}
 <script src="{{ $ui.RelPermalink }}" defer></script>
 
 {{ $id := .Get "id" }}
 {{ if eq $id "binary" }}
-    {{ $core := resources.Get "js/tools/binary-core.js" | js.Build }}
+    {{ $core := resources.Get "js/tools/binary-core.js" | js.Build $opts | fingerprint "sha256" }}
     <script src="{{ $core.RelPermalink }}" defer></script>
 {{ else if eq $id "base64" }}
-    {{ $core := resources.Get "js/tools/base64-core.js" | js.Build }}
+    {{ $core := resources.Get "js/tools/base64-core.js" | js.Build $opts | fingerprint "sha256" }}
     <script src="{{ $core.RelPermalink }}" defer></script>
 {{ else if eq $id "time" }}
-    {{ $core := resources.Get "js/tools/time-core.js" | js.Build }}
+    {{ $core := resources.Get "js/tools/time-core.js" | js.Build $opts | fingerprint "sha256" }}
     <script src="{{ $core.RelPermalink }}" defer></script>
 {{ else if eq $id "bmi" }}
-    {{ $core := resources.Get "js/tools/bmi-core.js" | js.Build }}
+    {{ $core := resources.Get "js/tools/bmi-core.js" | js.Build $opts | fingerprint "sha256" }}
     <script src="{{ $core.RelPermalink }}" defer></script>
 {{ else if eq $id "color" }}
-    {{ $core := resources.Get "js/tools/color-core.js" | js.Build }}
+    {{ $core := resources.Get "js/tools/color-core.js" | js.Build $opts | fingerprint "sha256" }}
     <script src="{{ $core.RelPermalink }}" defer></script>
 {{ else if eq $id "md5" }}
-    {{ $core := resources.Get "js/tools/md5-core.js" | js.Build }}
+    {{ $core := resources.Get "js/tools/md5-core.js" | js.Build $opts | fingerprint "sha256" }}
     <script src="{{ $core.RelPermalink }}" defer></script>
 {{ else if eq $id "sha" }}
-    {{ $core := resources.Get "js/tools/sha-core.js" | js.Build }}
+    {{ $core := resources.Get "js/tools/sha-core.js" | js.Build $opts | fingerprint "sha256" }}
     <script src="{{ $core.RelPermalink }}" defer></script>
 {{ end }}
 
-{{ $js := resources.Get (printf "js/tools/%s.js" $id) | js.Build }}
+{{ $js := resources.Get (printf "js/tools/%s.js" $id) | js.Build $opts | fingerprint "sha256" }}
 <script src="{{ $js.RelPermalink }}" defer></script>

@@ -1,0 +1,7 @@
+{{- $iconFile := resources.GetMatch (printf "icons/%s.svg" .) -}}
+{{- if $iconFile -}}
+    {{- $icon := replaceRE "<svg" `<svg aria-hidden="true" focusable="false"` $iconFile.Content -}}
+    {{- $icon | safeHTML -}}
+{{- else -}}
+    {{- errorf "Error: icon '%s.svg' is not found under 'assets/icons' folder" . -}}
+{{- end -}}

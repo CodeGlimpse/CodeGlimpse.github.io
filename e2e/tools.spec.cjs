@@ -160,6 +160,104 @@ test.describe('online tools', () => {
         await expect(page.locator('#time-status')).toContainText('无效的输入格式');
     });
 
+    test('encodes and decodes URL components in form mode', async ({ page }) => {
+        await page.goto('/en/tools/url/');
+
+        await page.locator('#url-input').fill('hello world+code');
+        await page.locator('#url-form-mode').check();
+        await page.locator('#url-encode').click();
+        await expect(page.locator('#url-output')).toHaveValue('hello+world%2Bcode');
+
+        await page.locator('#url-input').fill('hello+world%2Bcode');
+        await page.locator('#url-decode').click();
+        await expect(page.locator('#url-output')).toHaveValue('hello world+code');
+    });
+
+    test('decodes JWT content while keeping the signature warning visible', async ({ page }) => {
+        await page.goto('/en/tools/jwt/');
+
+        await expect(page.getByText('does not verify the signature')).toBeVisible();
+        await page.locator('#jwt-example').click();
+        await expect(page.locator('#jwt-header')).toHaveValue(/"alg": "none"/);
+        await expect(page.locator('#jwt-payload')).toHaveValue(/"name": "CodeGlimpse"/);
+        await expect(page.locator('#jwt-status')).toContainText('signature not verified');
+    });
+
+    test('generates and validates version 4 UUIDs', async ({ page }) => {
+        await page.goto('/tools/uuid/');
+
+        await page.locator('#uuid-count').selectOption('1');
+        await page.locator('#uuid-generate').click();
+        const generated = await page.locator('#uuid-output').inputValue();
+        expect(generated).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+
+        await page.locator('#uuid-validate-input').fill(generated);
+        await page.locator('#uuid-validate').click();
+        await expect(page.locator('#uuid-validation-status')).toContainText('版本 4');
+    });
+
+    test('tests regular expressions in a worker and previews replacement', async ({ page }) => {
+        await page.goto('/en/tools/regex/');
+
+        await page.locator('#regex-pattern').fill('(\\w+)=(\\d+)');
+        await page.locator('#regex-input').fill('a=1 b=22');
+        await page.locator('#regex-replacement').fill('$1:[$2]');
+        await page.locator('#regex-run').click();
+
+        await expect(page.locator('#regex-status')).toContainText('2 matches');
+        await expect(page.locator('#regex-match-output')).toHaveValue(/#2 @ 4: "b=22"/);
+        await expect(page.locator('#regex-replacement-output')).toHaveValue('a:[1] b:[22]');
+    });
+
+    test('analyzes and transforms text', async ({ page }) => {
+        await page.goto('/tools/text/');
+
+        await page.locator('#text-input').fill('hello world\n\u4f60\u597d');
+        await expect(page.locator('#text-characters')).toHaveText('14');
+        await expect(page.locator('#text-lines')).toHaveText('2');
+        await expect(page.locator('#text-words')).toHaveText('3');
+
+        await page.getByRole('button', { name: '标题格式' }).click();
+        await expect(page.locator('#text-output')).toHaveValue('Hello World\n\u4f60\u597d');
+    });
+
+    test('converts quoted CSV rows to JSON', async ({ page }) => {
+        await page.goto('/en/tools/csv/');
+
+        await page.locator('#csv-input').fill('name,note\nAlice,"hello, world"');
+        await page.locator('#csv-convert').click();
+        await expect(page.locator('#csv-output')).toHaveValue(
+            '[\n  {\n    "name": "Alice",\n    "note": "hello, world"\n  }\n]',
+        );
+        await expect(page.locator('#csv-status')).toContainText('Conversion complete');
+    });
+
+    test('encodes and decodes HTML entities as text', async ({ page }) => {
+        await page.goto('/en/tools/html/');
+
+        await page.locator('#html-input').fill('<strong>Tom & Jerry</strong>');
+        await page.locator('#html-encode').click();
+        await expect(page.locator('#html-output')).toHaveValue('&lt;strong&gt;Tom &amp; Jerry&lt;/strong&gt;');
+
+        await page.locator('#html-input').fill('&lt;strong&gt;safe&lt;/strong&gt;');
+        await page.locator('#html-decode').click();
+        await expect(page.locator('#html-output')).toHaveValue('<strong>safe</strong>');
+    });
+
+    test('generates password batches with the selected secure options', async ({ page }) => {
+        await page.goto('/en/tools/password/');
+
+        await page.locator('#password-length-number').fill('24');
+        await page.locator('#password-count').selectOption('5');
+        await page.locator('#password-generate').click();
+
+        const generated = (await page.locator('#password-output').inputValue()).split('\n');
+        expect(generated).toHaveLength(5);
+        expect(generated.every((value) => value.length === 24)).toBe(true);
+        expect(generated.every((value) => /[a-z]/.test(value) && /[A-Z]/.test(value) && /\d/.test(value))).toBe(true);
+        await expect(page.locator('#password-status')).toContainText('generated locally');
+    });
+
     test('localizes tool search and shows its empty state', async ({ page }) => {
         await page.goto('/en/tools/');
 

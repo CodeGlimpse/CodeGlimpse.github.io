@@ -40,7 +40,7 @@ hugo server -D
 
 ## 检查与构建
 
-项目不依赖第三方 npm 包，使用 Node.js 内置能力运行检查：
+站点运行时不依赖第三方 npm 包；开发环境使用 Playwright 执行浏览器测试：
 
 ```bash
 npm test              # 运行工具核心逻辑测试
@@ -50,6 +50,7 @@ npm run check:versions # 检查 CI 与开发容器版本一致性
 npm run build         # 执行 Hugo 生产构建
 npm run check:output  # 检查发布目录、JSON、robots、sitemap 和工具页面
 npm run check         # 依次执行版本、语法、内容、测试、构建和输出检查
+npm run test:e2e      # 针对 public/ 运行浏览器端到端测试
 ```
 
 直接运行等价命令：
@@ -81,9 +82,18 @@ assets/js/tools/<id>-core.js       # 需要单元测试的纯逻辑
 - 进制转换
 - BMI 计算
 - 颜色转换
+- CSV 与 JSON 转换
+- HTML 实体编码/解码
 - JSON 格式化、压缩、校验、转义与反转义
-- MD5 与 SHA 哈希
+- JWT 解析
+- MD5 哈希
+- 安全密码生成
+- 正则表达式测试与替换
+- SHA 哈希
+- 文本统计与转换
 - Unix 时间戳转换
+- URL 编码/解码
+- UUID 生成与校验
 
 ## 内容与输出约定
 
@@ -118,6 +128,7 @@ npm run check
 - [ ] 内容 front matter 完整，未误设置 `draft: true`
 - [ ] 中英文页面或工具保持同步
 - [ ] `npm run check` 通过
+- [ ] `npm run test:e2e` 通过
 - [ ] 检查生成的搜索 JSON、sitemap 和 robots.txt
 - [ ] 确认首页 JSON 未生成，搜索页 JSON 正常生成
 - [ ] 确认 `git diff` 只包含本次任务相关文件

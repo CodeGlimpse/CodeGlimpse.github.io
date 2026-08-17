@@ -18,9 +18,10 @@
 
    ```bash
    npm run check
+   npm run test:e2e
    ```
 
-   这会同时检查工具链版本、内容结构、测试、Hugo 构建产物以及 JSON、robots.txt、sitemap 和双语工具页面。
+   第一条命令检查工具链版本、内容结构、单元测试、Hugo 构建产物以及 JSON、robots.txt、sitemap 和双语工具页面；第二条命令针对生成的 `public/` 运行浏览器端到端测试。
 
 5. 检查 `git diff`，确认只包含本次任务相关文件。
 6. 使用清晰、聚焦的提交信息提交变更，并创建 Pull Request。

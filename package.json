@@ -4,7 +4,7 @@
   "description": "CodeGlimpse personal blog and online tools site",
   "scripts": {
     "test": "node scripts/run-tests.cjs",
-    "test:e2e": "playwright test",
+    "test:e2e": "node scripts/run-e2e.cjs",
     "check:js": "node scripts/check-js.cjs",
     "check:content": "node scripts/check-content.cjs",
     "check:output": "node scripts/check-build-output.cjs",

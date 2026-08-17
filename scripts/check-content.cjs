@@ -224,6 +224,11 @@ function checkToolImplementations() {
         }
     }
 
+    const dynamicCorePath = 'printf "js/tools/%s-core.js" $id';
+    if (!template.includes(dynamicCorePath)) {
+        errors.push('tool shortcode template does not load convention-based core scripts');
+    }
+
     for (const toolId of TOOL_IDS) {
         const spec = TOOL_REGISTRY[toolId];
         const scriptPath = path.join(toolsRoot, spec.script);
@@ -236,8 +241,8 @@ function checkToolImplementations() {
             if (!fs.existsSync(corePath)) {
                 errors.push(`registered tool "${toolId}" is missing core implementation ${relativePath(corePath)}`);
             }
-            if (!template.includes(`eq $id "${toolId}"`)) {
-                errors.push(`tool shortcode template does not load ${toolId} core implementation`);
+            if (spec.core !== `${toolId}-core.js`) {
+                errors.push(`registered tool "${toolId}" core must follow the ${toolId}-core.js naming convention`);
             }
         }
     }

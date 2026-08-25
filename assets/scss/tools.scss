@@ -583,4 +583,56 @@
     #tool-time .input-row .tool-btn {
         width: 100%;
     }
+
+    .tool-wrapper .tool-segmented {
+        width: 100%;
+    }
+
+    .tool-wrapper .tool-segmented__button {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .tool-wrapper .tool-input,
+    .tool-wrapper .tool-output-panel,
+    .tool-wrapper .tool-field {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .tool-wrapper .tool-output-panel .tool-btn--copy {
+        width: 100%;
+        margin: 0.8rem 0 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .tool-wrapper {
+        padding: 1.2rem;
+    }
+
+    .tool-wrapper .tool-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .tool-wrapper .tool-actions > .tool-btn,
+    .tool-wrapper .tool-actions > .json-button {
+        width: 100%;
+        flex: none;
+    }
+
+    .tool-wrapper .tool-range-row {
+        grid-template-columns: minmax(0, 1fr) 6.5rem;
+    }
+
+    .tool-wrapper .tool-metrics,
+    .tool-wrapper .tool-definition-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .tool-wrapper .tool-segmented__button {
+        padding-inline: 0.65rem;
+        font-size: 1.25rem;
+    }
 }

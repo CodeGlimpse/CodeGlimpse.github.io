@@ -9,5 +9,8 @@ A Unix timestamp is a way to track time as a running total of seconds. This coun
 
 {{< tool id="time" >}}
 
+### Examples and limits
+Timestamp `0` in UTC corresponds to `1970-01-01 00:00:00`. The tool distinguishes seconds from milliseconds and rejects invalid dates, non-numeric values, and unsafe integers; nonexistent local times during daylight-saving transitions are also rejected. Conversion stays in the browser.
+
 ### What is Unix Time?
 Unix time (also known as Epoch time, POSIX time, seconds since the Epoch, or UNIX Epoch time) is a system for describing a point in time. It is the number of seconds that have elapsed since the Unix epoch, minus leap seconds; the Unix epoch is 00:00:00 UTC on 1 January 1970.

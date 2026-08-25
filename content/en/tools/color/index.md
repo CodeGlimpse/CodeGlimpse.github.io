@@ -9,6 +9,9 @@ A simple and intuitive tool to pick colors and convert them between HEX, RGB, an
 
 {{< tool id="color" >}}
 
+### Examples and limits
+Entering `#FF0000` gives `rgb(255, 0, 0)` and `hsl(0, 100%, 50%)`. Three- and six-digit HEX values are supported; RGB/HSL values are clamped to valid ranges, while non-integers and invalid formats show an error. Color values are processed locally.
+
 ### How to use
 - **Pick a Color**: Use the color picker or click the preview box to choose a color visually.
 - **HEX Input**: Enter a 6-digit hex code (e.g., `#FF5733`) to see its RGB and HSL equivalents.

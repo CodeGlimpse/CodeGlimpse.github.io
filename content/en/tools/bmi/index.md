@@ -9,6 +9,9 @@ Body Mass Index (BMI) is a simple index of weight-for-height that is commonly us
 
 {{< tool id="bmi" >}}
 
+### Examples and limits
+With a height of `175 cm` and weight of `70 kg`, the BMI is about `22.9`. Height and weight must be positive finite numbers. This is a screening reference, not medical advice, and values stay in the browser.
+
 ### BMI Categories (WHO Standard)
 - **Underweight**: < 18.5
 - **Normal weight**: 18.5 - 24.9

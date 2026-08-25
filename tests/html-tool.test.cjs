@@ -16,3 +16,9 @@ test('decodes common named and numeric entities safely', () => {
     assert.equal(html.decode('&unknown;'), '&unknown;');
     assert.equal(html.decode('&#xD800;'), '\uFFFD');
 });
+
+test('leaves incomplete entities unchanged and bounds invalid code points', () => {
+    assert.equal(html.decode('&amp &unknown'), '&amp &unknown');
+    assert.equal(html.decode('&#x110000;'), '\uFFFD');
+    assert.equal(html.encode('\u{1F600}', true), '&#x1F600;');
+});

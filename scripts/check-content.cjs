@@ -132,6 +132,16 @@ function checkFrontMatterAndPages() {
             const toolId = getToolId(filePath, fields);
             if (toolId) toolIdsByLanguage.get(info.language)?.add(toolId);
 
+            const body = fs.readFileSync(filePath, 'utf8');
+            const examplesHeading = info.language === 'zh-cn' ? /^### 示例与限制\s*$/m : /^### Examples and limits\s*$/m;
+            if (!examplesHeading.test(body)) {
+                errors.push(`${relativePath(filePath)}: missing examples and limits section`);
+            }
+            const privacyHint = info.language === 'zh-cn' ? /(本地|上传|离开浏览器)/ : /(local|upload|browser)/i;
+            if (!privacyHint.test(body)) {
+                errors.push(`${relativePath(filePath)}: missing local-processing or privacy note`);
+            }
+
             const toolSpec = TOOL_REGISTRY[toolId];
             if (!toolSpec) {
                 errors.push(`${relativePath(filePath)}: tool id "${toolId}" is not in the tool registry`);

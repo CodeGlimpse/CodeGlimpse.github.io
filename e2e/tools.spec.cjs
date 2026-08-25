@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { TOOL_IDS } = require('../scripts/tool-registry.cjs');
 
 test.describe('online tools', () => {
     test('formats JSON on the Chinese page', async ({ page }) => {
@@ -24,6 +25,32 @@ test.describe('online tools', () => {
 
         await expect(page.locator('#json-output')).toHaveValue('{\n  "enabled": true\n}');
         await expect(page.locator('#json-status')).toContainText('Valid JSON');
+    });
+
+    test('publishes every registered tool in both languages', async ({ page }) => {
+        for (const toolId of TOOL_IDS) {
+            for (const route of [`/tools/${toolId}/`, `/en/tools/${toolId}/`]) {
+                await page.goto(route);
+                await expect(page.locator(`#tool-${toolId}`)).toBeVisible();
+                await expect(page.locator('main')).toBeVisible();
+                await expect(page.locator('h1')).toHaveCount(1);
+            }
+        }
+    });
+
+    test('localizes complex tool controls in both languages', async ({ page }) => {
+        await page.goto('/tools/csv/');
+        await expect(page.getByRole('button', { name: 'CSV 转 JSON' })).toBeVisible();
+        await expect(page.getByLabel('输入 CSV')).toBeVisible();
+
+        await page.goto('/en/tools/csv/');
+        await expect(page.getByRole('button', { name: 'CSV to JSON' })).toBeVisible();
+        await expect(page.getByLabel('Input CSV')).toBeVisible();
+
+        await page.goto('/tools/regex/');
+        await expect(page.getByRole('button', { name: '测试并替换' })).toBeVisible();
+        await page.goto('/en/tools/regex/');
+        await expect(page.getByRole('button', { name: 'Test and Replace' })).toBeVisible();
     });
 
     test('publishes bilingual tool metadata without unused third-party assets', async ({ page }) => {
@@ -312,5 +339,46 @@ test.describe('mobile tool layout', () => {
         expect(metrics.documentWidth).toBeLessThanOrEqual(metrics.viewportWidth);
         expect(metrics.wrapperWidth).toBeGreaterThan(300);
         expect(metrics.inputWidth).toBeGreaterThan(260);
+    });
+
+    test('keeps long-form tools within the mobile viewport', async ({ page }) => {
+        for (const route of ['/tools/csv/', '/en/tools/regex/', '/tools/password/', '/en/tools/time/']) {
+            await page.goto(route);
+            const metrics = await page.evaluate(() => {
+                const selectors = [
+                    '.tool-wrapper',
+                    '.tool-wrapper input',
+                    '.tool-wrapper textarea',
+                    '.tool-wrapper select',
+                    '.tool-wrapper .tool-output-panel',
+                ];
+                const widths = selectors.flatMap((selector) => (
+                    [...document.querySelectorAll(selector)].map((element) => element.getBoundingClientRect().right)
+                ));
+                return {
+                    viewportWidth: window.innerWidth,
+                    documentWidth: document.documentElement.scrollWidth,
+                    maxRight: Math.max(0, ...widths),
+                };
+            });
+
+            expect(metrics.documentWidth).toBeLessThanOrEqual(metrics.viewportWidth + 1);
+            expect(metrics.maxRight).toBeLessThanOrEqual(metrics.viewportWidth + 1);
+        }
+    });
+
+    test('stacks CSV output and actions without overflow', async ({ page }) => {
+        await page.goto('/tools/csv/');
+        await page.locator('#csv-input').fill('name,age\nAlice,30');
+        await page.locator('#csv-convert').click();
+        await expect(page.locator('#csv-output')).toBeVisible();
+
+        const metrics = await page.evaluate(() => ({
+            viewportWidth: window.innerWidth,
+            documentWidth: document.documentElement.scrollWidth,
+            outputRight: document.querySelector('#csv-output').getBoundingClientRect().right,
+        }));
+        expect(metrics.documentWidth).toBeLessThanOrEqual(metrics.viewportWidth + 1);
+        expect(metrics.outputRight).toBeLessThanOrEqual(metrics.viewportWidth + 1);
     });
 });

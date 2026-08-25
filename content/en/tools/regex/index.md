@@ -9,6 +9,9 @@ Inspect JavaScript regular expression matches, positions, capture groups, and re
 
 {{< tool id="regex" >}}
 
+### Examples and limits
+Pattern `(\\w+)=(\\d+)` applied to `a=1` with replacement `$1:[$2]` produces `a:[1]`. JavaScript regular-expression syntax is used; pattern, input, and result counts are bounded, and the Worker stops timed-out runs. Test text is not uploaded.
+
 ### Supported flags
 
 - `g` global matching

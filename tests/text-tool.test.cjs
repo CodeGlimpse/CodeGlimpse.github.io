@@ -23,3 +23,14 @@ test('applies case and whitespace transformations', () => {
 test('rejects unknown transformation modes', () => {
     assert.throws(() => textTool.transform('value', 'unknown'), /Unsupported text transform/);
 });
+
+test('handles empty input and CRLF line boundaries', () => {
+    assert.deepEqual(textTool.analyze('', 'en'), {
+        bytes: 0,
+        characters: 0,
+        charactersNoSpaces: 0,
+        lines: 0,
+        words: 0
+    });
+    assert.equal(textTool.transform(' one\r\n two ', 'trim-lines'), 'one\ntwo');
+});

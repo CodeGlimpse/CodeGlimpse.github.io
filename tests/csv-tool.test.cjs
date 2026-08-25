@@ -32,3 +32,9 @@ test('supports array rows and rejects mixed JSON arrays', () => {
     assert.throws(() => csv.jsonToCsv('[{"a":1},[2]]'), /all be objects or all be arrays/);
     assert.throws(() => csv.parse('a,"unclosed'), /unclosed quoted field/);
 });
+
+test('rejects unsafe delimiters and rows wider than the header', () => {
+    assert.throws(() => csv.parse('a|b', '||'), /one character/);
+    assert.throws(() => csv.parse('a,b', '"'), /other than quote/);
+    assert.throws(() => csv.csvToJson('name\nAlice\nBob,extra'), /more fields/);
+});

@@ -31,3 +31,8 @@ test('rejects malformed JWTs and non-object payloads', () => {
     assert.throws(() => jwt.decode('not-a-token'), /three dot-separated segments/);
     assert.throws(() => jwt.decode(`${segment({ alg: 'none' })}.${segment(['invalid'])}.`), /payload must be a JSON object/);
 });
+
+test('rejects malformed Base64URL segments and invalid clocks', () => {
+    assert.throws(() => jwt.decode('a!.b.c'), /Invalid JWT header/);
+    assert.throws(() => jwt.decode(`${segment({ alg: 'none' })}.${segment({})}.`, 'now'), /Current time must be a finite number/);
+});

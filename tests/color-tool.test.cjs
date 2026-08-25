@@ -9,3 +9,9 @@ test('converts colors between HEX, RGB, and HSL', () => {
     assert.deepEqual(colorTool.hslToRgb(0, 100, 50), { r: 255, g: 0, b: 0 });
     assert.throws(() => colorTool.hexToRgb('#xyz'), SyntaxError);
 });
+
+test('supports shorthand colors and rejects non-integer RGB values', () => {
+    assert.deepEqual(colorTool.hexToRgb('#0f8'), { r: 0, g: 255, b: 136 });
+    assert.equal(colorTool.rgbToHex(-10, 260, 12), '#00FF0C');
+    assert.throws(() => colorTool.rgbToHex(1.5, 2, 3), RangeError);
+});

@@ -28,3 +28,9 @@ test('validates nil, max, and malformed UUID values', () => {
     assert.equal(uuid.validate('00000000-0000-4000-7000-000000000000'), false);
     assert.throws(() => uuid.inspect('invalid'), /Invalid RFC 9562 UUID/);
 });
+
+test('rejects invalid counts and random byte sources', () => {
+    assert.throws(() => uuid.generateMany(0, () => new Uint8Array(16)), /between 1 and 100/);
+    assert.throws(() => uuid.generateMany(101, () => new Uint8Array(16)), /between 1 and 100/);
+    assert.throws(() => uuid.generate(() => new Uint8Array(8)), /16 bytes/);
+});

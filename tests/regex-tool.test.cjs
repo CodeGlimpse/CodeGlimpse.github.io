@@ -27,3 +27,10 @@ test('normalizes flags and rejects unsafe input sizes', () => {
     assert.throws(() => regex.normalizeFlags('v'), /Unsupported/);
     assert.throws(() => regex.execute('x'.repeat(501), '', ''), /Pattern exceeds/);
 });
+
+test('caps large match output and rejects oversized input', () => {
+    const result = regex.execute('a', 'g', 'a'.repeat(regex.MAX_MATCHES + 1));
+    assert.equal(result.matches.length, regex.MAX_MATCHES);
+    assert.equal(result.truncated, true);
+    assert.throws(() => regex.execute('a', '', 'a'.repeat(regex.MAX_INPUT_LENGTH + 1)), /Input exceeds/);
+});

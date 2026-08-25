@@ -7,3 +7,9 @@ test('calculates BMI and rejects invalid measurements', () => {
     assert.throws(() => bmiTool.calculate('', '70'), RangeError);
     assert.throws(() => bmiTool.calculate('175', '-1'), RangeError);
 });
+
+test('rejects non-finite and zero measurements', () => {
+    assert.throws(() => bmiTool.calculate('0', '70'), RangeError);
+    assert.throws(() => bmiTool.calculate('175', 'Infinity'), RangeError);
+    assert.throws(() => bmiTool.calculate('175', 'NaN'), RangeError);
+});

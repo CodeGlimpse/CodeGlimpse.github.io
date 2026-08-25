@@ -17,3 +17,8 @@ test('supports application/x-www-form-urlencoded spaces', () => {
 test('rejects malformed percent escapes', () => {
     assert.throws(() => url.decode('%E0%A4%A'), URIError);
 });
+
+test('encodes reserved punctuation consistently', () => {
+    assert.equal(url.encode("!'()*"), '%21%27%28%29%2A');
+    assert.equal(url.decode('a+b', false), 'a+b');
+});

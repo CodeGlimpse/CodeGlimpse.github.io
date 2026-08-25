@@ -9,6 +9,9 @@ Secure Hash Algorithms (SHA) are a family of cryptographic hash functions design
 
 {{< tool id="sha" >}}
 
+### Examples and limits
+For input `abc`, SHA-256 in lower-case is `ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad`. SHA-1, SHA-256, SHA-384, and SHA-512 are supported; text is hashed locally and is not uploaded.
+
 ### How to Use SHA Generator
 1.  Enter the text or string you want to hash in the input field.
 2.  Select the desired SHA algorithm (SHA-1, SHA-256, SHA-384, or SHA-512) from the dropdown.

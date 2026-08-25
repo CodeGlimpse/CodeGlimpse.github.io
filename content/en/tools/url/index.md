@@ -9,6 +9,9 @@ URL encoding converts spaces, Unicode text, and reserved characters into percent
 
 {{< tool id="url" >}}
 
+### Examples and limits
+In normal mode, `hello world+code` becomes `hello%20world%2Bcode`; form mode uses `+` for spaces and produces `hello+world%2Bcode`. Component mode does not parse a complete URL, malformed percent escapes are rejected, and input is not uploaded.
+
 ### How to use it
 
 - **Encode** converts plain text into a URL component.

@@ -9,6 +9,9 @@ HTML entities safely represent tag delimiters, quotes, and characters that are d
 
 {{< tool id="html" >}}
 
+### Examples and limits
+Encoding `<strong>Tom & Jerry</strong>` produces `&lt;strong&gt;Tom &amp; Jerry&lt;/strong&gt;`, and the result is always displayed as text rather than executed. Common named and numeric entities are supported; unknown entities remain unchanged and input is processed locally.
+
 ### Supported scope
 
 - Encode `&`, `<`, `>`, double quotes, and single quotes.

@@ -9,6 +9,9 @@ Convert CSV with a header row into an array of JSON objects, or convert JSON obj
 
 {{< tool id="csv" >}}
 
+### Examples and limits
+`name,age\nAlice,30` converts to a JSON array containing `name` and `age`. Quoted fields and embedded line breaks are supported, but headers must be non-empty and unique; very large files are limited by browser memory. Content never leaves the browser.
+
 ### Format support
 
 - Comma, semicolon, tab, and pipe delimiters.

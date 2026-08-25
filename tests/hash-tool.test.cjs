@@ -20,3 +20,7 @@ test('generates SHA digests using the selected algorithm', async () => {
         '2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f'
     );
 });
+
+test('hashes empty input deterministically', async () => {
+    assert.equal(await shaTool.digest('', 'SHA-256'), 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855');
+});

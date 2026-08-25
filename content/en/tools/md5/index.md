@@ -9,6 +9,9 @@ MD5 (Message-Digest Algorithm 5) is a widely used cryptographic hash function th
 
 {{< tool id="md5" >}}
 
+### Examples and limits
+The MD5 digest of `hello` is `5d41402abc4b2a76b9719d911017c592`. Output is always a 32-character hexadecimal string; MD5 is not suitable for password storage or collision resistance. Text is hashed locally and is not uploaded.
+
 ### How to Use MD5 Hash Generator
 1.  Enter the text or string you want to hash in the input field.
 2.  The MD5 hash will be generated automatically as you type, or you can click the "Generate" button.

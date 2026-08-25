@@ -25,3 +25,11 @@ test('rejects binary input with invalid digits or trailing text', () => {
     assert.throws(() => binaryTool.parseInteger('123abc', 10), SyntaxError);
     assert.equal(binaryTool.parseInteger('-FF', 16), -255n);
 });
+
+test('enforces the supported base range and empty-value boundary', () => {
+    assert.equal(binaryTool.parseBase(2), 2);
+    assert.equal(binaryTool.parseBase(36), 36);
+    assert.throws(() => binaryTool.parseBase(1), RangeError);
+    assert.throws(() => binaryTool.parseBase(37), RangeError);
+    assert.throws(() => binaryTool.parseInteger('   ', 10), SyntaxError);
+});

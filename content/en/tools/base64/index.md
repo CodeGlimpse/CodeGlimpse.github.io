@@ -9,6 +9,9 @@ Base64 is an encoding scheme used to represent binary data in an ASCII string fo
 
 {{< tool id="base64" >}}
 
+### Examples and limits
+Encoding `你好` produces `5L2g5aW9`. Input is treated as UTF-8 text; empty input is also valid. The result is generated locally in the browser and is not uploaded.
+
 ### How to use
 - **To Encode**: Paste your plain text into the input box and click the **Encode** button.
 - **To Decode**: Paste your Base64 encoded string into the input box and click the **Decode** button.

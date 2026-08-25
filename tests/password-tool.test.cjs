@@ -41,3 +41,11 @@ test('estimates entropy and validates generation options', () => {
         symbols: false
     }, deterministicSource()), /at least one character set/);
 });
+
+test('enforces length, count, and deterministic source contracts', () => {
+    assert.equal(password.normalizeOptions({ length: 8 }).length, 8);
+    assert.equal(password.generateMany({ length: 8 }, 20, deterministicSource()).length, 20);
+    assert.throws(() => password.generate({ length: 129 }, deterministicSource()), /between 8 and 128/);
+    assert.throws(() => password.generateMany({ length: 8 }, 21, deterministicSource()), /between 1 and 20/);
+    assert.throws(() => password.generate({ length: 8 }, () => new Uint8Array(1)), /requested byte count/);
+});

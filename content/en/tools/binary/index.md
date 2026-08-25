@@ -9,6 +9,9 @@ A simple and efficient online base converter that supports conversion between Bi
 
 {{< tool id="binary" >}}
 
+### Examples and limits
+Decimal `255` becomes binary `11111111` and hexadecimal `FF`. Input and custom bases support 2 through 36; empty input, invalid digits, or values outside the safe integer range are rejected. Processing stays local in the browser.
+
 ### How to Use
 1.  **Select Source Base**: Choose the base of the number you want to convert from the dropdown menu.
 2.  **Enter Value**: Type the number into the "Input Value" field.

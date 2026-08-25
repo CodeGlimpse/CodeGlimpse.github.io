@@ -9,6 +9,9 @@ The JWT decoder reads the Header, Payload, and the `iat`, `nbf`, and `exp` time 
 
 {{< tool id="jwt" >}}
 
+### Examples and limits
+`eyJhbGciOiJub25lIn0.eyJzdWIiOiI0MiJ9.` can be decoded to inspect its header and payload; the three-part structure is parsed but the signature is not verified. Tokens may contain sensitive data, so avoid pasting production tokens. Processing is local to the browser.
+
 ### Security boundary
 
 This tool **does not verify JWT signatures**. A successful decode only confirms that the token content is readable; it does not establish the issuer, authenticity, or permissions. Authentication and authorization must be validated by a trusted server with approved algorithms and keys.

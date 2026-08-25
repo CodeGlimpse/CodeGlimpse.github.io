@@ -3,6 +3,9 @@ title: "取色器与颜色转换器"
 description: "在线取色器，支持 HEX、RGB 和 HSL 格式之间的转换。"
 date: 2026-03-17
 layout: "page"
+category: "conversion"
+keywords: ["颜色", "HEX", "RGB", "HSL"]
+tool_related: ["binary"]
 ---
 
 一个简单直观的工具，用于选取颜色并在 HEX、RGB 和 HSL 格式之间进行转换。

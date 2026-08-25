@@ -3,6 +3,9 @@ title: "UUID Generator and Validator"
 description: "Generate UUID v4 values with secure randomness and validate RFC 9562 UUIDs."
 date: 2026-08-17
 layout: "page"
+category: "security"
+keywords: ["UUID", "identifier", "random"]
+tool_related: ["password", "time"]
 ---
 
 UUIDs are commonly used for database keys, request identifiers, and distributed objects. This tool uses browser cryptographic randomness to generate UUID v4 values and can inspect a UUID's format and version.

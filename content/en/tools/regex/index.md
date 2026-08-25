@@ -3,6 +3,9 @@ title: "Regular Expression Tester"
 description: "Test JavaScript regular expressions, capture groups, and replacements online."
 date: 2026-08-17
 layout: "page"
+category: "text"
+keywords: ["regex", "regexp", "match"]
+tool_related: ["diff", "text"]
 ---
 
 Inspect JavaScript regular expression matches, positions, capture groups, and replacement previews. Expressions run in an isolated Worker and are stopped when they exceed the time limit.

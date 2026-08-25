@@ -3,6 +3,9 @@ title: "Text Analyzer and Converter"
 description: "Count characters, words, lines, and UTF-8 bytes, then apply common text transforms."
 date: 2026-08-17
 layout: "page"
+category: "text"
+keywords: ["text", "statistics", "transform"]
+tool_related: ["diff", "markdown"]
 ---
 
 Analyze character, non-whitespace character, word, line, and UTF-8 byte counts while applying common case and whitespace transformations.

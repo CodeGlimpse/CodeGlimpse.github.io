@@ -3,6 +3,9 @@ title: "CSV 与 JSON 转换工具"
 description: "在浏览器本地进行 CSV 与 JSON 数组双向转换。"
 date: 2026-08-17
 layout: "page"
+category: "data"
+keywords: ["CSV", "JSON", "表格"]
+tool_related: ["json", "yaml", "diff"]
 ---
 
 将带标题行的 CSV 转换为 JSON 对象数组，或将 JSON 对象数组和二维数组转换为 CSV。所有数据都在浏览器本地处理。

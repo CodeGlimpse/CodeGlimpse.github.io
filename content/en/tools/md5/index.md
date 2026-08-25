@@ -3,6 +3,9 @@ title: "MD5 Hash Generator"
 description: "Online MD5 hash generator. Generate MD5 hashes from text easily and quickly."
 date: 2026-03-19
 layout: "page"
+category: "security"
+keywords: ["MD5", "hash", "digest"]
+tool_related: ["sha", "password"]
 ---
 
 MD5 (Message-Digest Algorithm 5) is a widely used cryptographic hash function that produces a 128-bit (16-byte) hash value. It is commonly used to verify data integrity and for checksums.

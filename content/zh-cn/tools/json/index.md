@@ -3,6 +3,9 @@ title: "JSON 格式化工具"
 description: "在线格式化、压缩、校验 JSON，并支持 JSON 文本转义与反转义。"
 date: 2026-08-13T00:00:00+08:00
 layout: "page"
+category: "data"
+keywords: ["JSON", "格式化", "校验"]
+tool_related: ["yaml", "jsonpath", "csv"]
 ---
 
 JSON 格式化工具可以帮助你快速整理和检查 JSON 数据，也支持将 JSON 文本转义为适合嵌入字符串的形式，或将转义后的文本恢复为原始内容。

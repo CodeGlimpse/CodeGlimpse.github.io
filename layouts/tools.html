@@ -8,6 +8,9 @@
     </div>
 </header>
 
+{{ $categoryLabelsZh := dict "data" "数据处理" "encoding" "编码解码" "text" "文本与内容" "security" "安全与哈希" "conversion" "转换与计算" "development" "开发辅助" }}
+{{ $categoryLabelsEn := dict "data" "Data" "encoding" "Encoding" "text" "Text & Content" "security" "Security & Hash" "conversion" "Conversion" "development" "Development" }}
+
 <div class="search-wrapper">
     <input type="search" id="tool-search"
         placeholder="{{ if eq .Language.Lang "zh-cn" }}搜索工具...{{ else }}Search tools...{{ end }}"
@@ -19,33 +22,67 @@
     </svg>
 </div>
 
+<div class="tool-catalog-controls" role="group" aria-label="{{ if eq .Language.Lang "zh-cn" }}工具筛选{{ else }}Tool filters{{ end }}">
+    <div class="tool-filter-row">
+        <label class="tool-filter-label" for="tool-category">
+            {{ if eq .Language.Lang "zh-cn" }}分类{{ else }}Category{{ end }}
+        </label>
+        <select id="tool-category" class="tool-filter-select">
+            <option value="all">{{ if eq .Language.Lang "zh-cn" }}全部工具{{ else }}All tools{{ end }}</option>
+            {{ range slice "data" "encoding" "text" "security" "conversion" "development" }}
+            <option value="{{ . }}">{{ if eq $.Language.Lang "zh-cn" }}{{ index $categoryLabelsZh . }}{{ else }}{{ index $categoryLabelsEn . }}{{ end }}</option>
+            {{ end }}
+        </select>
+        <button type="button" class="tool-filter-button" id="tool-favorites-only" aria-pressed="false">
+            {{ if eq .Language.Lang "zh-cn" }}只看收藏{{ else }}Favorites only{{ end }}
+        </button>
+        <span class="tool-catalog-count" id="tool-catalog-count" aria-live="polite"></span>
+    </div>
+</div>
+
+<section class="tool-recent" id="tool-recent" hidden aria-labelledby="tool-recent-title">
+    <h2 id="tool-recent-title">{{ if eq .Language.Lang "zh-cn" }}最近使用{{ else }}Recently used{{ end }}</h2>
+    <div class="tool-recent-list" id="tool-recent-list"></div>
+</section>
+
 <p class="tool-search-empty" id="tool-search-empty" role="status" aria-live="polite" hidden>
     {{ if eq .Language.Lang "zh-cn" }}没有找到匹配的工具。{{ else }}No matching tools found.{{ end }}
 </p>
 
 <hr class="search-divider">
 
-<div class="tools-grid">
-    {{ range .Pages }}
-    <a href="{{ .RelPermalink }}" class="tool-card">
+<div class="tools-grid" id="tool-catalog">
+    {{ range .Pages.ByTitle }}
+    {{ $category := .Params.category | default "development" }}
+    {{ $keywords := delimit (.Params.keywords | default (slice)) " " }}
+    <article class="tool-card" tabindex="0" data-tool-id="{{ .File.ContentBaseName }}" data-category="{{ $category }}"
+        data-search="{{ lower (printf "%s %s %s" .Title .Description $keywords) }}">
         <div class="tool-info">
-            <div class="tool-header">
-                <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-tool">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                    <path d="M7 10h3v-3l-3.5 -3.5a6 6 0 0 1 8 8l6 6a2 2 0 0 1 -3 3l-6 -6a6 6 0 0 1 -8 -8l3.5 3.5"></path>
-                </svg>
-                <h3 class="tool-title">{{ .Title }}</h3>
-            </div>
-            <p class="tool-desc">{{ .Description }}</p>
+            <a href="{{ .RelPermalink }}" class="tool-card-link" data-tool-link>
+                <div class="tool-header">
+                    <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-tool">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M7 10h3v-3l-3.5 -3.5a6 6 0 0 1 8 8l6 6a2 2 0 0 1 -3 3l-6 -6a6 6 0 0 1 -8 -8l3.5 3.5"></path>
+                    </svg>
+                    <h3 class="tool-title">{{ .Title }}</h3>
+                </div>
+                <p class="tool-desc">{{ .Description }}</p>
+            </a>
+            <span class="tool-category">{{ if eq $.Language.Lang "zh-cn" }}{{ index $categoryLabelsZh $category }}{{ else }}{{ index $categoryLabelsEn $category }}{{ end }}</span>
         </div>
         <div class="tool-action">
-            <span>{{ if eq .Language.Lang "zh-cn" }}开始使用{{ else }}Use Now{{ end }}</span>
-            <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-chevron-right">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M9 6l6 6l-6 6"></path>
-            </svg>
+            <a href="{{ .RelPermalink }}" class="tool-use-link" data-tool-link>
+                <span>{{ if eq $.Language.Lang "zh-cn" }}开始使用{{ else }}Use Now{{ end }}</span>
+                <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-chevron-right">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M9 6l6 6l-6 6"></path>
+                </svg>
+            </a>
+            <button type="button" class="tool-favorite" data-tool-favorite aria-pressed="false"
+                aria-label="{{ if eq $.Language.Lang "zh-cn" }}收藏工具{{ else }}Favorite tool{{ end }}"
+                title="{{ if eq $.Language.Lang "zh-cn" }}收藏工具{{ else }}Favorite tool{{ end }}">☆</button>
         </div>
-    </a>
+    </article>
     {{ end }}
 </div>
 

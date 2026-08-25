@@ -78,6 +78,8 @@ assets/js/tools/<id>-core.js       # 需要单元测试的纯逻辑
 
 新增或修改工具时，应覆盖正常输入、空值、非法输入和边界值，并运行 `npm run check`。
 
+工具注册表 scripts/tool-registry.cjs 同时维护分类、关键词和相关工具；工具索引会据此提供搜索、分类筛选、收藏和最近使用。本站只在浏览器本地处理输入，收藏和最近使用只保存工具 ID。
+
 当前工具包括：
 
 - Base64 编码/解码
@@ -85,17 +87,23 @@ assets/js/tools/<id>-core.js       # 需要单元测试的纯逻辑
 - BMI 计算
 - 颜色转换
 - CSV 与 JSON 转换
+- Diff 文本对比
 - HTML 实体编码/解码
 - JSON 格式化、压缩、校验、转义与反转义
+- JSONPath 查询
 - JWT 解析
+- Markdown 预览
 - MD5 哈希
 - 安全密码生成
 - 正则表达式测试与替换
 - SHA 哈希
+- SQL 格式化
 - 文本统计与转换
 - Unix 时间戳转换
 - URL 编码/解码
 - UUID 生成与校验
+- XML 格式化与校验
+- YAML 与 JSON 转换
 
 ## 内容与输出约定
 
@@ -128,7 +136,7 @@ npm run check
 npm run test:e2e
 ```
 
-`.github/workflows/site-monitor.yml` 每周一运行线上只读巡检，也支持手动触发。它覆盖首页、索引、搜索资源、sitemap、robots.txt、全部 32 个双语工具页面、页面元数据以及页面引用的本地 CSS、JavaScript 和图片资源。
+`.github/workflows/site-monitor.yml` 每周一运行线上只读巡检，也支持手动触发。它覆盖首页、索引、搜索资源、sitemap、robots.txt、全部 44 个双语工具页面、页面元数据以及页面引用的本地 CSS、JavaScript 和图片资源。
 
 ## 提交前清单
 

@@ -3,6 +3,9 @@ title: "CSV and JSON Converter"
 description: "Convert CSV and JSON arrays in either direction locally in your browser."
 date: 2026-08-17
 layout: "page"
+category: "data"
+keywords: ["CSV", "JSON", "table"]
+tool_related: ["json", "yaml", "diff"]
 ---
 
 Convert CSV with a header row into an array of JSON objects, or convert JSON object arrays and two-dimensional arrays into CSV. Data stays in your browser.

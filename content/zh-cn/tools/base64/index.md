@@ -3,6 +3,9 @@ title: "Base64 编码/解码"
 description: "在线 Base64 编码与解码工具，支持 Unicode 字符。"
 date: 2026-03-15
 layout: "page"
+category: "encoding"
+keywords: ["base64", "编码", "解码"]
+tool_related: ["binary", "html"]
 ---
 
 Base64 是一种基于 64 个可打印字符来表示二进制数据的表示方法。它常用于在处理文本数据的场合，表示、传输、存储一些二进制数据。

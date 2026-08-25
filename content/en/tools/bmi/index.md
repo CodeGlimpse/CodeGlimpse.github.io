@@ -3,6 +3,9 @@ title: "BMI Calculator"
 description: "Calculate your Body Mass Index (BMI) online"
 date: 2026-03-14
 layout: "page"
+category: "conversion"
+keywords: ["BMI", "health", "calculator"]
+tool_related: ["time"]
 ---
 
 Body Mass Index (BMI) is a simple index of weight-for-height that is commonly used to classify underweight, overweight and obesity in adults.

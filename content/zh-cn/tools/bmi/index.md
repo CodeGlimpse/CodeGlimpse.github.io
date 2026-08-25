@@ -3,6 +3,9 @@ title: "BMI 计算器"
 description: "在线计算您的身体质量指数 (BMI)"
 date: 2026-03-14
 layout: "page"
+category: "conversion"
+keywords: ["BMI", "健康", "计算器"]
+tool_related: ["time"]
 ---
 
 身体质量指数（BMI）是衡量人体肥胖程度和是否健康的一个标准。

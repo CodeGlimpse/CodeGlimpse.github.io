@@ -3,6 +3,9 @@ title: "安全密码生成器"
 description: "使用浏览器加密随机数批量生成可配置的安全密码。"
 date: 2026-08-17
 layout: "page"
+category: "security"
+keywords: ["密码", "随机", "安全"]
+tool_related: ["uuid", "sha"]
 ---
 
 根据长度和字符类型生成随机密码。随机数来自浏览器的加密安全接口，结果不会上传或保存。

@@ -295,6 +295,64 @@ test.describe('online tools', () => {
         await expect(page.locator('#tool-search-empty')).toContainText('No matching tools found');
     });
 
+    test('filters the catalog by category and persists favorites locally', async ({ page }) => {
+        await page.goto('/tools/');
+        await page.evaluate(() => localStorage.clear());
+
+        await page.locator('#tool-category').selectOption('data');
+        await expect(page.locator('.tool-card:not([hidden])')).not.toHaveCount(0);
+        await expect(page.locator('.tool-card:not([hidden])[data-category="data"]')).toHaveCount(5);
+
+        await page.locator('[data-tool-id="json"] [data-tool-favorite]').click();
+        await expect(page.locator('[data-tool-id="json"] [data-tool-favorite]')).toHaveAttribute('aria-pressed', 'true');
+        await page.locator('#tool-favorites-only').click();
+        await expect(page.locator('.tool-card:not([hidden])')).toHaveCount(1);
+        await expect(page.locator('.tool-card:not([hidden])')).toHaveAttribute('data-tool-id', 'json');
+
+        await page.locator('[data-tool-id="json"] [data-tool-link]').first().click();
+        await page.goto('/tools/');
+        await expect(page.locator('#tool-recent')).toBeVisible();
+        await expect(page.locator('#tool-recent-list')).toContainText('JSON');
+
+        await page.reload();
+        await expect(page.locator('[data-tool-id="json"] [data-tool-favorite]')).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    test('runs the first bilingual product expansion tools', async ({ page }) => {
+        await page.goto('/tools/diff/');
+        await page.locator('#diff-left').fill('one\ntwo');
+        await page.locator('#diff-right').fill('one\nthree');
+        await page.locator('#diff-compare').click();
+        await expect(page.locator('.tool-diff-line--added')).toHaveCount(1);
+
+        await page.goto('/en/tools/xml/');
+        await page.locator('#xml-input').fill('<root><item>Text</item></root>');
+        await page.locator('#xml-format').click();
+        await expect(page.locator('#xml-output')).toHaveValue('<root>\n  <item>\n    Text\n  </item>\n</root>');
+
+        await page.goto('/tools/yaml/');
+        await page.locator('#yaml-input').fill('name: CodeGlimpse\nenabled: true');
+        await page.locator('#yaml-convert').click();
+        await expect(page.locator('#yaml-output')).toHaveValue('{\n  "name": "CodeGlimpse",\n  "enabled": true\n}');
+
+        await page.goto('/en/tools/markdown/');
+        await page.locator('#markdown-example').click();
+        await expect(page.locator('#markdown-preview')).toContainText('CodeGlimpse');
+        await expect(page.locator('#markdown-preview strong')).toContainText('local-first');
+
+        await page.goto('/tools/sql/');
+        await page.locator('#sql-input').fill('select id,name from users where active=true;');
+        await page.locator('#sql-format').click();
+        await expect(page.locator('#sql-output')).toHaveValue(/SELECT id, name/);
+
+        await page.goto('/en/tools/jsonpath/');
+        await page.locator('#jsonpath-input').fill('{"users":[{"name":"Alice"},{"name":"Bob"}]}');
+        await page.locator('#jsonpath-expression').fill('$.users[*].name');
+        await page.locator('#jsonpath-query').click();
+        await expect(page.locator('#jsonpath-output')).toHaveValue(/Alice/);
+        await expect(page.locator('#jsonpath-output')).toHaveValue(/Bob/);
+    });
+
     test('shows a visible focus indicator on tool cards', async ({ page }) => {
         await page.goto('/tools/');
 

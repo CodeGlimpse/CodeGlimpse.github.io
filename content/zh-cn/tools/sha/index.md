@@ -3,6 +3,9 @@ title: "SHA 在线加密"
 description: "在线 SHA 哈希生成工具。快速生成 SHA-1, SHA-256, SHA-384, 和 SHA-512 哈希值。"
 date: 2026-03-20
 layout: "page"
+category: "security"
+keywords: ["SHA", "哈希", "摘要"]
+tool_related: ["md5", "password"]
 ---
 
 安全哈希算法（SHA）是由美国国家安全局（NSA）设计的一系列密码哈希函数。它们广泛用于安全应用和数据完整性验证。

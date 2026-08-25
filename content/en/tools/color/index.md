@@ -3,6 +3,9 @@ title: "Color Picker & Converter"
 description: "Online color picker and converter for HEX, RGB, and HSL formats."
 date: 2026-03-17
 layout: "page"
+category: "conversion"
+keywords: ["color", "HEX", "RGB", "HSL"]
+tool_related: ["binary"]
 ---
 
 A simple and intuitive tool to pick colors and convert them between HEX, RGB, and HSL formats.

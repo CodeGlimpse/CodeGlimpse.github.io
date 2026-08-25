@@ -3,6 +3,9 @@ title: "SHA Hash Generator"
 description: "Online SHA hash generator. Generate SHA-1, SHA-256, SHA-384, and SHA-512 hashes from text easily."
 date: 2026-03-20
 layout: "page"
+category: "security"
+keywords: ["SHA", "hash", "digest"]
+tool_related: ["md5", "password"]
 ---
 
 Secure Hash Algorithms (SHA) are a family of cryptographic hash functions designed by the NSA. They are widely used for security applications and data integrity verification.

@@ -3,6 +3,9 @@ title: "Unix Timestamp Converter"
 description: "Online tool to convert between Unix timestamps and human-readable dates"
 date: 2026-03-16
 layout: "page"
+category: "conversion"
+keywords: ["time", "timestamp", "Unix"]
+tool_related: ["bmi", "uuid"]
 ---
 
 A Unix timestamp is a way to track time as a running total of seconds. This count starts at the Unix Epoch on January 1st, 1970 at UTC. This tool helps you convert between these timestamps and human-readable dates.

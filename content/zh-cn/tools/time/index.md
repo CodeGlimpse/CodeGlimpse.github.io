@@ -3,6 +3,9 @@ title: "Unix 时间戳转换工具"
 description: "在线 Unix 时间戳转换工具"
 date: 2026-03-16
 layout: "page"
+category: "conversion"
+keywords: ["时间", "时间戳", "Unix"]
+tool_related: ["bmi", "uuid"]
 ---
 
 Unix 时间戳（Unix Timestamp）是从 Unix 纪元（1970 年 1 月 1 日 00:00:00 UTC）开始所经过的秒数。本工具可以帮助您方便地在时间戳与可读的日期时间格式之间进行转换。

@@ -3,6 +3,9 @@ title: "JWT 解析器"
 description: "在浏览器本地解析 JWT Header、Payload 和时间声明。"
 date: 2026-08-17
 layout: "page"
+category: "security"
+keywords: ["JWT", "令牌", "Token"]
+tool_related: ["json", "base64"]
 ---
 
 JWT 解析器可以读取令牌中的 Header、Payload 以及 `iat`、`nbf`、`exp` 时间声明。令牌只在浏览器本地处理。

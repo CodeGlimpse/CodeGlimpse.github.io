@@ -27,7 +27,7 @@ test('counts bilingual tool pages in a built site', () => {
     const fixture = createSiteFixture();
     try {
         const metrics = summary.countSiteMetrics(fixture);
-        assert.equal(metrics.toolPages, 32);
+        assert.equal(metrics.toolPages, 44);
         assert.ok(metrics.htmlPages >= metrics.toolPages);
     } finally {
         fs.rmSync(fixture, { recursive: true, force: true });
@@ -39,7 +39,7 @@ test('builds a traceable maintenance summary', () => {
     try {
         const output = summary.buildSummary({ stage: 'deploy', publicRoot: fixture, source: 'abc123' });
         assert.match(output, /Source commit: `abc123`/);
-        assert.match(output, /Published bilingual tool pages: 32/);
+        assert.match(output, /Published bilingual tool pages: 44/);
         assert.match(output, /Online verification/);
     } finally {
         fs.rmSync(fixture, { recursive: true, force: true });

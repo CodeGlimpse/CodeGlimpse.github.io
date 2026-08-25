@@ -3,6 +3,9 @@ title: "JWT Decoder"
 description: "Decode JWT headers, payloads, and time claims locally in your browser."
 date: 2026-08-17
 layout: "page"
+category: "security"
+keywords: ["JWT", "token", "claims"]
+tool_related: ["json", "base64"]
 ---
 
 The JWT decoder reads the Header, Payload, and the `iat`, `nbf`, and `exp` time claims. Tokens are processed only in your browser.

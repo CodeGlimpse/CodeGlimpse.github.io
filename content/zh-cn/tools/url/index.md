@@ -3,6 +3,9 @@ title: "URL 编码/解码工具"
 description: "在线 URL 组件编码与解码工具，支持 Unicode 和表单空格模式。"
 date: 2026-08-17
 layout: "page"
+category: "encoding"
+keywords: ["URL", "URI", "编码"]
+tool_related: ["base64", "jwt"]
 ---
 
 URL 编码可以将空格、中文和保留字符转换为适合放入网址参数的百分号转义形式。本工具在浏览器本地处理输入，不会上传内容。

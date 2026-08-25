@@ -1,0 +1,17 @@
+{{ if and (eq .Section "tools") .Params.tool_related }}
+<section class="tool-related" aria-labelledby="tool-related-title">
+    <h2 id="tool-related-title">{{ if eq .Language.Lang "zh-cn" }}相关工具{{ else }}Related tools{{ end }}</h2>
+    <div class="tool-related-list">
+        {{ range .Params.tool_related }}
+        {{ $toolPage := site.GetPage (printf "/%s/tools/%s" $.Language.Lang .) }}
+        {{ if not $toolPage }}{{ $toolPage = site.GetPage (printf "tools/%s" .) }}{{ end }}
+        {{ with $toolPage }}
+        <a class="tool-related-link" href="{{ .RelPermalink }}">
+            <span>{{ .Title }}</span>
+            <span aria-hidden="true">→</span>
+        </a>
+        {{ end }}
+        {{ end }}
+    </div>
+</section>
+{{ end }}

@@ -3,6 +3,9 @@ title: "文本统计与转换工具"
 description: "统计字符、词数、行数和 UTF-8 字节，并执行常用文本转换。"
 date: 2026-08-17
 layout: "page"
+category: "text"
+keywords: ["文本", "统计", "转换"]
+tool_related: ["diff", "markdown"]
 ---
 
 文本工具可以实时统计字符、非空白字符、词数、行数和 UTF-8 字节，并提供常用大小写与空白清理操作。

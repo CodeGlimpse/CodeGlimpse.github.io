@@ -3,6 +3,9 @@ title: "Secure Password Generator"
 description: "Generate configurable passwords in batches with browser cryptographic randomness."
 date: 2026-08-17
 layout: "page"
+category: "security"
+keywords: ["password", "random", "security"]
+tool_related: ["uuid", "sha"]
 ---
 
 Generate random passwords based on length and selected character classes. Randomness comes from the browser's cryptographic API, and results are not uploaded or stored.

@@ -41,6 +41,8 @@ assets/js/tools/<id>-core.js
 
 工具只在浏览器本地处理用户输入时，应在页面中明确说明，不要把数据发送到第三方服务。
 
+新增工具还应在 scripts/tool-registry.cjs 登记分类、关键词和相关工具，并在双语 front matter 中同步 category 与 keywords。工具索引支持分类筛选、关键词搜索、收藏和最近使用；浏览器本地偏好只保存工具 ID，不应保存密码、JWT、密钥或用户输入。
+
 ## 发布与 Pull Request
 
 - Pull Request 会运行版本、工作流安全、JavaScript、内容结构、Node 测试、Hugo 构建和浏览器 E2E 检查，不会发布到生产站点。

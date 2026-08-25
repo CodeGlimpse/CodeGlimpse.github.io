@@ -20,7 +20,7 @@ test('validates expected success responses and JSON arrays', () => {
 
 test('publishes both language routes for every registered tool', () => {
     const toolChecks = checker.checks.filter((check) => check.toolId);
-    assert.equal(toolChecks.length, 32);
+    assert.equal(toolChecks.length, 44);
     assert.ok(toolChecks.every((check) => check.status === 200 && check.html));
 });
 

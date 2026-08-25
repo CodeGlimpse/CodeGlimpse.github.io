@@ -3,6 +3,9 @@ title: "MD5 在线加密"
 description: "在线 MD5 哈希生成工具。快速、便捷地从文本生成 MD5 哈希值。"
 date: 2026-03-19
 layout: "page"
+category: "security"
+keywords: ["MD5", "哈希", "摘要"]
+tool_related: ["sha", "password"]
 ---
 
 MD5（消息摘要算法 5）是一种广泛使用的密码哈希函数，产生 128 位（16 字节）的哈希值。它通常用于验证数据完整性和校验和。

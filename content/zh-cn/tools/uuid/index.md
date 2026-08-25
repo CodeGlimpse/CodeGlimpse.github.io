@@ -3,6 +3,9 @@ title: "UUID 生成与校验工具"
 description: "使用安全随机数批量生成 UUID v4，并校验 RFC 9562 UUID。"
 date: 2026-08-17
 layout: "page"
+category: "security"
+keywords: ["UUID", "标识符", "随机"]
+tool_related: ["password", "time"]
 ---
 
 UUID 常用于数据库主键、请求标识和分布式系统对象标识。本工具使用浏览器加密随机数生成 UUID v4，并可检查 UUID 格式和版本。

@@ -3,6 +3,9 @@ title: "正则表达式测试工具"
 description: "在线测试 JavaScript 正则表达式、捕获组和替换结果。"
 date: 2026-08-17
 layout: "page"
+category: "text"
+keywords: ["正则", "Regex", "匹配"]
+tool_related: ["diff", "text"]
 ---
 
 使用 JavaScript 正则表达式检查匹配位置、捕获组和替换预览。表达式在独立 Worker 中执行，超过时间限制会自动终止，避免阻塞页面。

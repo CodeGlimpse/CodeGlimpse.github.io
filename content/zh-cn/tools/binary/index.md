@@ -3,6 +3,9 @@ title: "进制转换工具"
 description: "在线进制转换器，支持二进制、八进制、十进制、十六进制等多种进制互转。"
 date: 2026-03-21
 layout: "page"
+category: "encoding"
+keywords: ["进制", "二进制", "十六进制"]
+tool_related: ["base64", "color"]
 ---
 
 这是一个简单高效的在线进制转换工具，支持二进制 (Base 2)、八进制 (Base 8)、十进制 (Base 10)、十六进制 (Base 16) 以及 2 到 36 之间的任意自定义进制之间的相互转换。

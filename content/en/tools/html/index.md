@@ -3,6 +3,9 @@ title: "HTML Entity Encoder/Decoder"
 description: "Encode HTML-sensitive characters and decode common named and numeric entities."
 date: 2026-08-17
 layout: "page"
+category: "encoding"
+keywords: ["HTML", "entity", "encode"]
+tool_related: ["xml", "markdown"]
 ---
 
 HTML entities safely represent tag delimiters, quotes, and characters that are difficult to enter directly. Results are displayed as text and are never executed as HTML.

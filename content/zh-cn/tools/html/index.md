@@ -3,6 +3,9 @@ title: "HTML 实体编码/解码工具"
 description: "编码 HTML 特殊字符，并解码常用命名实体和数字实体。"
 date: 2026-08-17
 layout: "page"
+category: "encoding"
+keywords: ["HTML", "实体", "编码"]
+tool_related: ["xml", "markdown"]
 ---
 
 HTML 实体可以安全表示标签符号、引号和部分不可直接输入的字符。本工具仅在文本框中显示结果，不会将输入作为 HTML 执行。

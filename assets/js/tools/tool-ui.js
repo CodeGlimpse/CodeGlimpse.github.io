@@ -55,5 +55,35 @@
         });
     }
 
-    return { bindShortcut, copy, setOutputState, setStatus };
+    function download(filename, value, type = 'text/plain;charset=utf-8') {
+        const blob = new Blob([String(value ?? '')], { type });
+        const url = root.URL.createObjectURL(blob);
+        const anchor = root.document?.createElement('a');
+        if (!anchor) return false;
+        anchor.href = url;
+        anchor.download = filename;
+        anchor.click();
+        root.setTimeout(() => root.URL.revokeObjectURL(url), 0);
+        return true;
+    }
+
+    function readPreferences(key, fallback = {}) {
+        try {
+            const value = JSON.parse(root.localStorage?.getItem(key) || 'null');
+            return value && typeof value === 'object' ? value : fallback;
+        } catch {
+            return fallback;
+        }
+    }
+
+    function writePreferences(key, value) {
+        try {
+            root.localStorage?.setItem(key, JSON.stringify(value));
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
+    return { bindShortcut, copy, download, readPreferences, setOutputState, setStatus, writePreferences };
 });

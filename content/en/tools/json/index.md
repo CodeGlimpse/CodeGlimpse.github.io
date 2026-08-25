@@ -3,6 +3,9 @@ title: "JSON Formatter"
 description: "Format, minify, validate, escape, and unescape JSON directly in your browser."
 date: 2026-08-13T00:00:00+08:00
 layout: "page"
+category: "data"
+keywords: ["JSON", "format", "validate"]
+tool_related: ["yaml", "jsonpath", "csv"]
 ---
 
 The JSON formatter helps you format and validate JSON data. It can also escape JSON text for embedding inside a string and restore escaped text to its original form.

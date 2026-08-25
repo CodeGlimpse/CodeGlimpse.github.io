@@ -3,6 +3,9 @@ title: "URL Encoder/Decoder"
 description: "Encode and decode URL components online with Unicode and form-space support."
 date: 2026-08-17
 layout: "page"
+category: "encoding"
+keywords: ["URL", "URI", "encode"]
+tool_related: ["base64", "jwt"]
 ---
 
 URL encoding converts spaces, Unicode text, and reserved characters into percent-escaped values suitable for URL parameters. Processing happens locally in your browser.

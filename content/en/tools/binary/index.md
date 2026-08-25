@@ -3,6 +3,9 @@ title: "Base Converter"
 description: "Online tool to convert numbers between different bases like Binary, Octal, Decimal, and Hexadecimal."
 date: 2026-03-21
 layout: "page"
+category: "encoding"
+keywords: ["binary", "number base", "hexadecimal"]
+tool_related: ["base64", "color"]
 ---
 
 A simple and efficient online base converter that supports conversion between Binary (Base 2), Octal (Base 8), Decimal (Base 10), Hexadecimal (Base 16), and any custom base from 2 to 36.

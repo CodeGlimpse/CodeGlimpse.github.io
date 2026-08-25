@@ -1,5 +1,4 @@
 import StackGallery from "ts/gallery";
-import { getColor } from "ts/color";
 import menu from "ts/menu";
 import createElement from "ts/createElement";
 import StackColorScheme from "ts/colorScheme";
@@ -17,36 +16,6 @@ let Stack = {
             }
             setupSmoothAnchors();
             setupScrollspy();
-        }
-
-        const articleTile = document.querySelector('.article-list--tile');
-        if (articleTile && typeof (window as any).Vibrant !== 'undefined') {
-            const observer = new IntersectionObserver(async (entries, tileObserver) => {
-                entries.forEach(entry => {
-                    if (!entry.isIntersecting) return;
-                    tileObserver.unobserve(entry.target);
-
-                    const articles = entry.target.querySelectorAll('article.has-image');
-                    articles.forEach(async article => {
-                        const image = article.querySelector('img') as HTMLImageElement;
-                        const articleDetails = article.querySelector('.article-details') as HTMLDivElement;
-                        if (!image || !articleDetails) return;
-
-                        const colors = await getColor(
-                            image.getAttribute('data-key'),
-                            image.getAttribute('data-hash'),
-                            image.src
-                        );
-
-                        articleDetails.style.background = `
-                        linear-gradient(0deg,
-                            rgba(${colors.DarkMuted.rgb[0]}, ${colors.DarkMuted.rgb[1]}, ${colors.DarkMuted.rgb[2]}, 0.5) 0%,
-                            rgba(${colors.Vibrant.rgb[0]}, ${colors.Vibrant.rgb[1]}, ${colors.Vibrant.rgb[2]}, 0.75) 100%)`;
-                    });
-                });
-            });
-
-            observer.observe(articleTile);
         }
 
         const highlights = document.querySelectorAll('.article-content div.highlight');

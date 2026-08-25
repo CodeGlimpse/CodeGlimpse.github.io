@@ -46,6 +46,7 @@ hugo server -D
 npm test              # 运行工具核心逻辑测试
 npm run check:js      # 检查在线工具 JavaScript 语法
 npm run check:content # 检查内容 front matter、工具双语结构和 shortcode
+npm run check:workflow # 检查工作流 action SHA 固定和权限约束
 npm run check:versions # 检查 CI 与开发容器版本一致性
 npm run build         # 执行 Hugo 生产构建
 npm run check:output  # 检查发布目录、JSON、robots、sitemap 和工具页面
@@ -58,6 +59,7 @@ npm run test:e2e      # 针对 public/ 运行浏览器端到端测试
 ```bash
 node scripts/check-js.cjs
 node scripts/check-content.cjs
+node scripts/check-workflows.cjs
 node scripts/run-tests.cjs
 hugo --cleanDestinationDir --minify --gc
 node scripts/check-build-output.cjs
@@ -112,6 +114,8 @@ assets/js/tools/<id>-core.js       # 需要单元测试的纯逻辑
 3. 运行 Node.js 测试。
 4. 构建并压缩 Hugo 站点。
 5. 将 `public/` 部署到 `gh-pages`。
+
+工作流中的第三方 Actions 使用完整 commit SHA 固定，并通过 `check:workflow` 检查；部署后的 Smoke Test 会检查中英文全部工具路由、关键静态资源和 HTML 工具容器。
 
 也可以在 GitHub Actions 页面手动运行 `Build and deploy to GitHub Pages` 工作流。Pull Request 只执行构建检查，不会发布到生产站点。
 

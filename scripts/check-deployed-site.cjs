@@ -1,7 +1,15 @@
+const { TOOL_IDS } = require('./tool-registry.cjs');
+
 const checks = [
-    { path: '/', status: 200 },
-    { path: '/tools/json/', status: 200 },
-    { path: '/en/tools/json/', status: 200 },
+    { path: '/', status: 200, html: true },
+    { path: '/en/', status: 200, html: true },
+    { path: '/tools/', status: 200, html: true },
+    { path: '/en/tools/', status: 200, html: true },
+    { path: '/links/', status: 200, html: true },
+    { path: '/en/links/', status: 200, html: true },
+    { path: '/favicon.png', status: 200 },
+    { path: '/signature.svg', status: 200 },
+    { path: '/img/github-mark.svg', status: 200 },
     { path: '/search/index.json', status: 200, jsonArray: true },
     { path: '/en/search/index.json', status: 200, jsonArray: true },
     { path: '/robots.txt', status: 200 },
@@ -9,6 +17,11 @@ const checks = [
     { path: '/index.json', status: 404 },
     { path: '/en/index.json', status: 404 },
 ];
+
+for (const toolId of TOOL_IDS) {
+    checks.push({ path: `/tools/${toolId}/`, status: 200, html: true, toolId });
+    checks.push({ path: `/en/tools/${toolId}/`, status: 200, html: true, toolId });
+}
 
 function normalizeBaseUrl(value) {
     if (!value) {
@@ -42,6 +55,17 @@ function validateResponse(check, status, body) {
             if (!Array.isArray(parsed)) errors.push('expected a JSON array');
         } catch (error) {
             errors.push(`invalid JSON: ${error.message}`);
+        }
+    }
+
+    if (check.html && status === check.status) {
+        if (!/<html\b/i.test(body)) errors.push('expected an HTML document');
+        if (!/<main\b/i.test(body)) errors.push('missing main landmark');
+        if (check.toolId && !new RegExp(`\\bid=(?:["']tool-${check.toolId}["']|tool-${check.toolId})(?:\\s|>)`, 'i').test(body)) {
+            errors.push(`missing tool container: ${check.toolId}`);
+        }
+        if (/(?:src|href)=["']https?:\/\/[^"']*(?:signature\.svg|github\.githubassets\.com)/i.test(body)) {
+            errors.push('page contains a disallowed external image asset');
         }
     }
 

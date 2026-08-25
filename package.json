@@ -7,11 +7,12 @@
     "test:e2e": "node scripts/run-e2e.cjs",
     "check:js": "node scripts/check-js.cjs",
     "check:content": "node scripts/check-content.cjs",
+    "check:workflow": "node scripts/check-workflows.cjs",
     "check:output": "node scripts/check-build-output.cjs",
     "check:site": "node scripts/check-deployed-site.cjs",
     "check:versions": "node scripts/check-versions.cjs",
     "build": "hugo --cleanDestinationDir --minify --gc",
-    "check": "npm run check:versions && npm run check:js && npm run check:content && npm test && npm run build && npm run check:output"
+    "check": "npm run check:versions && npm run check:workflow && npm run check:js && npm run check:content && npm test && npm run build && npm run check:output"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1"

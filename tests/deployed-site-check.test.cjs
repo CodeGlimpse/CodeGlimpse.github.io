@@ -18,6 +18,31 @@ test('validates expected success responses and JSON arrays', () => {
     assert.deepEqual(errors, []);
 });
 
+test('publishes both language routes for every registered tool', () => {
+    const toolChecks = checker.checks.filter((check) => check.toolId);
+    assert.equal(toolChecks.length, 32);
+    assert.ok(toolChecks.every((check) => check.status === 200 && check.html));
+});
+
+test('validates HTML landmarks and tool containers', () => {
+    assert.deepEqual(
+        checker.validateResponse(
+            { path: '/tools/json/', status: 200, html: true, toolId: 'json' },
+            200,
+            '<html><main><div id="tool-json"></div></main></html>',
+        ),
+        [],
+    );
+    assert.deepEqual(
+        checker.validateResponse(
+            { path: '/tools/json/', status: 200, html: true, toolId: 'json' },
+            200,
+            '<html><main></main></html>',
+        ),
+        ['missing tool container: json'],
+    );
+});
+
 test('accepts the intentional homepage JSON 404', () => {
     const errors = checker.validateResponse({ path: '/index.json', status: 404 }, 404, 'Not Found');
     assert.deepEqual(errors, []);

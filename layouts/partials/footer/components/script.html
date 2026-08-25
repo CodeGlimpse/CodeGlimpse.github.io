@@ -1,7 +1,3 @@
-{{- if ne .Section "tools" -}}
-    {{- partial "helper/external" (dict "Context" . "Namespace" "Vibrant") -}}
-{{- end -}}
-
 {{- $opts := dict "minify" hugo.IsProduction -}}
 {{- $script := resources.Get "ts/main.ts" | js.Build $opts | fingerprint -}}
 <script type="text/javascript" src="{{ $script.RelPermalink }}" defer></script>

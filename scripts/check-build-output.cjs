@@ -44,6 +44,30 @@ function forbidPattern(relativeFile, content, pattern, message) {
     if (pattern.test(content)) errors.push(`${relativeFile}: ${message}`);
 }
 
+function checkImagesHaveAlt(relativeFile, html) {
+    for (const match of html.matchAll(/<img\b[^>]*>/gi)) {
+        if (!/\balt\s*=\s*(?:["'][^"']*["']|[^\s>]+)/i.test(match[0])) {
+            errors.push(`${relativeFile}: image is missing an alt attribute`);
+        }
+    }
+}
+
+function checkLocalAssetTags(relativeFile, html) {
+    const tags = [
+        /<img\b[^>]*\bsrc=(?:"([^"]+)"|'([^']+)'|([^\s>]+))[^>]*>/gi,
+        /<script\b[^>]*\bsrc=(?:"([^"]+)"|'([^']+)'|([^\s>]+))[^>]*>/gi,
+        /<link\b[^>]*\brel=(?:"stylesheet"|'stylesheet'|stylesheet)[^>]*\bhref=(?:"([^"]+)"|'([^']+)'|([^\s>]+))[^>]*>/gi,
+    ];
+    for (const pattern of tags) {
+        for (const match of html.matchAll(pattern)) {
+            const asset = match[1] || match[2] || match[3];
+            if (/^https?:\/\//i.test(asset)) {
+                errors.push(`${relativeFile}: external asset is not allowed in key page: ${asset}`);
+            }
+        }
+    }
+}
+
 function checkToolMetadata(relativeFile, expectations) {
     const html = readOutput(relativeFile);
     if (!html) return;
@@ -112,6 +136,9 @@ if (!fs.existsSync(outputRoot)) {
     requireJson('en/search/index.json');
     requireFile('robots.txt');
     requireFile('sitemap.xml');
+    requireFile('favicon.png');
+    requireFile('signature.svg');
+    requireFile('img/github-mark.svg');
     requireFile('img/og-default.png');
 
     const zhTools = checkToolPages('zh-cn');
@@ -126,6 +153,21 @@ if (!fs.existsSync(outputRoot)) {
     checkToolMetadata('en/tools/json/index.html', {
         title: /<title>JSON Formatter \| Personal Blogs for Fernweh<\/title>/i,
     });
+
+    const keyPages = [
+        'index.html',
+        'en/index.html',
+        'links/index.html',
+        'en/links/index.html',
+        ...zhTools.map((toolId) => `tools/${toolId}/index.html`),
+        ...enTools.map((toolId) => `en/tools/${toolId}/index.html`),
+    ];
+    for (const relativeFile of keyPages) {
+        const html = readOutput(relativeFile);
+        if (!html) continue;
+        checkImagesHaveAlt(relativeFile, html);
+        checkLocalAssetTags(relativeFile, html);
+    }
 }
 
 if (errors.length > 0) {

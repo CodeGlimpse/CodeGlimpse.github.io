@@ -1,12 +1,12 @@
-const { TOOL_IDS } = require('./tool-registry.cjs');
+const { TOOL_IDS, TOOL_REGISTRY } = require('./tool-registry.cjs');
 
 const checks = [
-    { path: '/', status: 200, html: true },
-    { path: '/en/', status: 200, html: true },
-    { path: '/tools/', status: 200, html: true },
-    { path: '/en/tools/', status: 200, html: true },
-    { path: '/links/', status: 200, html: true },
-    { path: '/en/links/', status: 200, html: true },
+    { path: '/', status: 200, html: true, language: 'zh-cn' },
+    { path: '/en/', status: 200, html: true, language: 'en' },
+    { path: '/tools/', status: 200, html: true, language: 'zh-cn' },
+    { path: '/en/tools/', status: 200, html: true, language: 'en' },
+    { path: '/links/', status: 200, html: true, language: 'zh-cn' },
+    { path: '/en/links/', status: 200, html: true, language: 'en' },
     { path: '/favicon.png', status: 200 },
     { path: '/signature.svg', status: 200 },
     { path: '/img/github-mark.svg', status: 200 },
@@ -19,8 +19,8 @@ const checks = [
 ];
 
 for (const toolId of TOOL_IDS) {
-    checks.push({ path: `/tools/${toolId}/`, status: 200, html: true, toolId });
-    checks.push({ path: `/en/tools/${toolId}/`, status: 200, html: true, toolId });
+    checks.push({ path: `/tools/${toolId}/`, status: 200, html: true, language: 'zh-cn', toolId });
+    checks.push({ path: `/en/tools/${toolId}/`, status: 200, html: true, language: 'en', toolId });
 }
 
 function normalizeBaseUrl(value) {
@@ -43,7 +43,39 @@ function endpointUrl(baseUrl, relativePath) {
     return new URL(relativePath.replace(/^\/+/, ''), baseUrl).toString();
 }
 
-function validateResponse(check, status, body) {
+function extractTags(body, tagName) {
+    return [...body.matchAll(new RegExp(`<${tagName}\\b[^>]*>`, 'gi'))].map((match) => match[0]);
+}
+
+function extractAttributes(tag) {
+    const attributes = {};
+    for (const match of tag.matchAll(/([A-Za-z_:][-A-Za-z0-9_:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g)) {
+        attributes[match[1].toLowerCase()] = match[2] ?? match[3] ?? match[4] ?? '';
+    }
+    return attributes;
+}
+
+function findTag(body, tagName, predicate) {
+    return extractTags(body, tagName).map(extractAttributes).find(predicate) ?? null;
+}
+
+function collectLocalAssetUrls(pageUrl, body) {
+    const assets = new Set();
+    for (const tag of [...extractTags(body, 'script'), ...extractTags(body, 'link'), ...extractTags(body, 'img')]) {
+        const attributes = extractAttributes(tag);
+        const raw = attributes.src ?? attributes.href;
+        if (!raw || /^(?:data|blob|mailto|javascript):/i.test(raw)) continue;
+        try {
+            const url = new URL(raw, pageUrl);
+            if (url.origin === new URL(pageUrl).origin) assets.add(url.toString());
+        } catch {
+            // Invalid URLs are reported by the page-specific metadata checks.
+        }
+    }
+    return [...assets];
+}
+
+function validateResponse(check, status, body, pageUrl = null) {
     const errors = [];
     if (status !== check.status) {
         errors.push(`expected HTTP ${check.status}, received ${status}`);
@@ -61,9 +93,38 @@ function validateResponse(check, status, body) {
     if (check.html && status === check.status) {
         if (!/<html\b/i.test(body)) errors.push('expected an HTML document');
         if (!/<main\b/i.test(body)) errors.push('missing main landmark');
+        const html = findTag(body, 'html', () => true);
+        if (check.language && html?.lang !== check.language) {
+            errors.push(`expected html lang ${check.language}, found ${html?.lang ?? 'missing'}`);
+        }
+        if (!/<title\b[^>]*>[^<]+<\/title>/i.test(body)) errors.push('missing page title');
+        const description = findTag(body, 'meta', (attributes) => attributes.name?.toLowerCase() === 'description');
+        if (!description?.content?.trim()) errors.push('missing meta description');
+        const canonical = findTag(body, 'link', (attributes) => attributes.rel?.toLowerCase() === 'canonical');
+        if (!canonical?.href) errors.push('missing canonical link');
+        if (pageUrl && canonical?.href !== pageUrl) errors.push(`canonical does not match ${pageUrl}`);
+        const alternates = extractTags(body, 'link').map(extractAttributes)
+            .filter((attributes) => attributes.rel?.toLowerCase() === 'alternate' && attributes.hreflang)
+            .reduce((map, attributes) => map.set(attributes.hreflang.toLowerCase(), attributes.href), new Map());
+        for (const language of ['zh-cn', 'en', 'x-default']) {
+            if (!alternates.get(language)) errors.push(`missing hreflang alternate: ${language}`);
+        }
         if (check.toolId && !new RegExp(`\\bid=(?:["']tool-${check.toolId}["']|tool-${check.toolId})(?:\\s|>)`, 'i').test(body)) {
             errors.push(`missing tool container: ${check.toolId}`);
         }
+        if (check.toolId && !new RegExp(`/js/tools/${check.toolId}\\.[^"']+\\.js`, 'i').test(body)) {
+            errors.push(`missing tool script: ${check.toolId}`);
+        }
+        if (check.toolId) {
+            const requiredAssets = [check.toolId, 'clipboard', 'tool-ui'];
+            if (TOOL_REGISTRY[check.toolId]?.core) requiredAssets.push(`${check.toolId}-core`);
+            for (const asset of requiredAssets) {
+                if (!new RegExp(`/js/tools/${asset}\\.[^"']+\\.js`, 'i').test(body)) {
+                    errors.push(`missing tool asset: ${asset}`);
+                }
+            }
+        }
+        if (!/<link\b[^>]*rel=(?:["']stylesheet["']|stylesheet)/i.test(body)) errors.push('missing stylesheet');
         if (/(?:src|href)=["']https?:\/\/[^"']*(?:signature\.svg|github\.githubassets\.com)/i.test(body)) {
             errors.push('page contains a disallowed external image asset');
         }
@@ -85,7 +146,9 @@ async function checkEndpoint(baseUrl, check) {
             check,
             url,
             status: response.status,
-            errors: validateResponse(check, response.status, body),
+            body,
+            assets: check.html && response.status === check.status ? collectLocalAssetUrls(url, body) : [],
+            errors: validateResponse(check, response.status, body, url),
         };
     } catch (error) {
         return { check, url, status: null, errors: [error.message] };
@@ -95,9 +158,16 @@ async function checkEndpoint(baseUrl, check) {
 async function main() {
     const baseUrl = normalizeBaseUrl(process.env.SITE_URL || process.argv[2]);
     const results = await Promise.all(checks.map((check) => checkEndpoint(baseUrl, check)));
-    const failures = results.filter((result) => result.errors.length > 0);
+    const assets = [...new Set(results.flatMap((result) => result.assets ?? []))].map((url) => ({
+        path: url,
+        status: 200,
+        resource: true,
+    }));
+    const assetResults = await Promise.all(assets.map((check) => checkEndpoint(baseUrl, check)));
+    const allResults = [...results, ...assetResults];
+    const failures = allResults.filter((result) => result.errors.length > 0);
 
-    for (const result of results) {
+    for (const result of allResults) {
         const status = result.status === null ? 'error' : `HTTP ${result.status}`;
         const outcome = result.errors.length === 0 ? 'passed' : 'failed';
         console.log(`${outcome}: ${result.check.path} -> ${status}`);
@@ -109,7 +179,7 @@ async function main() {
         process.exit(1);
     }
 
-    console.log(`Deployed site check passed: ${results.length} endpoints at ${baseUrl}`);
+    console.log(`Deployed site check passed: ${results.length} endpoints and ${assetResults.length} local assets at ${baseUrl}`);
 }
 
 if (require.main === module) {
@@ -119,4 +189,11 @@ if (require.main === module) {
     });
 }
 
-module.exports = { checks, endpointUrl, normalizeBaseUrl, validateResponse };
+module.exports = {
+    checks,
+    collectLocalAssetUrls,
+    endpointUrl,
+    extractAttributes,
+    normalizeBaseUrl,
+    validateResponse,
+};

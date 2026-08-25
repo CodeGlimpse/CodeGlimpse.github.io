@@ -79,6 +79,12 @@ jobs:
             - name: Check build output
               run: npm run check:output
 
+            - name: Write build summary
+              if: always()
+              env:
+                  SUMMARY_STAGE: build
+              run: node scripts/write-site-summary.cjs
+
             - name: Upload site artifact
               uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
               with:
@@ -159,3 +165,9 @@ jobs:
               env:
                   SITE_URL: "https://blog.codeglimpse.top"
               run: npm run check:site
+
+            - name: Write deployment summary
+              if: always()
+              env:
+                  SUMMARY_STAGE: deploy
+              run: node scripts/write-site-summary.cjs

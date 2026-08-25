@@ -43,6 +43,16 @@ assets/js/tools/<id>-core.js
 
 ## 发布与 Pull Request
 
-- Pull Request 会运行 JavaScript、内容结构、Node 测试和 Hugo 构建检查。
-- 推送到 `master` 后，部署工作流会将构建结果发布到 `gh-pages`。
-- 主题更新工作流会创建 Pull Request；合并前应再次运行完整检查。
+- Pull Request 会运行版本、工作流安全、JavaScript、内容结构、Node 测试、Hugo 构建和浏览器 E2E 检查，不会发布到生产站点。
+- 推送到 `master` 后，部署工作流会使用经过 E2E 验证的同一份构建产物发布到 `gh-pages`，然后运行线上端点和本地资源 Smoke Test。
+- Actions Summary 会记录源提交、Go/Hugo/Node.js 版本、页面数量、工具页面数量和验证阶段。
+- 主题更新工作流每周一运行并创建或更新 Pull Request；合并前应查看模块差异、桌面端和移动端页面，并再次运行完整检查。
+- 每周线上监控只读访问生产站点，检查全部双语工具、页面元数据和本地资源；它不会自动修改代码或回滚。
+
+## 长期维护
+
+- 常规维护、版本升级、线上巡检和故障回滚流程见 [`docs/maintenance.md`](docs/maintenance.md)。
+- 主题、工具链和线上故障应在 [`docs/maintenance-log.md`](docs/maintenance-log.md) 追加记录。
+- 修改 Hugo、Node.js、Go 或主题版本前，先确认 `git status` 干净并创建可回退的本地提交。
+- 版本升级必须通过 `npm.cmd run check:versions`、`npm.cmd run check` 和 `npm.cmd run test:e2e`。
+- 发现线上异常时，记录失败端点、部署 SHA 和 Actions Run ID；优先恢复最近一个已验证提交，不直接修改 `gh-pages`。

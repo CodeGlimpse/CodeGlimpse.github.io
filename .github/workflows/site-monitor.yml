@@ -1,0 +1,53 @@
+name: Monitor deployed site
+
+on:
+    schedule:
+        # Run a full endpoint and asset check weekly after the regular release window.
+        - cron: "0 6 * * 1"
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: site-monitor
+    cancel-in-progress: true
+
+env:
+    NODE_VERSION: "22.13.1"
+    SITE_URL: "https://blog.codeglimpse.top"
+
+jobs:
+    monitor:
+        name: Check deployed site
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+
+        steps:
+            - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+              with:
+                  fetch-depth: 1
+
+            - name: Setup Node.js
+              uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+                  cache: npm
+
+            - name: Install Node.js dependencies
+              run: npm ci --ignore-scripts
+
+            - name: Check deployed endpoints and local assets
+              run: npm run check:site
+
+            - name: Write monitor summary
+              if: always()
+              run: |
+                  {
+                    echo "## Deployed site monitor"
+                    echo ""
+                    echo "- Site: ${SITE_URL}"
+                    echo "- Source repository: ${GITHUB_REPOSITORY}"
+                    echo "- Workflow run: ${GITHUB_RUN_ID}"
+                    echo "- Check: all bilingual tools, metadata, resources, and expected 404s"
+                  } >> "${GITHUB_STEP_SUMMARY}"

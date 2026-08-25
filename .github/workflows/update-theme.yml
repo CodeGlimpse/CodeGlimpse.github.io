@@ -3,8 +3,8 @@ name: Update theme
 # Controls when the workflow will run
 on:
   schedule:
-    # Update theme automatically everyday at 00:00 UTC
-    - cron: "0 0 * * *"
+    # Review theme updates weekly at 00:00 UTC on Monday.
+    - cron: "0 0 * * 1"
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -66,6 +66,27 @@ jobs:
           hugo --cleanDestinationDir --gc --minify
           npm run check:output
 
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run browser tests
+        env:
+          E2E_BASE_URL: http://127.0.0.1:4173
+          E2E_USE_LOCAL_SERVER: "true"
+        run: npm run test:e2e
+
+      - name: Write theme update summary
+        if: always()
+        env:
+          SUMMARY_STAGE: theme-update
+        run: |
+          node scripts/write-site-summary.cjs
+          {
+            echo ""
+            echo "### Module changes"
+            git diff --stat -- go.mod go.sum
+          } >> "${GITHUB_STEP_SUMMARY}"
+
       - name: Create theme update pull request
         uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
         with:
@@ -79,6 +100,8 @@ jobs:
           title: "chore: update Hugo theme"
           body: |
             This pull request was created automatically by the scheduled theme update workflow.
+
+            The update is validated with the version, workflow, JavaScript, content, unit-test, Hugo build, output, and browser E2E checks.
 
             Hugo and Go versions used by the workflow:
             - Hugo: ${{ env.HUGO_VERSION }} extended

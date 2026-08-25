@@ -121,11 +121,14 @@ assets/js/tools/<id>-core.js       # 需要单元测试的纯逻辑
 
 ## 主题更新
 
-`.github/workflows/update-theme.yml` 每天运行一次，也支持手动触发。它会更新 Hugo Stack 模块、验证构建，并创建主题更新 Pull Request。主题升级合并前应重新运行：
+`.github/workflows/update-theme.yml` 每周一运行一次，也支持手动触发。它会更新 Hugo Stack 模块、验证构建和浏览器 E2E，并创建主题更新 Pull Request。主题升级合并前应检查模块差异、桌面端和移动端页面，并重新运行：
 
 ```bash
 npm run check
+npm run test:e2e
 ```
+
+`.github/workflows/site-monitor.yml` 每周一运行线上只读巡检，也支持手动触发。它覆盖首页、索引、搜索资源、sitemap、robots.txt、全部 32 个双语工具页面、页面元数据以及页面引用的本地 CSS、JavaScript 和图片资源。
 
 ## 提交前清单
 
@@ -145,3 +148,5 @@ npm run check
 ## 维护说明
 
 构建产物 `public/`、Hugo 资源缓存 `resources/` 和 `.hugo_build.lock` 已加入 `.gitignore`。请不要提交本地临时文件、凭据或 `.env` 文件。
+
+长期维护流程、版本升级、发布验证和故障回滚见 [`docs/maintenance.md`](docs/maintenance.md)，维护记录格式见 [`docs/maintenance-log.md`](docs/maintenance-log.md)。

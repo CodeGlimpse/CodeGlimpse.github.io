@@ -53,7 +53,7 @@ jobs:
                       ${{ runner.os }}-hugo-resources-
 
             - name: Setup Hugo
-              uses: peaceiris/actions-hugo@19661a5c56c987b713f1f00f022671286b04f53b # v2.0.0
+              uses: peaceiris/actions-hugo@6b1ee2dcc06c9b6629a5317fa0146473914d05e1 # v3
               with:
                   hugo-version: ${{ env.HUGO_VERSION }}
                   extended: true

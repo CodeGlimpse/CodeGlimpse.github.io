@@ -43,6 +43,10 @@ function endpointUrl(baseUrl, relativePath) {
     return new URL(relativePath.replace(/^\/+/, ''), baseUrl).toString();
 }
 
+function delay(milliseconds) {
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
 function extractTags(body, tagName) {
     return [...body.matchAll(new RegExp(`<${tagName}\\b[^>]*>`, 'gi'))].map((match) => match[0]);
 }
@@ -135,24 +139,35 @@ function validateResponse(check, status, body, pageUrl = null) {
 
 async function checkEndpoint(baseUrl, check) {
     const url = endpointUrl(baseUrl, check.path);
-    try {
-        const response = await fetch(url, {
-            headers: { accept: 'text/html,application/json,application/xml,text/plain' },
-            redirect: 'follow',
-            signal: AbortSignal.timeout(15000),
-        });
-        const body = await response.text();
-        return {
-            check,
-            url,
-            status: response.status,
-            body,
-            assets: check.html && response.status === check.status ? collectLocalAssetUrls(url, body) : [],
-            errors: validateResponse(check, response.status, body, url),
-        };
-    } catch (error) {
-        return { check, url, status: null, errors: [error.message] };
+    const attempts = Math.max(1, Number.parseInt(process.env.SITE_CHECK_RETRIES ?? '1', 10) || 1);
+    const retryDelay = Math.max(0, Number.parseInt(process.env.SITE_CHECK_RETRY_DELAY_MS ?? '1000', 10) || 0);
+    let lastResult = null;
+
+    for (let attempt = 1; attempt <= attempts; attempt += 1) {
+        try {
+            const response = await fetch(url, {
+                headers: { accept: 'text/html,application/json,application/xml,text/plain' },
+                redirect: 'follow',
+                signal: AbortSignal.timeout(15000),
+            });
+            const body = await response.text();
+            lastResult = {
+                check,
+                url,
+                status: response.status,
+                body,
+                assets: check.html && response.status === check.status ? collectLocalAssetUrls(url, body) : [],
+                errors: validateResponse(check, response.status, body, url),
+            };
+        } catch (error) {
+            lastResult = { check, url, status: null, errors: [error.message] };
+        }
+
+        if (lastResult.errors.length === 0 || attempt === attempts) return lastResult;
+        await delay(retryDelay);
     }
+
+    return lastResult;
 }
 
 async function main() {

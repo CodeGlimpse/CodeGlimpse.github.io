@@ -16,6 +16,8 @@ concurrency:
 env:
     NODE_VERSION: "22.13.1"
     SITE_URL: "https://blog.codeglimpse.top"
+    SITE_CHECK_RETRIES: "3"
+    SITE_CHECK_RETRY_DELAY_MS: "2000"
 
 jobs:
     monitor:

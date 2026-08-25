@@ -164,6 +164,8 @@ jobs:
             - name: Smoke test deployed site
               env:
                   SITE_URL: "https://blog.codeglimpse.top"
+                  SITE_CHECK_RETRIES: "12"
+                  SITE_CHECK_RETRY_DELAY_MS: "5000"
               run: npm run check:site
 
             - name: Write deployment summary

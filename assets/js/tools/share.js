@@ -248,21 +248,21 @@
         panel.className = 'tool-share-panel';
         panel.setAttribute('aria-labelledby', `${wrapper.id}-share-title`);
         panel.innerHTML = `
-            <h2 class="tool-share-title" id="${wrapper.id}-share-title">${t.title}</h2>
+            <div class="tool-share-heading">
+                <h2 class="tool-share-title" id="${wrapper.id}-share-title">${t.title}</h2>
+                <span class="tool-share-badge">${lang === 'zh-cn' ? '浏览器本地处理' : 'Browser local'}</span>
+            </div>
             <p class="tool-share-hint">${t.hint}</p>
             <div class="tool-actions tool-share-actions">
                 <button type="button" class="tool-btn tool-btn--primary" data-share-native>${t.share}</button>
                 <button type="button" class="tool-btn tool-btn--secondary" data-share-copy>${t.copy}</button>
                 <button type="button" class="tool-btn tool-btn--secondary" data-share-export>${t.export}</button>
             </div>
-            <div class="tool-status tool-share-status" data-share-status role="status" aria-live="polite"></div>
         `;
         wrapper.insertAdjacentElement('afterend', panel);
 
-        const status = panel.querySelector('[data-share-status]');
-        const setStatus = (type, message) => {
-            status.className = `tool-status tool-share-status ${type || ''}`.trim();
-            status.textContent = message || '';
+        const notify = (type, message) => {
+            windowObject.CodeGlimpseToast?.show({ type, message, document });
         };
         const buildLink = () => {
             const url = new windowObject.URL(windowObject.location.href);
@@ -275,12 +275,12 @@
                 const copied = await windowObject.CodeGlimpseToolUi.copy({
                     button: panel.querySelector('[data-share-copy]'),
                     value: link,
-                    status,
+                    status: null,
                     messages: { empty: t.failed, copied: t.copied, copyFailed: t.failed }
                 });
-                if (!copied) setStatus('error', t.failed);
+                notify(copied ? 'success' : 'error', copied ? t.copied : t.failed);
             } catch (error) {
-                setStatus('error', error.message === 'Share state is too large' ? t.tooLarge : t.failed);
+                notify('error', error.message === 'Share state is too large' ? t.tooLarge : t.failed);
             }
         };
 
@@ -290,7 +290,7 @@
                 const link = buildLink();
                 if (typeof windowObject.navigator?.share === 'function') {
                     await windowObject.navigator.share({ title: document.title, url: link });
-                    setStatus('success', t.shared);
+                    notify('success', t.shared);
                 } else {
                     await copyLink();
                 }
@@ -306,9 +306,9 @@
                     snapshot,
                     'application/json;charset=utf-8'
                 );
-                setStatus('success', t.exported);
+                notify('success', t.exported);
             } catch (error) {
-                setStatus('error', t.failed);
+                notify('error', t.failed);
             }
         });
 
@@ -320,9 +320,9 @@
                 // Let the tool finish its own event wiring before invoking a
                 // button-based calculation (for example JSON or CSV).
                 triggerRestoreWhenReady(wrapper, windowObject);
-                setStatus('success', t.restored);
+                notify('success', t.restored);
             } catch (error) {
-                setStatus('error', error.message === 'Share state is too large' ? t.tooLarge : t.invalid);
+                notify('error', error.message === 'Share state is too large' ? t.tooLarge : t.invalid);
             }
         };
         restoreFromHash();

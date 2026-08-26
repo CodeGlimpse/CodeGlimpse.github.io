@@ -3,25 +3,9 @@
         return document.documentElement.lang === 'zh-cn' ? 'zh-cn' : 'en';
     }
 
-    function createStatus() {
-        const existing = document.getElementById('offline-status');
-        if (existing) return existing;
-        const status = document.createElement('div');
-        status.id = 'offline-status';
-        status.className = 'offline-status';
-        status.setAttribute('role', 'status');
-        status.setAttribute('aria-live', 'polite');
-        document.body.appendChild(status);
-        return status;
-    }
-
-    function updateStatus(status) {
-        const online = navigator.onLine !== false;
-        const text = getLanguage() === 'zh-cn'
-            ? (online ? '已在线，工具数据仅在浏览器本地处理。' : '当前离线：已缓存页面仍可访问，工具继续在本地运行。')
-            : (online ? 'Online. Tool data is processed locally in your browser.' : 'Offline: cached pages remain available and tools continue running locally.');
-        status.textContent = text;
-        status.dataset.online = online ? 'true' : 'false';
+    function notify(type, chinese, english) {
+        const message = getLanguage() === 'zh-cn' ? chinese : english;
+        window.CodeGlimpseToast?.show({ type, message });
     }
 
     function registerServiceWorker() {
@@ -32,10 +16,19 @@
     }
 
     function start() {
-        const status = createStatus();
-        updateStatus(status);
-        window.addEventListener('online', () => updateStatus(status));
-        window.addEventListener('offline', () => updateStatus(status));
+        let wasOffline = navigator.onLine === false;
+        if (wasOffline) {
+            notify('warning', '当前离线：已缓存页面仍可访问，工具继续在本地运行。', 'Offline: cached pages remain available and tools continue running locally.');
+        }
+        window.addEventListener('offline', () => {
+            wasOffline = true;
+            notify('warning', '当前离线：已缓存页面仍可访问，工具继续在本地运行。', 'Offline: cached pages remain available and tools continue running locally.');
+        });
+        window.addEventListener('online', () => {
+            if (!wasOffline) return;
+            wasOffline = false;
+            notify('success', '网络已恢复，工具仍在浏览器本地处理数据。', 'Back online. Tool data is still processed locally in your browser.');
+        });
         registerServiceWorker();
     }
 

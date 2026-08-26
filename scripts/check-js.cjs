@@ -2,7 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 
-const root = path.resolve(__dirname, '..', 'assets', 'js', 'tools');
+const root = path.resolve(__dirname, '..', 'assets', 'js');
 
 function collectJavaScriptFiles(directory) {
     return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {

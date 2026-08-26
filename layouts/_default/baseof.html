@@ -3,6 +3,8 @@
     <head>
         {{- partial "head/head.html" . -}}
         {{- block "head" . -}}{{ end }}
+        {{- $toastScript := resources.Get "js/toast.js" | resources.Minify | fingerprint "sha256" -}}
+        <script type="text/javascript" src="{{ $toastScript.RelPermalink }}" defer></script>
     </head>
     <body class="{{ block `body-class` . }}{{ end }}">
         {{- partial "head/colorScheme" . -}}

@@ -238,6 +238,14 @@ function checkToolImplementations() {
     if (!fs.existsSync(offlineScriptPath)) {
         errors.push(`missing offline enhancement script: ${relativePath(offlineScriptPath)}`);
     }
+    const toastScriptPath = path.join(projectRoot, 'assets', 'js', 'toast.js');
+    if (!fs.existsSync(toastScriptPath)) {
+        errors.push(`missing global toast script: ${relativePath(toastScriptPath)}`);
+    }
+    const baseTemplate = path.join(projectRoot, 'layouts', '_default', 'baseof.html');
+    if (fs.existsSync(baseTemplate) && !fs.readFileSync(baseTemplate, 'utf8').includes('js/toast.js')) {
+        errors.push('base template does not load global toast script');
+    }
     const footerScript = path.join(projectRoot, 'layouts', 'partials', 'footer', 'components', 'script.html');
     if (fs.existsSync(footerScript) && !fs.readFileSync(footerScript, 'utf8').includes('js/offline.js')) {
         errors.push('footer script partial does not load offline enhancement script');

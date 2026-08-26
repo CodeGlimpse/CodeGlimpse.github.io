@@ -90,22 +90,24 @@ test.describe('online tools', () => {
         await page.goto(`/tools/json/${hash}`);
         await expect(page.locator('#json-input')).toHaveValue('{"name":"shared"}');
         await expect(page.locator('#json-output')).toHaveValue('{\n  "name": "shared"\n}');
-        await expect(page.locator('[data-share-status]')).toContainText('已从分享链接恢复输入');
+        await expect(page.locator('#codeglimpse-toast')).toContainText('已从分享链接恢复输入');
 
         const downloadPromise = page.waitForEvent('download');
         await page.locator('[data-share-export]').click();
         const download = await downloadPromise;
         expect(download.suggestedFilename()).toBe('codeglimpse-json-snapshot.json');
+        await expect(page.locator('#codeglimpse-toast')).toContainText('快照已下载');
     });
 
     test('shows online and offline status feedback', async ({ page, context }) => {
         await page.goto('/tools/json/');
-        await expect(page.locator('#offline-status')).toBeVisible();
+        await expect(page.locator('#codeglimpse-toast')).toBeHidden();
         await context.setOffline(true);
-        await expect(page.locator('#offline-status')).toHaveAttribute('data-online', 'false');
-        await expect(page.locator('#offline-status')).toContainText('当前离线');
+        await expect(page.locator('#codeglimpse-toast')).toHaveAttribute('data-type', 'warning');
+        await expect(page.locator('#codeglimpse-toast')).toContainText('当前离线');
         await context.setOffline(false);
-        await expect(page.locator('#offline-status')).toHaveAttribute('data-online', 'true');
+        await expect(page.locator('#codeglimpse-toast')).toHaveAttribute('data-type', 'success');
+        await expect(page.locator('#codeglimpse-toast')).toContainText('网络已恢复');
     });
 
     test('supports keyboard navigation and exposes theme state', async ({ page }) => {

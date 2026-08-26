@@ -156,6 +156,20 @@ if (!fs.existsSync(outputRoot)) {
         title: /<title>JSON Formatter \| Personal Blogs for Fernweh<\/title>/i,
     });
 
+    const verificationContent = 'wmOney6zJ-t1ceBP1NkI3tCCzftAbPd8ZIsgm_ltYwY';
+    const chineseHome = readOutput('index.html');
+    const englishHome = readOutput('en/index.html');
+    for (const [relativeFile, html] of [['index.html', chineseHome], ['en/index.html', englishHome]]) {
+        requirePattern(
+            relativeFile,
+            html,
+            new RegExp(`<meta\\b[^>]*\\bname=(?:["']?)google-site-verification(?:["']?)[^>]*\\bcontent=(?:["']?)${verificationContent}(?:["']?)`, 'i'),
+            'missing Google site verification meta tag',
+        );
+    }
+    forbidPattern('tools/json/index.html', readOutput('tools/json/index.html'), /google-site-verification/i,
+        'Google site verification meta tag must be limited to homepages');
+
     const keyPages = [
         'index.html',
         'en/index.html',

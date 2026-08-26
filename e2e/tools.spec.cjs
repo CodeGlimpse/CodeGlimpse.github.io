@@ -2,6 +2,17 @@ const { test, expect } = require('@playwright/test');
 const { TOOL_IDS } = require('../scripts/tool-registry.cjs');
 
 test.describe('online tools', () => {
+    test('exposes Google site verification only on homepages', async ({ page }) => {
+        await page.goto('/');
+        await expect(page.locator('meta[name="google-site-verification"]')).toHaveAttribute(
+            'content',
+            'wmOney6zJ-t1ceBP1NkI3tCCzftAbPd8ZIsgm_ltYwY',
+        );
+
+        await page.goto('/tools/json/');
+        await expect(page.locator('meta[name="google-site-verification"]')).toHaveCount(0);
+    });
+
     test('formats JSON on the Chinese page', async ({ page }) => {
         await page.goto('/tools/json/');
 

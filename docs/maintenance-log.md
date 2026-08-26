@@ -71,7 +71,7 @@
 - 变更内容：因站点定位为博客，移除工具版 PWA 安装入口、Manifest、应用图标和安装脚本；保留 Service Worker、离线回退页和本地资源缓存，不上传用户内容。
 - 验证命令：`npm.cmd run check`、`npm.cmd run test:e2e`
 - 验证结果：`npm.cmd run check`（88/88 单元测试、Hugo ZH 56 / EN 55、构建产物检查通过）和 `npm.cmd run test:e2e`（35/35，包含不可安装能力及离线回退检查）全部通过；构建产物不再包含 Manifest、应用图标和 PWA 安装脚本。
-- 源代码提交：待本地提交完成后补充
+- 源代码提交：`4297e23`（`feat: remove tools app installation support`）
 - GitHub Actions Run：待获得发布授权后补充
 - 回滚：恢复删除前提交 `7c8d7fad7171b77fa7409733e00add0fb2debc26`
 - 后续事项：如未来需要安装能力，应设计博客专用 PWA，而不是恢复工具版安装配置。

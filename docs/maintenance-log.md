@@ -58,8 +58,8 @@
 - 影响范围：发布文档、线上巡检、分享隐私、Service Worker、PWA 安装、移动端体验和本地预设接口
 - 变更内容：修正 22 个工具和 44 个双语页面的维护基线；线上巡检增加 Toast、PWA 和离线资源；JWT 与密码工具默认禁用 URL 分享；增加真实 Service Worker 离线回退 E2E；增加减少动画和移动端分享面板检查；加入 PWA manifest、安装提示和仅使用 localStorage 的预设工作区 API。
 - 验证命令：`npm.cmd run check`、`npm.cmd run test:e2e`、线上 `npm.cmd run check:site -- https://blog.codeglimpse.top`
-- 验证结果：待本次提交和发布工作流完成后补充。
-- 源代码提交：待本次提交完成后补充
-- GitHub Actions Run：待推送后补充
+- 验证结果：`npm.cmd run check`（88/88 单元测试、Hugo ZH 56 / EN 55、构建产物检查通过）、`npm.cmd run test:e2e`（34/34）和线上 `npm.cmd run check:site -- https://blog.codeglimpse.top`（62 个端点、115 个本地资源）全部通过。首次发布 Smoke Test 因 Pages CDN 传播超过 60 秒短暂失败，延长等待窗口后复核通过。
+- 源代码提交：`5be8766983de3389dda6dcfb89815f334e2e92ac`
+- GitHub Actions Run：`32931156895`（Build、E2E、Deploy 成功；首次线上 Smoke Test 受传播时序影响失败，随后线上巡检通过）
 - 回滚：无
 - 后续事项：根据线上安装率和真实离线反馈，评估是否扩展预设 UI 与批量工作流。

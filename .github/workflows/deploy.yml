@@ -164,7 +164,8 @@ jobs:
             - name: Smoke test deployed site
               env:
                   SITE_URL: "https://blog.codeglimpse.top"
-                  SITE_CHECK_RETRIES: "12"
+                  # GitHub Pages custom-domain/CDN propagation can briefly serve the previous HTML.
+                  SITE_CHECK_RETRIES: "24"
                   SITE_CHECK_RETRY_DELAY_MS: "5000"
               run: npm run check:site
 

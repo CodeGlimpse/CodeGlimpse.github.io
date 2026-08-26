@@ -59,7 +59,7 @@
 - 变更内容：修正 22 个工具和 44 个双语页面的维护基线；线上巡检增加 Toast、PWA 和离线资源；JWT 与密码工具默认禁用 URL 分享；增加真实 Service Worker 离线回退 E2E；增加减少动画和移动端分享面板检查；加入 PWA manifest、安装提示和仅使用 localStorage 的预设工作区 API。
 - 验证命令：`npm.cmd run check`、`npm.cmd run test:e2e`、线上 `npm.cmd run check:site -- https://blog.codeglimpse.top`
 - 验证结果：`npm.cmd run check`（88/88 单元测试、Hugo ZH 56 / EN 55、构建产物检查通过）、`npm.cmd run test:e2e`（34/34）和线上 `npm.cmd run check:site -- https://blog.codeglimpse.top`（62 个端点、115 个本地资源）全部通过。首次发布 Smoke Test 因 Pages CDN 传播超过 60 秒短暂失败，延长等待窗口后复核通过。
-- 源代码提交：功能实现 `5be8766983de3389dda6dcfb89815f334e2e92ac`；发布巡检修复 `835a38daa0ce3f02e9ddcf08b21c9d867ef3a432`；最终记录同步 `cda476a5d37e739d23efba58bf73fcf0e28813f8`
-- GitHub Actions Run：`32931547170`、`32931739998`（Build、E2E、Deploy、线上 Smoke Test 全部成功；前一 Run `32931156895` 曾受传播时序影响失败）
+- 源代码提交：功能实现 `5be8766983de3389dda6dcfb89815f334e2e92ac`；发布巡检修复 `835a38daa0ce3f02e9ddcf08b21c9d867ef3a432`；发布记录同步 `cda476a5d37e739d23efba58bf73fcf0e28813f8`、`b64f6c81bc769f99229b620faf675e9da328615f`
+- GitHub Actions Run：`32931547170`、`32931739998`、`32931917652`（Build、E2E、Deploy、线上 Smoke Test 全部成功；前一 Run `32931156895` 曾受传播时序影响失败）
 - 回滚：无
 - 后续事项：根据线上安装率和真实离线反馈，评估是否扩展预设 UI 与批量工作流。

@@ -13,3 +13,17 @@ test('renders common Markdown safely', () => {
 test('rejects unsafe link protocols', () => {
     assert.match(markdown.render('[bad](javascript:alert(1))'), /href="#"/);
 });
+
+test('escapes executable HTML and event attributes', () => {
+    const payloads = [
+        '<script>alert(1)</script>',
+        '<img src=x onerror=alert(1)>',
+        '<svg onload=alert(1)>x</svg>',
+        '[bad](data:text/html,<script>alert(1)</script>)'
+    ];
+
+    for (const payload of payloads) {
+        const html = markdown.render(payload);
+        assert.doesNotMatch(html, /<(?:script|img|svg)\b|<[a-z][^>]*\son(?:error|load)\s*=|href="(?:javascript|data):/i);
+    }
+});

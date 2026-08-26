@@ -24,7 +24,7 @@ let Stack = {
 
         highlights.forEach(highlight => {
             const copyButton = document.createElement('button');
-            copyButton.innerHTML = copyText;
+            copyButton.textContent = copyText;
             copyButton.classList.add('copyCodeButton');
             highlight.appendChild(copyButton);
 

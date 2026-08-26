@@ -30,3 +30,39 @@ test('protects sensitive tools from generated share links', () => {
     assert.equal(share.SENSITIVE_TOOLS.has('password'), true);
     assert.equal(share.SENSITIVE_TOOLS.has('json'), false);
 });
+
+test('restores only exact control ids inside the current tool', () => {
+    const events = [];
+    const control = {
+        checked: false,
+        dataset: {},
+        disabled: false,
+        dispatchEvent: (event) => events.push(event.type),
+        id: 'safe-input',
+        multiple: false,
+        readOnly: false,
+        tagName: 'TEXTAREA',
+        type: 'textarea',
+        value: ''
+    };
+    const outsideControl = { ...control, id: 'outside-input' };
+    const controls = new Map([
+        [control.id, control],
+        [outsideControl.id, outsideControl]
+    ]);
+    const wrapper = {
+        contains: (element) => element === control,
+        ownerDocument: { getElementById: (id) => controls.get(id) || null }
+    };
+
+    const restored = share.restoreFields(wrapper, [
+        { id: 'safe-input', value: '<img src=x onerror=alert(1)>' },
+        { id: 'safe-input, #outside-input', value: 'selector injection' },
+        { id: 'outside-input', value: 'outside wrapper' }
+    ]);
+
+    assert.equal(restored, 1);
+    assert.equal(control.value, '<img src=x onerror=alert(1)>');
+    assert.equal(outsideControl.value, '');
+    assert.deepEqual(events, ['input', 'change']);
+});

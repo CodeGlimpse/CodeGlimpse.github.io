@@ -151,6 +151,17 @@ if (!fs.existsSync(outputRoot)) {
 
     requireJson('search/index.json');
     requireJson('en/search/index.json');
+    for (const searchPage of ['search/index.html', 'en/search/index.html']) {
+        const html = readOutput(searchPage);
+        const scriptPath = html.match(/src=["']?(\/ts\/search\.[a-f0-9]{64}\.js)/i)?.[1];
+        if (!scriptPath) {
+            errors.push(`${searchPage}: missing fingerprinted search script`);
+            continue;
+        }
+        const script = readOutput(scriptPath.replace(/^\//, ''));
+        forbidPattern(searchPage, script, /dangerouslySetInnerHTML|\.innerHTML\s*=/i,
+            'search script must not inject dynamic HTML');
+    }
     requireFile('robots.txt');
     requireFile('sitemap.xml');
     requireFile('favicon.png');

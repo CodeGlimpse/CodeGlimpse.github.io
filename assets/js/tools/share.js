@@ -179,8 +179,8 @@
         let restored = 0;
         fields.forEach((field) => {
             if (!field || typeof field.id !== 'string') return;
-            const control = wrapper.querySelector(`#${field.id}`);
-            if (!control || !isFormControl(control, true) || control.readOnly) return;
+            const control = wrapper.ownerDocument?.getElementById(field.id);
+            if (!control || !wrapper.contains(control) || !isFormControl(control, true) || control.readOnly) return;
             setControlValue(control, field);
             restored += 1;
         });

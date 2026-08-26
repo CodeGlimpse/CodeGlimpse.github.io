@@ -454,6 +454,45 @@ test.describe('online tools', () => {
         await expect(page.locator('.search-result--list')).toContainText('OpenClaw');
         await expect(page).toHaveURL(/keyword=OpenClaw/);
     });
+
+    test('renders untrusted search metadata as text', async ({ page }) => {
+        await page.route('**/search/index.json', async (route) => {
+            await route.fulfill({
+                contentType: 'application/json',
+                body: JSON.stringify([{
+                    content: 'OpenClaw content match',
+                    date: '2026-08-26T00:00:00Z',
+                    image: 'javascript:alert(2)',
+                    permalink: 'javascript:alert(3)',
+                    title: '<img src=x onerror="window.__searchXss=1">Unsafe title'
+                }])
+            });
+        });
+        await page.goto('/search/');
+        await page.locator('input[name="keyword"]').fill('OpenClaw');
+
+        const result = page.locator('.search-result--list article');
+        await expect(result.locator('.article-title')).toContainText('<img src=x onerror=');
+        await expect(result.locator('.article-title img')).toHaveCount(0);
+        await expect(result.locator('.article-image img')).toHaveCount(0);
+        await expect(result.locator('a')).toHaveAttribute('href', '#');
+        await expect.poll(() => page.evaluate(() => window.__searchXss)).toBeUndefined();
+    });
+
+    test('keeps executable Markdown payloads inert', async ({ page }) => {
+        await page.goto('/en/tools/markdown/');
+        await page.locator('#markdown-input').fill([
+            '<img src=x onerror="window.__markdownXss=1">',
+            '<svg onload="window.__markdownXss=2"></svg>',
+            '[bad](javascript:alert(1))'
+        ].join('\n\n'));
+
+        const preview = page.locator('#markdown-preview');
+        await expect(preview).toContainText('<img src=x onerror=');
+        await expect(preview.locator('img, svg, script, [onerror], [onload]')).toHaveCount(0);
+        await expect(preview.locator('a')).toHaveAttribute('href', '#');
+        await expect.poll(() => page.evaluate(() => window.__markdownXss)).toBeUndefined();
+    });
 });
 
 test.describe('mobile tool layout', () => {

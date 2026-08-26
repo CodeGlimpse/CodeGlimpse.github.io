@@ -52,6 +52,23 @@ function checkImagesHaveAlt(relativeFile, html) {
     }
 }
 
+function checkResponsiveAvatar(relativeFile, html) {
+    const avatar = html.match(/<img\b(?=[^>]*\bclass=(?:"[^"]*\bsite-logo\b[^"]*"|'[^']*\bsite-logo\b'|[^\s>]*\bsite-logo\b))[^>]*>/i)?.[0] ?? '';
+    if (!avatar) {
+        errors.push(`${relativeFile}: missing site avatar`);
+        return;
+    }
+    if (!/\bwidth=["']?100["']?/i.test(avatar) || !/\bheight=["']?100["']?/i.test(avatar)) {
+        errors.push(`${relativeFile}: site avatar must reserve a 100x100 layout box`);
+    }
+    if (!/\bsrcset=["'][^"']+\s+100w,\s*[^"']+\s+200w["']/i.test(avatar)) {
+        errors.push(`${relativeFile}: site avatar must expose 100w and 200w srcset candidates`);
+    }
+    if (!/\bsizes=["'][^"']+["']/i.test(avatar)) {
+        errors.push(`${relativeFile}: site avatar must define sizes for responsive loading`);
+    }
+}
+
 function checkLocalAssetTags(relativeFile, html) {
     const tags = [
         /<img\b[^>]*\bsrc=(?:"([^"]+)"|'([^']+)'|([^\s>]+))[^>]*>/gi,
@@ -167,6 +184,8 @@ if (!fs.existsSync(outputRoot)) {
             'missing Google site verification meta tag',
         );
     }
+    checkResponsiveAvatar('index.html', chineseHome);
+    checkResponsiveAvatar('en/index.html', englishHome);
     forbidPattern('tools/json/index.html', readOutput('tools/json/index.html'), /google-site-verification/i,
         'Google site verification meta tag must be limited to homepages');
 

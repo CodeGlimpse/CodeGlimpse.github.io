@@ -46,6 +46,7 @@ hugo server -D
 npm test              # 运行工具核心逻辑测试
 npm run check:js      # 检查在线工具 JavaScript 语法
 npm run check:content # 检查内容 front matter、工具双语结构和 shortcode
+npm run check:contrast # 检查分类标签颜色对比度
 npm run check:workflow # 检查工作流 action SHA 固定和权限约束
 npm run check:versions # 检查 CI 与开发容器版本一致性
 npm run build         # 执行 Hugo 生产构建

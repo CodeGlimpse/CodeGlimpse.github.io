@@ -12,13 +12,15 @@
             <figure class="site-avatar">
                 <a href="{{ $.Site.BaseURL | relLangURL }}" aria-label="{{ $.Site.Title }}">
                 {{ if not .local }}
-                    <img src="{{ .src }}" width="300" height="300" class="site-logo" loading="lazy" alt="{{ $.Site.Title }}">
+                    <img src="{{ .src }}" width="100" height="100" class="site-logo" loading="lazy" decoding="async" alt="{{ $.Site.Title }}">
                 {{ else }}
                     {{ $avatar := resources.Get (.src) }}
                     {{ if $avatar }}
-                        {{ $avatarResized := $avatar.Resize "300x" }}
-                        <img src="{{ $avatarResized.RelPermalink }}" width="{{ $avatarResized.Width }}"
-                            height="{{ $avatarResized.Height }}" class="site-logo" loading="lazy" alt="{{ $.Site.Title }}">
+                        {{ $avatarSmall := $avatar.Resize "100x" }}
+                        {{ $avatarLarge := $avatar.Resize "200x" }}
+                        <img src="{{ $avatarSmall.RelPermalink }}" srcset="{{ $avatarSmall.RelPermalink }} 100w, {{ $avatarLarge.RelPermalink }} 200w"
+                            sizes="(min-width: 1536px) 120px, 100px" width="100" height="100" class="site-logo"
+                            loading="lazy" decoding="async" alt="{{ $.Site.Title }}">
                     {{ else }}
                         {{ errorf "Failed loading avatar from %q" . }}
                     {{ end }}

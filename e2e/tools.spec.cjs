@@ -110,6 +110,35 @@ test.describe('online tools', () => {
         await expect(page.locator('#codeglimpse-toast')).toContainText('网络已恢复');
     });
 
+    test('protects sensitive sharing and keeps local export available', async ({ page }) => {
+        await page.goto('/tools/password/');
+        await expect(page.locator('[data-share-native]')).toBeDisabled();
+        await expect(page.locator('[data-share-copy]')).toBeDisabled();
+        await expect(page.locator('.tool-share-hint--protected')).toContainText('默认禁用分享');
+        const downloadPromise = page.waitForEvent('download');
+        await page.locator('[data-share-export]').click();
+        const download = await downloadPromise;
+        expect(download.suggestedFilename()).toBe('codeglimpse-password-snapshot.json');
+
+        await page.goto('/en/tools/jwt/');
+        await expect(page.locator('[data-share-native]')).toBeDisabled();
+        await expect(page.locator('[data-share-copy]')).toBeDisabled();
+        await expect(page.locator('.tool-share-hint--protected')).toContainText('Sharing is disabled');
+    });
+
+    test('serves the offline fallback through the service worker', async ({ page, context }) => {
+        await page.goto('/tools/json/');
+        await page.evaluate(async () => {
+            await navigator.serviceWorker.ready;
+        });
+        await page.reload();
+        await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+        await context.setOffline(true);
+        await page.goto('/offline-regression-route/', { waitUntil: 'domcontentloaded' });
+        await expect(page).toHaveTitle('当前离线 | CodeGlimpse');
+        await expect(page.getByRole('heading', { name: '当前处于离线状态' })).toBeVisible();
+    });
+
     test('supports keyboard navigation and exposes theme state', async ({ page }) => {
         await page.goto('/tools/json/');
 
@@ -469,5 +498,19 @@ test.describe('mobile tool layout', () => {
         }));
         expect(metrics.documentWidth).toBeLessThanOrEqual(metrics.viewportWidth + 1);
         expect(metrics.outputRight).toBeLessThanOrEqual(metrics.viewportWidth + 1);
+    });
+
+    test('keeps share actions usable and honors reduced motion', async ({ page }) => {
+        await page.emulateMedia({ reducedMotion: 'reduce' });
+        await page.goto('/tools/json/');
+        const metrics = await page.evaluate(() => ({
+            viewportWidth: window.innerWidth,
+            documentWidth: document.documentElement.scrollWidth,
+            shareRight: document.querySelector('.tool-share-panel').getBoundingClientRect().right,
+            transition: getComputedStyle(document.querySelector('.tool-share-actions .tool-btn')).transitionDuration,
+        }));
+        expect(metrics.documentWidth).toBeLessThanOrEqual(metrics.viewportWidth + 1);
+        expect(metrics.shareRight).toBeLessThanOrEqual(metrics.viewportWidth + 1);
+        expect(metrics.transition).toBe('0s');
     });
 });

@@ -62,10 +62,11 @@ Build and test -> Browser E2E -> Deploy gh-pages -> Online smoke test
 `.github/workflows/site-monitor.yml` 每周一 06:00 UTC 运行，也支持手动触发。它不重新部署，只访问 `https://blog.codeglimpse.top`，对短暂网络错误重试后检查：
 
 - 中文默认路由和英文路由。
-- 16 个工具的 32 个双语页面。
+- 22 个工具的 44 个双语页面。
 - 页面标题、描述、Canonical 和 hreflang。
 - 工具容器、工具脚本、公共脚本和 CSS。
 - 页面引用的本地图片、脚本和样式资源。
+- 全站 Toast、PWA manifest、安装脚本和离线回退资源。
 - 搜索 JSON、robots.txt、sitemap 和预期的首页 JSON 404。
 
 监控失败时先查看失败端点，再根据最近部署提交判断是代码、主题、资源、DNS 还是持续性网络问题。监控不会自动修改代码或回滚。部署后的 Smoke Test 会等待最多约 60 秒，以覆盖 GitHub Pages/CDN 的短暂传播延迟。

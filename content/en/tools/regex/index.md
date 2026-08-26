@@ -15,6 +15,10 @@ Inspect JavaScript regular expression matches, positions, capture groups, and re
 ### Examples and limits
 Pattern `(\\w+)=(\\d+)` applied to `a=1` with replacement `$1:[$2]` produces `a:[1]`. JavaScript regular-expression syntax is used; pattern, input, and result counts are bounded, and the Worker stops timed-out runs. Test text is not uploaded.
 
+### How to use
+
+Enter a pattern and test text, select flags, and run a match or replacement. Complex expressions are protected by a Worker timeout, and content is processed only in the browser.
+
 ### Supported flags
 
 - `g` global matching

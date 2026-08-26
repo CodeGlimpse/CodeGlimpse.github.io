@@ -24,3 +24,9 @@ test('rejects malformed or oversized share state', () => {
         fields: [{ id: 'text-input', value: 'x'.repeat(20000) }]
     }), /too large/i);
 });
+
+test('protects sensitive tools from generated share links', () => {
+    assert.equal(share.SENSITIVE_TOOLS.has('jwt'), true);
+    assert.equal(share.SENSITIVE_TOOLS.has('password'), true);
+    assert.equal(share.SENSITIVE_TOOLS.has('json'), false);
+});

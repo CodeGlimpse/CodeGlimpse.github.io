@@ -5,6 +5,10 @@
         {{- block "head" . -}}{{ end }}
         {{- $toastScript := resources.Get "js/toast.js" | resources.Minify | fingerprint "sha256" -}}
         <script type="text/javascript" src="{{ $toastScript.RelPermalink }}" defer></script>
+        {{- $pwaScript := resources.Get "js/pwa.js" | resources.Minify | fingerprint "sha256" -}}
+        <script type="text/javascript" src="{{ $pwaScript.RelPermalink }}" defer></script>
+        {{- $workspaceScript := resources.Get "js/workspace.js" | resources.Minify | fingerprint "sha256" -}}
+        <script type="text/javascript" src="{{ $workspaceScript.RelPermalink }}" defer></script>
     </head>
     <body class="{{ block `body-class` . }}{{ end }}">
         {{- partial "head/colorScheme" . -}}

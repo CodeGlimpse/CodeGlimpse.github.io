@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">CodeGlimpse</title>
+  <desc id="desc">A blue square with a white code glimpse mark</desc>
+  <rect width="512" height="512" rx="96" fill="#007bff"/>
+  <path d="M208 144 96 256l112 112 40-40-72-72 72-72-40-40Zm96 0-40 40 72 72-72 72 40 40 112-112-112-112Z" fill="#fff"/>
+</svg>

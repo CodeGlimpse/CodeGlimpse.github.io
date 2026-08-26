@@ -15,6 +15,10 @@ Generate random passwords based on length and selected character classes. Random
 ### Examples and limits
 With length `16` and upper-case, lower-case, and numeric classes enabled, the tool generates batches that satisfy the selected pool. Length is limited to 8-128 and batch count to 1-20; generation stops if the browser lacks cryptographic randomness. Passwords are shown only in the current page, so save them with a password manager.
 
+### How to use
+
+Choose the length, count, and character classes, then generate. Passwords are not uploaded or saved by the site. URL sharing is disabled for this tool, and exported snapshots should be treated as sensitive files.
+
 ### Recommendations
 
 - Use a unique password for every account and prefer a length of at least 16 characters.

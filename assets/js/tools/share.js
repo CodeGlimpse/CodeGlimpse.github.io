@@ -20,6 +20,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
     const HASH_PREFIX = 'cgshare=';
     const MAX_HASH_LENGTH = 12000;
+    const SENSITIVE_TOOLS = Object.freeze(new Set(['jwt', 'password']));
     const RESTORE_ACTIONS = Object.freeze({
         base64: '#base64-encode',
         bmi: '#bmi-calc',
@@ -213,6 +214,7 @@
         return language === 'zh-cn' ? {
             title: '分享与导出',
             hint: '分享链接会把当前输入和选项放入 URL，请勿分享敏感信息。',
+            sensitiveHint: '为避免将敏感内容写入 URL，JWT 和密码工具默认禁用分享；仍可导出本地快照。',
             share: '分享',
             copy: '复制分享链接',
             export: '导出快照',
@@ -226,6 +228,7 @@
         } : {
             title: 'Share and export',
             hint: 'Share links put current inputs and options in the URL. Do not share sensitive data.',
+            sensitiveHint: 'Sharing is disabled for JWT and password inputs to keep sensitive data out of URLs. Local snapshots remain available.',
             share: 'Share',
             copy: 'Copy share link',
             export: 'Export snapshot',
@@ -244,6 +247,8 @@
         wrapper.dataset.shareMounted = 'true';
         const lang = wrapper.getAttribute('data-lang') || 'en';
         const t = messages(lang);
+        const toolId = wrapper.id.replace(/^tool-/, '');
+        const shareAllowed = !SENSITIVE_TOOLS.has(toolId);
         const panel = document.createElement('section');
         panel.className = 'tool-share-panel';
         panel.setAttribute('aria-labelledby', `${wrapper.id}-share-title`);
@@ -252,10 +257,10 @@
                 <h2 class="tool-share-title" id="${wrapper.id}-share-title">${t.title}</h2>
                 <span class="tool-share-badge">${lang === 'zh-cn' ? '浏览器本地处理' : 'Browser local'}</span>
             </div>
-            <p class="tool-share-hint">${t.hint}</p>
+            <p class="tool-share-hint ${shareAllowed ? '' : 'tool-share-hint--protected'}">${shareAllowed ? t.hint : t.sensitiveHint}</p>
             <div class="tool-actions tool-share-actions">
-                <button type="button" class="tool-btn tool-btn--primary" data-share-native>${t.share}</button>
-                <button type="button" class="tool-btn tool-btn--secondary" data-share-copy>${t.copy}</button>
+                <button type="button" class="tool-btn tool-btn--primary" data-share-native ${shareAllowed ? '' : 'disabled aria-disabled="true"'}>${t.share}</button>
+                <button type="button" class="tool-btn tool-btn--secondary" data-share-copy ${shareAllowed ? '' : 'disabled aria-disabled="true"'}>${t.copy}</button>
                 <button type="button" class="tool-btn tool-btn--secondary" data-share-export>${t.export}</button>
             </div>
         `;
@@ -284,20 +289,22 @@
             }
         };
 
-        panel.querySelector('[data-share-copy]').addEventListener('click', copyLink);
-        panel.querySelector('[data-share-native]').addEventListener('click', async () => {
-            try {
-                const link = buildLink();
-                if (typeof windowObject.navigator?.share === 'function') {
-                    await windowObject.navigator.share({ title: document.title, url: link });
-                    notify('success', t.shared);
-                } else {
-                    await copyLink();
+        if (shareAllowed) {
+            panel.querySelector('[data-share-copy]').addEventListener('click', copyLink);
+            panel.querySelector('[data-share-native]').addEventListener('click', async () => {
+                try {
+                    const link = buildLink();
+                    if (typeof windowObject.navigator?.share === 'function') {
+                        await windowObject.navigator.share({ title: document.title, url: link });
+                        notify('success', t.shared);
+                    } else {
+                        await copyLink();
+                    }
+                } catch (error) {
+                    if (error.name !== 'AbortError') await copyLink();
                 }
-            } catch (error) {
-                if (error.name !== 'AbortError') await copyLink();
-            }
-        });
+            });
+        }
         panel.querySelector('[data-share-export]').addEventListener('click', () => {
             try {
                 const snapshot = JSON.stringify(collectSnapshot(wrapper, document), null, 2);
@@ -315,7 +322,7 @@
         const restoreFromHash = () => {
             try {
                 const state = parseShareHash(windowObject.location.hash);
-                if (!state || state.tool !== wrapper.id.replace(/^tool-/, '')) return;
+                if (!state || state.tool !== toolId) return;
                 restoreFields(wrapper, state.fields);
                 // Let the tool finish its own event wiring before invoking a
                 // button-based calculation (for example JSON or CSV).
@@ -338,6 +345,7 @@
 
     return {
         MAX_HASH_LENGTH,
+        SENSITIVE_TOOLS,
         buildShareHash,
         collectFields,
         collectShareState,

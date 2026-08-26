@@ -51,3 +51,15 @@
 - 验证结果：85/85 单元测试、31/31 浏览器 E2E、Hugo 构建（ZH 56 / EN 55 页）和构建产物检查全部通过。
 - 源代码提交：见本次提交历史
 - GitHub Actions Run：由本次推送触发，见仓库 Actions
+
+## 2026-08-26：P0-P3 维护与产品扩展
+
+- 类型：维护机制 / 产品功能
+- 影响范围：发布文档、线上巡检、分享隐私、Service Worker、PWA 安装、移动端体验和本地预设接口
+- 变更内容：修正 22 个工具和 44 个双语页面的维护基线；线上巡检增加 Toast、PWA 和离线资源；JWT 与密码工具默认禁用 URL 分享；增加真实 Service Worker 离线回退 E2E；增加减少动画和移动端分享面板检查；加入 PWA manifest、安装提示和仅使用 localStorage 的预设工作区 API。
+- 验证命令：`npm.cmd run check`、`npm.cmd run test:e2e`、线上 `npm.cmd run check:site -- https://blog.codeglimpse.top`
+- 验证结果：待本次提交和发布工作流完成后补充。
+- 源代码提交：待本次提交完成后补充
+- GitHub Actions Run：待推送后补充
+- 回滚：无
+- 后续事项：根据线上安装率和真实离线反馈，评估是否扩展预设 UI 与批量工作流。

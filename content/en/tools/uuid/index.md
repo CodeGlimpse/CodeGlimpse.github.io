@@ -15,6 +15,10 @@ UUIDs are commonly used for database keys, request identifiers, and distributed 
 ### Examples and limits
 Generated values look like `550e8400-e29b-41d4-a716-446655440000`, with version `4` in the version position. Generate 1-100 values per run; the browser must provide a cryptographic random source. Values are generated locally, while the server should enforce final uniqueness.
 
+### How to use
+
+Choose a batch count to generate UUIDs, or enter a value to validate. Generation and validation stay local to the browser and are not uploaded.
+
 ### Features
 
 - Generate between 1 and 100 UUID v4 values at once.

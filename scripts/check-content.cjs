@@ -242,6 +242,14 @@ function checkToolImplementations() {
     if (!fs.existsSync(toastScriptPath)) {
         errors.push(`missing global toast script: ${relativePath(toastScriptPath)}`);
     }
+    const pwaScriptPath = path.join(projectRoot, 'assets', 'js', 'pwa.js');
+    if (!fs.existsSync(pwaScriptPath)) {
+        errors.push(`missing PWA enhancement script: ${relativePath(pwaScriptPath)}`);
+    }
+    const workspaceScriptPath = path.join(projectRoot, 'assets', 'js', 'workspace.js');
+    if (!fs.existsSync(workspaceScriptPath)) {
+        errors.push(`missing local workspace script: ${relativePath(workspaceScriptPath)}`);
+    }
     const baseTemplate = path.join(projectRoot, 'layouts', '_default', 'baseof.html');
     if (fs.existsSync(baseTemplate) && !fs.readFileSync(baseTemplate, 'utf8').includes('js/toast.js')) {
         errors.push('base template does not load global toast script');

@@ -150,7 +150,7 @@ npm run test:e2e
 - [ ] `npm run test:e2e` 通过
 - [ ] 检查生成的搜索 JSON、sitemap 和 robots.txt
 - [ ] 确认首页 JSON 未生成，搜索页 JSON 正常生成
-- [ ] 确认 PWA manifest、应用图标和 Service Worker 已发布
+- [ ] 确认 Service Worker 和离线回退资源已发布
 - [ ] 确认敏感工具（JWT、密码）未开放 URL 分享
 - [ ] 确认 `git diff` 只包含本次任务相关文件
 
@@ -164,4 +164,4 @@ npm run test:e2e
 构建产物 `public/`、Hugo 资源缓存 `resources/` 和 `.hugo_build.lock` 已加入 `.gitignore`。请不要提交本地临时文件、凭据或 `.env` 文件。
 
 长期维护流程、版本升级、发布验证和故障回滚见 [`docs/maintenance.md`](docs/maintenance.md)，维护记录格式见 [`docs/maintenance-log.md`](docs/maintenance-log.md)。
-产品扩展边界、PWA、离线和本地预设能力见 [`docs/product-expansion.md`](docs/product-expansion.md)。
+产品扩展边界、离线和本地预设能力见 [`docs/product-expansion.md`](docs/product-expansion.md)。

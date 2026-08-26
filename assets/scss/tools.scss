@@ -465,37 +465,9 @@
     border-inline-start-color: #dc3545;
 }
 
-.codeglimpse-install {
-    position: fixed;
-    inset-block-end: 1.25rem;
-    inset-inline-start: 1.25rem;
-    z-index: 1090;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--accent-color);
-    border-radius: 0.6rem;
-    background: var(--card-background);
-    color: var(--accent-color);
-    cursor: pointer;
-    font: inherit;
-    font-size: 1.2rem;
-    font-weight: 700;
-    box-shadow: 0 0.6rem 1.8rem #0002;
-}
-
-.codeglimpse-install:hover,
-.codeglimpse-install:focus-visible {
-    background: rgba(var(--primary-color-rgb), 0.08);
-}
-
-.codeglimpse-install:focus-visible {
-    outline: 3px solid rgba(var(--primary-color-rgb), 0.3);
-    outline-offset: 2px;
-}
-
 @media (prefers-reduced-motion: reduce) {
     .codeglimpse-toast,
-    .tool-share-actions .tool-btn,
-    .codeglimpse-install {
+    .tool-share-actions .tool-btn {
         transition: none;
     }
 
@@ -530,11 +502,6 @@
         width: auto;
     }
 
-    .codeglimpse-install {
-        inset-inline: 1rem;
-        inset-block-end: 1rem;
-        width: auto;
-    }
 }
 
 .tool-wrapper [hidden] {

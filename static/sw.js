@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'codeglimpse-v2';
+const CACHE_VERSION = 'codeglimpse-v3';
 const PRECACHE_URLS = [
     '/',
     '/en/',
@@ -7,8 +7,6 @@ const PRECACHE_URLS = [
     '/links/',
     '/en/links/',
     '/offline.html',
-    '/manifest.webmanifest',
-    '/img/app-icon.svg',
     '/favicon.png',
     '/signature.svg',
     '/img/github-mark.svg',

@@ -16,7 +16,8 @@ const checks = [
     { path: '/sitemap.xml', status: 200 },
     { path: '/sw.js', status: 200 },
     { path: '/offline.html', status: 200 },
-    { path: '/manifest.webmanifest', status: 200 },
+    { path: '/manifest.webmanifest', status: 404 },
+    { path: '/img/app-icon.svg', status: 404 },
     { path: '/index.json', status: 404 },
     { path: '/en/index.json', status: 404 },
 ];
@@ -133,9 +134,10 @@ function validateResponse(check, status, body, pageUrl = null) {
         }
         if (!/<link\b[^>]*rel=(?:["']stylesheet["']|stylesheet)/i.test(body)) errors.push('missing stylesheet');
         if (!/\/js\/toast\.[^"']+\.js/i.test(body)) errors.push('missing global toast script');
-        if (!/\/js\/pwa\.[^"']+\.js/i.test(body)) errors.push('missing PWA enhancement script');
         if (!/\/js\/workspace\.[^"']+\.js/i.test(body)) errors.push('missing local workspace script');
-        if (!/manifest\.webmanifest/i.test(body)) errors.push('missing PWA manifest link');
+        if (/\/js\/pwa\.[^"']+\.js|manifest\.webmanifest|codeglimpse-install/i.test(body)) {
+            errors.push('legacy PWA install artifact is still present');
+        }
         if (/(?:src|href)=["']https?:\/\/[^"']*(?:signature\.svg|github\.githubassets\.com)/i.test(body)) {
             errors.push('page contains a disallowed external image asset');
         }

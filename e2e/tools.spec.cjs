@@ -80,6 +80,14 @@ test.describe('online tools', () => {
         await expect(page.locator('.tool-share-panel')).toBeVisible();
     });
 
+    test('does not expose the tools as an installable browser app', async ({ page }) => {
+        await page.goto('/tools/json/');
+
+        await expect(page.locator('link[rel="manifest"]')).toHaveCount(0);
+        await expect(page.locator('script[src*="/js/pwa."]')).toHaveCount(0);
+        await expect(page.locator('#codeglimpse-install')).toHaveCount(0);
+    });
+
     test('restores shared JSON input and exports a local snapshot', async ({ page }) => {
         await page.goto('/tools/json/');
         await page.locator('#json-input').fill('{"name":"shared"}');

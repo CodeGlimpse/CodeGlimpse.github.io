@@ -142,8 +142,6 @@ if (!fs.existsSync(outputRoot)) {
     requireFile('img/og-default.png');
     requireFile('sw.js');
     requireFile('offline.html');
-    requireFile('manifest.webmanifest');
-    requireFile('img/app-icon.svg');
 
     const zhTools = checkToolPages('zh-cn');
     const enTools = checkToolPages('en');

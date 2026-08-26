@@ -25,7 +25,7 @@ test('publishes both language routes for every registered tool', () => {
 });
 
 test('validates HTML landmarks and tool containers', () => {
-    const page = '<html lang="zh-cn"><head><title>JSON</title><meta name="description" content="Tool"><link rel="canonical" href="https://example.com/tools/json/"><link rel="alternate" hreflang="zh-cn" href="https://example.com/tools/json/"><link rel="alternate" hreflang="en" href="https://example.com/en/tools/json/"><link rel="alternate" hreflang="x-default" href="https://example.com/tools/json/"><link rel="manifest" href="/manifest.webmanifest"><link rel="stylesheet" href="/style.css"><script src="/js/toast.abc.js"></script><script src="/js/pwa.def.js"></script><script src="/js/workspace.ghi.js"></script></head><body><main><div id="tool-json"></div><script src="/js/tools/json.abc.js"></script><script src="/js/tools/clipboard.def.js"></script><script src="/js/tools/tool-ui.ghi.js"></script><script src="/js/tools/share.jkl.js"></script></main></body></html>';
+    const page = '<html lang="zh-cn"><head><title>JSON</title><meta name="description" content="Tool"><link rel="canonical" href="https://example.com/tools/json/"><link rel="alternate" hreflang="zh-cn" href="https://example.com/tools/json/"><link rel="alternate" hreflang="en" href="https://example.com/en/tools/json/"><link rel="alternate" hreflang="x-default" href="https://example.com/tools/json/"><link rel="stylesheet" href="/style.css"><script src="/js/toast.abc.js"></script><script src="/js/workspace.ghi.js"></script></head><body><main><div id="tool-json"></div><script src="/js/tools/json.abc.js"></script><script src="/js/tools/clipboard.def.js"></script><script src="/js/tools/tool-ui.ghi.js"></script><script src="/js/tools/share.jkl.js"></script></main></body></html>';
     assert.deepEqual(
         checker.validateResponse(
             { path: '/tools/json/', status: 200, html: true, toolId: 'json' },
@@ -45,7 +45,7 @@ test('validates HTML landmarks and tool containers', () => {
 });
 
 test('validates tool metadata and discovers local assets', () => {
-    const page = '<html lang="en"><head><title>Tool</title><meta name="description" content="Tool"><link rel="canonical" href="https://example.com/en/tools/json/"><link rel="alternate" hreflang="zh-cn" href="https://example.com/tools/json/"><link rel="alternate" hreflang="en" href="https://example.com/en/tools/json/"><link rel="alternate" hreflang="x-default" href="https://example.com/tools/json/"><link rel="manifest" href="/manifest.webmanifest"><link rel="stylesheet" href="/style.css"><script src="/js/toast.abc.js"></script><script src="/js/pwa.def.js"></script><script src="/js/workspace.ghi.js"></script></head><body><main><img src="/img/icon.svg"><script src="/js/tools/json.abc.js"></script><script src="/js/tools/clipboard.def.js"></script><script src="/js/tools/tool-ui.ghi.js"></script><script src="/js/tools/share.jkl.js"></script></main></body></html>';
+    const page = '<html lang="en"><head><title>Tool</title><meta name="description" content="Tool"><link rel="canonical" href="https://example.com/en/tools/json/"><link rel="alternate" hreflang="zh-cn" href="https://example.com/tools/json/"><link rel="alternate" hreflang="en" href="https://example.com/en/tools/json/"><link rel="alternate" hreflang="x-default" href="https://example.com/en/tools/json/"><link rel="stylesheet" href="/style.css"><script src="/js/toast.abc.js"></script><script src="/js/workspace.ghi.js"></script></head><body><main><img src="/img/icon.svg"><script src="/js/tools/json.abc.js"></script><script src="/js/tools/clipboard.def.js"></script><script src="/js/tools/tool-ui.ghi.js"></script><script src="/js/tools/share.jkl.js"></script></main></body></html>';
     const pageWithMissingContainer = page.replace('<img src="/img/icon.svg">', '<div id="tool-json"></div><img src="/img/icon.svg">');
     assert.deepEqual(
         checker.validateResponse({ path: '/en/tools/json/', status: 200, html: true, language: 'en', toolId: 'json' }, 200, pageWithMissingContainer, 'https://example.com/en/tools/json/'),
@@ -57,13 +57,11 @@ test('validates tool metadata and discovers local assets', () => {
             'https://example.com/en/tools/json/',
             'https://example.com/img/icon.svg',
             'https://example.com/js/toast.abc.js',
-            'https://example.com/js/pwa.def.js',
             'https://example.com/js/workspace.ghi.js',
             'https://example.com/js/tools/clipboard.def.js',
             'https://example.com/js/tools/json.abc.js',
             'https://example.com/js/tools/share.jkl.js',
             'https://example.com/js/tools/tool-ui.ghi.js',
-            'https://example.com/manifest.webmanifest',
             'https://example.com/style.css',
             'https://example.com/tools/json/',
         ].sort(),

@@ -224,7 +224,7 @@ function checkToolImplementations() {
     }
 
     const template = fs.readFileSync(templatePath, 'utf8');
-    for (const commonScript of ['clipboard.js', 'tool-ui.js']) {
+    for (const commonScript of ['clipboard.js', 'tool-ui.js', 'share.js']) {
         const commonPath = path.join(toolsRoot, commonScript);
         if (!fs.existsSync(commonPath)) {
             errors.push(`missing shared tool script: ${relativePath(commonPath)}`);
@@ -232,6 +232,15 @@ function checkToolImplementations() {
         if (!template.includes(`js/tools/${commonScript}`)) {
             errors.push(`tool shortcode template does not load shared script ${commonScript}`);
         }
+    }
+
+    const offlineScriptPath = path.join(projectRoot, 'assets', 'js', 'offline.js');
+    if (!fs.existsSync(offlineScriptPath)) {
+        errors.push(`missing offline enhancement script: ${relativePath(offlineScriptPath)}`);
+    }
+    const footerScript = path.join(projectRoot, 'layouts', 'partials', 'footer', 'components', 'script.html');
+    if (fs.existsSync(footerScript) && !fs.readFileSync(footerScript, 'utf8').includes('js/offline.js')) {
+        errors.push('footer script partial does not load offline enhancement script');
     }
 
     const dynamicCorePath = 'printf "js/tools/%s-core.js" $id';

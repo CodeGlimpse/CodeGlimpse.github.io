@@ -19,3 +19,5 @@
 
 {{ $js := resources.Get (printf "js/tools/%s.js" $id) | js.Build $opts | fingerprint "sha256" }}
 <script src="{{ $js.RelPermalink }}" defer></script>
+{{ $share := resources.Get "js/tools/share.js" | js.Build $opts | fingerprint "sha256" }}
+<script src="{{ $share.RelPermalink }}" defer></script>

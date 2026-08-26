@@ -14,6 +14,8 @@ const checks = [
     { path: '/en/search/index.json', status: 200, jsonArray: true },
     { path: '/robots.txt', status: 200 },
     { path: '/sitemap.xml', status: 200 },
+    { path: '/sw.js', status: 200 },
+    { path: '/offline.html', status: 200 },
     { path: '/index.json', status: 404 },
     { path: '/en/index.json', status: 404 },
 ];
@@ -120,7 +122,7 @@ function validateResponse(check, status, body, pageUrl = null) {
             errors.push(`missing tool script: ${check.toolId}`);
         }
         if (check.toolId) {
-            const requiredAssets = [check.toolId, 'clipboard', 'tool-ui'];
+            const requiredAssets = [check.toolId, 'clipboard', 'tool-ui', 'share'];
             if (TOOL_REGISTRY[check.toolId]?.core) requiredAssets.push(`${check.toolId}-core`);
             for (const asset of requiredAssets) {
                 if (!new RegExp(`/js/tools/${asset}\\.[^"']+\\.js`, 'i').test(body)) {

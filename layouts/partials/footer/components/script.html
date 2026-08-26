@@ -6,3 +6,6 @@
     {{- $customScript := . | js.Build $opts | fingerprint -}}
     <script type="text/javascript" src="{{ $customScript.RelPermalink }}" defer></script>
 {{- end -}}
+
+{{- $offlineScript := resources.Get "js/offline.js" | resources.Minify | fingerprint "sha256" -}}
+<script type="text/javascript" src="{{ $offlineScript.RelPermalink }}" defer></script>

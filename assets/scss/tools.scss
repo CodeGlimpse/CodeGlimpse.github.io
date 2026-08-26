@@ -334,6 +334,61 @@
     font-size: 1.4rem;
 }
 
+.tool-share-panel {
+    margin: 1.5rem 0 2rem;
+    padding: 1.4rem 1.6rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.8rem;
+    background: var(--card-background);
+}
+
+.tool-share-title {
+    margin: 0;
+    color: var(--card-text-color-main);
+    font-size: 1.5rem;
+}
+
+.tool-share-hint {
+    margin: 0.6rem 0 1rem;
+    color: var(--card-text-color-secondary);
+    font-size: 1.25rem;
+    line-height: 1.5;
+}
+
+.tool-share-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.tool-share-status {
+    min-height: 1.8rem;
+    margin-top: 0.8rem;
+}
+
+.offline-status {
+    position: fixed;
+    inset-block-end: 1rem;
+    inset-inline-start: 50%;
+    z-index: 1000;
+    width: 92vw;
+    max-width: 42rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: var(--card-background);
+    color: var(--card-text-color-secondary);
+    box-shadow: 0 0.6rem 1.8rem #0002;
+    font-size: 1.15rem;
+    text-align: center;
+    transform: translateX(-50%);
+}
+
+.offline-status[data-online="false"] {
+    border-color: #d97706;
+    color: #b45309;
+}
+
 .tool-wrapper [hidden] {
     display: none !important;
 }

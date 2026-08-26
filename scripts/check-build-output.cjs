@@ -140,6 +140,8 @@ if (!fs.existsSync(outputRoot)) {
     requireFile('signature.svg');
     requireFile('img/github-mark.svg');
     requireFile('img/og-default.png');
+    requireFile('sw.js');
+    requireFile('offline.html');
 
     const zhTools = checkToolPages('zh-cn');
     const enTools = checkToolPages('en');

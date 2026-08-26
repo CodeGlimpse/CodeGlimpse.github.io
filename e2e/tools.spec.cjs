@@ -77,6 +77,35 @@ test.describe('online tools', () => {
         await expect(page.locator('script[src*="vibrant" i]')).toHaveCount(0);
         await expect(page.locator('link[href*="fonts.googleapis.com" i]')).toHaveCount(0);
         await expect(page.locator('script[src*="/js/tools/json."]')).toHaveCount(1);
+        await expect(page.locator('.tool-share-panel')).toBeVisible();
+    });
+
+    test('restores shared JSON input and exports a local snapshot', async ({ page }) => {
+        await page.goto('/tools/json/');
+        await page.locator('#json-input').fill('{"name":"shared"}');
+        const hash = await page.evaluate(() => window.CodeGlimpseToolShare.buildShareHash(
+            window.CodeGlimpseToolShare.collectShareState(document.querySelector('#tool-json')),
+        ));
+
+        await page.goto(`/tools/json/${hash}`);
+        await expect(page.locator('#json-input')).toHaveValue('{"name":"shared"}');
+        await expect(page.locator('#json-output')).toHaveValue('{\n  "name": "shared"\n}');
+        await expect(page.locator('[data-share-status]')).toContainText('已从分享链接恢复输入');
+
+        const downloadPromise = page.waitForEvent('download');
+        await page.locator('[data-share-export]').click();
+        const download = await downloadPromise;
+        expect(download.suggestedFilename()).toBe('codeglimpse-json-snapshot.json');
+    });
+
+    test('shows online and offline status feedback', async ({ page, context }) => {
+        await page.goto('/tools/json/');
+        await expect(page.locator('#offline-status')).toBeVisible();
+        await context.setOffline(true);
+        await expect(page.locator('#offline-status')).toHaveAttribute('data-online', 'false');
+        await expect(page.locator('#offline-status')).toContainText('当前离线');
+        await context.setOffline(false);
+        await expect(page.locator('#offline-status')).toHaveAttribute('data-online', 'true');
     });
 
     test('supports keyboard navigation and exposes theme state', async ({ page }) => {

@@ -41,7 +41,7 @@ assets/js/tools/<id>-core.js
 
 工具只在浏览器本地处理用户输入时，应在页面中明确说明，不要把数据发送到第三方服务。
 
-新增工具还应在 scripts/tool-registry.cjs 登记分类、关键词和相关工具，并在双语 front matter 中同步 category 与 keywords。工具索引支持分类筛选、关键词搜索、收藏和最近使用；浏览器本地偏好只保存工具 ID，不应保存密码、JWT、密钥或用户输入。
+新增工具还应在 scripts/tool-registry.cjs 登记分类、关键词和相关工具，并在双语 front matter 中同步 category 与 keywords。工具索引支持分类筛选、关键词搜索、收藏和最近使用；浏览器本地偏好只保存工具 ID，不应保存密码、JWT、密钥或用户输入。工具页面的分享链接、快照导出和在线/离线提示由共享脚本提供；新增控件应使用稳定的 `id`，并避免将密码、令牌等敏感数据自动写入 URL。如果控件不应参与分享或快照，可添加 `data-share-ignore="true"`。Service Worker 只缓存同源页面和静态资源，不得缓存跨域请求。
 
 ## 发布与 Pull Request
 

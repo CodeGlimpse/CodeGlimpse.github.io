@@ -5,6 +5,8 @@ const projectRoot = path.resolve(__dirname, '..');
 const contentRoot = path.join(projectRoot, 'content');
 const outputRoot = path.join(projectRoot, 'public');
 const errors = [];
+const googleAnalyticsId = 'G-Q70SQCVRF7';
+const baiduAnalyticsId = 'ffa021be8a9760a0c063cb6e6b71e095';
 
 function relativePath(filePath) {
     return path.relative(projectRoot, filePath).split(path.sep).join('/');
@@ -70,6 +72,9 @@ function checkResponsiveAvatar(relativeFile, html) {
 }
 
 function checkLocalAssetTags(relativeFile, html) {
+    const allowedExternalAssets = new Set([
+        `https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`,
+    ]);
     const tags = [
         /<img\b[^>]*\bsrc=(?:"([^"]+)"|'([^']+)'|([^\s>]+))[^>]*>/gi,
         /<script\b[^>]*\bsrc=(?:"([^"]+)"|'([^']+)'|([^\s>]+))[^>]*>/gi,
@@ -78,11 +83,33 @@ function checkLocalAssetTags(relativeFile, html) {
     for (const pattern of tags) {
         for (const match of html.matchAll(pattern)) {
             const asset = match[1] || match[2] || match[3];
-            if (/^https?:\/\//i.test(asset)) {
+            if (/^https?:\/\//i.test(asset) && !allowedExternalAssets.has(asset)) {
                 errors.push(`${relativeFile}: external asset is not allowed in key page: ${asset}`);
             }
         }
     }
+}
+
+function checkAnalytics(relativeFile, html) {
+    const googleScript = `https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`;
+    const baiduScript = `https://hm.baidu.com/hm.js?${baiduAnalyticsId}`;
+    const googleScriptCount = (html.match(new RegExp(googleScript.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length;
+    const baiduScriptCount = (html.match(new RegExp(baiduScript.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length;
+
+    if (googleScriptCount !== 1) {
+        errors.push(`${relativeFile}: expected one Google Analytics script, found ${googleScriptCount}`);
+    }
+    if (baiduScriptCount !== 1) {
+        errors.push(`${relativeFile}: expected one Baidu Analytics script, found ${baiduScriptCount}`);
+    }
+    requirePattern(
+        relativeFile,
+        html,
+        new RegExp(`gtag\\((?:['\"])config(?:['\"]),?\\s*(?:['\"])${googleAnalyticsId}(?:['\"])\\)`, 'i'),
+        'missing Google Analytics configuration call',
+    );
+    requirePattern(relativeFile, html, /var\s+_hmt\s*=\s*_hmt\s*\|\|\s*\[\]/i,
+        'missing Baidu Analytics queue initialization');
 }
 
 function checkToolMetadata(relativeFile, expectations) {
@@ -213,6 +240,7 @@ if (!fs.existsSync(outputRoot)) {
         if (!html) continue;
         checkImagesHaveAlt(relativeFile, html);
         checkLocalAssetTags(relativeFile, html);
+        checkAnalytics(relativeFile, html);
     }
 }
 
@@ -222,4 +250,4 @@ if (errors.length > 0) {
     process.exit(1);
 }
 
-console.log('Build output check passed: homepage JSON absent, search JSON present, and published assets verified');
+console.log('Build output check passed: homepage JSON absent, search JSON present, analytics present, and published assets verified');

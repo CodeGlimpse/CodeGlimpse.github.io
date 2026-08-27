@@ -1,0 +1,18 @@
+{{- $googleAnalyticsID := "G-Q70SQCVRF7" -}}
+{{- $baiduAnalyticsID := "ffa021be8a9760a0c063cb6e6b71e095" -}}
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ $googleAnalyticsID }}"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag() { dataLayer.push(arguments); }
+gtag('js', new Date());
+gtag('config', '{{ $googleAnalyticsID }}');
+</script>
+<script>
+var _hmt = _hmt || [];
+(function () {
+    var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?{{ $baiduAnalyticsID }}';
+    var firstScript = document.getElementsByTagName('script')[0];
+    firstScript.parentNode.insertBefore(hm, firstScript);
+})();
+</script>

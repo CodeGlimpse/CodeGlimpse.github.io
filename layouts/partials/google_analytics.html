@@ -1,11 +1,19 @@
 {{- $googleAnalyticsID := "G-Q70SQCVRF7" -}}
 {{- $baiduAnalyticsID := "ffa021be8a9760a0c063cb6e6b71e095" -}}
+{{- $clarityProjectID := "occc2jaghm" -}}
 <script async src="https://www.googletagmanager.com/gtag/js?id={{ $googleAnalyticsID }}"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag() { dataLayer.push(arguments); }
 gtag('js', new Date());
 gtag('config', '{{ $googleAnalyticsID }}');
+</script>
+<script type="text/javascript">
+(function (c, l, a, r, i, t, y) {
+    c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+    t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;
+    y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+})(window, document, 'clarity', 'script', '{{ $clarityProjectID }}');
 </script>
 <script>
 var _hmt = _hmt || [];

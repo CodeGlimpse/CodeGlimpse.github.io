@@ -7,6 +7,7 @@ const outputRoot = path.join(projectRoot, 'public');
 const errors = [];
 const googleAnalyticsId = 'G-Q70SQCVRF7';
 const baiduAnalyticsId = 'ffa021be8a9760a0c063cb6e6b71e095';
+const clarityProjectId = 'occc2jaghm';
 
 function relativePath(filePath) {
     return path.relative(projectRoot, filePath).split(path.sep).join('/');
@@ -93,14 +94,20 @@ function checkLocalAssetTags(relativeFile, html) {
 function checkAnalytics(relativeFile, html) {
     const googleScript = `https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`;
     const baiduScript = `https://hm.baidu.com/hm.js?${baiduAnalyticsId}`;
+    const clarityScriptBase = 'https://www.clarity.ms/tag/';
     const googleScriptCount = (html.match(new RegExp(googleScript.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length;
     const baiduScriptCount = (html.match(new RegExp(baiduScript.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length;
+    const clarityScriptBaseCount = (html.match(new RegExp(clarityScriptBase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length;
+    const clarityProjectIdCount = (html.match(new RegExp(clarityProjectId, 'g')) ?? []).length;
 
     if (googleScriptCount !== 1) {
         errors.push(`${relativeFile}: expected one Google Analytics script, found ${googleScriptCount}`);
     }
     if (baiduScriptCount !== 1) {
         errors.push(`${relativeFile}: expected one Baidu Analytics script, found ${baiduScriptCount}`);
+    }
+    if (clarityScriptBaseCount !== 1 || clarityProjectIdCount !== 1) {
+        errors.push(`${relativeFile}: expected one Microsoft Clarity script for project ${clarityProjectId}`);
     }
     requirePattern(
         relativeFile,
@@ -110,6 +117,8 @@ function checkAnalytics(relativeFile, html) {
     );
     requirePattern(relativeFile, html, /var\s+_hmt\s*=\s*_hmt\s*\|\|\s*\[\]/i,
         'missing Baidu Analytics queue initialization');
+    requirePattern(relativeFile, html, /\.q\s*=\s*[^;]*\.push\(arguments\)[\s\S]*clarity/i,
+        'missing Microsoft Clarity queue initialization');
 }
 
 function checkToolMetadata(relativeFile, expectations) {

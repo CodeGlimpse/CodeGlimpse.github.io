@@ -107,6 +107,19 @@ test('honors the local analytics opt-out before any provider script loads', () =
     assert.deepEqual(fixture.scripts, []);
 });
 
+test('keeps opt-out active when browser storage is unavailable', () => {
+    const fixture = analyticsFixture();
+    fixture.window.localStorage = null;
+    fixture.window.sessionStorage = null;
+
+    assert.equal(analytics.optOut(undefined, fixture.window), true);
+    assert.equal(analytics.isHardOptedOut(fixture.window), true);
+    const state = analytics.start(fixture.document, fixture.window, fixture.config);
+
+    assert.equal(state.enabled, false);
+    assert.deepEqual(fixture.scripts, []);
+});
+
 test('redacts share fragments added by client-side navigation', () => {
     const fixture = analyticsFixture();
     analytics.start(fixture.document, fixture.window, fixture.config);

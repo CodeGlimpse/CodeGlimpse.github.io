@@ -14,7 +14,7 @@
         clarity: 'https://www.clarity.ms/tag/'
     });
 
-    function getStorage(storage = root?.localStorage) {
+    function getStorage(storage) {
         try {
             if (!storage) return null;
             const probe = '__codeglimpse_analytics_probe__';
@@ -26,35 +26,66 @@
         }
     }
 
-    function isOptedOut(storage = root?.localStorage) {
+    function getOptOutStorage(windowObject = root) {
+        let localStorage = null;
+        let sessionStorage = null;
+        try { localStorage = windowObject?.localStorage; } catch { /* blocked storage */ }
+        try { sessionStorage = windowObject?.sessionStorage; } catch { /* blocked storage */ }
+        return getStorage(localStorage) || getStorage(sessionStorage);
+    }
+
+    function resolveStorage(storage, windowObject = root) {
+        return storage === undefined ? getOptOutStorage(windowObject) : getStorage(storage);
+    }
+
+    function isHardOptedOut(windowObject = root) {
+        return windowObject?.__codeglimpseAnalyticsHardOptOut === true;
+    }
+
+    function disableLoadedProviders(windowObject = root) {
         try {
-            return storage?.getItem(OPTOUT_KEY) === 'true';
+            windowObject?.gtag?.('consent', 'update', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+            });
+        } catch { /* provider may not be initialized */ }
+        try { windowObject?.clarity?.('consent', false); } catch { /* provider may not be initialized */ }
+    }
+
+    function isOptedOut(storage, windowObject = root) {
+        if (isHardOptedOut(windowObject)) return true;
+        try {
+            return resolveStorage(storage, windowObject)?.getItem(OPTOUT_KEY) === 'true';
         } catch {
             return false;
         }
     }
 
-    function optOut(storage = root?.localStorage) {
-        const target = getStorage(storage);
-        if (!target) return false;
+    function optOut(storage, windowObject = root) {
+        windowObject.__codeglimpseAnalyticsHardOptOut = true;
+        const target = resolveStorage(storage, windowObject);
         try {
-            target.setItem(OPTOUT_KEY, 'true');
-            root?.dispatchEvent?.(new root.CustomEvent('codeglimpse:analytics-optout'));
+            target?.setItem(OPTOUT_KEY, 'true');
+            disableLoadedProviders(windowObject);
+            windowObject?.dispatchEvent?.(new windowObject.CustomEvent('codeglimpse:analytics-optout'));
             return true;
         } catch {
-            return false;
+            disableLoadedProviders(windowObject);
+            return true;
         }
     }
 
-    function optIn(storage = root?.localStorage) {
-        const target = getStorage(storage);
-        if (!target) return false;
+    function optIn(storage, windowObject = root) {
+        delete windowObject.__codeglimpseAnalyticsHardOptOut;
+        const target = resolveStorage(storage, windowObject);
         try {
-            target.removeItem(OPTOUT_KEY);
-            root?.dispatchEvent?.(new root.CustomEvent('codeglimpse:analytics-optin'));
+            target?.removeItem(OPTOUT_KEY);
+            windowObject?.dispatchEvent?.(new windowObject.CustomEvent('codeglimpse:analytics-optin'));
             return true;
         } catch {
-            return false;
+            return true;
         }
     }
 
@@ -146,14 +177,15 @@
             baidu: String(element?.getAttribute?.('data-baidu-id') || '').trim(),
             clarity: String(element?.getAttribute?.('data-clarity-id') || '').trim()
         };
-        const storage = getStorage(windowObject.localStorage);
+        const storage = getOptOutStorage(windowObject);
         const state = {
-            enabled: !isOptedOut(storage),
-            optedOut: isOptedOut(storage),
+            enabled: !isOptedOut(storage, windowObject),
+            optedOut: isOptedOut(storage, windowObject),
+            storageAvailable: Boolean(storage),
             pageLocation: pageLocation(windowObject),
             providers: Object.freeze({ google: false, baidu: false, clarity: false }),
-            optOut: () => optOut(storage),
-            optIn: () => optIn(storage),
+            optOut: () => optOut(storage, windowObject),
+            optIn: () => optIn(storage, windowObject),
         };
 
         if (!state.enabled) {
@@ -178,7 +210,9 @@
         OPTOUT_KEY,
         PROVIDER_HOSTS,
         getStorage,
+        getOptOutStorage,
         isOptedOut,
+        isHardOptedOut,
         loadScript,
         optIn,
         optOut,

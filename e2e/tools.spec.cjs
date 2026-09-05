@@ -131,7 +131,15 @@ test.describe('online tools', () => {
         await expect.poll(() => page.evaluate(() => window.location.hash)).toBe('');
         await expect(page.locator('#json-input')).toHaveAttribute('data-clarity-mask', 'true');
         await expect(page.locator('#json-output')).toHaveAttribute('data-clarity-mask', 'true');
+        await expect(page.locator('.json-output-wrapper')).toHaveAttribute('data-clarity-mask', 'true');
         await expect(page.locator('.tool-share-panel')).toHaveAttribute('data-clarity-mask', 'true');
+
+        await page.goto('/tools/text/');
+        await expect(page.locator('.tool-metrics')).toHaveAttribute('data-clarity-mask', 'true');
+
+        await page.goto('/tools/binary/');
+        await expect(page.locator('.result-item')).toHaveCount(5);
+        await expect(page.locator('.result-item').first()).toHaveAttribute('data-clarity-mask', 'true');
 
         const analyticsPayload = analyticsRequests.join('\n');
         expect(analyticsPayload).not.toContain(sentinel);

@@ -2,8 +2,8 @@ name: Monitor deployed site
 
 on:
     schedule:
-        # Run a full endpoint and asset check weekly after the regular release window.
-        - cron: "0 6 * * 1"
+        # Run a full endpoint and asset check daily after the regular release window.
+        - cron: "0 6 * * *"
     workflow_dispatch:
 
 permissions:
@@ -17,6 +17,7 @@ env:
     NODE_VERSION: "22.13.1"
     SITE_URL: "https://blog.codeglimpse.top"
     SITE_EXPECT_CLARITY: "true"
+    SITE_SOURCE_COMMIT: "${{ github.sha }}"
     SITE_CHECK_RETRIES: "3"
     SITE_CHECK_RETRY_DELAY_MS: "2000"
 

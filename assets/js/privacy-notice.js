@@ -39,7 +39,7 @@
         documentObject?.querySelectorAll?.('[data-analytics-optout]').forEach((control) => {
             control.addEventListener('click', () => {
                 analytics?.optOut?.();
-                windowObject?.location?.reload?.();
+                if (analytics?.storageAvailable !== false) windowObject?.location?.reload?.();
             });
         });
         documentObject?.querySelectorAll?.('[data-analytics-optin]').forEach((control) => {
@@ -58,7 +58,7 @@
             analytics?.optOut?.();
             writeDismissed(windowObject?.localStorage);
             notice.hidden = true;
-            windowObject?.location?.reload?.();
+            if (analytics?.storageAvailable !== false) windowObject?.location?.reload?.();
         }, { once: true });
 
         if (readDismissed(windowObject?.localStorage)) {

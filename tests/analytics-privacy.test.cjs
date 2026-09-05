@@ -3,16 +3,18 @@ const assert = require('node:assert/strict');
 
 const privacy = require('../assets/js/analytics-privacy.js');
 
-function element({ id = '', tagName = 'DIV' } = {}) {
+function element({ id = '', tagName = 'DIV', className = '' } = {}) {
     const attributes = new Map();
     const classes = new Set();
     return {
         id,
+        className,
         nodeType: 1,
         tagName,
         classList: { add: (value) => classes.add(value), contains: (value) => classes.has(value) },
         getAttribute: (name) => attributes.get(name) ?? null,
         setAttribute: (name, value) => attributes.set(name, String(value)),
+        matches: (selector) => selector.split(', ').some((part) => part === `.${className}`),
     };
 }
 
@@ -31,5 +33,6 @@ test('treats password and JWT tool regions as sensitive', () => {
     assert.equal(privacy.isSensitiveTool('jwt'), true);
     assert.equal(privacy.isSensitiveTool('json'), false);
     assert.equal(privacy.isOutputElement(element({ id: 'result-summary' })), true);
+    assert.equal(privacy.isOutputElement(element({ className: 'tool-metrics' })), true);
     assert.equal(privacy.isOutputElement(element({ id: 'ordinary-container' })), false);
 });

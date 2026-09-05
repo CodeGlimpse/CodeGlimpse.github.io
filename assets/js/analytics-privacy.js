@@ -18,6 +18,7 @@
     const MOUNT_ATTRIBUTE = 'data-codeglimpse-privacy-mounted';
     const SENSITIVE_TOOLS = Object.freeze(new Set(['jwt', 'password']));
     const FORM_SELECTOR = 'input, textarea, select, [contenteditable="true"]';
+    const SENSITIVE_REGION_SELECTOR = '.tool-metrics, .tool-output-panel, .result-item, .tool-inline-summary';
 
     function getToolId(wrapper) {
         return String(wrapper?.id || '').replace(/^tool-/, '').toLowerCase();
@@ -30,7 +31,8 @@
     function isOutputElement(element) {
         if (!element || element.nodeType !== 1) return false;
         if (String(element.tagName || '').toLowerCase() === 'output') return true;
-        return /(?:output|result|status|summary|metric|entropy|current-|validation)/i.test(element.id || '');
+        return /(?:output|result|status|summary|metric|entropy|current-|validation)/i.test(element.id || '')
+            || element.matches?.(SENSITIVE_REGION_SELECTOR) === true;
     }
 
     function markElement(element) {
@@ -46,7 +48,7 @@
         let count = 0;
         if (isSensitiveTool(getToolId(wrapper))) count += markElement(wrapper) ? 1 : 0;
 
-        const controls = wrapper.querySelectorAll?.(FORM_SELECTOR) || [];
+        const controls = wrapper.querySelectorAll?.(`${FORM_SELECTOR}, ${SENSITIVE_REGION_SELECTOR}`) || [];
         controls.forEach((element) => { if (markElement(element)) count += 1; });
 
         const outputs = wrapper.querySelectorAll?.('[id], output') || [];
@@ -77,10 +79,14 @@
         let count = 0;
         if (node.matches?.('.tool-wrapper')) count += markTool(node);
         if (node.matches?.(FORM_SELECTOR) && markElement(node)) count += 1;
+        if (node.matches?.(SENSITIVE_REGION_SELECTOR) && markElement(node)) count += 1;
         if (isOutputElement(node) && markElement(node)) count += 1;
         if (node.matches?.('.tool-share-panel') && markElement(node)) count += 1;
         node.querySelectorAll?.('.tool-wrapper').forEach((wrapper) => { count += markTool(wrapper); });
         node.querySelectorAll?.(FORM_SELECTOR).forEach((element) => {
+            if (markElement(element)) count += 1;
+        });
+        node.querySelectorAll?.(SENSITIVE_REGION_SELECTOR).forEach((element) => {
             if (markElement(element)) count += 1;
         });
         node.querySelectorAll?.('[id], output').forEach((element) => {
@@ -107,6 +113,7 @@
 
     return {
         FORM_SELECTOR,
+        SENSITIVE_REGION_SELECTOR,
         MASK_ATTRIBUTE,
         MASK_CLASS,
         SENSITIVE_TOOLS,

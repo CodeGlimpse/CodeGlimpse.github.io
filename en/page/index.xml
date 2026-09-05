@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on Personal Blogs for Fernweh</title><link>https://blog.codeglimpse.top/en/page/</link><description>Recent content in Pages on Personal Blogs for Fernweh</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 04 Sep 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/en/page/index.xml" rel="self" type="application/rss+xml"/><item><title>Privacy</title><link>https://blog.codeglimpse.top/en/privacy/</link><pubDate>Fri, 04 Sep 2026 00:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/privacy/</guid><description>&lt;h1 id="privacy"&gt;Privacy
+&lt;/h1&gt;&lt;p&gt;Last updated: 2026-09-04&lt;/p&gt;
+&lt;p&gt;CodeGlimpse is a static blog and browser-tool site. The online tools perform their main calculations in your current browser; the site does not provide accounts, server-side workspaces, or cloud storage.&lt;/p&gt;
+&lt;h2 id="tool-inputs-and-local-data"&gt;Tool inputs and local data
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;JSON, text, regular expressions, SQL, JWTs, passwords, and similar content are processed by browser-side scripts.&lt;/li&gt;
+&lt;li&gt;Tool inputs, outputs, passwords, JWTs, private keys, and local presets are not sent as analytics events.&lt;/li&gt;
+&lt;li&gt;Favorites, recent tools, and presets are stored only in this browser&amp;rsquo;s &lt;code&gt;localStorage&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Sharing puts ordinary-tool input into a URL fragment; never put passwords, JWTs, private keys, or other sensitive data in a share link.&lt;/li&gt;
+&lt;li&gt;JWT and password tools do not generate share links by default.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="site-analytics"&gt;Site analytics
+&lt;/h2&gt;&lt;p&gt;The site loads these third-party analytics services by default to understand visits and overall interaction quality:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Google Analytics 4: page views, language, and general device/referrer information.&lt;/li&gt;
+&lt;li&gt;Baidu Analytics: page views and referrer information.&lt;/li&gt;
+&lt;li&gt;Microsoft Clarity: interaction and usability analysis.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Analytics scripts are not given tool inputs or custom events containing complete text. Tool forms, result areas, share panels, and JWT/password containers carry explicit Clarity masking markers; the Clarity project settings must also keep “mask all input and sensitive text” enabled.&lt;/p&gt;
+&lt;p&gt;The site does not send passwords, JWTs, private keys, complete text, tool results, local presets, or &lt;code&gt;#cgshare=&lt;/code&gt; share content in analytics events. Page analytics use a path without query parameters or fragments.&lt;/p&gt;
+&lt;h2 id="disable-analytics"&gt;Disable analytics
+&lt;/h2&gt;&lt;p&gt;You can choose “Disable analytics” in the privacy notice at the bottom of a page, or use the buttons below. The choice is stored in this browser and analytics scripts will no longer initialize after a reload.&lt;/p&gt;
+&lt;p&gt;&lt;button type="button" data-analytics-optout&gt;Disable analytics&lt;/button&gt;
+&lt;button type="button" data-analytics-optin&gt;Re-enable analytics&lt;/button&gt;&lt;/p&gt;
+&lt;p&gt;Disabling analytics cannot retract data that a third-party service has already received. For deletion or access requests in those services, use the provider&amp;rsquo;s own privacy controls.&lt;/p&gt;
+&lt;h2 id="service-worker-and-external-links"&gt;Service Worker and external links
+&lt;/h2&gt;&lt;p&gt;The Service Worker caches only same-origin pages and static assets; it does not cache cross-origin analytics requests. External websites, downloads, and third-party services linked from articles are governed by their own privacy policies.&lt;/p&gt;
+&lt;p&gt;If the tool behavior differs from this statement, report the page, browser, and reproduction steps through &lt;a class="link" href="https://blog.codeglimpse.top/en/links/" &gt;Contacts&lt;/a&gt;; do not send real passwords, tokens, or private keys.&lt;/p&gt;</description></item><item><title>Archives</title><link>https://blog.codeglimpse.top/en/archives/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/archives/</guid><description/></item><item><title>Contacts</title><link>https://blog.codeglimpse.top/en/links/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/links/</guid><description>&lt;p&gt;Here are several ways to contact me. Welcome to communicate and exchange ideas with me!&lt;/p&gt;</description></item><item><title>Search</title><link>https://blog.codeglimpse.top/en/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/search/</guid><description/></item></channel></rss>

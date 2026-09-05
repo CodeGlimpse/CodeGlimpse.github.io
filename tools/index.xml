@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>工具 on Fernweh的个人博客</title><link>https://blog.codeglimpse.top/tools/</link><description>Recent content in 工具 on Fernweh的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 25 Aug 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.codeglimpse.top/tools/index.xml" rel="self" type="application/rss+xml"/><item><title>JSONPath 查询工具</title><link>https://blog.codeglimpse.top/tools/jsonpath/</link><pubDate>Tue, 25 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/jsonpath/</guid><description>&lt;p&gt;JSONPath 工具可以从嵌套 JSON 中查询属性、数组索引和通配符结果。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-jsonpath" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/jsonpath-core.40b521447322354f7dc77b5d53632d91b4d2a43a7449f8190481237d78c8ac3f.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/jsonpath.2505baa1bc961260799246ddb08d70db97e7d37f7e229b624f827aad916ced99.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;支持 $、点号属性、数组索引、括号属性和 * 通配符；暂不支持递归下降和过滤表达式。数据只在浏览器本地处理。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;使用 $.users[*].name 查询数组中所有用户名称。&lt;/li&gt;
+&lt;li&gt;查询结果包含匹配路径和值。&lt;/li&gt;
+&lt;li&gt;无效 JSON 或表达式会显示错误提示。&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Markdown 预览工具</title><link>https://blog.codeglimpse.top/tools/markdown/</link><pubDate>Tue, 25 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/markdown/</guid><description>&lt;p&gt;Markdown 预览工具支持标题、段落、列表、链接、强调和代码块，并会过滤原始 HTML。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-markdown" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/markdown-core.589897e73764e5300b50e18a4bd2b79c31123db6813ffa57b4151c8567512c3c.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/markdown.92672cf9a72abf3b0a5269caba08bc56928af4c6354502e829f46278a93c206a.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;支持常用 Markdown 语法，不执行输入中的脚本或事件属性。预览和 HTML 生成完全在浏览器本地完成。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;输入内容会实时显示在右侧预览区。&lt;/li&gt;
+&lt;li&gt;可以加载示例、复制 HTML 或下载 HTML 文件。&lt;/li&gt;
+&lt;li&gt;不支持扩展 Markdown、表格和脚注语法。&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>SQL 格式化工具</title><link>https://blog.codeglimpse.top/tools/sql/</link><pubDate>Tue, 25 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/sql/</guid><description>&lt;p&gt;SQL 工具适合快速整理 SELECT、JOIN、WHERE、GROUP BY 和 ORDER BY 查询。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-sql" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/sql-core.c0d19785b1635a0a3ba6e2b3141e89bf70aed61b979d02daf5e1537dc86270ac.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/sql.285f8c61206a3d1f9cbffbaf54d023d185f412e9f8f396181324b80b6b35a107.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;工具进行轻量级 SQL 词法格式化，不连接数据库，也不验证具体数据库方言。输入只在浏览器本地处理。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;格式化会按子句和逻辑条件换行。&lt;/li&gt;
+&lt;li&gt;压缩会移除多余空白。&lt;/li&gt;
+&lt;li&gt;字符串和注释内容会尽量保持原样。&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>XML 格式化与校验工具</title><link>https://blog.codeglimpse.top/tools/xml/</link><pubDate>Tue, 25 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/xml/</guid><description>&lt;p&gt;XML 工具可以整理配置和接口数据，并在浏览器本地检查标签是否匹配。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-xml" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/xml-core.0d8300cd7188ab28a976c9cd5442a04c3aa99bc6b5cd9fdf52c42cf8509a47c9.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/xml.dd4528188801814a7cb8af7b87b80d5ba4ea5cf215f6d30d2e30bdefe90bb305.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;输入包含唯一根元素的 XML，选择格式化、压缩或校验。工具不会解析外部实体，也不会执行输入内容。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;格式化会按两格缩进输出。&lt;/li&gt;
+&lt;li&gt;压缩会移除标签之间多余空白。&lt;/li&gt;
+&lt;li&gt;语法错误会显示不匹配或未闭合的标签。&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>YAML 与 JSON 转换工具</title><link>https://blog.codeglimpse.top/tools/yaml/</link><pubDate>Tue, 25 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/yaml/</guid><description>&lt;p&gt;YAML 与 JSON 转换工具适合整理配置文件和接口样例，数据不会离开浏览器。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-yaml" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/yaml-core.117f57f837a046466341daf283857d0f03514f5d38df990a6bef5951c80c14d6.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/yaml.88757c0390607312695706cef3f34f02cc80f85980c8390251e4f70fd5ba6325.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;支持常见的映射、数组、字符串、数字、布尔值和 null。复杂 YAML 特性如锚点、标签和多文档暂不支持。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;YAML 转 JSON 后会输出缩进后的 JSON。&lt;/li&gt;
+&lt;li&gt;JSON 转 YAML 会保留对象和数组结构。&lt;/li&gt;
+&lt;li&gt;输入只在浏览器本地解析。&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>文本 Diff 对比工具</title><link>https://blog.codeglimpse.top/tools/diff/</link><pubDate>Tue, 25 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/diff/</guid><description>&lt;p&gt;文本 Diff 工具适合比较代码、配置和文档，结果只在浏览器本地生成。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-diff" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/diff-core.f4ce030aab3fa7a57bbe9e105c646112565e6d984e396854c8fe00ad46253c9b.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/diff.45a35d8cd306aa090edb5f25e55d5930954e6ab2905e1a619823e57fa026749c.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;分别输入两段文本后点击“开始对比”。工具按行比较，最多处理每侧 2500 行；可选择忽略空白和大小写。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;新增行以绿色标记，删除行以红色标记。&lt;/li&gt;
+&lt;li&gt;对比结果可以复制或下载为文本报告。&lt;/li&gt;
+&lt;li&gt;输入不会上传到服务器。&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>CSV 与 JSON 转换工具</title><link>https://blog.codeglimpse.top/tools/csv/</link><pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/csv/</guid><description>&lt;p&gt;将带标题行的 CSV 转换为 JSON 对象数组，或将 JSON 对象数组和二维数组转换为 CSV。所有数据都在浏览器本地处理。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-csv" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/csv-core.3e54f3482e22b9d3632d3866ff366ccf91b51859da45c483aaa94cb048cc201b.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/csv.10f76f04a19c279e68dda1b93b3a4629fef2c8ae6212a9895b92f4df159333ac.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;输入 &lt;code&gt;name,age\nAlice,30&lt;/code&gt; 会转换为包含 &lt;code&gt;name&lt;/code&gt; 和 &lt;code&gt;age&lt;/code&gt; 字段的 JSON 数组。支持引号字段和字段内换行，但标题必须非空且不重复；超大文件可能受浏览器内存限制。内容不会离开浏览器。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;p&gt;选择转换方向和分隔符，粘贴内容后执行转换；结果可以使用工具面板中的复制、分享和本地导出操作。&lt;/p&gt;
+&lt;h3 id="格式支持"&gt;格式支持
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;支持逗号、分号、Tab 和竖线分隔符。&lt;/li&gt;
+&lt;li&gt;支持引号字段、双引号转义以及字段内换行。&lt;/li&gt;
+&lt;li&gt;CSV 标题名称必须非空且不能重复。&lt;/li&gt;
+&lt;li&gt;JSON 根节点必须是数组，数组项需全部为对象或全部为数组。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;大型数据集仍可能占用较多浏览器内存，建议先在副本上处理重要数据。&lt;/p&gt;</description></item><item><title>HTML 实体编码/解码工具</title><link>https://blog.codeglimpse.top/tools/html/</link><pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/html/</guid><description>&lt;p&gt;HTML 实体可以安全表示标签符号、引号和部分不可直接输入的字符。本工具仅在文本框中显示结果，不会将输入作为 HTML 执行。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-html" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/html-core.87216cd0c5f7d9aea18541a128de7941a890ba963a26fc0a95a79d8af00a683b.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/html.8deb00c573461a6ceedfd4286c95e2fd78d1517eaffefa3623fd385a89fbc520.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;编码 &lt;code&gt;&amp;lt;strong&amp;gt;Tom &amp;amp; Jerry&amp;lt;/strong&amp;gt;&lt;/code&gt; 会得到 &lt;code&gt;&amp;amp;lt;strong&amp;amp;gt;Tom &amp;amp;amp; Jerry&amp;amp;lt;/strong&amp;amp;gt;&lt;/code&gt;，结果始终按文本显示，不会执行标签。支持常用命名实体和数字实体；未知实体保持不变，输入只在浏览器本地处理。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;p&gt;选择编码或解码模式，输入文本后执行操作；结果按纯文本显示，不会插入页面或执行 HTML。&lt;/p&gt;
+&lt;h3 id="支持范围"&gt;支持范围
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;编码 &lt;code&gt;&amp;amp;&lt;/code&gt;、&lt;code&gt;&amp;lt;&lt;/code&gt;、&lt;code&gt;&amp;gt;&lt;/code&gt;、双引号和单引号。&lt;/li&gt;
+&lt;li&gt;可选将所有非 ASCII 字符编码为十六进制数字实体。&lt;/li&gt;
+&lt;li&gt;解码数字实体以及 &lt;code&gt;amp&lt;/code&gt;、&lt;code&gt;lt&lt;/code&gt;、&lt;code&gt;gt&lt;/code&gt;、&lt;code&gt;quot&lt;/code&gt;、&lt;code&gt;nbsp&lt;/code&gt;、&lt;code&gt;copy&lt;/code&gt; 等常用命名实体。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;未知的命名实体会原样保留。该工具用于文本转换，不能替代服务端的上下文相关 HTML 转义和内容安全策略。&lt;/p&gt;</description></item><item><title>JWT 解析器</title><link>https://blog.codeglimpse.top/tools/jwt/</link><pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/jwt/</guid><description>&lt;p&gt;JWT 解析器可以读取令牌中的 Header、Payload 以及 &lt;code&gt;iat&lt;/code&gt;、&lt;code&gt;nbf&lt;/code&gt;、&lt;code&gt;exp&lt;/code&gt; 时间声明。令牌只在浏览器本地处理。&lt;/p&gt;
+&lt;div class="tool-wrapper clarity-mask" id="tool-jwt" data-lang="zh-cn" data-clarity-region="tool" data-clarity-mask="true"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/jwt-core.5537a267c0806842c26385ca0f3e13ca5f81e771a3a77e86068b279862549cea.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/jwt.56bea6b1f45e7b52cfca0b5919dc488b00cd2ec81a4a9c62b39a125f6f236e65.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;输入 &lt;code&gt;eyJhbGciOiJub25lIn0.eyJzdWIiOiI0MiJ9.&lt;/code&gt; 可以读取 Header 和 Payload；工具只解析三段结构，不验证签名。令牌内容可能包含敏感信息，请勿粘贴生产令牌；数据仅在浏览器本地处理。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;p&gt;粘贴 JWT 后执行解析，结果只用于检查结构和时间声明。分享链接对本工具关闭，避免令牌内容进入 URL；如需留存，请使用本地快照并自行保护文件。&lt;/p&gt;
+&lt;h3 id="安全边界"&gt;安全边界
+&lt;/h3&gt;&lt;p&gt;本工具&lt;strong&gt;不验证 JWT 签名&lt;/strong&gt;。成功解析仅代表令牌格式可读取，不能证明签发者、内容真实性或访问权限。认证和授权场景必须由服务端使用可信密钥、允许的算法及完整验证规则处理。&lt;/p&gt;
+&lt;h3 id="时间状态"&gt;时间状态
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;iat&lt;/code&gt;：令牌签发时间。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;nbf&lt;/code&gt;：令牌在该时间之前不应生效。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;exp&lt;/code&gt;：令牌在该时间之后视为过期。&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>URL 编码/解码工具</title><link>https://blog.codeglimpse.top/tools/url/</link><pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/url/</guid><description>&lt;p&gt;URL 编码可以将空格、中文和保留字符转换为适合放入网址参数的百分号转义形式。本工具在浏览器本地处理输入，不会上传内容。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-url" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/url-core.d13d84d2912a8376cd044a35464c8387458b4d17cb39c293d0fafef7cd6fccd4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/url.274ea4494fd81741733d6cc9ffb1bc13aa4c23270097726d169fa460ea95b7f4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;普通模式下 &lt;code&gt;hello world+code&lt;/code&gt; 会编码为 &lt;code&gt;hello%20world%2Bcode&lt;/code&gt;；表单模式下空格编码为 &lt;code&gt;+&lt;/code&gt;，结果为 &lt;code&gt;hello+world%2Bcode&lt;/code&gt;。组件模式不解析完整网址，非法百分号转义会报错，内容不会上传。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;编码&lt;/strong&gt;：将普通文本转换为 URL 组件格式。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解码&lt;/strong&gt;：将 &lt;code&gt;%E4%BD%A0&lt;/code&gt; 等百分号转义还原为文本。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;表单模式&lt;/strong&gt;：启用后，编码时将空格转换为 &lt;code&gt;+&lt;/code&gt;，解码时将 &lt;code&gt;+&lt;/code&gt; 视为空格。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;编码结果适用于单个路径片段或查询参数值。完整网址中的 &lt;code&gt;/&lt;/code&gt;、&lt;code&gt;?&lt;/code&gt;、&lt;code&gt;&amp;amp;&lt;/code&gt; 等结构字符应按实际结构分别处理。&lt;/p&gt;</description></item><item><title>UUID 生成与校验工具</title><link>https://blog.codeglimpse.top/tools/uuid/</link><pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/uuid/</guid><description>&lt;p&gt;UUID 常用于数据库主键、请求标识和分布式系统对象标识。本工具使用浏览器加密随机数生成 UUID v4，并可检查 UUID 格式和版本。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-uuid" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/uuid-core.817daaef96fe92313ce10f6b29b3b7f1337ac8ab5b093f6bf7a25696eac39b0e.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/uuid.744489d85b14eb743524ea6764ce1140d09b7cae92db4eabb8b2dd2574ccca83.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;生成结果形如 &lt;code&gt;550e8400-e29b-41d4-a716-446655440000&lt;/code&gt;，其中版本位为 &lt;code&gt;4&lt;/code&gt;。每次支持生成 1 至 100 个；浏览器必须提供加密随机数接口。结果只在浏览器本地生成，服务端仍需执行最终唯一性约束。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;p&gt;选择生成数量后生成 UUID，或输入值进行校验；结果只在浏览器本地生成和检查，不会上传。&lt;/p&gt;
+&lt;h3 id="功能说明"&gt;功能说明
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;一次生成 1 至 100 个 UUID v4。&lt;/li&gt;
+&lt;li&gt;校验 RFC 9562 格式并识别版本号。&lt;/li&gt;
+&lt;li&gt;支持 Nil UUID（全零）和 Max UUID（全 F）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;随机 UUID 可以显著降低冲突概率，但业务唯一性仍应由数据库约束或服务端逻辑保证。&lt;/p&gt;</description></item><item><title>安全密码生成器</title><link>https://blog.codeglimpse.top/tools/password/</link><pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/password/</guid><description>&lt;p&gt;根据长度和字符类型生成随机密码。随机数来自浏览器的加密安全接口，结果不会上传或保存。&lt;/p&gt;
+&lt;div class="tool-wrapper clarity-mask" id="tool-password" data-lang="zh-cn" data-clarity-region="tool" data-clarity-mask="true"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/password-core.8cf2da4a99a87ee615cccb4c827ef559cbbdf0281036237c22c0052919838ef8.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/password.05c7dd0bee691ed6b6b9bf7ac37645ebaa53820cb4f2bfb63310b495e3bf36dc.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;选择长度 &lt;code&gt;16&lt;/code&gt;、启用大小写字母和数字后，可一次生成多条满足所选字符集的密码。长度支持 8 至 128，批量数量支持 1 至 20；浏览器不支持加密随机数时不会生成结果。密码只显示在当前页面，请自行使用密码管理器保存。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;p&gt;选择长度、数量和字符类型后生成密码；密码不会上传或保存到站点。分享链接对本工具关闭，避免密码进入 URL，导出快照也应按敏感文件处理。&lt;/p&gt;
+&lt;h3 id="使用建议"&gt;使用建议
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;为不同账户生成独立密码，优先使用 16 位以上长度。&lt;/li&gt;
+&lt;li&gt;保留多种字符类型，或通过增加长度弥补字符集缩小带来的熵损失。&lt;/li&gt;
+&lt;li&gt;使用可信密码管理器保存密码，不要通过明文聊天、邮件或截图传递。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;页面显示的熵值是根据字符池大小计算的估算值，不代表具体网站的密码策略或账户整体安全等级。&lt;/p&gt;</description></item><item><title>文本统计与转换工具</title><link>https://blog.codeglimpse.top/tools/text/</link><pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/text/</guid><description>&lt;p&gt;文本工具可以实时统计字符、非空白字符、词数、行数和 UTF-8 字节，并提供常用大小写与空白清理操作。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-text" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/text-core.79d4136297937beb44747292991af6a07a197389c2b54d2bda46f5895e896e9f.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/text.0aa05a5e86ad67a0e77214f770c392984b71f959bc762666282dbeca8fc1f0f2.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;输入 &lt;code&gt;hello world\n你好&lt;/code&gt; 会统计 2 行、14 个字符，并可用“标题格式”得到 &lt;code&gt;Hello World\n你好&lt;/code&gt;。词数依赖浏览器语言分词；文本长度受浏览器内存影响，内容只在本地处理。&lt;/p&gt;
+&lt;h3 id="可用转换"&gt;可用转换
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;大写、小写、标题格式和句首大写。&lt;/li&gt;
+&lt;li&gt;清理每行首尾空白。&lt;/li&gt;
+&lt;li&gt;合并多余空格与连续空行。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;词数统计使用浏览器的语言分词能力；不同浏览器或语言环境对部分混合文本的分词结果可能略有差异。&lt;/p&gt;</description></item><item><title>正则表达式测试工具</title><link>https://blog.codeglimpse.top/tools/regex/</link><pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/regex/</guid><description>&lt;p&gt;使用 JavaScript 正则表达式检查匹配位置、捕获组和替换预览。表达式在独立 Worker 中执行，超过时间限制会自动终止，避免阻塞页面。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-regex" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/regex-core.73424392cd9406df2784a41359ab28e5ceb13dad64afe0b068fefa0bb15f15ea.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/regex.a72f7afae89431708c2a36bb2540442719e541d47ccac1f73fa694bfb2bb48f4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;模式 &lt;code&gt;(\\w+)=(\\d+)&lt;/code&gt; 处理 &lt;code&gt;a=1&lt;/code&gt;，替换 &lt;code&gt;$1:[$2]&lt;/code&gt; 后得到 &lt;code&gt;a:[1]&lt;/code&gt;。使用 JavaScript 正则语法；输入、模式和结果数量均有限制，Worker 超时会终止执行。测试文本不会上传。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;p&gt;输入模式和测试文本，选择标志后执行匹配或替换；复杂表达式会受到 Worker 超时保护，内容仅在浏览器本地处理。&lt;/p&gt;
+&lt;h3 id="支持的标志"&gt;支持的标志
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;g&lt;/code&gt; 全局匹配&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;i&lt;/code&gt; 忽略大小写&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;m&lt;/code&gt; 多行模式&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;s&lt;/code&gt; 允许点号匹配换行&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;u&lt;/code&gt; Unicode 模式&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;y&lt;/code&gt; 粘连匹配&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;工具限制表达式、测试文本和匹配结果数量。超时保护可以降低页面卡死风险，但生产系统仍应避免接收未经约束的复杂正则表达式。&lt;/p&gt;</description></item><item><title>JSON 格式化工具</title><link>https://blog.codeglimpse.top/tools/json/</link><pubDate>Thu, 13 Aug 2026 00:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/tools/json/</guid><description>&lt;p&gt;JSON 格式化工具可以帮助你快速整理和检查 JSON 数据，也支持将 JSON 文本转义为适合嵌入字符串的形式，或将转义后的文本恢复为原始内容。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-json" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/json.81094a1640e827cd094968434e94a0f7af3dd765bfffe7e9395e42614c3ceb67.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;输入 &lt;code&gt;{&amp;quot;name&amp;quot;:&amp;quot;Alice&amp;quot;,&amp;quot;items&amp;quot;:[1,true]}&lt;/code&gt; 并格式化，会按所选缩进输出多行 JSON。无效 JSON 会给出解析错误；转义和反转义面向 JSON 文本，不会执行其中内容。处理完全在浏览器本地完成。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;格式化&lt;/strong&gt;：校验 JSON 并按照所选缩进输出易读的多行格式。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;压缩&lt;/strong&gt;：移除空格和换行，输出紧凑的 JSON。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;校验&lt;/strong&gt;：只检查 JSON 是否有效，不改变输出内容。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;转义&lt;/strong&gt;：转义双引号、反斜杠和控制字符，适合将 JSON 嵌入另一个 JSON 字符串。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;反转义&lt;/strong&gt;：将转义后的文本恢复为原始 JSON 文本。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;工具在浏览器本地处理数据，不会上传你的 JSON 内容。&lt;/p&gt;</description></item><item><title>进制转换工具</title><link>https://blog.codeglimpse.top/tools/binary/</link><pubDate>Sat, 21 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/binary/</guid><description>&lt;p&gt;这是一个简单高效的在线进制转换工具，支持二进制 (Base 2)、八进制 (Base 8)、十进制 (Base 10)、十六进制 (Base 16) 以及 2 到 36 之间的任意自定义进制之间的相互转换。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-binary" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/binary-core.e3f2463e38c2f2cc8d252aa15d1cec99b17b69372d417f40ecd830393b5e1269.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/binary.575a2ea0ac9f66bb654ce538ae3e21c8b34500f5ea6c037ddbf242529d49683c.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;输入十进制 &lt;code&gt;255&lt;/code&gt; 会得到二进制 &lt;code&gt;11111111&lt;/code&gt; 和十六进制 &lt;code&gt;FF&lt;/code&gt;。输入进制与自定义进制支持 2 至 36；空输入、非法数字或超出安全整数范围会显示错误。数据仅在浏览器本地处理。&lt;/p&gt;
+&lt;h3 id="如何使用"&gt;如何使用
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;选择源进制&lt;/strong&gt;：在下拉菜单中选择您要转换的数字的原始进制。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;输入数值&lt;/strong&gt;：在“输入数值”框中输入您要转换的数字。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;查看结果&lt;/strong&gt;：工具会自动实时显示转换为二进制、八进制、十进制、十六进制以及自定义进制后的结果。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;自定义进制&lt;/strong&gt;：您可以通过修改自定义进制栏标题旁的数字来更改目标自定义进制。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;复制结果&lt;/strong&gt;：点击每个结果右侧的“复制”按钮即可将其复制到剪贴板。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="常见进制说明"&gt;常见进制说明
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;二进制 (Base 2)&lt;/strong&gt;：计算机内部使用的进制，只有 0 和 1 两个数字。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;八进制 (Base 8)&lt;/strong&gt;：由 0-7 八个数字组成，常用于早期计算机系统。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;十进制 (Base 10)&lt;/strong&gt;：人类通用的进制，由 0-9 十个数字组成。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;十六进制 (Base 16)&lt;/strong&gt;：由 0-9 和 A-F 组成，在编程、网页设计（如颜色代码）和内存地址中广泛使用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="常用进制对照表"&gt;常用进制对照表
+&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;十进制&lt;/th&gt;
+&lt;th&gt;二进制&lt;/th&gt;
+&lt;th&gt;八进制&lt;/th&gt;
+&lt;th&gt;十六进制&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;101&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;1010&lt;/td&gt;
+&lt;td&gt;12&lt;/td&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;15&lt;/td&gt;
+&lt;td&gt;1111&lt;/td&gt;
+&lt;td&gt;17&lt;/td&gt;
+&lt;td&gt;F&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;16&lt;/td&gt;
+&lt;td&gt;10000&lt;/td&gt;
+&lt;td&gt;20&lt;/td&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</description></item><item><title>SHA 在线加密</title><link>https://blog.codeglimpse.top/tools/sha/</link><pubDate>Fri, 20 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/sha/</guid><description>&lt;p&gt;安全哈希算法（SHA）是由美国国家安全局（NSA）设计的一系列密码哈希函数。它们广泛用于安全应用和数据完整性验证。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-sha" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/sha-core.61d8f90cbf3502acf55718d89c552cfe263bded5eb2c73a990fa1f10616ecd23.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/sha.605168a097c9c8b67b6f4832ea8d0bb3180918fb9a2c0fef35ea14682f2a2686.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;输入 &lt;code&gt;abc&lt;/code&gt; 并选择 SHA-256（小写），结果为 &lt;code&gt;ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad&lt;/code&gt;。支持 SHA-1、SHA-256、SHA-384 和 SHA-512；文本在浏览器本地计算，不会上传。&lt;/p&gt;
+&lt;h3 id="如何使用-sha-生成器"&gt;如何使用 SHA 生成器
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;在输入框中输入您想要加密的文本或字符串。&lt;/li&gt;
+&lt;li&gt;从下拉菜单中选择所需的 SHA 算法（SHA-1, SHA-256, SHA-384, 或 SHA-512）。&lt;/li&gt;
+&lt;li&gt;选择输出格式（小写或大写）。&lt;/li&gt;
+&lt;li&gt;哈希值会在您输入时自动生成，或者您可以点击“生成”按钮。&lt;/li&gt;
+&lt;li&gt;复制生成的哈希值供您使用。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="可用算法"&gt;可用算法
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;SHA-1&lt;/strong&gt;：产生 160 位（40 个字符）的哈希值。虽然在密码学中已不再被认为是安全的，但仍用于非安全任务，如 Git 校验和。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SHA-256&lt;/strong&gt;：SHA-2 家族的一部分，产生 256 位（64 个字符）的哈希值。它是目前使用最广泛的哈希函数之一（例如在比特币中）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SHA-384&lt;/strong&gt;：SHA-2 的更安全版本，产生 384 位（96 个字符）的哈希值。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SHA-512&lt;/strong&gt;：SHA-2 家族中最强大的算法，产生 512 位（128 个字符）的哈希值。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;提示&lt;/strong&gt;：对于现代安全需求，建议使用 SHA-256 或更高版本。SHA-1 已被认为存在弱点，应避免用于敏感数据。&lt;/p&gt;
+&lt;/blockquote&gt;</description></item><item><title>MD5 在线加密</title><link>https://blog.codeglimpse.top/tools/md5/</link><pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/md5/</guid><description>&lt;p&gt;MD5（消息摘要算法 5）是一种广泛使用的密码哈希函数，产生 128 位（16 字节）的哈希值。它通常用于验证数据完整性和校验和。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-md5" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/md5-core.9818c83515089950885fa174c80c6b6c45cb6674f8f4a4ac325f9017168c1820.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/md5.beb305e5b35cea746a45b87e509bde61f557ff165821e69b482a43dac8eba52e.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;输入 &lt;code&gt;hello&lt;/code&gt; 的 MD5 为 &lt;code&gt;5d41402abc4b2a76b9719d911017c592&lt;/code&gt;。输出始终是 32 位十六进制字符串；MD5 不适合密码存储或防碰撞场景。文本只在浏览器本地计算，不会上传。&lt;/p&gt;
+&lt;h3 id="如何使用-md5-生成器"&gt;如何使用 MD5 生成器
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;在输入框中输入您想要加密的文本或字符串。&lt;/li&gt;
+&lt;li&gt;MD5 哈希值会在您输入时自动生成，或者您可以点击“生成”按钮。&lt;/li&gt;
+&lt;li&gt;复制生成的 MD5 哈希值供您使用。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="了解-md5"&gt;了解 MD5
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;单向性&lt;/strong&gt;：MD5 设计为单向函数，这意味着从哈希值反推原始输入在计算上是不可行的。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;固定长度&lt;/strong&gt;：无论输入大小如何，MD5 哈希始终为 32 个字符（十六进制）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;确定性&lt;/strong&gt;：相同的输入始终会产生相同的哈希值。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;敏感性&lt;/strong&gt;：即使是输入中的微小变化（如增加一个空格）也会导致完全不同的哈希。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;提示&lt;/strong&gt;：由于容易受到碰撞攻击，MD5 不再被认为在密码哈希等加密用途中是安全的。对于安全敏感的应用，请使用 SHA-256 或 bcrypt 等更强大的算法。&lt;/p&gt;
+&lt;/blockquote&gt;</description></item><item><title>取色器与颜色转换器</title><link>https://blog.codeglimpse.top/tools/color/</link><pubDate>Tue, 17 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/color/</guid><description>&lt;p&gt;一个简单直观的工具，用于选取颜色并在 HEX、RGB 和 HSL 格式之间进行转换。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-color" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/color-core.7c3cb0fe5f356b4ca72d975b334c98554e6f75d8d48478e6b8db631cd7e3d82f.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/color.4e175fbe631eeab19dd1a30457a0972d0242e962047726f6a54c65d21c3c884d.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;输入 &lt;code&gt;#FF0000&lt;/code&gt; 会得到 &lt;code&gt;rgb(255, 0, 0)&lt;/code&gt; 和 &lt;code&gt;hsl(0, 100%, 50%)&lt;/code&gt;。支持 3 位和 6 位 HEX；RGB/HSL 数值会限制在合法范围，非整数或无效格式会提示错误。颜色值只在浏览器本地处理。&lt;/p&gt;
+&lt;h3 id="如何使用"&gt;如何使用
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;选取颜色&lt;/strong&gt;: 使用颜色选择器或点击预览框来直观地选择颜色。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HEX 输入&lt;/strong&gt;: 输入 6 位十六进制代码（例如 &lt;code&gt;#FF5733&lt;/code&gt;）以查看其对应的 RGB 和 HSL 值。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RGB/HSL 输入&lt;/strong&gt;: 调整各个数值以微调颜色。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;复制&lt;/strong&gt;: 点击任何格式旁边的 &lt;strong&gt;复制&lt;/strong&gt; 按钮将其复制到剪贴板。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="了解颜色格式"&gt;了解颜色格式
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;HEX&lt;/strong&gt;: RGB 值的十六进制表示，常用于网页设计。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RGB&lt;/strong&gt;: 红、绿、蓝数值 (0-255)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HSL&lt;/strong&gt;: 色相 (0-360)、饱和度 (0-100%) 和 亮度 (0-100%)。对于人类来说，它通常比 RGB 更直观。&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Unix 时间戳转换工具</title><link>https://blog.codeglimpse.top/tools/time/</link><pubDate>Mon, 16 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/time/</guid><description>&lt;p&gt;Unix 时间戳（Unix Timestamp）是从 Unix 纪元（1970 年 1 月 1 日 00:00:00 UTC）开始所经过的秒数。本工具可以帮助您方便地在时间戳与可读的日期时间格式之间进行转换。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-time" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/time-core.7c7482ff03f992338123f9172a1d2a16c29c25125e650692bf8847ed639bb275.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/time.6db8e637f9b2f77ade7a6557e2038938944918fc1ac37db366eebdd613b88e6d.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;时间戳 &lt;code&gt;0&lt;/code&gt; 在 UTC 时区对应 &lt;code&gt;1970-01-01 00:00:00&lt;/code&gt;。工具会区分秒和毫秒，并拒绝非法日期、非数字或不安全整数；夏令时不存在的本地时间也会提示错误。输入仅在浏览器本地转换。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;p&gt;选择时间戳或日期时间模式，输入值并选择时区后执行转换；结果只在浏览器本地计算，不会提交到服务器。&lt;/p&gt;
+&lt;h3 id="什么是-unix-时间戳"&gt;什么是 Unix 时间戳？
+&lt;/h3&gt;&lt;p&gt;Unix 时间戳是从 1970 年 1 月 1 日（UTC/GMT 的午夜）开始所经过的秒数，不考虑闰秒。它被广泛应用于操作系统、数据库和编程语言中。&lt;/p&gt;</description></item><item><title>Base64 编码/解码</title><link>https://blog.codeglimpse.top/tools/base64/</link><pubDate>Sun, 15 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/base64/</guid><description>&lt;p&gt;Base64 是一种基于 64 个可打印字符来表示二进制数据的表示方法。它常用于在处理文本数据的场合，表示、传输、存储一些二进制数据。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-base64" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/base64-core.a609b3d1677c7b1fcba01b349e3a0cf4a898aa0de08f0ccc22a61c7eed9ca93a.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/base64.08793a4bc6f24e6cbda7a78274189b1294b6932d7d183f8a283a822511858267.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;输入 &lt;code&gt;你好&lt;/code&gt; 编码后为 &lt;code&gt;5L2g5aW9&lt;/code&gt;。输入必须是可表示为 UTF-8 文本的内容；空输入也可以转换。结果只在浏览器本地生成，不会上传。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;编码&lt;/strong&gt;：在输入框中输入普通文本，点击 &lt;strong&gt;编码 (Encode)&lt;/strong&gt; 按钮即可。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解码&lt;/strong&gt;：在输入框中输入 Base64 编码后的字符串，点击 &lt;strong&gt;解码 (Decode)&lt;/strong&gt; 按钮即可。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="了解-base64"&gt;了解 Base64
+&lt;/h3&gt;&lt;p&gt;Base64 编码并不是加密。它只是一种数据格式转换方式，旨在确保数据在传输过程中的完整性。&lt;/p&gt;</description></item><item><title>BMI 计算器</title><link>https://blog.codeglimpse.top/tools/bmi/</link><pubDate>Sat, 14 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/tools/bmi/</guid><description>&lt;p&gt;身体质量指数（BMI）是衡量人体肥胖程度和是否健康的一个标准。&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-bmi" data-lang="zh-cn" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+加载中...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/bmi-core.21f22e45b130958b5742cf6f5868f94a7b0ec90640eb9ca85c661096f699c81c.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/bmi.27b98d0aa686e908fc09e8742693ea32418538cb4ebca6ebc761f597787d2b70.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="示例与限制"&gt;示例与限制
+&lt;/h3&gt;&lt;p&gt;身高 &lt;code&gt;175 cm&lt;/code&gt;、体重 &lt;code&gt;70 kg&lt;/code&gt; 时 BMI 约为 &lt;code&gt;22.9&lt;/code&gt;。身高和体重必须是大于 0 的有限数字；结果是健康筛查参考，不构成医疗建议，数据不会上传。&lt;/p&gt;
+&lt;h3 id="使用说明"&gt;使用说明
+&lt;/h3&gt;&lt;p&gt;输入身高和体重后执行计算；结果只在浏览器本地生成，清空按钮可以移除当前页面中的输入和结果。&lt;/p&gt;
+&lt;h3 id="bmi-标准对照表-中国标准"&gt;BMI 标准对照表 (中国标准)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;偏瘦&lt;/strong&gt;: &amp;lt; 18.5&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;正常&lt;/strong&gt;: 18.5 - 23.9&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;过重&lt;/strong&gt;: 24.0 - 27.9&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;肥胖&lt;/strong&gt;: &amp;gt;= 28.0&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;注意：BMI 仅作为参考，不适用于运动员、孕妇或老人等特殊人群。&lt;/p&gt;
+&lt;/blockquote&gt;</description></item></channel></rss>

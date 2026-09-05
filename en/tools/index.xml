@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tools on Personal Blogs for Fernweh</title><link>https://blog.codeglimpse.top/en/tools/</link><description>Recent content in Tools on Personal Blogs for Fernweh</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 25 Aug 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.codeglimpse.top/en/tools/index.xml" rel="self" type="application/rss+xml"/><item><title>JSONPath Query</title><link>https://blog.codeglimpse.top/en/tools/jsonpath/</link><pubDate>Tue, 25 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/jsonpath/</guid><description>&lt;p&gt;The JSONPath tool queries nested JSON properties, array indexes, and wildcard results locally in the browser.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-jsonpath" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/jsonpath-core.40b521447322354f7dc77b5d53632d91b4d2a43a7449f8190481237d78c8ac3f.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/jsonpath.2505baa1bc961260799246ddb08d70db97e7d37f7e229b624f827aad916ced99.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;Supported syntax includes $, dot properties, array indexes, bracket properties, and the * wildcard. Recursive descent and filter expressions are not supported.&lt;/p&gt;
+&lt;h3 id="usage"&gt;Usage
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Use $.users[*].name to query every user name.&lt;/li&gt;
+&lt;li&gt;Results include the matching path and value.&lt;/li&gt;
+&lt;li&gt;Invalid JSON or expressions show an inline error.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Markdown Preview</title><link>https://blog.codeglimpse.top/en/tools/markdown/</link><pubDate>Tue, 25 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/markdown/</guid><description>&lt;p&gt;The Markdown preview supports headings, paragraphs, lists, links, emphasis, and code blocks while filtering raw HTML.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-markdown" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/markdown-core.589897e73764e5300b50e18a4bd2b79c31123db6813ffa57b4151c8567512c3c.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/markdown.92672cf9a72abf3b0a5269caba08bc56928af4c6354502e829f46278a93c206a.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;Common Markdown syntax is supported. Scripts and event attributes are not executed. Preview and HTML generation happen locally in the browser.&lt;/p&gt;
+&lt;h3 id="usage"&gt;Usage
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Preview updates as you type.&lt;/li&gt;
+&lt;li&gt;Load an example, copy HTML, or download an HTML file.&lt;/li&gt;
+&lt;li&gt;Extended Markdown features such as tables and footnotes are not supported.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>SQL Formatter</title><link>https://blog.codeglimpse.top/en/tools/sql/</link><pubDate>Tue, 25 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/sql/</guid><description>&lt;p&gt;The SQL tool quickly organizes SELECT, JOIN, WHERE, GROUP BY, and ORDER BY queries.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-sql" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/sql-core.c0d19785b1635a0a3ba6e2b3141e89bf70aed61b979d02daf5e1537dc86270ac.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/sql.285f8c61206a3d1f9cbffbaf54d023d185f412e9f8f396181324b80b6b35a107.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;This is a lightweight lexical formatter. It does not connect to a database or validate a specific SQL dialect. Input stays in the browser.&lt;/p&gt;
+&lt;h3 id="usage"&gt;Usage
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Format breaks clauses and logical conditions onto separate lines.&lt;/li&gt;
+&lt;li&gt;Minify removes unnecessary whitespace.&lt;/li&gt;
+&lt;li&gt;String and comment content is preserved as far as possible.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Text Diff Comparison</title><link>https://blog.codeglimpse.top/en/tools/diff/</link><pubDate>Tue, 25 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/diff/</guid><description>&lt;p&gt;The text Diff tool is useful for comparing code, configuration, and documents. Results are generated locally in the browser.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-diff" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/diff-core.f4ce030aab3fa7a57bbe9e105c646112565e6d984e396854c8fe00ad46253c9b.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/diff.45a35d8cd306aa090edb5f25e55d5930954e6ab2905e1a619823e57fa026749c.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;Enter two text blocks and choose Compare. The tool compares lines, supports up to 2500 lines per side, and can ignore whitespace or case.&lt;/p&gt;
+&lt;h3 id="usage"&gt;Usage
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Added lines are highlighted in green and removed lines in red.&lt;/li&gt;
+&lt;li&gt;Copy or download the comparison as a text report.&lt;/li&gt;
+&lt;li&gt;Input is never uploaded.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>XML Formatter and Validator</title><link>https://blog.codeglimpse.top/en/tools/xml/</link><pubDate>Tue, 25 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/xml/</guid><description>&lt;p&gt;The XML tool organizes configuration and interface data while checking matching tags locally in the browser.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-xml" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/xml-core.0d8300cd7188ab28a976c9cd5442a04c3aa99bc6b5cd9fdf52c42cf8509a47c9.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/xml.dd4528188801814a7cb8af7b87b80d5ba4ea5cf215f6d30d2e30bdefe90bb305.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;Enter XML with one root element and choose Format, Minify, or Validate. External entities are not parsed and input is never executed.&lt;/p&gt;
+&lt;h3 id="usage"&gt;Usage
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Format output uses two-space indentation.&lt;/li&gt;
+&lt;li&gt;Minify removes unnecessary whitespace between tags.&lt;/li&gt;
+&lt;li&gt;Syntax errors report mismatched or unclosed tags.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>YAML and JSON Converter</title><link>https://blog.codeglimpse.top/en/tools/yaml/</link><pubDate>Tue, 25 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/yaml/</guid><description>&lt;p&gt;The YAML and JSON converter helps organize configuration files and API examples without sending data away from the browser.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-yaml" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/yaml-core.117f57f837a046466341daf283857d0f03514f5d38df990a6bef5951c80c14d6.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/yaml.88757c0390607312695706cef3f34f02cc80f85980c8390251e4f70fd5ba6325.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;Common mappings, arrays, strings, numbers, booleans, and null values are supported. Anchors, tags, and multi-document YAML are not supported.&lt;/p&gt;
+&lt;h3 id="usage"&gt;Usage
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;YAML to JSON produces indented JSON.&lt;/li&gt;
+&lt;li&gt;JSON to YAML preserves object and array structure.&lt;/li&gt;
+&lt;li&gt;Parsing is performed locally in the browser.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>CSV and JSON Converter</title><link>https://blog.codeglimpse.top/en/tools/csv/</link><pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/csv/</guid><description>&lt;p&gt;Convert CSV with a header row into an array of JSON objects, or convert JSON object arrays and two-dimensional arrays into CSV. Data stays in your browser.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-csv" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/csv-core.3e54f3482e22b9d3632d3866ff366ccf91b51859da45c483aaa94cb048cc201b.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/csv.10f76f04a19c279e68dda1b93b3a4629fef2c8ae6212a9895b92f4df159333ac.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;name,age\nAlice,30&lt;/code&gt; converts to a JSON array containing &lt;code&gt;name&lt;/code&gt; and &lt;code&gt;age&lt;/code&gt;. Quoted fields and embedded line breaks are supported, but headers must be non-empty and unique; very large files are limited by browser memory. Content never leaves the browser.&lt;/p&gt;
+&lt;h3 id="how-to-use"&gt;How to use
+&lt;/h3&gt;&lt;p&gt;Choose the conversion direction and delimiter, paste the content, and run the conversion. Results can be copied, shared, or exported locally from the tool panel.&lt;/p&gt;
+&lt;h3 id="format-support"&gt;Format support
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Comma, semicolon, tab, and pipe delimiters.&lt;/li&gt;
+&lt;li&gt;Quoted fields, escaped double quotes, and line breaks inside fields.&lt;/li&gt;
+&lt;li&gt;CSV header names must be non-empty and unique.&lt;/li&gt;
+&lt;li&gt;The JSON root must be an array whose items are all objects or all arrays.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Large data sets can still consume significant browser memory, so work from a copy of important source data.&lt;/p&gt;</description></item><item><title>HTML Entity Encoder/Decoder</title><link>https://blog.codeglimpse.top/en/tools/html/</link><pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/html/</guid><description>&lt;p&gt;HTML entities safely represent tag delimiters, quotes, and characters that are difficult to enter directly. Results are displayed as text and are never executed as HTML.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-html" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/html-core.87216cd0c5f7d9aea18541a128de7941a890ba963a26fc0a95a79d8af00a683b.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/html.8deb00c573461a6ceedfd4286c95e2fd78d1517eaffefa3623fd385a89fbc520.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;Encoding &lt;code&gt;&amp;lt;strong&amp;gt;Tom &amp;amp; Jerry&amp;lt;/strong&amp;gt;&lt;/code&gt; produces &lt;code&gt;&amp;amp;lt;strong&amp;amp;gt;Tom &amp;amp;amp; Jerry&amp;amp;lt;/strong&amp;amp;gt;&lt;/code&gt;, and the result is always displayed as text rather than executed. Common named and numeric entities are supported; unknown entities remain unchanged and input is processed locally.&lt;/p&gt;
+&lt;h3 id="how-to-use"&gt;How to use
+&lt;/h3&gt;&lt;p&gt;Choose encode or decode, enter text, and run the action. Results are rendered as plain text and are never inserted into the page as HTML.&lt;/p&gt;
+&lt;h3 id="supported-scope"&gt;Supported scope
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Encode &lt;code&gt;&amp;amp;&lt;/code&gt;, &lt;code&gt;&amp;lt;&lt;/code&gt;, &lt;code&gt;&amp;gt;&lt;/code&gt;, double quotes, and single quotes.&lt;/li&gt;
+&lt;li&gt;Optionally encode every non-ASCII character as a hexadecimal numeric entity.&lt;/li&gt;
+&lt;li&gt;Decode numeric entities and common named entities such as &lt;code&gt;amp&lt;/code&gt;, &lt;code&gt;lt&lt;/code&gt;, &lt;code&gt;gt&lt;/code&gt;, &lt;code&gt;quot&lt;/code&gt;, &lt;code&gt;nbsp&lt;/code&gt;, and &lt;code&gt;copy&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Unknown named entities remain unchanged. This text converter does not replace context-aware server-side escaping or a content security policy.&lt;/p&gt;</description></item><item><title>JWT Decoder</title><link>https://blog.codeglimpse.top/en/tools/jwt/</link><pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/jwt/</guid><description>&lt;p&gt;The JWT decoder reads the Header, Payload, and the &lt;code&gt;iat&lt;/code&gt;, &lt;code&gt;nbf&lt;/code&gt;, and &lt;code&gt;exp&lt;/code&gt; time claims. Tokens are processed only in your browser.&lt;/p&gt;
+&lt;div class="tool-wrapper clarity-mask" id="tool-jwt" data-lang="en" data-clarity-region="tool" data-clarity-mask="true"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/jwt-core.5537a267c0806842c26385ca0f3e13ca5f81e771a3a77e86068b279862549cea.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/jwt.56bea6b1f45e7b52cfca0b5919dc488b00cd2ec81a4a9c62b39a125f6f236e65.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;eyJhbGciOiJub25lIn0.eyJzdWIiOiI0MiJ9.&lt;/code&gt; can be decoded to inspect its header and payload; the three-part structure is parsed but the signature is not verified. Tokens may contain sensitive data, so avoid pasting production tokens. Processing is local to the browser.&lt;/p&gt;
+&lt;h3 id="how-to-use"&gt;How to use
+&lt;/h3&gt;&lt;p&gt;Paste a JWT and run the decoder to inspect its structure and time claims. URL sharing is disabled for this tool so token content does not enter a link; use a local snapshot only when you can protect the file.&lt;/p&gt;
+&lt;h3 id="security-boundary"&gt;Security boundary
+&lt;/h3&gt;&lt;p&gt;This tool &lt;strong&gt;does not verify JWT signatures&lt;/strong&gt;. A successful decode only confirms that the token content is readable; it does not establish the issuer, authenticity, or permissions. Authentication and authorization must be validated by a trusted server with approved algorithms and keys.&lt;/p&gt;
+&lt;h3 id="time-claims"&gt;Time claims
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;iat&lt;/code&gt; records when the token was issued.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;nbf&lt;/code&gt; indicates when the token becomes active.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;exp&lt;/code&gt; indicates when the token expires.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Regular Expression Tester</title><link>https://blog.codeglimpse.top/en/tools/regex/</link><pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/regex/</guid><description>&lt;p&gt;Inspect JavaScript regular expression matches, positions, capture groups, and replacement previews. Expressions run in an isolated Worker and are stopped when they exceed the time limit.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-regex" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/regex-core.73424392cd9406df2784a41359ab28e5ceb13dad64afe0b068fefa0bb15f15ea.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/regex.a72f7afae89431708c2a36bb2540442719e541d47ccac1f73fa694bfb2bb48f4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;Pattern &lt;code&gt;(\\w+)=(\\d+)&lt;/code&gt; applied to &lt;code&gt;a=1&lt;/code&gt; with replacement &lt;code&gt;$1:[$2]&lt;/code&gt; produces &lt;code&gt;a:[1]&lt;/code&gt;. JavaScript regular-expression syntax is used; pattern, input, and result counts are bounded, and the Worker stops timed-out runs. Test text is not uploaded.&lt;/p&gt;
+&lt;h3 id="how-to-use"&gt;How to use
+&lt;/h3&gt;&lt;p&gt;Enter a pattern and test text, select flags, and run a match or replacement. Complex expressions are protected by a Worker timeout, and content is processed only in the browser.&lt;/p&gt;
+&lt;h3 id="supported-flags"&gt;Supported flags
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;g&lt;/code&gt; global matching&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;i&lt;/code&gt; case-insensitive matching&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;m&lt;/code&gt; multiline mode&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;s&lt;/code&gt; dot-all mode&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;u&lt;/code&gt; Unicode mode&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;y&lt;/code&gt; sticky matching&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The tool limits pattern length, input size, and match count. The timeout reduces page-freeze risk, but production systems should still avoid unrestricted complex expressions from untrusted users.&lt;/p&gt;</description></item><item><title>Secure Password Generator</title><link>https://blog.codeglimpse.top/en/tools/password/</link><pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/password/</guid><description>&lt;p&gt;Generate random passwords based on length and selected character classes. Randomness comes from the browser&amp;rsquo;s cryptographic API, and results are not uploaded or stored.&lt;/p&gt;
+&lt;div class="tool-wrapper clarity-mask" id="tool-password" data-lang="en" data-clarity-region="tool" data-clarity-mask="true"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/password-core.8cf2da4a99a87ee615cccb4c827ef559cbbdf0281036237c22c0052919838ef8.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/password.05c7dd0bee691ed6b6b9bf7ac37645ebaa53820cb4f2bfb63310b495e3bf36dc.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;With length &lt;code&gt;16&lt;/code&gt; and upper-case, lower-case, and numeric classes enabled, the tool generates batches that satisfy the selected pool. Length is limited to 8-128 and batch count to 1-20; generation stops if the browser lacks cryptographic randomness. Passwords are shown only in the current page, so save them with a password manager.&lt;/p&gt;
+&lt;h3 id="how-to-use"&gt;How to use
+&lt;/h3&gt;&lt;p&gt;Choose the length, count, and character classes, then generate. Passwords are not uploaded or saved by the site. URL sharing is disabled for this tool, and exported snapshots should be treated as sensitive files.&lt;/p&gt;
+&lt;h3 id="recommendations"&gt;Recommendations
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Use a unique password for every account and prefer a length of at least 16 characters.&lt;/li&gt;
+&lt;li&gt;Keep several character classes enabled, or increase length when reducing the character pool.&lt;/li&gt;
+&lt;li&gt;Store passwords in a trusted password manager and avoid sending them through plain-text chat, email, or screenshots.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The displayed entropy is an estimate based on pool size. It does not represent a site&amp;rsquo;s password policy or the complete security of an account.&lt;/p&gt;</description></item><item><title>Text Analyzer and Converter</title><link>https://blog.codeglimpse.top/en/tools/text/</link><pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/text/</guid><description>&lt;p&gt;Analyze character, non-whitespace character, word, line, and UTF-8 byte counts while applying common case and whitespace transformations.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-text" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/text-core.79d4136297937beb44747292991af6a07a197389c2b54d2bda46f5895e896e9f.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/text.0aa05a5e86ad67a0e77214f770c392984b71f959bc762666282dbeca8fc1f0f2.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;For &lt;code&gt;hello world\n你好&lt;/code&gt;, the tool reports two lines and fourteen characters; title case produces &lt;code&gt;Hello World\n你好&lt;/code&gt;. Word counts depend on browser language segmentation, and very large text is limited by browser memory. Content stays local.&lt;/p&gt;
+&lt;h3 id="available-transforms"&gt;Available transforms
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Uppercase, lowercase, title case, and sentence case.&lt;/li&gt;
+&lt;li&gt;Trim whitespace from every line.&lt;/li&gt;
+&lt;li&gt;Collapse repeated spaces and excessive blank lines.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Word counting uses the browser&amp;rsquo;s language segmentation support. Results for mixed-language text can vary slightly between browser engines and locales.&lt;/p&gt;</description></item><item><title>URL Encoder/Decoder</title><link>https://blog.codeglimpse.top/en/tools/url/</link><pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/url/</guid><description>&lt;p&gt;URL encoding converts spaces, Unicode text, and reserved characters into percent-escaped values suitable for URL parameters. Processing happens locally in your browser.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-url" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/url-core.d13d84d2912a8376cd044a35464c8387458b4d17cb39c293d0fafef7cd6fccd4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/url.274ea4494fd81741733d6cc9ffb1bc13aa4c23270097726d169fa460ea95b7f4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;In normal mode, &lt;code&gt;hello world+code&lt;/code&gt; becomes &lt;code&gt;hello%20world%2Bcode&lt;/code&gt;; form mode uses &lt;code&gt;+&lt;/code&gt; for spaces and produces &lt;code&gt;hello+world%2Bcode&lt;/code&gt;. Component mode does not parse a complete URL, malformed percent escapes are rejected, and input is not uploaded.&lt;/p&gt;
+&lt;h3 id="how-to-use-it"&gt;How to use it
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Encode&lt;/strong&gt; converts plain text into a URL component.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Decode&lt;/strong&gt; restores percent escapes such as &lt;code&gt;%E4%BD%A0&lt;/code&gt; to text.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Form mode&lt;/strong&gt; converts spaces to &lt;code&gt;+&lt;/code&gt; when encoding and treats &lt;code&gt;+&lt;/code&gt; as a space when decoding.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The result is intended for an individual path segment or query parameter value. Structural characters in a complete URL should be handled according to their role.&lt;/p&gt;</description></item><item><title>UUID Generator and Validator</title><link>https://blog.codeglimpse.top/en/tools/uuid/</link><pubDate>Mon, 17 Aug 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/uuid/</guid><description>&lt;p&gt;UUIDs are commonly used for database keys, request identifiers, and distributed objects. This tool uses browser cryptographic randomness to generate UUID v4 values and can inspect a UUID&amp;rsquo;s format and version.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-uuid" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/uuid-core.817daaef96fe92313ce10f6b29b3b7f1337ac8ab5b093f6bf7a25696eac39b0e.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/uuid.744489d85b14eb743524ea6764ce1140d09b7cae92db4eabb8b2dd2574ccca83.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;Generated values look like &lt;code&gt;550e8400-e29b-41d4-a716-446655440000&lt;/code&gt;, with version &lt;code&gt;4&lt;/code&gt; in the version position. Generate 1-100 values per run; the browser must provide a cryptographic random source. Values are generated locally, while the server should enforce final uniqueness.&lt;/p&gt;
+&lt;h3 id="how-to-use"&gt;How to use
+&lt;/h3&gt;&lt;p&gt;Choose a batch count to generate UUIDs, or enter a value to validate. Generation and validation stay local to the browser and are not uploaded.&lt;/p&gt;
+&lt;h3 id="features"&gt;Features
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Generate between 1 and 100 UUID v4 values at once.&lt;/li&gt;
+&lt;li&gt;Validate RFC 9562 formatting and identify the version.&lt;/li&gt;
+&lt;li&gt;Recognize Nil UUID and Max UUID values.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Random UUIDs make collisions extremely unlikely, but application uniqueness should still be enforced by a database constraint or server-side rule.&lt;/p&gt;</description></item><item><title>JSON Formatter</title><link>https://blog.codeglimpse.top/en/tools/json/</link><pubDate>Thu, 13 Aug 2026 00:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/tools/json/</guid><description>&lt;p&gt;The JSON formatter helps you format and validate JSON data. It can also escape JSON text for embedding inside a string and restore escaped text to its original form.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-json" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/json.81094a1640e827cd094968434e94a0f7af3dd765bfffe7e9395e42614c3ceb67.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;Formatting &lt;code&gt;{&amp;quot;name&amp;quot;:&amp;quot;Alice&amp;quot;,&amp;quot;items&amp;quot;:[1,true]}&lt;/code&gt; produces readable multi-line JSON using the selected indentation. Invalid JSON reports a parse error; escape and unescape operate on text and never execute it. Everything is processed locally.&lt;/p&gt;
+&lt;h3 id="how-to-use"&gt;How to use
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Format&lt;/strong&gt;: Validate the JSON and output readable multi-line text using the selected indentation.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Minify&lt;/strong&gt;: Remove unnecessary whitespace and output compact JSON.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Validate&lt;/strong&gt;: Check whether the JSON is valid without changing the result.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Escape&lt;/strong&gt;: Escape quotes, backslashes, and control characters so JSON can be embedded in another JSON string.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Unescape&lt;/strong&gt;: Restore escaped text to the original JSON text.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;All processing happens locally in your browser. Your JSON is not uploaded.&lt;/p&gt;</description></item><item><title>Base Converter</title><link>https://blog.codeglimpse.top/en/tools/binary/</link><pubDate>Sat, 21 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/binary/</guid><description>&lt;p&gt;A simple and efficient online base converter that supports conversion between Binary (Base 2), Octal (Base 8), Decimal (Base 10), Hexadecimal (Base 16), and any custom base from 2 to 36.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-binary" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/binary-core.e3f2463e38c2f2cc8d252aa15d1cec99b17b69372d417f40ecd830393b5e1269.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/binary.575a2ea0ac9f66bb654ce538ae3e21c8b34500f5ea6c037ddbf242529d49683c.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;Decimal &lt;code&gt;255&lt;/code&gt; becomes binary &lt;code&gt;11111111&lt;/code&gt; and hexadecimal &lt;code&gt;FF&lt;/code&gt;. Input and custom bases support 2 through 36; empty input, invalid digits, or values outside the safe integer range are rejected. Processing stays local in the browser.&lt;/p&gt;
+&lt;h3 id="how-to-use"&gt;How to Use
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Select Source Base&lt;/strong&gt;: Choose the base of the number you want to convert from the dropdown menu.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Enter Value&lt;/strong&gt;: Type the number into the &amp;ldquo;Input Value&amp;rdquo; field.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;View Results&lt;/strong&gt;: The tool will automatically display the converted values in Binary, Octal, Decimal, Hexadecimal, and a custom base.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Custom Base&lt;/strong&gt;: You can change the target custom base by adjusting the number in the &amp;ldquo;Custom Base&amp;rdquo; header.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Copy Results&lt;/strong&gt;: Click the &amp;ldquo;Copy&amp;rdquo; button next to any result to copy it to your clipboard.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="common-bases"&gt;Common Bases
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Binary (Base 2)&lt;/strong&gt;: Used in computer systems, consisting of only 0 and 1.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Octal (Base 8)&lt;/strong&gt;: Uses digits 0-7, often used in older computing systems.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Decimal (Base 10)&lt;/strong&gt;: The standard system used by humans, consisting of digits 0-9.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hexadecimal (Base 16)&lt;/strong&gt;: Uses digits 0-9 and letters A-F, widely used in programming and web design for color codes and memory addresses.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="base-conversion-table"&gt;Base Conversion Table
+&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Decimal&lt;/th&gt;
+&lt;th&gt;Binary&lt;/th&gt;
+&lt;th&gt;Octal&lt;/th&gt;
+&lt;th&gt;Hex&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;101&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;1010&lt;/td&gt;
+&lt;td&gt;12&lt;/td&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;15&lt;/td&gt;
+&lt;td&gt;1111&lt;/td&gt;
+&lt;td&gt;17&lt;/td&gt;
+&lt;td&gt;F&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;16&lt;/td&gt;
+&lt;td&gt;10000&lt;/td&gt;
+&lt;td&gt;20&lt;/td&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</description></item><item><title>SHA Hash Generator</title><link>https://blog.codeglimpse.top/en/tools/sha/</link><pubDate>Fri, 20 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/sha/</guid><description>&lt;p&gt;Secure Hash Algorithms (SHA) are a family of cryptographic hash functions designed by the NSA. They are widely used for security applications and data integrity verification.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-sha" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/sha-core.61d8f90cbf3502acf55718d89c552cfe263bded5eb2c73a990fa1f10616ecd23.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/sha.605168a097c9c8b67b6f4832ea8d0bb3180918fb9a2c0fef35ea14682f2a2686.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;For input &lt;code&gt;abc&lt;/code&gt;, SHA-256 in lower-case is &lt;code&gt;ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad&lt;/code&gt;. SHA-1, SHA-256, SHA-384, and SHA-512 are supported; text is hashed locally and is not uploaded.&lt;/p&gt;
+&lt;h3 id="how-to-use-sha-generator"&gt;How to Use SHA Generator
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Enter the text or string you want to hash in the input field.&lt;/li&gt;
+&lt;li&gt;Select the desired SHA algorithm (SHA-1, SHA-256, SHA-384, or SHA-512) from the dropdown.&lt;/li&gt;
+&lt;li&gt;Choose the output format (Lowercase or Uppercase).&lt;/li&gt;
+&lt;li&gt;The hash will be generated automatically as you type, or you can click the &amp;ldquo;Generate&amp;rdquo; button.&lt;/li&gt;
+&lt;li&gt;Copy the resulting hash for your use.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="available-algorithms"&gt;Available Algorithms
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;SHA-1&lt;/strong&gt;: Produces a 160-bit (40-character) hash. No longer considered secure for cryptographic purposes but still used for non-security tasks like Git checksums.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SHA-256&lt;/strong&gt;: Part of the SHA-2 family, produces a 256-bit (64-character) hash. It is currently one of the most widely used hash functions (e.g., in Bitcoin).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SHA-384&lt;/strong&gt;: A more secure version of SHA-2, producing a 384-bit (96-character) hash.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SHA-512&lt;/strong&gt;: The strongest of the SHA-2 family, producing a 512-bit (128-character) hash.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: For modern security needs, SHA-256 or higher is recommended. SHA-1 is considered weak and should be avoided for sensitive data.&lt;/p&gt;
+&lt;/blockquote&gt;</description></item><item><title>MD5 Hash Generator</title><link>https://blog.codeglimpse.top/en/tools/md5/</link><pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/md5/</guid><description>&lt;p&gt;MD5 (Message-Digest Algorithm 5) is a widely used cryptographic hash function that produces a 128-bit (16-byte) hash value. It is commonly used to verify data integrity and for checksums.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-md5" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/md5-core.9818c83515089950885fa174c80c6b6c45cb6674f8f4a4ac325f9017168c1820.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/md5.beb305e5b35cea746a45b87e509bde61f557ff165821e69b482a43dac8eba52e.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;The MD5 digest of &lt;code&gt;hello&lt;/code&gt; is &lt;code&gt;5d41402abc4b2a76b9719d911017c592&lt;/code&gt;. Output is always a 32-character hexadecimal string; MD5 is not suitable for password storage or collision resistance. Text is hashed locally and is not uploaded.&lt;/p&gt;
+&lt;h3 id="how-to-use-md5-hash-generator"&gt;How to Use MD5 Hash Generator
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Enter the text or string you want to hash in the input field.&lt;/li&gt;
+&lt;li&gt;The MD5 hash will be generated automatically as you type, or you can click the &amp;ldquo;Generate&amp;rdquo; button.&lt;/li&gt;
+&lt;li&gt;Copy the resulting MD5 hash for your use.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="understanding-md5"&gt;Understanding MD5
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;One-way Function&lt;/strong&gt;: MD5 is designed to be a one-way function, meaning it is computationally infeasible to reverse the process and retrieve the original input from the hash.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fixed Length&lt;/strong&gt;: Regardless of the input size, the MD5 hash is always 32 characters (hexadecimal).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Deterministic&lt;/strong&gt;: The same input will always produce the same hash value.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Sensitivity&lt;/strong&gt;: Even a tiny change in the input (like adding a single space) will result in a completely different hash.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: MD5 is no longer considered secure for cryptographic purposes such as password hashing due to vulnerabilities to collision attacks. For security-sensitive applications, use stronger algorithms like SHA-256 or bcrypt.&lt;/p&gt;
+&lt;/blockquote&gt;</description></item><item><title>Color Picker &amp; Converter</title><link>https://blog.codeglimpse.top/en/tools/color/</link><pubDate>Tue, 17 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/color/</guid><description>&lt;p&gt;A simple and intuitive tool to pick colors and convert them between HEX, RGB, and HSL formats.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-color" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/color-core.7c3cb0fe5f356b4ca72d975b334c98554e6f75d8d48478e6b8db631cd7e3d82f.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/color.4e175fbe631eeab19dd1a30457a0972d0242e962047726f6a54c65d21c3c884d.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;Entering &lt;code&gt;#FF0000&lt;/code&gt; gives &lt;code&gt;rgb(255, 0, 0)&lt;/code&gt; and &lt;code&gt;hsl(0, 100%, 50%)&lt;/code&gt;. Three- and six-digit HEX values are supported; RGB/HSL values are clamped to valid ranges, while non-integers and invalid formats show an error. Color values are processed locally.&lt;/p&gt;
+&lt;h3 id="how-to-use"&gt;How to use
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Pick a Color&lt;/strong&gt;: Use the color picker or click the preview box to choose a color visually.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HEX Input&lt;/strong&gt;: Enter a 6-digit hex code (e.g., &lt;code&gt;#FF5733&lt;/code&gt;) to see its RGB and HSL equivalents.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RGB/HSL Inputs&lt;/strong&gt;: Adjust the individual values to fine-tune your color.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Copy&lt;/strong&gt;: Click the &lt;strong&gt;Copy&lt;/strong&gt; button next to any format to copy it to your clipboard.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="understanding-color-formats"&gt;Understanding Color Formats
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;HEX&lt;/strong&gt;: A hexadecimal representation of RGB values, commonly used in web design.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RGB&lt;/strong&gt;: Red, Green, and Blue values (0-255).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HSL&lt;/strong&gt;: Hue (0-360), Saturation (0-100%), and Lightness (0-100%). It&amp;rsquo;s often more intuitive for humans to understand than RGB.&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Unix Timestamp Converter</title><link>https://blog.codeglimpse.top/en/tools/time/</link><pubDate>Mon, 16 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/time/</guid><description>&lt;p&gt;A Unix timestamp is a way to track time as a running total of seconds. This count starts at the Unix Epoch on January 1st, 1970 at UTC. This tool helps you convert between these timestamps and human-readable dates.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-time" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/time-core.7c7482ff03f992338123f9172a1d2a16c29c25125e650692bf8847ed639bb275.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/time.6db8e637f9b2f77ade7a6557e2038938944918fc1ac37db366eebdd613b88e6d.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;Timestamp &lt;code&gt;0&lt;/code&gt; in UTC corresponds to &lt;code&gt;1970-01-01 00:00:00&lt;/code&gt;. The tool distinguishes seconds from milliseconds and rejects invalid dates, non-numeric values, and unsafe integers; nonexistent local times during daylight-saving transitions are also rejected. Conversion stays in the browser.&lt;/p&gt;
+&lt;h3 id="how-to-use"&gt;How to use
+&lt;/h3&gt;&lt;p&gt;Choose timestamp or date-time mode, enter a value, select a time zone, and convert. Results are calculated locally and are never submitted to a server.&lt;/p&gt;
+&lt;h3 id="what-is-unix-time"&gt;What is Unix Time?
+&lt;/h3&gt;&lt;p&gt;Unix time (also known as Epoch time, POSIX time, seconds since the Epoch, or UNIX Epoch time) is a system for describing a point in time. It is the number of seconds that have elapsed since the Unix epoch, minus leap seconds; the Unix epoch is 00:00:00 UTC on 1 January 1970.&lt;/p&gt;</description></item><item><title>Base64 Encoder/Decoder</title><link>https://blog.codeglimpse.top/en/tools/base64/</link><pubDate>Sun, 15 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/base64/</guid><description>&lt;p&gt;Base64 is an encoding scheme used to represent binary data in an ASCII string format. It&amp;rsquo;s commonly used when binary data needs to be transferred over media that are designed to deal with textual data.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-base64" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/base64-core.a609b3d1677c7b1fcba01b349e3a0cf4a898aa0de08f0ccc22a61c7eed9ca93a.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/base64.08793a4bc6f24e6cbda7a78274189b1294b6932d7d183f8a283a822511858267.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;Encoding &lt;code&gt;你好&lt;/code&gt; produces &lt;code&gt;5L2g5aW9&lt;/code&gt;. Input is treated as UTF-8 text; empty input is also valid. The result is generated locally in the browser and is not uploaded.&lt;/p&gt;
+&lt;h3 id="how-to-use"&gt;How to use
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;To Encode&lt;/strong&gt;: Paste your plain text into the input box and click the &lt;strong&gt;Encode&lt;/strong&gt; button.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;To Decode&lt;/strong&gt;: Paste your Base64 encoded string into the input box and click the &lt;strong&gt;Decode&lt;/strong&gt; button.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="understanding-base64"&gt;Understanding Base64
+&lt;/h3&gt;&lt;p&gt;Base64 is not encryption. It&amp;rsquo;s a way to represent data in a format that&amp;rsquo;s safe for transport.&lt;/p&gt;</description></item><item><title>BMI Calculator</title><link>https://blog.codeglimpse.top/en/tools/bmi/</link><pubDate>Sat, 14 Mar 2026 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/tools/bmi/</guid><description>&lt;p&gt;Body Mass Index (BMI) is a simple index of weight-for-height that is commonly used to classify underweight, overweight and obesity in adults.&lt;/p&gt;
+&lt;div class="tool-wrapper" id="tool-bmi" data-lang="en" data-clarity-region="tool"&gt;
+&lt;div class="tool-loader" role="status" aria-live="polite"&gt;
+Loading...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/clipboard.dd92090689549b70b9b0d8aa5119328ca36561c3c9b1e406c901c9192409d142.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/tool-ui.dfebef9a2dc10bfaadc45b0fa8c3e381958fc3045c778476de1c91efc0bad3b4.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/bmi-core.21f22e45b130958b5742cf6f5868f94a7b0ec90640eb9ca85c661096f699c81c.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/bmi.27b98d0aa686e908fc09e8742693ea32418538cb4ebca6ebc761f597787d2b70.js" defer&gt;&lt;/script&gt;
+&lt;script src="https://blog.codeglimpse.top/js/tools/share.7342ae5f646d9dfe0f64f3bc9d0718338a168400c334ed1def490bb74b156c8f.js" defer&gt;&lt;/script&gt;
+&lt;h3 id="examples-and-limits"&gt;Examples and limits
+&lt;/h3&gt;&lt;p&gt;With a height of &lt;code&gt;175 cm&lt;/code&gt; and weight of &lt;code&gt;70 kg&lt;/code&gt;, the BMI is about &lt;code&gt;22.9&lt;/code&gt;. Height and weight must be positive finite numbers. This is a screening reference, not medical advice, and values stay in the browser.&lt;/p&gt;
+&lt;h3 id="how-to-use"&gt;How to use
+&lt;/h3&gt;&lt;p&gt;Enter height and weight, then calculate. The result is generated locally in the browser; use the clear action to remove the current inputs and result.&lt;/p&gt;
+&lt;h3 id="bmi-categories-who-standard"&gt;BMI Categories (WHO Standard)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Underweight&lt;/strong&gt;: &amp;lt; 18.5&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Normal weight&lt;/strong&gt;: 18.5 - 24.9&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Overweight&lt;/strong&gt;: 25.0 - 29.9&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Obesity&lt;/strong&gt;: &amp;gt;= 30.0&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Note: BMI is a useful measure of overweight and obesity. It is calculated from your height and weight. BMI is an estimate of body fat and a good gauge of your risk for diseases that can occur with more body fat.&lt;/p&gt;
+&lt;/blockquote&gt;</description></item></channel></rss>

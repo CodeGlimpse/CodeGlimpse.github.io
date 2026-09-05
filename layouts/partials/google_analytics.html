@@ -1,26 +1,17 @@
-{{- $googleAnalyticsID := "G-Q70SQCVRF7" -}}
-{{- $baiduAnalyticsID := "ffa021be8a9760a0c063cb6e6b71e095" -}}
-{{- $clarityProjectID := "occc2jaghm" -}}
-<script async src="https://www.googletagmanager.com/gtag/js?id={{ $googleAnalyticsID }}"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag() { dataLayer.push(arguments); }
-gtag('js', new Date());
-gtag('config', '{{ $googleAnalyticsID }}');
-</script>
-<script type="text/javascript">
-(function (c, l, a, r, i, t, y) {
-    c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
-    t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;
-    y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
-})(window, document, 'clarity', 'script', '{{ $clarityProjectID }}');
-</script>
-<script>
-var _hmt = _hmt || [];
-(function () {
-    var hm = document.createElement('script');
-    hm.src = 'https://hm.baidu.com/hm.js?{{ $baiduAnalyticsID }}';
-    var firstScript = document.getElementsByTagName('script')[0];
-    firstScript.parentNode.insertBefore(hm, firstScript);
-})();
-</script>
+{{- $analytics := .Site.Params.analytics | default (dict) -}}
+{{- $googleAnalyticsID := index $analytics "googleID" | default "" -}}
+{{- $baiduAnalyticsID := index $analytics "baiduID" | default "" -}}
+{{- $clarityProjectID := index $analytics "clarityID" | default "" -}}
+{{- $analyticsPrivacyScript := resources.Get "js/analytics-privacy.js" | resources.Minify | fingerprint "sha256" -}}
+{{- $analyticsScript := resources.Get "js/analytics.js" | resources.Minify | fingerprint "sha256" -}}
+{{/*
+  Policy B: providers load by default, while the visible bilingual notice and
+  the privacy page explain the collection boundary. The local loader supports
+  an explicit opt-out and never sends tool values or URL fragments.
+*/}}
+<script type="text/javascript" src="{{ $analyticsPrivacyScript.RelPermalink }}" defer></script>
+<script type="text/javascript" src="{{ $analyticsScript.RelPermalink }}" defer
+    data-codeglimpse-analytics-config
+    data-google-id="{{ $googleAnalyticsID }}"
+    data-baidu-id="{{ $baiduAnalyticsID }}"
+    data-clarity-id="{{ $clarityProjectID }}"></script>

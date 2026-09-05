@@ -18,6 +18,13 @@ test('validates expected success responses and JSON arrays', () => {
     assert.deepEqual(errors, []);
 });
 
+test('requires source provenance only for production HTML checks', () => {
+    const page = '<html lang="zh-cn"><head><title>T</title><meta name="description" content="T"><link rel="canonical" href="https://example.com/"><link rel="alternate" hreflang="zh-cn" href="https://example.com/"><link rel="alternate" hreflang="en" href="https://example.com/en/"><link rel="alternate" hreflang="x-default" href="https://example.com/"><link rel="stylesheet" href="/style.css"><script src="/js/toast.a.js"></script><script src="/js/workspace.b.js"></script></head><body><main><script data-codeglimpse-analytics-config src="/js/analytics.c.js"></script><script src="/js/analytics-privacy.d.js"></script><div id="codeglimpse-privacy-notice"></div></main></body></html>';
+    const productionErrors = checker.validateResponse({ path: '/', status: 200, html: true, provenance: true }, 200, page, 'https://example.com/');
+    assert.deepEqual(productionErrors, ['missing 40-character source marker']);
+    assert.deepEqual(checker.validateResponse({ path: '/', status: 200, html: true }, 200, page, 'https://example.com/'), []);
+});
+
 test('publishes both language routes for every registered tool', () => {
     const toolChecks = checker.checks.filter((check) => check.toolId);
     assert.equal(toolChecks.length, 44);
@@ -48,7 +55,7 @@ test('validates tool metadata and discovers local assets', () => {
     const page = '<html lang="en"><head><title>Tool</title><meta name="description" content="Tool"><link rel="canonical" href="https://example.com/en/tools/json/"><link rel="alternate" hreflang="zh-cn" href="https://example.com/tools/json/"><link rel="alternate" hreflang="en" href="https://example.com/en/tools/json/"><link rel="alternate" hreflang="x-default" href="https://example.com/en/tools/json/"><link rel="stylesheet" href="/style.css"><script src="/js/toast.abc.js"></script><script src="/js/workspace.ghi.js"></script></head><body><main><img src="/img/icon.svg"><script src="/js/tools/json.abc.js"></script><script src="/js/tools/clipboard.def.js"></script><script src="/js/tools/tool-ui.ghi.js"></script><script src="/js/tools/share.jkl.js"></script></main></body></html>';
     const pageWithMissingContainer = page.replace('<img src="/img/icon.svg">', '<div id="tool-json"></div><img src="/img/icon.svg">');
     assert.deepEqual(
-        checker.validateResponse({ path: '/en/tools/json/', status: 200, html: true, language: 'en', toolId: 'json' }, 200, pageWithMissingContainer, 'https://example.com/en/tools/json/'),
+        checker.validateResponse({ path: '/en/tools/json/', status: 200, html: true, language: 'en', toolId: 'json' }, 200, pageWithMissingContainer, 'http://127.0.0.1:4173/en/tools/json/', { canonicalOrigin: 'https://example.com' }),
         [],
     );
     assert.deepEqual(

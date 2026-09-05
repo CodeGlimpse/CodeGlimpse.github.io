@@ -31,5 +31,31 @@
             </main>
         </div>
         {{ partial "footer/include.html" . }}
+        <aside id="codeglimpse-privacy-notice" class="codeglimpse-privacy-notice" role="region"
+            aria-labelledby="codeglimpse-privacy-notice-title" data-notice-version="1">
+            <div class="codeglimpse-privacy-notice__content">
+                <strong id="codeglimpse-privacy-notice-title">
+                    {{ if eq .Language.Lang "zh-cn" }}隐私提示{{ else }}Privacy notice{{ end }}
+                </strong>
+                <p>
+                    {{ if eq .Language.Lang "zh-cn" -}}
+                    本站使用 Google Analytics、百度统计和 Microsoft Clarity 了解页面访问与交互表现；工具输入、密码、JWT、分享内容和本地预设不会作为统计数据发送。
+                    {{- else -}}
+                    This site uses Google Analytics, Baidu Analytics, and Microsoft Clarity to understand visits and interactions; tool inputs, passwords, JWTs, shared content, and local presets are not sent as analytics data.
+                    {{- end }}
+                </p>
+                <div class="codeglimpse-privacy-notice__actions">
+                    <a href="{{ "privacy/" | relLangURL }}">
+                        {{ if eq .Language.Lang "zh-cn" }}查看隐私说明{{ else }}Privacy details{{ end }}
+                    </a>
+                    <button type="button" data-privacy-optout>
+                        {{ if eq .Language.Lang "zh-cn" }}关闭统计{{ else }}Disable analytics{{ end }}
+                    </button>
+                    <button type="button" data-privacy-dismiss>
+                        {{ if eq .Language.Lang "zh-cn" }}知道了{{ else }}Dismiss{{ end }}
+                    </button>
+                </div>
+            </div>
+        </aside>
     </body>
 </html>

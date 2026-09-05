@@ -3,6 +3,8 @@ const { TOOL_IDS, TOOL_REGISTRY } = require('./tool-registry.cjs');
 const checks = [
     { path: '/', status: 200, html: true, language: 'zh-cn' },
     { path: '/en/', status: 200, html: true, language: 'en' },
+    { path: '/privacy/', status: 200, html: true, language: 'zh-cn' },
+    { path: '/en/privacy/', status: 200, html: true, language: 'en' },
     { path: '/tools/', status: 200, html: true, language: 'zh-cn' },
     { path: '/en/tools/', status: 200, html: true, language: 'en' },
     { path: '/links/', status: 200, html: true, language: 'zh-cn' },
@@ -16,15 +18,31 @@ const checks = [
     { path: '/sitemap.xml', status: 200 },
     { path: '/sw.js', status: 200 },
     { path: '/offline.html', status: 200 },
+    { path: '/CNAME', status: 200, exactText: 'blog.codeglimpse.top' },
     { path: '/manifest.webmanifest', status: 404 },
     { path: '/img/app-icon.svg', status: 404 },
     { path: '/index.json', status: 404 },
     { path: '/en/index.json', status: 404 },
 ];
 
+for (const script of [
+    'CleanupOpenClawForWindows.ps1',
+    'CleanupOpenClawForLinux.sh',
+    'CleanupOpenClawForMacOS.sh',
+]) {
+    checks.push({ path: `/post/openclaw-uninstall/${script}`, status: 200, resource: true });
+}
+
 for (const toolId of TOOL_IDS) {
     checks.push({ path: `/tools/${toolId}/`, status: 200, html: true, language: 'zh-cn', toolId });
     checks.push({ path: `/en/tools/${toolId}/`, status: 200, html: true, language: 'en', toolId });
+}
+
+for (const check of checks) {
+    if (check.html) {
+        check.analytics = true;
+        check.provenance = true;
+    }
 }
 
 function normalizeBaseUrl(value) {
@@ -83,7 +101,25 @@ function collectLocalAssetUrls(pageUrl, body) {
     return [...assets];
 }
 
-function validateResponse(check, status, body, pageUrl = null) {
+function collectLocalLinkUrls(pageUrl, body) {
+    const links = new Set();
+    for (const tag of extractTags(body, 'a')) {
+        const attributes = extractAttributes(tag);
+        const raw = attributes.href;
+        if (!raw || /^(?:data|blob|mailto|javascript|tel):/i.test(raw)) continue;
+        try {
+            const url = new URL(raw, pageUrl);
+            if (url.origin !== new URL(pageUrl).origin) continue;
+            url.hash = '';
+            links.add(url.toString());
+        } catch {
+            // Invalid URLs are reported by the page-specific metadata checks.
+        }
+    }
+    return [...links];
+}
+
+function validateResponse(check, status, body, pageUrl = null, options = {}) {
     const errors = [];
     if (status !== check.status) {
         errors.push(`expected HTTP ${check.status}, received ${status}`);
@@ -98,6 +134,10 @@ function validateResponse(check, status, body, pageUrl = null) {
         }
     }
 
+    if (check.exactText !== undefined && status === check.status && body.trim() !== check.exactText) {
+        errors.push(`expected exact text ${JSON.stringify(check.exactText)}`);
+    }
+
     if (check.html && status === check.status) {
         if (!/<html\b/i.test(body)) errors.push('expected an HTML document');
         if (!/<main\b/i.test(body)) errors.push('missing main landmark');
@@ -110,7 +150,10 @@ function validateResponse(check, status, body, pageUrl = null) {
         if (!description?.content?.trim()) errors.push('missing meta description');
         const canonical = findTag(body, 'link', (attributes) => attributes.rel?.toLowerCase() === 'canonical');
         if (!canonical?.href) errors.push('missing canonical link');
-        if (pageUrl && canonical?.href !== pageUrl) errors.push(`canonical does not match ${pageUrl}`);
+        const expectedCanonical = pageUrl && options.canonicalOrigin
+            ? endpointUrl(normalizeBaseUrl(options.canonicalOrigin), check.path)
+            : pageUrl;
+        if (expectedCanonical && canonical?.href !== expectedCanonical) errors.push(`canonical does not match ${expectedCanonical}`);
         const alternates = extractTags(body, 'link').map(extractAttributes)
             .filter((attributes) => attributes.rel?.toLowerCase() === 'alternate' && attributes.hreflang)
             .reduce((map, attributes) => map.set(attributes.hreflang.toLowerCase(), attributes.href), new Map());
@@ -130,6 +173,28 @@ function validateResponse(check, status, body, pageUrl = null) {
                 if (!new RegExp(`/js/tools/${asset}\\.[^"']+\\.js`, 'i').test(body)) {
                     errors.push(`missing tool asset: ${asset}`);
                 }
+            }
+        }
+        if (check.analytics) {
+            if (!/data-codeglimpse-analytics-config/i.test(body)) {
+                errors.push('missing analytics configuration marker');
+            }
+            if (!/\/js\/analytics-privacy\.[^"']+\.js/i.test(body)) {
+                errors.push('missing analytics privacy marker script');
+            }
+            if (!/id=(?:["']?)codeglimpse-privacy-notice(?:["']?)(?:\s|>)/i.test(body)) {
+                errors.push('missing bilingual privacy notice');
+            }
+            if (options.expectClarity && !body.includes('occc2jaghm')) {
+                errors.push('missing Microsoft Clarity project marker');
+            }
+        }
+        if (check.provenance) {
+            const source = findTag(body, 'meta', (attributes) => attributes.name === 'codeglimpse-source')?.content;
+            if (!/^[a-f0-9]{40}$/i.test(source || '')) {
+                errors.push('missing 40-character source marker');
+            } else if (options.sourceCommit && source !== options.sourceCommit) {
+                errors.push(`source marker does not match ${options.sourceCommit}`);
             }
         }
         if (!/<link\b[^>]*rel=(?:["']stylesheet["']|stylesheet)/i.test(body)) errors.push('missing stylesheet');
@@ -160,13 +225,20 @@ async function checkEndpoint(baseUrl, check) {
                 signal: AbortSignal.timeout(15000),
             });
             const body = await response.text();
+            const options = {
+                expectClarity: process.env.SITE_EXPECT_CLARITY === 'true',
+                sourceCommit: process.env.SITE_SOURCE_COMMIT?.trim() || '',
+                canonicalOrigin: process.env.SITE_CANONICAL_ORIGIN?.trim() || '',
+            };
             lastResult = {
                 check,
                 url,
                 status: response.status,
                 body,
-                assets: check.html && response.status === check.status ? collectLocalAssetUrls(url, body) : [],
-                errors: validateResponse(check, response.status, body, url),
+                assets: check.html && response.status === check.status
+                    ? [...collectLocalAssetUrls(url, body), ...collectLocalLinkUrls(url, body)]
+                    : [],
+                errors: validateResponse(check, response.status, body, url, options),
             };
         } catch (error) {
             lastResult = { check, url, status: null, errors: [error.message] };
@@ -216,6 +288,7 @@ if (require.main === module) {
 module.exports = {
     checks,
     collectLocalAssetUrls,
+    collectLocalLinkUrls,
     endpointUrl,
     extractAttributes,
     normalizeBaseUrl,

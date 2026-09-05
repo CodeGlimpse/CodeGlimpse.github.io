@@ -1,174 +1,159 @@
 #!/usr/bin/env bash
-#
-# OpenClaw Cleanup Script v6
-# Function: Detect and uninstall openclaw packages on employee computers
-#
-# Execution flow:
-# 1. Check if Node.js exists → exit if not found
-# 2. Check package manager (npm/pnpm)
-# 3. Check if openclaw packages exist → exit if not found
-# 4. Stop all node processes → exit with error if failed
-# 5. Uninstall openclaw packages → exit with success
-#
+# Safe OpenClaw cleanup for macOS. Dry-run is the default.
 
-# Silent mode flag
+set -u
+
+APPLY=false
+ASSUME_YES=false
 SILENT=false
-if [[ "$1" == "-s" ]] || [[ "$1" == "--silent" ]]; then
-    SILENT=true
-fi
-
-# Set UTF-8 encoding
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
-# ============================================
-# Environment Setup: Ensure Node.js is in PATH
-# ============================================
-# 1. Add common macOS installation paths
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:$PATH"
-
-# 2. If node is still not found, try to locate it from the console user's environment
-if ! command -v node &> /dev/null; then
-    CONSOLE_USER=$(stat -f%Su /dev/console)
-    if [ -n "$CONSOLE_USER" ] && [ "$CONSOLE_USER" != "root" ]; then
-        # Try to get node path from user's login shell
-        USER_NODE=$(sudo -u "$CONSOLE_USER" -i which node 2>/dev/null)
-        if [ -n "$USER_NODE" ]; then
-            USER_NODE_DIR=$(dirname "$USER_NODE")
-            export PATH="$USER_NODE_DIR:$PATH"
-        fi
-    fi
-fi
-
-# Log directory - prefer ~/Library/Logs
-LOG_DIR="$HOME/Library/Logs/openclaw-cleanup"
+HAD_ERROR=false
+TARGET_PACKAGES=(openclaw openclaw-cn)
+LOG_DIR="${HOME}/Library/Logs/openclaw-cleanup"
 if ! mkdir -p "$LOG_DIR" 2>/dev/null; then
-    # Fallback to temp directory
-    LOG_DIR=$(mktemp -d)
+    LOG_DIR="$(mktemp -d "${TMPDIR:-/tmp}/openclaw-cleanup.XXXXXX")" || exit 1
 fi
 LOG_FILE="$LOG_DIR/Cleanup_$(date +'%Y%m%d_%H%M%S').log"
 
-# Output function
+usage() {
+    printf '%s\n' \
+        'Usage: CleanupOpenClawForMacOS.sh [--apply] [--yes] [--silent]' \
+        '  default   Inventory only; makes no changes.' \
+        '  --apply   Request the listed OpenClaw removals.' \
+        '  --yes     Skip the typed confirmation (controlled automation only).'
+}
+
+while (($#)); do
+    case "$1" in
+        --apply) APPLY=true ;;
+        --yes) ASSUME_YES=true ;;
+        -s|--silent) SILENT=true ;;
+        -h|--help) usage; exit 0 ;;
+        *) printf 'Unknown option: %s\n' "$1" >&2; usage >&2; exit 2 ;;
+    esac
+    shift
+done
+
 write_log() {
     local message="$1"
     local level="${2:-Info}"
-    local timestamp=$(date +'%Y-%m-%d %H:%M:%S')
-    local log_line="[$timestamp] [$level] $message"
-    
-    # write to log file
-    echo "$log_line" >> "$LOG_FILE"
-    
-    # Console output (only when not silent)
-    if [ "$SILENT" = false ]; then
-        case "$level" in
-            "Success")  echo "[SUCCESS] $message" ;;
-            "Error")    echo "[ERROR] $message" ;;
-            "Info")     echo "[INFO] $message" ;;
-            *)          echo "[$level] $message" ;;
-        esac
-    fi
+    local line="[$(date +'%Y-%m-%d %H:%M:%S')] [$level] $message"
+    printf '%s\n' "$line" >> "$LOG_FILE"
+    if [[ "$SILENT" == false ]]; then printf '%s\n' "$line"; fi
 }
 
-write_log "========== OpenClaw Cleanup Script Started ==========" "Info"
+export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+PACKAGE_MANAGER=""
+if command -v pnpm >/dev/null 2>&1; then
+    PACKAGE_MANAGER=pnpm
+elif command -v npm >/dev/null 2>&1; then
+    PACKAGE_MANAGER=npm
+fi
 
-# ============================================
-# Local Node.js Package Cleanup Function
-# ============================================
-cleanup_local_node_packages() {
-    write_log "Starting local Node.js package cleanup..." "Info"
-
-    if ! command -v node &> /dev/null; then
-        write_log "Node.js not found, skipping local package cleanup." "Info"
-        return
-    fi
-
-    local package_manager=""
-    if command -v pnpm &> /dev/null; then package_manager="pnpm"
-    elif command -v npm &> /dev/null; then package_manager="npm"
-    fi
-
-    if [ -z "$package_manager" ]; then
-        write_log "No package manager found, skipping local package cleanup." "Info"
-        return
-    fi
-
-    local target_packages=("openclaw" "openclaw-cn")
-    local found_packages=()
-    for pkg in "${target_packages[@]}"; do
-        if $package_manager list -g "$pkg" --depth=0 2>&1 | grep -qE "$pkg@[0-9]"; then
-            found_packages+=("$pkg")
+FOUND_PACKAGES=()
+if [[ -n "$PACKAGE_MANAGER" ]]; then
+    for package in "${TARGET_PACKAGES[@]}"; do
+        output="$($PACKAGE_MANAGER list -g "$package" --depth=0 --json 2>/dev/null || true)"
+        if grep -Eq "\"${package}\"[[:space:]]*:|\"name\"[[:space:]]*:[[:space:]]*\"${package}\"" <<< "$output"; then
+            FOUND_PACKAGES+=("$package")
         fi
     done
+fi
 
-    if [ ${#found_packages[@]} -eq 0 ]; then
-        write_log "No openclaw packages detected locally." "Info"
-        return
+NODE_PIDS=()
+while read -r pid command arguments; do
+    [[ "$command" =~ ^node(js)?$ ]] || continue
+    if [[ "$arguments" =~ (^|[[:space:]/])openclaw(-cn)?([[:space:]/.:_-]|$) ]]; then
+        NODE_PIDS+=("$pid")
     fi
+done < <(ps -axo pid=,comm=,args= 2>/dev/null || true)
 
-    write_log "Stopping node processes..." "Info"
-    local node_pids=$(pgrep -x node)
-    if [ -n "$node_pids" ]; then
-        for pid in $node_pids; do kill -TERM "$pid" 2>/dev/null; done
-        sleep 2
-        for pid in $(pgrep -x node); do kill -9 "$pid" 2>/dev/null; done
-    fi
-
-    for pkg in "${found_packages[@]}"; do
-        write_log "Uninstalling $pkg..." "Info"
-        if $package_manager uninstall -g "$pkg" &>/dev/null; then
-            write_log "Successfully uninstalled $pkg" "Success"
-        else
-            write_log "Failed to uninstall $pkg" "Error"
+CONTAINER_IDS=()
+CONTAINER_NAMES=()
+IMAGE_IDS=()
+IMAGE_NAMES=()
+if command -v docker >/dev/null 2>&1; then
+    while IFS='|' read -r id name image; do
+        [[ -n "$id" ]] || continue
+        if [[ "$name" =~ ^openclaw(-cn)?([-_.].*)?$ || "$image" =~ (^|/)openclaw(-cn)?([:@._-].*)?$ ]]; then
+            CONTAINER_IDS+=("$id")
+            CONTAINER_NAMES+=("$name")
         fi
-    done
+    done < <(docker ps -a --filter 'name=openclaw' --format '{{.ID}}|{{.Names}}|{{.Image}}' 2>/dev/null || true)
+
+    while IFS='|' read -r reference id; do
+        [[ -n "$id" ]] || continue
+        if [[ "$reference" =~ (^|/)openclaw(-cn)?([:@._-].*)?$ ]]; then
+            IMAGE_IDS+=("$id")
+            IMAGE_NAMES+=("$reference")
+        fi
+    done < <(docker images --format '{{.Repository}}:{{.Tag}}|{{.ID}}' 2>/dev/null || true)
+fi
+
+join_or_none() {
+    if (($#)); then printf '%s' "$*"; else printf 'none'; fi
 }
 
+write_log "OpenClaw cleanup started in $([[ "$APPLY" == true ]] && printf apply || printf dry-run) mode."
+write_log "Package manager: ${PACKAGE_MANAGER:-none}"
+write_log "Packages: $(join_or_none "${FOUND_PACKAGES[@]}")"
+write_log "OpenClaw node process IDs: $(join_or_none "${NODE_PIDS[@]}")"
+write_log "Docker containers: $(join_or_none "${CONTAINER_NAMES[@]}")"
+write_log "Docker images: $(join_or_none "${IMAGE_NAMES[@]}")"
 
-# ============================================
-# Step 6: Docker Cleanup for openclaw
-# ============================================
-cleanup_docker() {
-    write_log "Checking for Dockerized openclaw..." "Info"
+if [[ "$APPLY" == false ]]; then
+    write_log 'Dry-run complete. No process, package, container, image, file, profile, or system setting was changed.' Success
+    write_log 'Review the plan, then rerun with --apply. Add --yes only for controlled automation.'
+    exit 0
+fi
 
-    if ! command -v docker &> /dev/null; then
-        write_log "Docker not found, skipping Docker cleanup." "Info"
-        return
+if [[ "$ASSUME_YES" == false ]]; then
+    if [[ ! -t 0 ]]; then
+        write_log 'Refusing non-interactive removal without --yes.' Error
+        exit 2
     fi
+    read -r -p 'Type REMOVE OPENCLAW to apply the listed changes: ' confirmation
+    if [[ "$confirmation" != 'REMOVE OPENCLAW' ]]; then
+        write_log 'Removal was not confirmed; no changes were made.' Warning
+        exit 2
+    fi
+fi
 
-    write_log "Docker found. Searching for openclaw containers and images..." "Success"
-
-    # On macOS, Docker Desktop usually runs without sudo
-    # Find and stop/remove containers
-    containers=$(docker ps -a -q --filter "name=openclaw")
-    if [ -n "$containers" ]; then
-        write_log "Found openclaw containers. Stopping and removing them..." "Info"
-        docker stop $containers &>/dev/null
-        docker rm $containers &>/dev/null
-        write_log "Stopped and removed openclaw containers." "Success"
+for pid in "${NODE_PIDS[@]}"; do
+    if kill -TERM "$pid" 2>/dev/null; then
+        write_log "Stopped OpenClaw node process $pid." Success
     else
-        write_log "No openclaw containers found." "Info"
+        HAD_ERROR=true
+        write_log "Could not stop OpenClaw node process $pid." Error
     fi
+done
 
-    # Find and remove images
-    images=$(docker images -q "*openclaw*")
-    if [ -n "$images" ]; then
-        write_log "Found openclaw images. Removing them..." "Info"
-        docker rmi -f $images &>/dev/null
-        write_log "Removed openclaw images." "Success"
+for package in "${FOUND_PACKAGES[@]}"; do
+    if "$PACKAGE_MANAGER" uninstall -g "$package" >/dev/null 2>&1; then
+        write_log "Uninstalled package $package." Success
     else
-        write_log "No openclaw images found." "Info"
+        HAD_ERROR=true
+        write_log "Package removal failed for $package." Error
     fi
-}
+done
 
-# ============================================
-# Main Execution
-# ============================================
+for index in "${!CONTAINER_IDS[@]}"; do
+    if docker stop "${CONTAINER_IDS[$index]}" >/dev/null 2>&1 && docker rm "${CONTAINER_IDS[$index]}" >/dev/null 2>&1; then
+        write_log "Removed Docker container ${CONTAINER_NAMES[$index]}." Success
+    else
+        HAD_ERROR=true
+        write_log "Docker container removal failed for ${CONTAINER_NAMES[$index]}." Error
+    fi
+done
 
-# Run local package cleanup first
-cleanup_local_node_packages
+for index in "${!IMAGE_IDS[@]}"; do
+    if docker image rm "${IMAGE_IDS[$index]}" >/dev/null 2>&1; then
+        write_log "Removed Docker image ${IMAGE_NAMES[$index]}." Success
+    else
+        HAD_ERROR=true
+        write_log "Docker image removal failed for ${IMAGE_NAMES[$index]}." Error
+    fi
+done
 
-# Always run Docker cleanup
-cleanup_docker
-
-write_log "========== Cleanup Completed ==========" "Success"
+write_log "Cleanup completed. Log: $LOG_FILE" "$([[ "$HAD_ERROR" == true ]] && printf Warning || printf Success)"
+if [[ "$HAD_ERROR" == true ]]; then exit 1; fi
 exit 0

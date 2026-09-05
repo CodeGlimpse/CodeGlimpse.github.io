@@ -26,28 +26,40 @@ Before installing OpenClaw, please ensure your system meets the following requir
 
 OpenClaw offers multiple installation methods. Choose the one that best fits your technical preference.
 
-### 1. Recommended: Installation Script (Fastest)
+### 1. Installation Script
 
-The installation script automatically detects your OS, installs Node if necessary, and guides you through the initialization.
+The installation script detects your OS, installs Node if necessary, and guides you through initialization. Remote scripts can change at any time, so do not execute them through `curl | bash` or `iwr | iex`: download the script to a temporary file, verify the domain, and review it first. If the publisher provides a checksum or signature, verify that too.
 
 #### macOS / Linux / WSL2
 **openclaw**
 ```bash
-curl -fsSL https://openclaw.ai/install.sh | bash
+installer_path="$(mktemp)"
+curl -fL https://openclaw.ai/install.sh -o "$installer_path"
+less "$installer_path"
+bash "$installer_path"
 ```
 **openclaw-cn**
 ```bash
-curl -fsSL https://open-claw.org.cn/install-cn.sh | bash
+installer_path="$(mktemp)"
+curl -fL https://open-claw.org.cn/install-cn.sh -o "$installer_path"
+less "$installer_path"
+bash "$installer_path"
 ```
 
 #### Windows (PowerShell)
 **openclaw**
 ```powershell
-iwr -useb https://openclaw.ai/install.ps1 | iex
+$installerPath = Join-Path $env:TEMP 'openclaw-install.ps1'
+Invoke-WebRequest -Uri 'https://openclaw.ai/install.ps1' -OutFile $installerPath
+Get-Content -LiteralPath $installerPath
+& $installerPath
 ```
 **openclaw-cn (Ensure Git is installed):**
 ```powershell
-iwr -useb https://open-claw.org.cn/install-cn.ps1 | iex
+$installerPath = Join-Path $env:TEMP 'openclaw-cn-install.ps1'
+Invoke-WebRequest -Uri 'https://open-claw.org.cn/install-cn.ps1' -OutFile $installerPath
+Get-Content -LiteralPath $installerPath
+& $installerPath
 ```
 
 ### 2. Manual Installation via npm or pnpm

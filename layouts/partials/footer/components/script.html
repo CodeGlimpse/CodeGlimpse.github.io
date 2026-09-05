@@ -9,3 +9,6 @@
 
 {{- $offlineScript := resources.Get "js/offline.js" | resources.Minify | fingerprint "sha256" -}}
 <script type="text/javascript" src="{{ $offlineScript.RelPermalink }}" defer></script>
+
+{{- $privacyNoticeScript := resources.Get "js/privacy-notice.js" | resources.Minify | fingerprint "sha256" -}}
+<script type="text/javascript" src="{{ $privacyNoticeScript.RelPermalink }}" defer></script>

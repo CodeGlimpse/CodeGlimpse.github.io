@@ -8,6 +8,7 @@ const errors = [];
 const googleAnalyticsId = 'G-Q70SQCVRF7';
 const baiduAnalyticsId = 'ffa021be8a9760a0c063cb6e6b71e095';
 const clarityProjectId = 'occc2jaghm';
+const expectedSourceCommit = process.env.SOURCE_COMMIT?.trim() || '';
 
 function relativePath(filePath) {
     return path.relative(projectRoot, filePath).split(path.sep).join('/');
@@ -73,9 +74,7 @@ function checkResponsiveAvatar(relativeFile, html) {
 }
 
 function checkLocalAssetTags(relativeFile, html) {
-    const allowedExternalAssets = new Set([
-        `https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`,
-    ]);
+    const allowedExternalAssets = new Set();
     const tags = [
         /<img\b[^>]*\bsrc=(?:"([^"]+)"|'([^']+)'|([^\s>]+))[^>]*>/gi,
         /<script\b[^>]*\bsrc=(?:"([^"]+)"|'([^']+)'|([^\s>]+))[^>]*>/gi,
@@ -92,33 +91,87 @@ function checkLocalAssetTags(relativeFile, html) {
 }
 
 function checkAnalytics(relativeFile, html) {
-    const googleScript = `https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`;
-    const baiduScript = `https://hm.baidu.com/hm.js?${baiduAnalyticsId}`;
-    const clarityScriptBase = 'https://www.clarity.ms/tag/';
-    const googleScriptCount = (html.match(new RegExp(googleScript.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length;
-    const baiduScriptCount = (html.match(new RegExp(baiduScript.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length;
-    const clarityScriptBaseCount = (html.match(new RegExp(clarityScriptBase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length;
-    const clarityProjectIdCount = (html.match(new RegExp(clarityProjectId, 'g')) ?? []).length;
+    const configTag = html.match(/<script\b[^>]*data-codeglimpse-analytics-config[^>]*>/i)?.[0] ?? '';
+    const configScript = configTag.match(/\bsrc=["']?(\/js\/analytics(?:\.min)?\.[a-f0-9]{64}\.js)/i)?.[1] ?? '';
+    if (!configScript) {
+        errors.push(`${relativeFile}: missing fingerprinted analytics loader`);
+        return;
+    }
 
-    if (googleScriptCount !== 1) {
-        errors.push(`${relativeFile}: expected one Google Analytics script, found ${googleScriptCount}`);
+    function attributeValue(tag, attribute) {
+        return tag.match(new RegExp(`\\b${attribute}\\s*=\\s*(?:["']([^"']*)["']|([^\\s>]+))`, 'i'))?.[1]
+            ?? tag.match(new RegExp(`\\b${attribute}\\s*=\\s*(?:["']([^"']*)["']|([^\\s>]+))`, 'i'))?.[2]
+            ?? '';
     }
-    if (baiduScriptCount !== 1) {
-        errors.push(`${relativeFile}: expected one Baidu Analytics script, found ${baiduScriptCount}`);
+
+    for (const [attribute, expected] of [
+        ['data-google-id', googleAnalyticsId],
+        ['data-baidu-id', baiduAnalyticsId],
+        ['data-clarity-id', clarityProjectId],
+    ]) {
+        const value = attributeValue(configTag, attribute);
+        if (value !== expected) errors.push(`${relativeFile}: ${attribute} does not match the configured provider ID`);
     }
-    if (clarityScriptBaseCount !== 1 || clarityProjectIdCount !== 1) {
-        errors.push(`${relativeFile}: expected one Microsoft Clarity script for project ${clarityProjectId}`);
+
+    const loader = readOutput(configScript.replace(/^\//, ''));
+    requirePattern(relativeFile, loader, /https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=/i,
+        'analytics loader is missing the Google provider URL');
+    requirePattern(relativeFile, loader, /https:\/\/hm\.baidu\.com\/hm\.js\?/i,
+        'analytics loader is missing the Baidu provider URL');
+    requirePattern(relativeFile, loader, /https:\/\/www\.clarity\.ms\/tag\//i,
+        'analytics loader is missing the Microsoft Clarity provider URL');
+    requirePattern(relativeFile, loader, /page_location\s*:/i,
+        'analytics loader must set a sanitized page_location');
+    requirePattern(relativeFile, loader, /allow_google_signals\s*:\s*(?:false|!1)/i,
+        'Google signals must be disabled');
+    requirePattern(relativeFile, loader, /allow_ad_personalization_signals\s*:\s*(?:false|!1)/i,
+        'Google ad personalization signals must be disabled');
+    requirePattern(relativeFile, loader, /['"]codeglimpse:analytics-optout:v1['"]/i,
+        'analytics loader is missing the local opt-out key');
+    forbidPattern(relativeFile, loader, /\bidentify\s*\(/i,
+        'analytics loader must not identify individual users');
+    requirePattern(relativeFile, loader, /#cgshare=/i,
+        'analytics loader must recognize private share fragments');
+    requirePattern(relativeFile, loader, /replaceState/i,
+        'analytics loader must remove private share fragments before providers load');
+}
+
+function checkPrivacyMarkup(relativeFile, html) {
+    requirePattern(relativeFile, html, /id=(?:["']?)codeglimpse-privacy-notice(?:["']?)(?:\s|>)/i,
+        'missing bilingual privacy notice');
+    requirePattern(relativeFile, html, /data-privacy-dismiss/i,
+        'privacy notice is missing its dismiss control');
+    requirePattern(relativeFile, html, /data-privacy-optout/i,
+        'privacy notice is missing its analytics opt-out control');
+    requirePattern(relativeFile, html, /(?:href|src)=(?:["']?)[^\s>"']*privacy/i,
+        'privacy notice is missing a privacy details link');
+    requirePattern(relativeFile, html, /\/js\/analytics-privacy(?:\.min)?\.[a-f0-9]{64}\.js/i,
+        'missing fingerprinted analytics privacy marker script');
+}
+
+function checkSourceMarker(relativeFile, html) {
+    const tag = html.match(/<meta\b[^>]*\bname=(?:["']?codeglimpse-source["']?)[^>]*>/i)?.[0] ?? '';
+    const source = tag.match(/\bcontent\s*=\s*(?:["']([^"']+)["']|([^\s>]+))/i)?.[1]
+        ?? tag.match(/\bcontent\s*=\s*(?:["']([^"']+)["']|([^\s>]+))/i)?.[2]
+        ?? '';
+    if (!/^[a-f0-9]{40}$/i.test(source)) {
+        errors.push(`${relativeFile}: missing 40-character codeglimpse-source marker`);
+    } else if (expectedSourceCommit && source.toLowerCase() !== expectedSourceCommit.toLowerCase()) {
+        errors.push(`${relativeFile}: source marker ${source} does not match ${expectedSourceCommit}`);
     }
-    requirePattern(
-        relativeFile,
-        html,
-        new RegExp(`gtag\\((?:['\"])config(?:['\"]),?\\s*(?:['\"])${googleAnalyticsId}(?:['\"])\\)`, 'i'),
-        'missing Google Analytics configuration call',
-    );
-    requirePattern(relativeFile, html, /var\s+_hmt\s*=\s*_hmt\s*\|\|\s*\[\]/i,
-        'missing Baidu Analytics queue initialization');
-    requirePattern(relativeFile, html, /\.q\s*=\s*[^;]*\.push\(arguments\)[\s\S]*clarity/i,
-        'missing Microsoft Clarity queue initialization');
+}
+
+function checkToolPrivacy(relativeFile) {
+    const html = readOutput(relativeFile);
+    const toolId = relativeFile.match(/(?:^|\/)tools\/([^/]+)\/index\.html$/)?.[1] ?? '';
+    if (!toolId || !html) return;
+
+    requirePattern(relativeFile, html, /data-clarity-region=(?:["']?)tool(?:["']?)(?:\s|>)/i,
+        'tool page is missing its Clarity region marker');
+    if (['jwt', 'password'].includes(toolId)) {
+        requirePattern(relativeFile, html, /<div\b[^>]*class=["'][^"']*\bclarity-mask\b[^"']*["'][^>]*data-clarity-mask=(?:["']?)true/i,
+            'sensitive tool wrapper must be explicitly masked for Clarity');
+    }
 }
 
 function checkToolMetadata(relativeFile, expectations) {
@@ -200,6 +253,7 @@ if (!fs.existsSync(outputRoot)) {
     }
     requireFile('robots.txt');
     requireFile('sitemap.xml');
+    requireFile('CNAME');
     requireFile('favicon.png');
     requireFile('signature.svg');
     requireFile('img/github-mark.svg');
@@ -212,6 +266,8 @@ if (!fs.existsSync(outputRoot)) {
     if (zhTools.join('|') !== enTools.join('|')) {
         errors.push(`generated tool page sets differ: zh-cn=${zhTools.join(',')}, en=${enTools.join(',')}`);
     }
+    for (const toolId of zhTools) checkToolPrivacy(`tools/${toolId}/index.html`);
+    for (const toolId of enTools) checkToolPrivacy(`en/tools/${toolId}/index.html`);
 
     checkToolMetadata('tools/json/index.html', {
         title: /<title>JSON 格式化工具 \| Fernweh的个人博客<\/title>/i,
@@ -239,6 +295,8 @@ if (!fs.existsSync(outputRoot)) {
     const keyPages = [
         'index.html',
         'en/index.html',
+        'privacy/index.html',
+        'en/privacy/index.html',
         'links/index.html',
         'en/links/index.html',
         ...zhTools.map((toolId) => `tools/${toolId}/index.html`),
@@ -247,9 +305,11 @@ if (!fs.existsSync(outputRoot)) {
     for (const relativeFile of keyPages) {
         const html = readOutput(relativeFile);
         if (!html) continue;
+        checkSourceMarker(relativeFile, html);
         checkImagesHaveAlt(relativeFile, html);
         checkLocalAssetTags(relativeFile, html);
         checkAnalytics(relativeFile, html);
+        checkPrivacyMarkup(relativeFile, html);
     }
 }
 
@@ -259,4 +319,4 @@ if (errors.length > 0) {
     process.exit(1);
 }
 
-console.log('Build output check passed: homepage JSON absent, search JSON present, analytics present, and published assets verified');
+console.log('Build output check passed: bilingual privacy/analytics markers, source provenance, CNAME, search JSON, and published assets verified');

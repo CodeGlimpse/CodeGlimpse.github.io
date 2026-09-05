@@ -11,11 +11,15 @@ module.exports = defineConfig({
     fullyParallel: true,
     forbidOnly: Boolean(process.env.CI),
     retries: process.env.CI ? 2 : 0,
-    reporter: process.env.CI ? 'dot' : 'list',
+    reporter: process.env.CI
+        ? [['dot'], ['html', { open: 'never', outputFolder: 'playwright-report' }]]
+        : 'list',
+    outputDir: 'test-results',
     use: {
         baseURL,
         trace: 'retain-on-failure',
         screenshot: 'only-on-failure',
+        video: 'retain-on-failure',
         ...devices['Desktop Chrome'],
     },
     webServer: useLocalServer ? {

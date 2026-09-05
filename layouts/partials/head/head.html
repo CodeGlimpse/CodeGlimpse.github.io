@@ -3,6 +3,7 @@
 {{ if .IsHome }}<meta name="google-site-verification" content="wmOney6zJ-t1ceBP1NkI3tCCzftAbPd8ZIsgm_ltYwY">{{ end }}
 {{- $description := partialCached "data/description" . .RelPermalink -}}
 <meta name='description' {{ printf "content=%q" $description | safeHTMLAttr }}>
+{{- with .Site.Params.sourceCommit }}<meta name="codeglimpse-source" content="{{ . }}">{{ end -}}
 {{ with .Params.Keywords }}<meta name="keywords" content="{{ delimit . ", " }}">{{ end }}
 
 {{- $pageTitle := partial "data/title" . -}}

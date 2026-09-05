@@ -1,6 +1,16 @@
 const { test, expect } = require('@playwright/test');
 const { TOOL_IDS } = require('../scripts/tool-registry.cjs');
 
+const ANALYTICS_URL = /^https:\/\/(?:www\.googletagmanager\.com|www\.clarity\.ms|hm\.baidu\.com)\//i;
+
+test.beforeEach(async ({ page }) => {
+    await page.route(ANALYTICS_URL, (route) => route.fulfill({
+        body: '/* analytics provider stubbed during local browser tests */',
+        contentType: 'application/javascript',
+        status: 200,
+    }));
+});
+
 test.describe('online tools', () => {
     test('exposes Google site verification only on homepages', async ({ page }) => {
         await page.goto('/');
@@ -38,16 +48,20 @@ test.describe('online tools', () => {
         await expect(page.locator('#json-status')).toContainText('Valid JSON');
     });
 
-    test('publishes every registered tool in both languages', async ({ page }) => {
-        for (const toolId of TOOL_IDS) {
+    for (let shard = 0; shard < 4; shard += 1) {
+        test(`publishes every registered tool in both languages (shard ${shard + 1}/4)`, async ({ page }) => {
+            test.setTimeout(60_000);
+            const toolIds = TOOL_IDS.filter((toolId, index) => index % 4 === shard);
+            for (const toolId of toolIds) {
             for (const route of [`/tools/${toolId}/`, `/en/tools/${toolId}/`]) {
-                await page.goto(route);
+                await page.goto(route, { waitUntil: 'domcontentloaded' });
                 await expect(page.locator(`#tool-${toolId}`)).toBeVisible();
                 await expect(page.locator('main')).toBeVisible();
                 await expect(page.locator('h1')).toHaveCount(1);
             }
-        }
-    });
+            }
+        });
+    }
 
     test('localizes complex tool controls in both languages', async ({ page }) => {
         await page.goto('/tools/csv/');
@@ -89,6 +103,68 @@ test.describe('online tools', () => {
         await expect(page.locator('link[href*="fonts.googleapis.com" i]')).toHaveCount(0);
         await expect(page.locator('script[src*="/js/tools/json."]')).toHaveCount(1);
         await expect(page.locator('.tool-share-panel')).toBeVisible();
+    });
+
+    test('discloses analytics and masks tool data without leaking share state', async ({ page }) => {
+        const analyticsRequests = [];
+        page.on('request', (request) => {
+            if (ANALYTICS_URL.test(request.url())) {
+                analyticsRequests.push(`${request.url()}\n${request.postData() || ''}`);
+            }
+        });
+
+        await page.goto('/tools/json/');
+        await expect(page.locator('script[data-codeglimpse-analytics-provider]')).toHaveCount(3);
+        await expect(page.locator('#codeglimpse-privacy-notice')).toBeVisible();
+        await expect(page.locator('#codeglimpse-privacy-notice')).toContainText('Microsoft Clarity');
+        await expect(page.locator('#codeglimpse-privacy-notice a')).toHaveAttribute('href', '/privacy/');
+
+        const sentinel = 'PRIVACY_SENTINEL_TOOL_INPUT_123';
+        await page.locator('#json-input').fill(sentinel);
+        const hash = await page.evaluate(() => window.CodeGlimpseToolShare.buildShareHash(
+            window.CodeGlimpseToolShare.collectShareState(document.querySelector('#tool-json')),
+        ));
+        analyticsRequests.length = 0;
+
+        await page.goto(`/tools/json/${hash}`);
+        await expect(page.locator('#json-input')).toHaveValue(sentinel);
+        await expect.poll(() => page.evaluate(() => window.location.hash)).toBe('');
+        await expect(page.locator('#json-input')).toHaveAttribute('data-clarity-mask', 'true');
+        await expect(page.locator('#json-output')).toHaveAttribute('data-clarity-mask', 'true');
+        await expect(page.locator('.tool-share-panel')).toHaveAttribute('data-clarity-mask', 'true');
+
+        const analyticsPayload = analyticsRequests.join('\n');
+        expect(analyticsPayload).not.toContain(sentinel);
+        expect(analyticsPayload).not.toContain('cgshare');
+
+        await page.goto('/tools/password/');
+        await expect(page.locator('#tool-password')).toHaveClass(/clarity-mask/);
+        await expect(page.locator('#tool-password')).toHaveAttribute('data-clarity-mask', 'true');
+
+        await page.goto('/en/privacy/');
+        await expect(page.locator('#privacy')).toBeVisible();
+        await expect(page.locator('section.article-content [data-analytics-optout]')).toBeVisible();
+    });
+
+    test('honors analytics opt-out before loading providers on the next page', async ({ page }) => {
+        await page.goto('/tools/json/');
+        await expect(page.locator('script[data-codeglimpse-analytics-provider]')).toHaveCount(3);
+
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
+            page.locator('[data-privacy-optout]').click(),
+        ]);
+        await expect(page.locator('script[data-codeglimpse-analytics-provider]')).toHaveCount(0);
+        await expect.poll(() => page.evaluate(() => window.CodeGlimpseAnalytics?.enabled)).toBe(false);
+        await expect.poll(() => page.evaluate(() => localStorage.getItem('codeglimpse:analytics-optout:v1'))).toBe('true');
+
+        await page.goto('/privacy/');
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
+            page.getByRole('button', { name: '重新启用统计' }).click(),
+        ]);
+        await expect(page.locator('script[data-codeglimpse-analytics-provider]')).toHaveCount(3);
+        await expect.poll(() => page.evaluate(() => window.CodeGlimpseAnalytics?.enabled)).toBe(true);
     });
 
     test('does not expose the tools as an installable browser app', async ({ page }) => {

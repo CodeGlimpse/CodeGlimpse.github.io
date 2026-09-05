@@ -13,30 +13,54 @@ OpenClaw 小龙虾，一个最近爆火的AI代理，它的安装和使用都非
 
 我们将针对不同的操作系统（Windows, Linux, macOS）提供手动卸载步骤以及推荐的自动化清理脚本。
 
-## 自动化卸载脚本（推荐）
+## 自动化卸载脚本（先检查，再执行）
 
-为了简化卸载过程，我们编写了针对各平台的自动化清理脚本。这些脚本会自动检测 Node.js 环境、停止相关进程并清理全局包。
+清理脚本默认只做 **dry-run（只读盘点）**，列出检测到的 OpenClaw 全局包、命令行明确包含 OpenClaw 的 Node.js 进程，以及当前 Docker 上下文中名称或镜像明确匹配 OpenClaw 的资源。脚本不会停止全部 Node.js 进程，也不会扫描或删除用户目录、配置文件、注册表或任意 Docker 资源。
 
-### Windows (PowerShell)
+不要使用 `curl | bash` 或 `irm | iex` 直接执行远程脚本。请先下载、核对 SHA-256、阅读内容，再运行 dry-run。确认清单无误后使用 `-Apply`/`--apply`；交互模式还会要求输入 `REMOVE OPENCLAW`。
 
-以管理员权限打开 PowerShell，然后执行以下命令：
-   ```powershell
-   irm https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForWindows.ps1 | iex
-   ```
+### Windows（PowerShell）
 
-### Linux (Bash)
+```powershell
+$scriptUrl = 'https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForWindows.ps1'
+$scriptPath = Join-Path $env:TEMP 'CleanupOpenClawForWindows.ps1'
+Invoke-WebRequest -Uri $scriptUrl -OutFile $scriptPath
 
-打开终端，然后执行以下命令：
-   ```bash
-   curl -sSL https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForLinux.sh | bash
-   ```
+$expectedSha256 = 'eab731bd073f42fb75569be6c1dd3af37aca3214957057241ed13072fcc40daa'
+if ((Get-FileHash -Algorithm SHA256 -LiteralPath $scriptPath).Hash.ToLowerInvariant() -ne $expectedSha256) {
+    throw 'SHA-256 校验失败，请勿执行该文件。'
+}
 
-### macOS (Bash)
+Get-Content -LiteralPath $scriptPath
+& $scriptPath          # dry-run，只读盘点
+& $scriptPath -Apply   # 查看同一清单并要求明确确认后执行
+```
 
-打开终端，然后执行以下命令：
-   ```bash
-   curl -sSL https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForMacOS.sh | bash
-   ```
+通常不需要管理员权限；只有当前安装位置或 Docker 环境本身要求提升权限时，才应使用管理员终端。`-Apply -Yes` 仅用于你已经审核过清单的受控自动化环境。
+
+### Linux（Bash）
+
+```bash
+script_path="$(mktemp)"
+curl -fL 'https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForLinux.sh' -o "$script_path"
+printf '%s  %s\n' '0cfab4f8823a1644ef2e5b47275b144417c271372b7b11b795cf8c60a6689cb8' "$script_path" | sha256sum -c -
+
+less "$script_path"
+bash "$script_path"          # dry-run，只读盘点
+bash "$script_path" --apply  # 要求输入 REMOVE OPENCLAW 后执行
+```
+
+### macOS（Bash）
+
+```bash
+script_path="$(mktemp)"
+curl -fL 'https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForMacOS.sh' -o "$script_path"
+printf '%s  %s\n' 'a7e6048a20a933e4297edfe64847afc8f5a206add153502ff6ac260be9d7a801' "$script_path" | shasum -a 256 -c -
+
+less "$script_path"
+bash "$script_path"          # dry-run，只读盘点
+bash "$script_path" --apply  # 要求输入 REMOVE OPENCLAW 后执行
+```
 
 ## 手动卸载步骤
 

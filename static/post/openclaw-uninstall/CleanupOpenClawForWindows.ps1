@@ -1,208 +1,169 @@
 <#
-OpenClaw Cleanup Script v6
-Function: Detect and uninstall openclaw packages on employee computers
+.SYNOPSIS
+Safely inventories or removes OpenClaw installations for the current Windows environment.
 
-Execution flow:
-1. Check if Node.js exists → exit if not found
-2. Check package manager (npm/pnpm)
-3. Check if openclaw packages exist → exit if not found
-4. Stop all node processes → exit with error if failed
-5. Uninstall openclaw packages → exit with success
+.DESCRIPTION
+The default mode is read-only. Pass -Apply to request changes. Interactive use
+requires typing REMOVE OPENCLAW; automation must add -Yes explicitly. The
+script stops only node.exe processes whose command line identifies OpenClaw,
+and it uses only the current Docker context.
 #>
 
+[CmdletBinding(SupportsShouldProcess = $true)]
 param(
-    [switch]$Silent  # Silent mode
+    [switch]$Apply,
+    [switch]$Yes,
+    [switch]$Silent
 )
 
-# Set console encoding only if running in an interactive session
-if ($Host.UI.RawUI) {
-    [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-    [Console]::InputEncoding = [System.Text.Encoding]::UTF8
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Continue'
+$script:HadError = $false
+$targetPackages = @('openclaw', 'openclaw-cn')
+$logDirectory = Join-Path ([IO.Path]::GetTempPath()) 'openclaw-cleanup'
+New-Item -ItemType Directory -LiteralPath $logDirectory -Force | Out-Null
+$logFile = Join-Path $logDirectory ("Cleanup_{0}.log" -f (Get-Date -Format 'yyyyMMdd_HHmmss'))
+
+function Write-CleanupLog {
+    param([string]$Message, [ValidateSet('Info', 'Success', 'Warning', 'Error')][string]$Level = 'Info')
+    $line = '[{0}] [{1}] {2}' -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), $Level, $Message
+    Add-Content -LiteralPath $logFile -Value $line -Encoding UTF8
+    if (-not $Silent) { Write-Host $line }
 }
 
-$ErrorActionPreference = "Continue"
-
-# Log directory
-$logDir = "C:\OpenClawCleanup"
-if (-not (Test-Path $logDir)) {
-    New-Item -ItemType Directory -Path $logDir -Force | Out-Null
-}
-$logFile = "$logDir\Cleanup_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
-
-# Output function
-function Write-Log {
-    param(
-        [string]$Message,
-        [string]$Level = "Info"
-    )
-    $timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-    $logLine = "[$timestamp] [$Level] $Message"
-    
-    # Write to log file
-    Add-Content -Path $logFile -Value $logLine -Encoding UTF8
-    
-    # Console output
-    if (-not $Silent) {
-        switch ($Level) {
-            "Success" { Write-Host "[SUCCESS] $Message" -ForegroundColor Green }
-            "Error"   { Write-Host "[ERROR] $Message" -ForegroundColor Red }
-            "Info"    { Write-Host "[INFO] $Message" -ForegroundColor Cyan }
-            default   { Write-Host "[$Level] $Message" }
-        }
+function Get-PackageManager {
+    foreach ($name in @('pnpm.cmd', 'pnpm', 'npm.cmd', 'npm')) {
+        $command = Get-Command $name -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($command) { return $command.Source }
     }
-}
-
-Write-Log "========== OpenClaw Cleanup Script Started ==========" "Info"
-
-# Function to find Node.js in user profiles
-function Find-NodePath {
-    Write-Log "Searching for Node.js in all user profiles..." "Info"
-    # Get all user profiles from C:\Users, ignore common non-user dirs
-    $userDirs = Get-ChildItem -Path (Join-Path $env:SystemDrive 'Users') -Directory -Exclude 'Public', 'Default', 'All Users' -ErrorAction SilentlyContinue
-    foreach ($userDir in $userDirs) {
-        # Use parentheses to ensure each Join-Path is evaluated independently
-        $nodePaths = @(
-            (Join-Path $userDir.FullName 'AppData\Roaming\npm'),
-            (Join-Path $userDir.FullName 'AppData\Local\Programs\nodejs')
-        )
-        foreach ($path in $nodePaths) {
-            $nodeExe = Join-Path $path 'node.exe'
-            if (Test-Path $nodeExe) {
-                Write-Log "Found node.exe for user $($userDir.Name) at: $path" "Success"
-                return $path
-            }
-        }
-    }
-    Write-Log "Node.js not found in any user profile." "Info"
     return $null
 }
 
-# ============================================
-# Step 1-5: Local Node.js Package Cleanup
-# ============================================
-function Cleanup-LocalNodePackages {
-    Write-Log "Starting local Node.js package cleanup..." "Info"
+function Get-InstalledOpenClawPackages {
+    param([string]$PackageManager)
+    if (-not $PackageManager) { return @() }
+    $found = @()
+    foreach ($package in $targetPackages) {
+        $output = & $PackageManager list -g $package --depth=0 --json 2>$null | Out-String
+        if ($LASTEXITCODE -eq 0 -and $output -match ('"{0}"\s*:' -f [regex]::Escape($package))) {
+            $found += $package
+        }
+    }
+    return $found
+}
 
-    # --- Check for Node.js ---
-    Write-Log "Checking Node.js..." "Info"
-    $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
-    if (-not $nodeCmd) {
-        $userNodePath = Find-NodePath
-        if ($userNodePath) {
-            Write-Log "Adding user Node.js path to environment: $userNodePath" "Info"
-            $env:PATH = "$userNodePath;" + $env:PATH
-            $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
+function Get-OpenClawNodeProcesses {
+    $pattern = '(?i)(?:^|[\\/\s])openclaw(?:-cn)?(?:[\\/\s.:_-]|$)'
+    return @(Get-CimInstance Win32_Process -Filter "Name = 'node.exe'" -ErrorAction SilentlyContinue |
+        Where-Object { $_.CommandLine -and $_.CommandLine -match $pattern })
+}
+
+function Get-OpenClawDockerTargets {
+    if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
+        return @{ Containers = @(); Images = @() }
+    }
+
+    $containers = @()
+    foreach ($line in @(& docker ps -a --filter 'name=openclaw' --format '{{.ID}}|{{.Names}}|{{.Image}}' 2>$null)) {
+        $parts = $line -split '\|', 3
+        if ($parts.Count -ne 3) { continue }
+        if ($parts[1] -match '(?i)^openclaw(?:-cn)?(?:[-_.].*)?$' -or
+            $parts[2] -match '(?i)(?:^|/)openclaw(?:-cn)?(?:[:@._-].*)?$') {
+            $containers += [PSCustomObject]@{ Id = $parts[0]; Name = $parts[1]; Image = $parts[2] }
         }
     }
 
-    if (-not $nodeCmd) {
-        Write-Log "Node.js not found, skipping local package cleanup." "Info"
-        return # Exit function, not script
-    }
-    $nodeVersion = node --version 2>&1
-    Write-Log "Node.js detected, version: $nodeVersion" "Success"
-
-    # --- Check for package manager ---
-    Write-Log "Checking package manager..." "Info"
-    $npmCmd = Get-Command npm -ErrorAction SilentlyContinue
-    $pnpmCmd = Get-Command pnpm -ErrorAction SilentlyContinue
-    $packageManager = $null
-    if ($npmCmd) { $packageManager = "npm" }
-    if ($pnpmCmd) { $packageManager = "pnpm" } # pnpm takes precedence
-
-    if (-not $packageManager) {
-        Write-Log "Neither npm nor pnpm found, skipping local package cleanup." "Info"
-        return # Exit function, not script
-    }
-    Write-Log "Using package manager: $packageManager" "Success"
-
-    # --- Check for openclaw packages ---
-    Write-Log "Checking openclaw packages..." "Info"
-    $targetPackages = @("openclaw", "openclaw-cn")
-    $foundPackages = @()
-    foreach ($pkg in $targetPackages) {
-        $result = & $packageManager list -g $pkg --depth=0 2>&1 | Out-String
-        if ($result -match "$pkg@\d+" -or ($packageManager -eq "pnpm" -and $result -notmatch "No packages found")) {
-            $foundPackages += $pkg
-            Write-Log "Package found: $pkg" "Success"
+    $images = @()
+    foreach ($line in @(& docker images --format '{{.Repository}}:{{.Tag}}|{{.ID}}' 2>$null)) {
+        $parts = $line -split '\|', 2
+        if ($parts.Count -eq 2 -and $parts[0] -match '(?i)(?:^|/)openclaw(?:-cn)?(?:[:@._-].*)?$') {
+            $images += [PSCustomObject]@{ Reference = $parts[0]; Id = $parts[1] }
         }
     }
+    return @{ Containers = $containers; Images = $images }
+}
 
-    if ($foundPackages.Count -eq 0) {
-        Write-Log "No openclaw packages detected locally." "Info"
-        return # Exit function, not script
+function Confirm-Removal {
+    if (-not $Apply) { return $false }
+    if ($Yes) { return $true }
+    if (-not [Environment]::UserInteractive) {
+        Write-CleanupLog 'Refusing non-interactive removal without -Yes.' 'Error'
+        return $false
     }
+    $answer = Read-Host 'Type REMOVE OPENCLAW to apply the listed changes'
+    return $answer -ceq 'REMOVE OPENCLAW'
+}
 
-    # --- Stop node processes ---
-    Write-Log "Stopping all node processes..." "Info"
-    $nodeProcesses = Get-Process -Name "node" -ErrorAction SilentlyContinue
-    if ($nodeProcesses) {
-        Stop-Process -Name "node" -Force -ErrorAction SilentlyContinue
-        Start-Sleep -Seconds 2
-        if (Get-Process -Name "node" -ErrorAction SilentlyContinue) {
-            Write-Log "Warning: Some node processes could not be stopped." "Error"
-        } else {
-            Write-Log "All node processes stopped." "Success"
+Write-CleanupLog ('OpenClaw cleanup started in {0} mode.' -f $(if ($Apply) { 'apply' } else { 'dry-run' }))
+$packageManager = Get-PackageManager
+$packages = @(Get-InstalledOpenClawPackages -PackageManager $packageManager)
+$processes = @(Get-OpenClawNodeProcesses)
+$dockerTargets = Get-OpenClawDockerTargets
+
+Write-CleanupLog ('Packages: {0}' -f $(if ($packages.Count) { $packages -join ', ' } else { 'none' }))
+Write-CleanupLog ('OpenClaw node process IDs: {0}' -f $(if ($processes.Count) { ($processes.ProcessId -join ', ') } else { 'none' }))
+Write-CleanupLog ('Docker containers: {0}' -f $(if ($dockerTargets.Containers.Count) { ($dockerTargets.Containers.Name -join ', ') } else { 'none' }))
+Write-CleanupLog ('Docker images: {0}' -f $(if ($dockerTargets.Images.Count) { ($dockerTargets.Images.Reference -join ', ') } else { 'none' }))
+
+if (-not $Apply) {
+    Write-CleanupLog 'Dry-run complete. No process, package, container, image, file, profile, or registry value was changed.' 'Success'
+    Write-CleanupLog 'Review the plan, then rerun with -Apply. Add -Yes only for controlled automation.' 'Info'
+    exit 0
+}
+
+if (-not (Confirm-Removal)) {
+    Write-CleanupLog 'Removal was not confirmed; no changes were made.' 'Warning'
+    exit 2
+}
+
+foreach ($process in $processes) {
+    if ($PSCmdlet.ShouldProcess("OpenClaw node process $($process.ProcessId)", 'Stop')) {
+        try {
+            Stop-Process -Id $process.ProcessId -ErrorAction Stop
+            Write-CleanupLog "Stopped OpenClaw node process $($process.ProcessId)." 'Success'
+        } catch {
+            $script:HadError = $true
+            Write-CleanupLog "Could not stop process $($process.ProcessId): $($_.Exception.Message)" 'Error'
         }
     }
+}
 
-    # --- Uninstall packages ---
-    Write-Log "Uninstalling openclaw packages..." "Info"
-    foreach ($pkg in $foundPackages) {
-        & $packageManager uninstall -g $pkg 2>&1 | Out-Null
+foreach ($package in $packages) {
+    if ($PSCmdlet.ShouldProcess("global package $package", "Uninstall with $packageManager")) {
+        & $packageManager uninstall -g $package
         if ($LASTEXITCODE -eq 0) {
-            Write-Log "Uninstalled: $pkg" "Success"
+            Write-CleanupLog "Uninstalled package $package." 'Success'
         } else {
-            Write-Log "Failed to uninstall: $pkg" "Error"
+            $script:HadError = $true
+            Write-CleanupLog "Package removal failed for $package." 'Error'
         }
     }
 }
 
-
-# ============================================
-# Step 6: Docker Cleanup for openclaw
-# ============================================
-function Cleanup-Docker {
-    Write-Log "Checking for Dockerized openclaw..." "Info"
-
-    $dockerCmd = Get-Command docker -ErrorAction SilentlyContinue
-    if (-not $dockerCmd) {
-        Write-Log "Docker not found, skipping Docker cleanup." "Info"
-        return
+foreach ($container in $dockerTargets.Containers) {
+    if ($PSCmdlet.ShouldProcess("Docker container $($container.Name)", 'Stop and remove')) {
+        & docker stop $container.Id | Out-Null
+        & docker rm $container.Id | Out-Null
+        if ($LASTEXITCODE -eq 0) {
+            Write-CleanupLog "Removed Docker container $($container.Name)." 'Success'
+        } else {
+            $script:HadError = $true
+            Write-CleanupLog "Docker container removal failed for $($container.Name)." 'Error'
+        }
     }
-
-    # Set Docker environment to target default pipe
-    $env:DOCKER_HOST = "npipe://./pipe/docker_engine"
-
-    Write-Log "Searching for openclaw containers and images via $env:DOCKER_HOST..." "Info"
-    # Find and stop/remove containers
-    $containers = & docker ps -a -q --filter "name=openclaw" 2>$null
-    if ($containers) {
-        & docker stop $containers 2>&1 | Out-Null
-        & docker rm $containers 2>&1 | Out-Null
-        Write-Log "Stopped and removed openclaw containers." "Success"
-    }
-
-    # Find and remove images
-    $images = & docker images -q "*openclaw*" 2>$null
-    if ($images) {
-        & docker rmi -f $images 2>&1 | Out-Null
-        Write-Log "Removed openclaw images." "Success"
-    }
-    
-    $env:DOCKER_HOST = $null # Reset
 }
 
+foreach ($image in $dockerTargets.Images) {
+    if ($PSCmdlet.ShouldProcess("Docker image $($image.Reference)", 'Remove')) {
+        & docker image rm $image.Id | Out-Null
+        if ($LASTEXITCODE -eq 0) {
+            Write-CleanupLog "Removed Docker image $($image.Reference)." 'Success'
+        } else {
+            $script:HadError = $true
+            Write-CleanupLog "Docker image removal failed for $($image.Reference)." 'Error'
+        }
+    }
+}
 
-# ============================================
-# Main Execution
-# ============================================
-
-# Run local package cleanup first
-Cleanup-LocalNodePackages
-
-# Always run Docker cleanup
-Cleanup-Docker
-
-Write-Log "========== Cleanup Completed ==========" "Success"
-exit 0
+Write-CleanupLog ('Cleanup completed. Log: {0}' -f $logFile) $(if ($script:HadError) { 'Warning' } else { 'Success' })
+exit $(if ($script:HadError) { 1 } else { 0 })

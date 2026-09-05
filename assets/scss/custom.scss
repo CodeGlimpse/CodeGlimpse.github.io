@@ -76,3 +76,110 @@
 #main-content:focus {
     outline: none;
 }
+
+.codeglimpse-privacy-notice {
+    position: fixed;
+    inset-inline: 1rem;
+    inset-block-end: 1rem;
+    z-index: 1050;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.codeglimpse-privacy-notice[hidden] {
+    display: none;
+}
+
+.codeglimpse-privacy-notice__content {
+    width: 100%;
+    max-width: 58rem;
+    padding: 1rem 1.2rem;
+    border: 1px solid var(--border-color);
+    border-inline-start: 4px solid var(--accent-color);
+    border-radius: 0.7rem;
+    background: var(--card-background);
+    color: var(--card-text-color-main);
+    box-shadow: var(--shadow-l2);
+    pointer-events: auto;
+}
+
+.codeglimpse-privacy-notice__content strong {
+    display: block;
+    margin-block-end: 0.35rem;
+    font-size: 1.35rem;
+}
+
+.codeglimpse-privacy-notice__content p {
+    margin: 0;
+    color: var(--card-text-color-secondary);
+    font-size: 1.15rem;
+    line-height: 1.5;
+}
+
+.codeglimpse-privacy-notice__actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-block-start: 0.7rem;
+}
+
+.codeglimpse-privacy-notice__actions a,
+.codeglimpse-privacy-notice__actions button {
+    min-height: 2.5rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.4rem;
+    font: inherit;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.codeglimpse-privacy-notice__actions a {
+    color: var(--accent-color);
+}
+
+.codeglimpse-privacy-notice__actions button {
+    border: 1px solid var(--accent-color);
+    background: var(--accent-color);
+    color: #fff;
+    cursor: pointer;
+}
+
+.codeglimpse-privacy-notice__actions button[data-privacy-optout] {
+    background: transparent;
+    color: var(--accent-color);
+}
+
+.codeglimpse-privacy-notice__actions button:hover {
+    filter: brightness(0.92);
+}
+
+.codeglimpse-privacy-notice__actions a:focus-visible,
+.codeglimpse-privacy-notice__actions button:focus-visible {
+    outline: 3px solid rgba(var(--primary-color-rgb), 0.45);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .codeglimpse-privacy-notice__actions button {
+        transition: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .codeglimpse-privacy-notice {
+        inset-inline: 0.75rem;
+        inset-block-end: 0.75rem;
+    }
+
+    .codeglimpse-privacy-notice__actions {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .codeglimpse-privacy-notice__actions a,
+    .codeglimpse-privacy-notice__actions button {
+        text-align: center;
+    }
+}

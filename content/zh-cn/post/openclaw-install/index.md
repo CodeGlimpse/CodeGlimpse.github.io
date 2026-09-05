@@ -26,29 +26,40 @@ OpenClaw 是一款旨在运行在用户自有设备上的个人 AI 助手平台�
 
 OpenClaw 提供了多种安装方式，你可以根据自己的技术偏好进行选择。
 
-### 1. 推荐方式：安装脚本（最快）
+### 1. 安装脚本
 
-安装脚本会自动检测你的操作系统，根据需要安装 Node，并引导你完成初始化过程。
+安装脚本会自动检测操作系统、按需安装 Node，并引导你完成初始化。远程脚本可能随时变化，因此不要使用 `curl | bash` 或 `iwr | iex` 直接执行：先下载到临时文件，核对域名并审阅内容；如果发布方提供校验和或签名，还应先完成验证。
 
 #### macOS / Linux / WSL2
 **openclaw**
 ```bash
-curl -fsSL https://openclaw.ai/install.sh | bash
+installer_path="$(mktemp)"
+curl -fL https://openclaw.ai/install.sh -o "$installer_path"
+less "$installer_path"
+bash "$installer_path"
 ```
 **openclaw-cn**
 ```bash
-curl -fsSL https://open-claw.org.cn/install-cn.sh | bash
+installer_path="$(mktemp)"
+curl -fL https://open-claw.org.cn/install-cn.sh -o "$installer_path"
+less "$installer_path"
+bash "$installer_path"
 ```
 
 #### Windows (PowerShell)
 **openclaw**
 ```powershell
-iwr -useb https://openclaw.ai/install.ps1 | iex
+$installerPath = Join-Path $env:TEMP 'openclaw-install.ps1'
+Invoke-WebRequest -Uri 'https://openclaw.ai/install.ps1' -OutFile $installerPath
+Get-Content -LiteralPath $installerPath
+& $installerPath
 ```
 **openclaw-cn**(安装脚本不会在Windows原生环境自动下载Git，请确保已安装Git)
 ```powershell
-iwr -useb https://open-claw.org.cn/install-cn.ps1 | iex
-
+$installerPath = Join-Path $env:TEMP 'openclaw-cn-install.ps1'
+Invoke-WebRequest -Uri 'https://open-claw.org.cn/install-cn.ps1' -OutFile $installerPath
+Get-Content -LiteralPath $installerPath
+& $installerPath
 ```
 
 ### 2. 通过 npm 或 pnpm 手动安装

@@ -3,6 +3,14 @@ mainSections = ["post"]
 # Output page's full content in RSS.
 rssFullContent = true
 favicon = "/favicon.png"
+sourceCommit = ""
+
+# Site-level analytics identifiers. These are public measurement IDs, not secrets.
+# The corresponding disclosure and masking policy is documented on /privacy/.
+[analytics]
+googleID = "G-Q70SQCVRF7"
+baiduID = "ffa021be8a9760a0c063cb6e6b71e095"
+clarityID = "occc2jaghm"
 
 [footer]
 since = 2025

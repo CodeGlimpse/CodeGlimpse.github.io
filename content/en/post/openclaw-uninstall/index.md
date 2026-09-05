@@ -21,30 +21,54 @@ In some cases, a simple `npm uninstall` may not be enough to remove all traces o
 - Caches stored in various user directories
 - Paths added to environment variables
 
-## Automated Uninstallation (Recommended)
+## Automated Uninstallation (Inspect Before Applying)
 
-To streamline the process, we have developed automated cleanup scripts for each platform. These scripts are designed to detect your Node.js environment, terminate any related processes, and remove the global packages.
+The cleanup scripts default to a read-only **dry run**. They list detected OpenClaw global packages, Node.js processes whose command line explicitly identifies OpenClaw, and resources in the current Docker context whose name or image explicitly matches OpenClaw. They do not stop every Node.js process or scan and remove user directories, configuration files, registry values, or arbitrary Docker resources.
+
+Do not execute remote scripts through `curl | bash` or `irm | iex`. Download the file, verify its SHA-256 digest, inspect it, and run the dry-run first. After reviewing the plan, use `-Apply`/`--apply`; interactive mode also requires typing `REMOVE OPENCLAW`.
 
 ### Windows (PowerShell)
 
-Open PowerShell with administrator privileges and execute the following command:
-   ```powershell
-   irm https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForWindows.ps1 | iex
-   ```
+```powershell
+$scriptUrl = 'https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForWindows.ps1'
+$scriptPath = Join-Path $env:TEMP 'CleanupOpenClawForWindows.ps1'
+Invoke-WebRequest -Uri $scriptUrl -OutFile $scriptPath
+
+$expectedSha256 = 'eab731bd073f42fb75569be6c1dd3af37aca3214957057241ed13072fcc40daa'
+if ((Get-FileHash -Algorithm SHA256 -LiteralPath $scriptPath).Hash.ToLowerInvariant() -ne $expectedSha256) {
+    throw 'SHA-256 verification failed. Do not run this file.'
+}
+
+Get-Content -LiteralPath $scriptPath
+& $scriptPath          # dry-run; inventory only
+& $scriptPath -Apply   # asks for explicit confirmation before changing anything
+```
+
+Administrator privileges are normally unnecessary. Use an elevated terminal only if your installation location or Docker environment specifically requires it. `-Apply -Yes` is reserved for controlled automation after the plan has been reviewed.
 
 ### Linux (Bash)
 
-Open your terminal and run the following command:
-   ```bash
-   curl -sSL https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForLinux.sh | bash
-   ```
+```bash
+script_path="$(mktemp)"
+curl -fL 'https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForLinux.sh' -o "$script_path"
+printf '%s  %s\n' '0cfab4f8823a1644ef2e5b47275b144417c271372b7b11b795cf8c60a6689cb8' "$script_path" | sha256sum -c -
+
+less "$script_path"
+bash "$script_path"          # dry-run; inventory only
+bash "$script_path" --apply  # requires typing REMOVE OPENCLAW
+```
 
 ### macOS (Bash)
 
-Open your terminal and run the following command:
-   ```bash
-   curl -sSL https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForMacOS.sh | bash
-   ```
+```bash
+script_path="$(mktemp)"
+curl -fL 'https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForMacOS.sh' -o "$script_path"
+printf '%s  %s\n' 'a7e6048a20a933e4297edfe64847afc8f5a206add153502ff6ac260be9d7a801' "$script_path" | shasum -a 256 -c -
+
+less "$script_path"
+bash "$script_path"          # dry-run; inventory only
+bash "$script_path" --apply  # requires typing REMOVE OPENCLAW
+```
 
 ## Manual Uninstallation Guide
 

@@ -321,7 +321,8 @@
 
         const restoreFromHash = () => {
             try {
-                const state = parseShareHash(windowObject.location.hash);
+                const privateHash = windowObject.__codeglimpsePrivateShareHash;
+                const state = parseShareHash(privateHash || windowObject.location.hash);
                 if (!state || state.tool !== toolId) return;
                 restoreFields(wrapper, state.fields);
                 // Let the tool finish its own event wiring before invoking a
@@ -330,6 +331,10 @@
                 notify('success', t.restored);
             } catch (error) {
                 notify('error', error.message === 'Share state is too large' ? t.tooLarge : t.invalid);
+            } finally {
+                if (windowObject.__codeglimpsePrivateShareHash) {
+                    windowObject.__codeglimpsePrivateShareHash = '';
+                }
             }
         };
         restoreFromHash();

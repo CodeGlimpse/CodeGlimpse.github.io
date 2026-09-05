@@ -1,4 +1,5 @@
-<div class="tool-wrapper" id="tool-{{ .Get "id" }}" data-lang="{{ .Page.Language.Lang }}">
+{{- $toolID := lower (.Get "id") -}}
+<div class="tool-wrapper{{ if or (eq $toolID "jwt") (eq $toolID "password") }} clarity-mask{{ end }}" id="tool-{{ .Get "id" }}" data-lang="{{ .Page.Language.Lang }}" data-clarity-region="tool"{{ if or (eq $toolID "jwt") (eq $toolID "password") }} data-clarity-mask="true"{{ end }}>
     <div class="tool-loader" role="status" aria-live="polite">
         {{ if eq .Page.Language.Lang "zh-cn" }}加载中...{{ else }}Loading...{{ end }}
     </div>

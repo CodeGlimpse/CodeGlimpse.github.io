@@ -294,6 +294,18 @@ function checkImageBudgets() {
         }
     }
 
+    const articleImages = collectFiles(contentRoot, (filePath) => (
+        /\.(?:png|jpe?g|webp)$/i.test(filePath)
+        && filePath.split(path.sep).includes('post')
+    ));
+    const maxArticleImageBytes = 550 * 1024;
+    for (const image of articleImages) {
+        const size = fs.statSync(image).size;
+        if (size > maxArticleImageBytes) {
+            errors.push(`${relativePath(image)}: article image exceeds 550 KB (${size} bytes)`);
+        }
+    }
+
     const shareImage = path.join(projectRoot, 'assets', 'img', 'og-default.png');
     if (!fs.existsSync(shareImage)) {
         errors.push(`${relativePath(shareImage)}: default social sharing image is missing`);
@@ -302,10 +314,76 @@ function checkImageBudgets() {
     }
 }
 
+function checkContentLinks() {
+    const markdownFiles = collectFiles(contentRoot, (filePath) => filePath.endsWith('.md'));
+    const directExecution = /(?:\b(?:irm|iwr|Invoke-WebRequest)\b[^\n|]*\|\s*(?:iex|Invoke-Expression)\b|\bcurl\b[^\n|]*\|\s*(?:ba)?sh\b)/i;
+
+    for (const filePath of markdownFiles) {
+        const source = fs.readFileSync(filePath, 'utf8');
+        const fencedCode = Array.from(source.matchAll(/```[^\n]*\r?\n([\s\S]*?)```/g), (match) => match[1]).join('\n');
+        if (directExecution.test(fencedCode)) {
+            errors.push(`${relativePath(filePath)}: do not publish download-and-execute pipelines; require download, verification, dry-run, and explicit apply steps`);
+        }
+
+        for (const match of source.matchAll(/!?\[[^\]]*\]\(([^)\s]+)(?:\s+["'][^"']*["'])?\)/g)) {
+            const destination = match[1].replace(/^<|>$/g, '');
+            if (!destination || /^(?:#|mailto:|tel:|data:)/i.test(destination)) continue;
+
+            let localPath = '';
+            if (/^https?:\/\//i.test(destination)) {
+                try {
+                    const url = new URL(destination);
+                    if (url.hostname !== 'blog.codeglimpse.top') continue;
+                    if (!/\.(?:ps1|sh|png|jpe?g|svg|json|txt)$/i.test(url.pathname)) continue;
+                    localPath = path.join(projectRoot, 'static', decodeURIComponent(url.pathname).replace(/^\/+/, ''));
+                } catch {
+                    errors.push(`${relativePath(filePath)}: invalid URL ${destination}`);
+                    continue;
+                }
+            } else if (destination.startsWith('/')) {
+                if (!/\.(?:ps1|sh|png|jpe?g|svg|json|txt)$/i.test(destination)) continue;
+                localPath = path.join(projectRoot, 'static', decodeURIComponent(destination).replace(/^\/+/, ''));
+            } else {
+                const relativeTarget = destination.split(/[?#]/, 1)[0];
+                try {
+                    localPath = path.resolve(path.dirname(filePath), decodeURIComponent(relativeTarget));
+                } catch {
+                    errors.push(`${relativePath(filePath)}: invalid local link ${destination}`);
+                    continue;
+                }
+            }
+
+            if (localPath && !fs.existsSync(localPath)) {
+                errors.push(`${relativePath(filePath)}: missing linked local file ${relativePath(localPath)}`);
+            }
+        }
+    }
+}
+
+function checkPrivacyPolicy() {
+    for (const language of languages) {
+        const privacyPage = path.join(contentRoot, language, 'page', 'privacy', 'index.md');
+        if (!fs.existsSync(privacyPage)) {
+            errors.push(`${relativePath(privacyPage)}: bilingual privacy page is missing`);
+            continue;
+        }
+        const source = fs.readFileSync(privacyPage, 'utf8');
+        const requiredMarkers = ['Google Analytics', 'Clarity', 'JWT', 'cgshare', 'analytics-optout'];
+        requiredMarkers.push(language === 'zh-cn' ? '百度统计' : 'Baidu Analytics');
+        for (const required of requiredMarkers) {
+            if (!source.toLowerCase().includes(required.toLowerCase())) {
+                errors.push(`${relativePath(privacyPage)}: privacy disclosure is missing ${required}`);
+            }
+        }
+    }
+}
+
 const toolIdsByLanguage = checkFrontMatterAndPages();
 checkToolDirectories(toolIdsByLanguage);
 checkToolImplementations();
 checkImageBudgets();
+checkContentLinks();
+checkPrivacyPolicy();
 
 if (errors.length > 0) {
     console.error(`Content structure check failed: ${errors.length} issue(s)`);

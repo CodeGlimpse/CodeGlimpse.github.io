@@ -38,6 +38,14 @@
     [main.params]
         icon = "tool"
 
+[[main]]
+    identifier = "privacy"
+    name = "Privacy"
+    url = "/en/privacy/"
+    weight = 6
+    [main.params]
+        icon = "link"
+
 [[social]]
     identifier = "github"
     name = "GitHub"

@@ -18,7 +18,8 @@ const checks = [
     { path: '/sitemap.xml', status: 200 },
     { path: '/sw.js', status: 200 },
     { path: '/offline.html', status: 200 },
-    { path: '/CNAME', status: 200, exactText: 'blog.codeglimpse.top' },
+    // GitHub Pages consumes CNAME for routing but does not guarantee exposing it
+    // as a public response. The build-output check validates the source artifact.
     { path: '/manifest.webmanifest', status: 404 },
     { path: '/img/app-icon.svg', status: 404 },
     { path: '/index.json', status: 404 },

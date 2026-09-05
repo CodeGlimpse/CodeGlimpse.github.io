@@ -25,6 +25,10 @@ test('requires source provenance only for production HTML checks', () => {
     assert.deepEqual(checker.validateResponse({ path: '/', status: 200, html: true }, 200, page, 'https://example.com/'), []);
 });
 
+test('does not require GitHub Pages to expose the consumed CNAME file', () => {
+    assert.equal(checker.checks.some((check) => check.path === '/CNAME'), false);
+});
+
 test('publishes both language routes for every registered tool', () => {
     const toolChecks = checker.checks.filter((check) => check.toolId);
     assert.equal(toolChecks.length, 44);

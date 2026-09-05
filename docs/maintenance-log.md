@@ -30,6 +30,18 @@
 - 回滚：无
 - 后续事项：定期复核版本、主题和线上资源
 
+## 2026-09-05 - Clarity 隐私加固与运行时维护
+
+- 类型：隐私与维护机制
+- 影响范围：Clarity 脱敏、统计退出、主题更新工作流和线上站点监控
+- 变更内容：整体标记动态指标、输出面板和结果卡片；在浏览器存储不可用时保留当前页面硬退出；将 `create-pull-request` 升级到 Node 24 运行时；线上监控改为每日运行并校验源提交。
+- 验证命令：`npm.cmd run check`、`npm.cmd run test:e2e`、`npm.cmd run check:site -- https://blog.codeglimpse.top`
+- 验证结果：103/103 单元测试、43/43 浏览器 E2E、Hugo ZH 57 / EN 56 构建、构建产物检查和线上端点/本地资源巡检通过。
+- 源代码提交：`511b41efa795a04345f75e7ef1ba59121e0ed7be`
+- GitHub Actions Run：本次提交发布后记录对应的 Build、E2E、Deploy 和监控运行。
+- 回滚：`d208407d812fb1ebdcca3ddc4a3f65506febd689`
+- 后续事项：继续评估 Policy B 的地区化同意策略，并定期复核第三方统计请求边界。
+
 ## 2026-08-25 - 产品扩展 P0/P1
 
 - 类型：产品功能

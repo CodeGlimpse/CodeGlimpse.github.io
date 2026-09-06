@@ -21,6 +21,17 @@
     const HASH_PREFIX = 'cgshare=';
     const MAX_HASH_LENGTH = 12000;
     const SENSITIVE_TOOLS = Object.freeze(new Set(['jwt', 'password']));
+    // The first entry is the direction used by legacy version-1 links.
+    const MODE_BUTTONS = Object.freeze({
+        csv: Object.freeze({
+            'csv-to-json': '[data-csv-mode="csv-to-json"]',
+            'json-to-csv': '[data-csv-mode="json-to-csv"]'
+        }),
+        yaml: Object.freeze({
+            'yaml-to-json': '[data-yaml-mode="yaml-to-json"]',
+            'json-to-yaml': '[data-yaml-mode="json-to-yaml"]'
+        })
+    });
     const RESTORE_ACTIONS = Object.freeze({
         base64: '#base64-encode',
         bmi: '#bmi-calc',
@@ -137,11 +148,18 @@
             .filter((item) => item.value || item.hidden);
     }
 
+    function collectMode(wrapper) {
+        const modes = MODE_BUTTONS[wrapper.id.replace(/^tool-/, '')];
+        const mode = wrapper.querySelector('.tool-container')?.dataset?.mode;
+        return modes && typeof mode === 'string' && Object.hasOwn(modes, mode) ? { mode } : {};
+    }
+
     function collectShareState(wrapper) {
         return {
             version: 1,
             tool: wrapper.id.replace(/^tool-/, ''),
             language: wrapper.getAttribute('data-lang') || 'en',
+            ...collectMode(wrapper),
             fields: collectFields(wrapper, false)
         };
     }
@@ -152,6 +170,7 @@
             version: 1,
             tool: wrapper.id.replace(/^tool-/, ''),
             language: wrapper.getAttribute('data-lang') || 'en',
+            ...collectMode(wrapper),
             path: document?.location?.pathname || '',
             fields: collectFields(wrapper, true),
             display: collectDisplayValues(wrapper)
@@ -198,6 +217,24 @@
         if (!hasInput) return false;
         action.click();
         return true;
+    }
+
+    function restoreShareState(wrapper, state) {
+        const tool = wrapper.id.replace(/^tool-/, '');
+        if (state?.tool !== tool) throw new Error('Invalid share tool');
+        const modes = MODE_BUTTONS[tool];
+        if (modes) {
+            const mode = state.mode === undefined ? Object.keys(modes)[0] : state.mode;
+            if (typeof mode !== 'string' || !Object.hasOwn(modes, mode)) {
+                throw new Error('Invalid share mode');
+            }
+            const button = wrapper.querySelector(modes[mode]);
+            if (!button || button.disabled) throw new Error('Share controls are unavailable');
+            // Switching direction resets tool output and may reset controls.
+            // Restore it before fields and the automatic conversion.
+            button.click();
+        }
+        return restoreFields(wrapper, state.fields);
     }
 
     function triggerRestoreWhenReady(wrapper, windowObject) {
@@ -324,7 +361,7 @@
                 const privateHash = windowObject.__codeglimpsePrivateShareHash;
                 const state = parseShareHash(privateHash || windowObject.location.hash);
                 if (!state || state.tool !== toolId) return;
-                restoreFields(wrapper, state.fields);
+                restoreShareState(wrapper, state);
                 // Let the tool finish its own event wiring before invoking a
                 // button-based calculation (for example JSON or CSV).
                 triggerRestoreWhenReady(wrapper, windowObject);
@@ -360,6 +397,7 @@
         mount,
         mountAll,
         parseShareHash,
-        restoreFields
+        restoreFields,
+        restoreShareState
     };
 });

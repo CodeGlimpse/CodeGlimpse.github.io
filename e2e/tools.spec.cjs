@@ -202,6 +202,51 @@ test.describe('online tools', () => {
         await expect(page.locator('#codeglimpse-toast')).toContainText('快照已下载');
     });
 
+    for (const conversion of [
+        { tool: 'csv', input: '[{"name":"Ada","note":"one,two"}]', output: 'name;note\nAda;one,two' },
+        { tool: 'yaml', input: '{"value":null,"list":[],"object":{}}', output: 'value: null\nlist: []\nobject: {}\n' },
+    ]) {
+        test(`restores JSON-to-${conversion.tool.toUpperCase()} direction and exports it`, async ({ page }) => {
+            const { tool, input, output } = conversion;
+            await page.goto(`/en/tools/${tool}/`);
+            await page.locator(`[data-${tool}-mode="json-to-${tool}"]`).click();
+            if (tool === 'csv') await page.locator('#csv-delimiter').selectOption('semicolon');
+            await page.locator(`#${tool}-input`).fill(input);
+            const hash = await page.evaluate((toolId) => window.CodeGlimpseToolShare.buildShareHash(
+                window.CodeGlimpseToolShare.collectShareState(document.getElementById(`tool-${toolId}`)),
+            ), tool);
+
+            await page.goto(`/en/tools/${tool}/${hash}`);
+            await expect(page.locator(`[data-${tool}-mode="json-to-${tool}"]`)).toHaveAttribute('aria-pressed', 'true');
+            await expect(page.locator(`#${tool}-output`)).toHaveValue(output);
+            if (tool === 'csv') await expect(page.locator('#csv-delimiter')).toHaveValue('semicolon');
+
+            const downloadPromise = page.waitForEvent('download');
+            await page.locator('[data-share-export]').click();
+            const download = await downloadPromise;
+            const stream = await download.createReadStream();
+            const chunks = [];
+            for await (const chunk of stream) chunks.push(chunk);
+            const snapshot = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+            expect(snapshot.mode).toBe(`json-to-${tool}`);
+            expect(snapshot.fields.find((field) => field.id === `${tool}-input`).value).toBe(input);
+            expect(snapshot.fields.find((field) => field.id === `${tool}-output`).value).toBe(output);
+        });
+    }
+
+    test('restores a legacy CSV link after changing conversion direction', async ({ page }) => {
+        await page.goto('/en/tools/csv/');
+        await page.locator('[data-csv-mode="json-to-csv"]').click();
+        await page.evaluate(() => {
+            location.hash = window.CodeGlimpseToolShare.buildShareHash({
+                version: 1, tool: 'csv', language: 'en',
+                fields: [{ id: 'csv-input', value: 'name\nAda' }],
+            });
+        });
+        await expect(page.locator('[data-csv-mode="csv-to-json"]')).toHaveAttribute('aria-pressed', 'true');
+        await expect(page.locator('#csv-output')).toHaveValue('[\n  {\n    "name": "Ada"\n  }\n]');
+    });
+
     test('shows online and offline status feedback', async ({ page, context }) => {
         await page.goto('/tools/json/');
         await expect(page.locator('#codeglimpse-toast')).toBeHidden();

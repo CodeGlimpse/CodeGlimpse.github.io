@@ -333,6 +333,43 @@ test.describe('online tools', () => {
         await expect(page.getByRole('heading', { name: '当前处于离线状态' })).toBeVisible();
     });
 
+    test('keeps a successful cached page when the service worker receives HTTP 503', async ({ page, context }) => {
+        await page.goto('/tools/json/');
+        await page.evaluate(async () => { await navigator.serviceWorker.ready; });
+        await page.reload();
+        await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+        await expect(page.locator('#json-input')).toBeVisible();
+        let failures = 0;
+        const unavailable = (route) => {
+            failures += 1;
+            return route.fulfill({ status: 503, contentType: 'text/html', body: 'UPSTREAM_FAILURE_SENTINEL' });
+        };
+        await context.route('**/tools/json/', unavailable);
+        await page.reload();
+        await expect(page.locator('#json-input')).toBeVisible();
+        expect(failures).toBeGreaterThan(0);
+        await expect(page.locator('body')).not.toContainText('UPSTREAM_FAILURE_SENTINEL');
+        await context.unroute('**/tools/json/', unavailable);
+        await context.setOffline(true);
+        await page.reload();
+        await page.locator('#json-input').fill('{"offline":true}');
+        await page.locator('[data-action="format"]').click();
+        await expect(page.locator('#json-output')).toHaveValue('{\n  "offline": true\n}');
+    });
+
+    test('runs the locally bundled YAML parser from cached assets while offline', async ({ page, context }) => {
+        await page.goto('/tools/yaml/');
+        await page.evaluate(async () => { await navigator.serviceWorker.ready; });
+        await page.reload();
+        await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+        await expect(page.locator('#yaml-input')).toBeVisible();
+        await context.setOffline(true);
+        await page.reload();
+        await page.locator('#yaml-input').fill('name: Offline\nvalue: null\nitems: []');
+        await page.locator('#yaml-convert').click();
+        await expect(page.locator('#yaml-output')).toHaveValue('{\n  "name": "Offline",\n  "value": null,\n  "items": []\n}');
+    });
+
     test('supports keyboard navigation and exposes theme state', async ({ page }) => {
         await page.goto('/tools/json/');
 

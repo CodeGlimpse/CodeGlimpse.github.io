@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'codeglimpse-v3';
+const CACHE_VERSION = 'codeglimpse-v4';
 const PRECACHE_URLS = [
     '/',
     '/en/',
@@ -25,39 +25,66 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys()
-            .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_VERSION).map((key) => caches.delete(key))))
+            .then((keys) => Promise.all(keys
+                .filter((key) => key.startsWith('codeglimpse-v') && key !== CACHE_VERSION)
+                .map((key) => caches.delete(key))))
             .then(() => self.clients.claim())
     );
 });
+
+async function readCached(request) {
+    try {
+        const cache = await caches.open(CACHE_VERSION);
+        const response = await cache.match(request);
+        return response?.ok ? response : undefined;
+    } catch {
+        return undefined;
+    }
+}
+
+async function cacheSuccessfulResponse(request, response) {
+    if (!response.ok) return;
+    try {
+        const cache = await caches.open(CACHE_VERSION);
+        await cache.put(request, response.clone());
+    } catch {
+        // Storage failures must not turn a successful network load into an error.
+    }
+}
+
+async function navigationResponse(request) {
+    let response;
+    try { response = await fetch(request); } catch { /* use the offline cache */ }
+    if (response && response.status < 500) {
+        await cacheSuccessfulResponse(request, response);
+        return response;
+    }
+    return await readCached(request)
+        || await readCached('/offline.html')
+        || response
+        || Response.error();
+}
+
+async function assetResponse(request) {
+    const cached = await readCached(request);
+    if (cached) return cached;
+    try {
+        const response = await fetch(request);
+        await cacheSuccessfulResponse(request, response);
+        return response;
+    } catch {
+        return Response.error();
+    }
+}
 
 self.addEventListener('fetch', (event) => {
     const request = event.request;
     const url = new URL(request.url);
     if (request.method !== 'GET' || url.origin !== self.location.origin) return;
 
-    if (request.mode === 'navigate') {
-        event.respondWith(
-            fetch(request)
-                .then((response) => {
-                    const copy = response.clone();
-                    caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
-                    return response;
-                })
-                .catch(() => caches.match(request).then((cached) => cached || caches.match('/offline.html')))
-        );
-        return;
-    }
-
-    event.respondWith(
-        caches.match(request).then((cached) => {
-            const network = fetch(request).then((response) => {
-                if (response.ok) {
-                    const copy = response.clone();
-                    caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
-                }
-                return response;
-            });
-            return cached || network;
-        })
-    );
+    // The response promise includes cache writes, keeping them within the fetch
+    // event lifetime. Cached assets do not start a detached network request.
+    event.respondWith(request.mode === 'navigate'
+        ? navigationResponse(request)
+        : assetResponse(request));
 });

@@ -260,6 +260,7 @@ if (!fs.existsSync(outputRoot)) {
     requireFile('img/og-default.png');
     requireFile('sw.js');
     requireFile('offline.html');
+    requireFile('licenses.txt');
 
     const zhTools = checkToolPages('zh-cn');
     const enTools = checkToolPages('en');

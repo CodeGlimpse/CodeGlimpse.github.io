@@ -1,131 +1,71 @@
 (function (root, factory) {
-    const api = factory();
+    const api = factory(require('yaml'));
     if (typeof module === 'object' && module.exports) module.exports = api;
     if (root) root.CodeGlimpseYaml = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
-    function stripComment(line) {
-        let quote = '';
-        for (let index = 0; index < line.length; index += 1) {
-            const character = line[index];
-            if ((character === '"' || character === "'") && line[index - 1] !== '\\') {
-                quote = quote === character ? '' : (quote || character);
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (yaml) {
+    // yaml is bundled locally by Hugo. License text is published at /licenses.txt.
+    function jsonValue(value, ancestors = new Set()) {
+        if (typeof value === 'bigint') {
+            if (value < BigInt(Number.MIN_SAFE_INTEGER) || value > BigInt(Number.MAX_SAFE_INTEGER)) {
+                throw new SyntaxError('Integer exceeds the safe JSON number range; quote it as a string');
             }
-            if (character === '#' && !quote && (index === 0 || /\s/.test(line[index - 1]))) return line.slice(0, index).trimEnd();
+            return Number(value);
         }
-        return line;
-    }
-
-    function scalar(value) {
-        const text = value.trim();
-        if (text === '') return null;
-        if ((text.startsWith('"') && text.endsWith('"')) || (text.startsWith("'") && text.endsWith("'"))) return text.slice(1, -1);
-        if (/^(true|false)$/i.test(text)) return text.toLowerCase() === 'true';
-        if (/^(null|~)$/i.test(text)) return null;
-        if (/^-?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?$/i.test(text)) return Number(text);
-        if ((text.startsWith('[') && text.endsWith(']')) || (text.startsWith('{') && text.endsWith('}'))) {
-            try { return JSON.parse(text); } catch { /* fall through to string */ }
+        if (typeof value === 'number') {
+            if (!Number.isFinite(value) || (Number.isInteger(value) && !Number.isSafeInteger(value))) {
+                throw new SyntaxError('Number cannot be represented safely in JSON; quote it as a string');
+            }
+            return value;
         }
-        return text;
+        if (value === null || typeof value === 'string' || typeof value === 'boolean') return value;
+        if (!value || typeof value !== 'object') throw new SyntaxError('Only JSON-compatible values are supported');
+        if (ancestors.has(value)) throw new SyntaxError('Circular values are not supported');
+        ancestors.add(value);
+        let result;
+        if (Array.isArray(value)) result = value.map((item) => jsonValue(item, ancestors));
+        else {
+            if (![Object.prototype, null].includes(Object.getPrototypeOf(value))) {
+                throw new SyntaxError('Only JSON-compatible objects are supported');
+            }
+            result = Object.fromEntries(Object.entries(value).map(([key, item]) => [key, jsonValue(item, ancestors)]));
+        }
+        ancestors.delete(value);
+        return result;
     }
 
     function parseYaml(input) {
-        const source = String(input ?? '').replace(/\t/g, '  ');
-        const lines = source.split(/\r?\n/).map((raw, lineNumber) => {
-            const value = stripComment(raw);
-            return { text: value, indent: value.search(/\S|$/), lineNumber };
-        }).filter((line) => line.text.trim());
-        if (!lines.length) return null;
-
-        function parseBlock(start, indent) {
-            const isArray = lines[start].indent === indent && lines[start].text.trim().startsWith('-');
-            const result = isArray ? [] : {};
-            let index = start;
-            while (index < lines.length && lines[index].indent === indent) {
-                const line = lines[index].text.trim();
-                if (isArray) {
-                    if (!line.startsWith('-')) throw new SyntaxError('Mixed YAML collection at line ' + (lines[index].lineNumber + 1));
-                    const itemText = line.slice(1).trim();
-                    if (!itemText) {
-                        if (index + 1 >= lines.length || lines[index + 1].indent <= indent) throw new SyntaxError('Empty list item at line ' + (lines[index].lineNumber + 1));
-                        const child = parseBlock(index + 1, lines[index + 1].indent);
-                        result.push(child.value);
-                        index = child.index;
-                        continue;
-                    }
-                    const pair = itemText.match(/^([^:]+):(?:\s*(.*))?$/);
-                    if (pair) {
-                        const object = {};
-                        const key = pair[1].trim();
-                        object[key] = pair[2] ? scalar(pair[2]) : null;
-                        index += 1;
-                        if (index < lines.length && lines[index].indent > indent) {
-                            const child = parseBlock(index, lines[index].indent);
-                            if (object[key] === null && typeof child.value === 'object' && !Array.isArray(child.value)) Object.assign(object, child.value);
-                            else object[key] = child.value;
-                            index = child.index;
-                        }
-                        result.push(object);
-                        continue;
-                    }
-                    result.push(scalar(itemText));
-                    index += 1;
-                } else {
-                    if (line.startsWith('-')) throw new SyntaxError('List item is not valid in a mapping at line ' + (lines[index].lineNumber + 1));
-                    const pair = line.match(/^([^:]+):(.*)$/);
-                    if (!pair) throw new SyntaxError('Expected key/value at line ' + (lines[index].lineNumber + 1));
-                    const key = pair[1].trim();
-                    const rawValue = pair[2].trim();
-                    index += 1;
-                    if (rawValue) result[key] = scalar(rawValue);
-                    else if (index < lines.length && lines[index].indent > indent) {
-                        const child = parseBlock(index, lines[index].indent);
-                        result[key] = child.value;
-                        index = child.index;
-                    } else result[key] = null;
-                }
+        try {
+            const document = yaml.parseDocument(String(input ?? ''), {
+                version: '1.2', schema: 'core', strict: true, uniqueKeys: true,
+                stringKeys: true, intAsBigInt: true, resolveKnownTags: false,
+            });
+            const issue = document.errors[0] || document.warnings[0];
+            if (issue) throw issue;
+            if (document.directives?.yaml.version !== '1.2') {
+                throw new SyntaxError('Only YAML 1.2 is supported');
             }
-            return { value: result, index };
+            yaml.visit(document, {
+                Node(_key, node) {
+                    if (yaml.isAlias(node) || node.anchor || node.tag) {
+                        throw new SyntaxError('YAML anchors, aliases, and explicit tags are not supported');
+                    }
+                },
+            });
+            return jsonValue(document.toJS({ maxAliasCount: 0 }));
+        } catch (error) {
+            throw new SyntaxError(error.message);
         }
-
-        const parsed = parseBlock(0, lines[0].indent);
-        if (parsed.index !== lines.length) throw new SyntaxError('Invalid indentation at line ' + (lines[parsed.index].lineNumber + 1));
-        return parsed.value;
-    }
-
-    function quoteString(value) {
-        if (typeof value === 'number' || typeof value === 'boolean') return String(value);
-        if (value === null || value === undefined) return 'null';
-        const text = String(value);
-        return text === '' || /[:#[\]{}\n]/.test(text) || /^(true|false|null|~|-?\d+(?:\.\d+)?)$/i.test(text)
-            ? JSON.stringify(text)
-            : text;
     }
 
     function stringifyYaml(value, indent = 2) {
-        const padding = ' '.repeat(Number(indent) || 2);
-        function render(node, depth) {
-            const prefix = padding.repeat(depth);
-            if (Array.isArray(node)) {
-                if (!node.length) return '[]';
-                return node.map((item) => {
-                    if (item && typeof item === 'object') {
-                        const nested = render(item, depth + 1).split('\n');
-                        return prefix + '- ' + nested[0].trimStart() + (nested.length > 1 ? '\n' + nested.slice(1).join('\n') : '');
-                    }
-                    return prefix + '- ' + quoteString(item ?? '');
-                }).join('\n');
-            }
-            if (node && typeof node === 'object') {
-                const entries = Object.entries(node);
-                if (!entries.length) return '{}';
-                return entries.map(([key, item]) => {
-                    if (item && typeof item === 'object') return prefix + key + ':\n' + render(item, depth + 1);
-                    return prefix + key + ': ' + quoteString(item ?? '');
-                }).join('\n');
-            }
-            return prefix + quoteString(node ?? '');
+        const width = Number(indent);
+        if (!Number.isInteger(width) || width < 1 || width > 8) {
+            throw new RangeError('YAML indentation must be between 1 and 8 spaces');
         }
-        return render(value, 0);
+        return yaml.stringify(jsonValue(value), {
+            version: '1.2', schema: 'core', indent: width,
+            aliasDuplicateObjects: false, lineWidth: 0,
+        });
     }
 
     function yamlToJson(input) {

@@ -29,9 +29,10 @@ scripts/                 本地维护检查脚本
 
 ## 本地开发
 
-安装 Hugo 模块后启动本地预览：
+安装锁定的 npm 依赖和 Hugo 模块后启动本地预览：
 
 ```bash
+npm ci --ignore-scripts
 hugo mod download
 hugo server -D
 ```
@@ -40,7 +41,7 @@ hugo server -D
 
 ## 检查与构建
 
-站点运行时不依赖第三方 npm 包；开发环境使用 Playwright 执行浏览器测试：
+YAML 和 XML 工具分别使用锁定版本的 `yaml` 与 `@xmldom/xmldom`，由 Hugo 打包为本站 JavaScript，仅在对应工具页面加载；输入仍在浏览器本地处理，不使用 CDN。第三方许可证随站点发布到 `/licenses.txt`。开发环境使用 Playwright 执行浏览器测试；首次运行前安装 Chromium：`npx playwright install chromium`。Windows PowerShell 使用 `npm.cmd` 和 `npx.cmd`。
 
 ```bash
 npm test              # 运行工具核心逻辑测试
@@ -62,7 +63,7 @@ node scripts/check-js.cjs
 node scripts/check-content.cjs
 node scripts/check-workflows.cjs
 node scripts/run-tests.cjs
-hugo --cleanDestinationDir --minify --gc
+node scripts/build-site.cjs
 node scripts/check-build-output.cjs
 ```
 

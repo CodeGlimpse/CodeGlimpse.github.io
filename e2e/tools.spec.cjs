@@ -481,6 +481,71 @@ test.describe('online tools', () => {
         await expect(page.locator('[data-tool-id="json"] [data-tool-favorite]')).toHaveAttribute('aria-pressed', 'true');
     });
 
+    test('preserves SQL parameters, quoted spaces, and line comments in the browser', async ({ page }) => {
+        await page.goto('/tools/sql/');
+        const input = "select 'a  , b' as note from users -- keep newline\nwhere id = ?;";
+        await page.locator('#sql-input').fill(input);
+        await page.locator('#sql-minify').click();
+        await expect(page.locator('#sql-output')).toHaveValue(input);
+        await page.locator('#sql-format').click();
+        await expect(page.locator('#sql-output')).toHaveValue(/WHERE id = \?;/);
+        expect(await page.locator('#sql-output').inputValue()).toContain("'a  , b'");
+        await page.locator('#sql-input').fill("SELECT 'unfinished");
+        await page.locator('#sql-format').click();
+        await expect(page.locator('#sql-output-panel')).toBeHidden();
+        await expect(page.locator('#sql-status')).toContainText('Unclosed SQL quote');
+    });
+
+    test('preserves YAML mapping fields, nulls, and empty collections in the browser', async ({ page }) => {
+        await page.goto('/tools/yaml/');
+        await page.locator('#yaml-input').fill('people:\n  - name: Ada\n    age: 36\nempty: []\nvalue: null');
+        await page.locator('#yaml-convert').click();
+        await expect(page.locator('#yaml-output-panel')).toBeVisible();
+        expect(JSON.parse(await page.locator('#yaml-output').inputValue())).toEqual({
+            people: [{ name: 'Ada', age: 36 }], empty: [], value: null,
+        });
+        const original = { value: null, list: [], object: {}, message: 'a  b\nline two' };
+        await page.locator('[data-yaml-mode="json-to-yaml"]').click();
+        await page.locator('#yaml-input').fill(JSON.stringify(original));
+        await page.locator('#yaml-convert').click();
+        await expect(page.locator('#yaml-output-panel')).toBeVisible();
+        const converted = await page.locator('#yaml-output').inputValue();
+        await page.locator('[data-yaml-mode="yaml-to-json"]').click();
+        await page.locator('#yaml-input').fill(converted);
+        await page.locator('#yaml-convert').click();
+        await expect(page.locator('#yaml-output-panel')).toBeVisible();
+        expect(JSON.parse(await page.locator('#yaml-output').inputValue())).toEqual(original);
+        await page.locator('#yaml-input').fill('key: 1\nkey: 2');
+        await page.locator('#yaml-convert').click();
+        await expect(page.locator('#yaml-output-panel')).toBeHidden();
+        await expect(page.locator('#yaml-status')).toContainText('转换失败');
+    });
+
+    test('preserves XML text and CDATA and rejects malformed attributes in the browser', async ({ page }) => {
+        await page.goto('/en/tools/xml/');
+        const input = '<root label="a  b"><p>Hello <b>world</b> !</p><raw><![CDATA[a  b]]></raw><v xml:space="preserve"> a  <x/> b </v></root>';
+        await page.locator('#xml-input').fill(input);
+        for (const action of ['#xml-format', '#xml-minify']) {
+            await page.locator(action).click();
+            await expect(page.locator('#xml-output-panel')).toBeVisible();
+            const values = await page.locator('#xml-output').evaluate((output) => {
+                const doc = new DOMParser().parseFromString(output.value, 'application/xml');
+                return {
+                    label: doc.documentElement.getAttribute('label'),
+                    text: doc.querySelector('p').textContent,
+                    cdata: doc.querySelector('raw').textContent,
+                    nodeType: doc.querySelector('raw').firstChild.nodeType,
+                    preserved: doc.querySelector('v').textContent,
+                };
+            });
+            expect(values).toEqual({ label: 'a  b', text: 'Hello world !', cdata: 'a  b', nodeType: 4, preserved: ' a   b ' });
+        }
+        await page.locator('#xml-input').fill('<root id=1/>');
+        await page.locator('#xml-validate').click();
+        await expect(page.locator('#xml-output-panel')).toBeHidden();
+        await expect(page.locator('#xml-status')).toContainText('Invalid XML');
+    });
+
     test('runs the first bilingual product expansion tools', async ({ page }) => {
         await page.goto('/tools/diff/');
         await page.locator('#diff-left').fill('one\ntwo');
@@ -491,7 +556,7 @@ test.describe('online tools', () => {
         await page.goto('/en/tools/xml/');
         await page.locator('#xml-input').fill('<root><item>Text</item></root>');
         await page.locator('#xml-format').click();
-        await expect(page.locator('#xml-output')).toHaveValue('<root>\n  <item>\n    Text\n  </item>\n</root>');
+        await expect(page.locator('#xml-output')).toHaveValue('<root>\n  <item>Text</item>\n</root>');
 
         await page.goto('/tools/yaml/');
         await page.locator('#yaml-input').fill('name: CodeGlimpse\nenabled: true');

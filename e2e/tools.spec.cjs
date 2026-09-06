@@ -175,6 +175,52 @@ test.describe('online tools', () => {
         await expect.poll(() => page.evaluate(() => window.CodeGlimpseAnalytics?.enabled)).toBe(true);
     });
 
+    test('uses session storage for analytics opt-out when local storage access is blocked', async ({ page }) => {
+        await page.addInitScript(() => {
+            Object.defineProperty(window, 'localStorage', {
+                get() { throw new DOMException('Storage access denied', 'SecurityError'); },
+            });
+        });
+        await page.goto('/en/tools/json/');
+        await expect(page.locator('script[data-codeglimpse-analytics-provider]')).toHaveCount(3);
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
+            page.locator('[data-privacy-optout]').click(),
+        ]);
+        await expect(page.locator('script[data-codeglimpse-analytics-provider]')).toHaveCount(0);
+        await expect(page.locator('#codeglimpse-privacy-notice')).toBeHidden();
+        expect(await page.evaluate(() => sessionStorage.getItem('codeglimpse:analytics-optout:v1'))).toBe('true');
+        await page.goto('/en/privacy/');
+        await expect(page.locator('script[data-codeglimpse-analytics-provider]')).toHaveCount(0);
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
+            page.getByRole('button', { name: 'Re-enable analytics' }).click(),
+        ]);
+        await expect(page.locator('script[data-codeglimpse-analytics-provider]')).toHaveCount(3);
+    });
+
+    test('keeps privacy controls usable when both browser storage getters are blocked', async ({ page }) => {
+        await page.addInitScript(() => {
+            for (const name of ['localStorage', 'sessionStorage']) {
+                Object.defineProperty(window, name, {
+                    get() { throw new DOMException('Storage access denied', 'SecurityError'); },
+                });
+            }
+        });
+        await page.goto('/tools/json/');
+        await page.locator('[data-privacy-dismiss]').click();
+        await expect(page.locator('#codeglimpse-privacy-notice')).toBeHidden();
+        await page.goto('/tools/json/');
+        await page.evaluate(() => { window.__privacyNoReload = true; });
+        await page.locator('[data-privacy-optout]').click();
+        await expect(page.locator('#codeglimpse-privacy-notice')).toBeHidden();
+        expect(await page.evaluate(() => ({
+            retained: window.__privacyNoReload,
+            optedOut: window.__codeglimpseAnalyticsHardOptOut,
+            storage: window.CodeGlimpseAnalytics.storageAvailable,
+        }))).toEqual({ retained: true, optedOut: true, storage: false });
+    });
+
     test('does not expose the tools as an installable browser app', async ({ page }) => {
         await page.goto('/tools/json/');
 

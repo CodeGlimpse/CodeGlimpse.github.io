@@ -8,7 +8,7 @@ comments: false
 
 # Privacy
 
-Last updated: 2026-09-04
+Last updated: 2026-09-06
 
 CodeGlimpse is a static blog and browser-tool site. The online tools perform their main calculations in your current browser; the site does not provide accounts, server-side workspaces, or cloud storage.
 
@@ -35,6 +35,8 @@ The site does not send passwords, JWTs, private keys, complete text, tool result
 ## Disable analytics
 
 You can choose “Disable analytics” in the privacy notice at the bottom of a page, or use the buttons below. The choice is stored in this browser and analytics scripts will no longer initialize after a reload.
+
+If persistent storage is blocked, the site tries to retain your choice for the current tab session. If both storage types are unavailable, the page stays open with an in-memory opt-out and requests that supporting analytics services stop collection. It cannot guarantee that every already-loaded third-party script stops. Reloading or opening another page loses this choice in that case.
 
 <button type="button" data-analytics-optout>Disable analytics</button>
 <button type="button" data-analytics-optin>Re-enable analytics</button>

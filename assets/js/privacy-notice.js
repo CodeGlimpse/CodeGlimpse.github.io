@@ -15,21 +15,37 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
     const STORAGE_KEY = 'codeglimpse:privacy-notice:v1';
 
-    function readDismissed(storage = root?.localStorage) {
-        try {
-            return storage?.getItem(STORAGE_KEY) === 'dismissed';
-        } catch {
-            return false;
+    function storageCandidates(storage, windowObject) {
+        if (storage !== undefined) return [storage];
+        const candidates = [];
+        for (const name of ['localStorage', 'sessionStorage']) {
+            // Accessing the property itself can throw in restricted browsers.
+            try {
+                if (windowObject?.[name]) candidates.push(windowObject[name]);
+            } catch { /* try the next storage type */ }
         }
+        return candidates;
     }
 
-    function writeDismissed(storage = root?.localStorage) {
-        try {
-            storage?.setItem(STORAGE_KEY, 'dismissed');
-            return true;
-        } catch {
-            return false;
+    function readDismissed(storage, windowObject = root) {
+        return storageCandidates(storage, windowObject).some((candidate) => {
+            try {
+                return candidate?.getItem(STORAGE_KEY) === 'dismissed';
+            } catch {
+                return false;
+            }
+        });
+    }
+
+    function writeDismissed(storage, windowObject = root) {
+        for (const candidate of storageCandidates(storage, windowObject)) {
+            try {
+                if (!candidate) continue;
+                candidate.setItem(STORAGE_KEY, 'dismissed');
+                return true;
+            } catch { /* try the next storage type */ }
         }
+        return false;
     }
 
     function mount(documentObject = root?.document, windowObject = root) {
@@ -56,19 +72,19 @@
 
         optOut?.addEventListener('click', () => {
             analytics?.optOut?.();
-            writeDismissed(windowObject?.localStorage);
+            writeDismissed(undefined, windowObject);
             notice.hidden = true;
             if (analytics?.storageAvailable !== false) windowObject?.location?.reload?.();
         }, { once: true });
 
-        if (readDismissed(windowObject?.localStorage)) {
+        if (readDismissed(undefined, windowObject)) {
             notice.hidden = true;
             return notice;
         }
 
         notice.hidden = false;
         dismiss?.addEventListener('click', () => {
-            writeDismissed(windowObject?.localStorage);
+            writeDismissed(undefined, windowObject);
             notice.hidden = true;
         }, { once: true });
         return notice;

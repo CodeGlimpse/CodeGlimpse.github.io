@@ -20,4 +20,5 @@ This is a lightweight lexical formatter. It does not connect to a database or va
 
 - Format breaks clauses and logical conditions onto separate lines.
 - Minify removes unnecessary whitespace.
-- String and comment content is preserved as far as possible.
+- Strings, quoted identifiers, parameter placeholders, and comments are preserved, including the newline after a line comment.
+- Unclosed quotes or comments and unsupported characters produce an error instead of being silently discarded. Database semantics are not validated.

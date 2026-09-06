@@ -5,11 +5,11 @@
     const t = lang === 'zh-cn' ? {
         input: '输入 SQL', output: 'SQL 结果', placeholder: 'select id, name from users where active = true order by id;',
         format: '格式化', minify: '压缩', example: '示例', clear: '清空', copy: '复制结果', download: '下载 SQL',
-        required: '请输入 SQL', complete: 'SQL 处理完成', copied: '已复制', copyFailed: '复制失败，请手动复制'
+        required: '请输入 SQL', complete: 'SQL 处理完成', copied: '已复制', copyFailed: '复制失败，请手动复制', failed: 'SQL 处理失败'
     } : {
         input: 'Input SQL', output: 'SQL result', placeholder: 'select id, name from users where active = true order by id;',
         format: 'Format', minify: 'Minify', example: 'Example', clear: 'Clear', copy: 'Copy result', download: 'Download SQL',
-        required: 'Enter SQL', complete: 'SQL processing complete', copied: 'Copied', copyFailed: 'Copy failed; please copy manually'
+        required: 'Enter SQL', complete: 'SQL processing complete', copied: 'Copied', copyFailed: 'Copy failed; please copy manually', failed: 'SQL processing failed'
     };
     const example = "select id, name from users where active = true and role = 'admin' order by id;";
 
@@ -34,13 +34,21 @@
             ui.setStatus(status, 'error', t.required);
             return;
         }
-        output.value = mode === 'format'
-            ? window.CodeGlimpseSql.formatSql(input.value)
-            : window.CodeGlimpseSql.minifySql(input.value);
-        outputPanel.hidden = false;
-        outputPanel.setAttribute('aria-hidden', 'false');
-        ui.setOutputState(tool, 'ready');
-        ui.setStatus(status, 'success', t.complete);
+        try {
+            output.value = mode === 'format'
+                ? window.CodeGlimpseSql.formatSql(input.value)
+                : window.CodeGlimpseSql.minifySql(input.value);
+            outputPanel.hidden = false;
+            outputPanel.setAttribute('aria-hidden', 'false');
+            ui.setOutputState(tool, 'ready');
+            ui.setStatus(status, 'success', t.complete);
+        } catch (error) {
+            output.value = '';
+            outputPanel.hidden = true;
+            outputPanel.setAttribute('aria-hidden', 'true');
+            ui.setOutputState(tool, 'empty');
+            ui.setStatus(status, 'error', t.failed + ': ' + error.message);
+        }
     }
 
     document.getElementById('sql-format').addEventListener('click', () => process('format'));

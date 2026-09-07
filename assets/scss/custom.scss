@@ -29,6 +29,38 @@
 */
 @import "tools.scss";
 
+.article-review {
+    margin: 0 var(--card-padding) 1.5rem;
+    padding: 1.2rem 1.5rem;
+    border-inline-start: 3px solid var(--accent-color);
+    background: var(--body-background);
+    color: var(--card-text-color-main);
+    font-size: 1.4rem;
+    line-height: 1.6;
+}
+
+.article-review p { margin: 0.4rem 0 0; }
+
+.article-series {
+    padding: var(--card-padding);
+    border-radius: var(--card-border-radius);
+    background: var(--card-background);
+    box-shadow: var(--shadow-l1);
+    color: var(--card-text-color-main);
+    font-size: 1.6rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.article-series h2 { margin: 0 0 1rem; font-size: 1.9rem; }
+.article-series ol { margin: 0; padding-inline-start: 2rem; }
+.article-series li a { display: block; padding: 0.5rem 0; }
+.article-series [aria-current="page"] { font-weight: 700; text-decoration: underline; }
+.article-series a:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 3px; }
+.article-series-adjacent { display: flex; flex-wrap: wrap; gap: 1rem 2rem; margin-top: 1.5rem; }
+.article-series-adjacent a { flex: 1 1 22rem; padding: 0.8rem 0; }
+.article-series-adjacent span { display: block; color: var(--card-text-color-secondary); font-size: 1.3rem; }
+
 .skip-link {
     position: fixed;
     inset-block-start: 1rem;

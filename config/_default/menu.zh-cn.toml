@@ -18,7 +18,7 @@
     identifier = "search"
     name = "搜索"
     url = "/search/"
-    weight = 3
+    weight = 4
     [main.params]
         icon = "search"
 
@@ -26,7 +26,7 @@
     identifier = "links"
     name = "链接"
     url = "/links/"
-    weight = 4
+    weight = 7
     [main.params]
         icon = "link"
 
@@ -42,9 +42,33 @@
     identifier = "privacy"
     name = "隐私"
     url = "/privacy/"
+    weight = 8
+    [main.params]
+        icon = "link"
+
+[[main]]
+    identifier = "series"
+    name = "系列阅读"
+    url = "/series/"
+    weight = 3
+    [main.params]
+        icon = "archives"
+
+[[main]]
+    identifier = "about"
+    name = "关于"
+    url = "/about/"
     weight = 6
     [main.params]
         icon = "link"
+
+[[social]]
+    identifier = "rss"
+    name = "RSS 订阅"
+    url = "/index.xml"
+    [social.params]
+        icon = "rss"
+        newTab = false
 
 [[social]]
     identifier = "github"

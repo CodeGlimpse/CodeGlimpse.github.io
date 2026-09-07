@@ -261,6 +261,8 @@ if (!fs.existsSync(outputRoot)) {
     requireFile('sw.js');
     requireFile('offline.html');
     requireFile('licenses.txt');
+    requireFile('index.xml');
+    requireFile('en/index.xml');
 
     const zhTools = checkToolPages('zh-cn');
     const enTools = checkToolPages('en');
@@ -300,6 +302,12 @@ if (!fs.existsSync(outputRoot)) {
         'en/privacy/index.html',
         'links/index.html',
         'en/links/index.html',
+        'about/index.html',
+        'en/about/index.html',
+        'series/index.html',
+        'en/series/index.html',
+        'series/openclaw/index.html',
+        'en/series/openclaw/index.html',
         ...zhTools.map((toolId) => `tools/${toolId}/index.html`),
         ...enTools.map((toolId) => `en/tools/${toolId}/index.html`),
     ];

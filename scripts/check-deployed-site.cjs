@@ -9,6 +9,14 @@ const checks = [
     { path: '/en/tools/', status: 200, html: true, language: 'en' },
     { path: '/links/', status: 200, html: true, language: 'zh-cn' },
     { path: '/en/links/', status: 200, html: true, language: 'en' },
+    { path: '/about/', status: 200, html: true, language: 'zh-cn' },
+    { path: '/en/about/', status: 200, html: true, language: 'en' },
+    { path: '/series/', status: 200, html: true, language: 'zh-cn' },
+    { path: '/en/series/', status: 200, html: true, language: 'en' },
+    { path: '/series/openclaw/', status: 200, html: true, language: 'zh-cn' },
+    { path: '/en/series/openclaw/', status: 200, html: true, language: 'en' },
+    { path: '/index.xml', status: 200, rss: true },
+    { path: '/en/index.xml', status: 200, rss: true },
     { path: '/favicon.png', status: 200 },
     { path: '/signature.svg', status: 200 },
     { path: '/img/github-mark.svg', status: 200 },
@@ -133,6 +141,10 @@ function validateResponse(check, status, body, pageUrl = null, options = {}) {
         } catch (error) {
             errors.push(`invalid JSON: ${error.message}`);
         }
+    }
+
+    if (check.rss && status === check.status && !/<rss\b[^>]*>[\s\S]*<channel>[\s\S]*<item>[\s\S]*<\/channel>\s*<\/rss>/i.test(body)) {
+        errors.push('expected an RSS feed with article items');
     }
 
     if (check.exactText !== undefined && status === check.status && body.trim() !== check.exactText) {

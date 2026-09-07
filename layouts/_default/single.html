@@ -20,6 +20,8 @@
 {{ define "main" }}
     {{ partial "article/article.html" . }}
 
+    {{ partial "article/series.html" . }}
+
     {{ partial "tools/related.html" . }}
 
     {{ if .Params.links }}

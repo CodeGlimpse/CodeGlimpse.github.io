@@ -1,0 +1,26 @@
+{{ with .Params.series_id }}
+{{ $current := $ }}
+{{ $landing := $.Site.GetPage (printf "page/%s-series" .) }}
+{{ $articles := sort (where $.Site.RegularPages "Params.series_id" .) "Params.series_order" }}
+{{ $position := -1 }}
+<nav class="article-series" aria-labelledby="article-series-title">
+    <h2 id="article-series-title">{{ if eq $.Language.Lang "zh-cn" }}系列阅读{{ else }}In this series{{ end }}{{ with $landing }} · <a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ end }}</h2>
+    <ol>
+        {{ range $index, $article := $articles }}
+        {{ $active := eq $article.RelPermalink $current.RelPermalink }}
+        {{ if $active }}{{ $position = $index }}{{ end }}
+        <li><a href="{{ $article.RelPermalink }}"{{ if $active }} aria-current="page"{{ end }}>{{ $article.Title }}</a></li>
+        {{ end }}
+    </ol>
+    <div class="article-series-adjacent">
+        {{ if gt $position 0 }}
+        {{ $previous := index $articles (sub $position 1) }}
+        <a rel="prev" href="{{ $previous.RelPermalink }}"><span>{{ if eq $.Language.Lang "zh-cn" }}上一篇{{ else }}Previous{{ end }}</span>{{ $previous.Title }}</a>
+        {{ end }}
+        {{ if and (ge $position 0) (lt $position (sub (len $articles) 1)) }}
+        {{ $next := index $articles (add $position 1) }}
+        <a rel="next" href="{{ $next.RelPermalink }}"><span>{{ if eq $.Language.Lang "zh-cn" }}下一篇{{ else }}Next{{ end }}</span>{{ $next.Title }}</a>
+        {{ end }}
+    </div>
+</nav>
+{{ end }}

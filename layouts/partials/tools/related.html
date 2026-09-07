@@ -1,4 +1,4 @@
-{{ if and (eq .Section "tools") .Params.tool_related }}
+{{ if and (in (slice "tools" "post") .Section) .Params.tool_related }}
 <section class="tool-related" aria-labelledby="tool-related-title">
     <h2 id="tool-related-title">{{ if eq .Language.Lang "zh-cn" }}相关工具{{ else }}Related tools{{ end }}</h2>
     <div class="tool-related-list">

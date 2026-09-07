@@ -18,6 +18,14 @@ test('validates expected success responses and JSON arrays', () => {
     assert.deepEqual(errors, []);
 });
 
+test('rejects successful error pages and empty documents at RSS endpoints', () => {
+    const check = { path: '/index.xml', status: 200, rss: true };
+    assert.deepEqual(checker.validateResponse(check, 200, '<rss version="2.0"><channel><item><title>A</title></item></channel></rss>'), []);
+    for (const body of ['<html><body>Temporarily unavailable</body></html>', '<rss><channel></channel></rss>', '']) {
+        assert.deepEqual(checker.validateResponse(check, 200, body), ['expected an RSS feed with article items']);
+    }
+});
+
 test('requires source provenance only for production HTML checks', () => {
     const page = '<html lang="zh-cn"><head><title>T</title><meta name="description" content="T"><link rel="canonical" href="https://example.com/"><link rel="alternate" hreflang="zh-cn" href="https://example.com/"><link rel="alternate" hreflang="en" href="https://example.com/en/"><link rel="alternate" hreflang="x-default" href="https://example.com/"><link rel="stylesheet" href="/style.css"><script src="/js/toast.a.js"></script><script src="/js/workspace.b.js"></script></head><body><main><script data-codeglimpse-analytics-config src="/js/analytics.c.js"></script><script src="/js/analytics-privacy.d.js"></script><div id="codeglimpse-privacy-notice"></div></main></body></html>';
     const productionErrors = checker.validateResponse({ path: '/', status: 200, html: true, provenance: true }, 200, page, 'https://example.com/');

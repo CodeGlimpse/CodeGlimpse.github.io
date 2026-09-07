@@ -7,8 +7,6 @@ categories:
 tags:
     - Linux
 lastmod: 2026-09-07T00:00:00+08:00
-review_date: "2026-09-07"
-review_scope: "Examples target Debian/Ubuntu with systemd and were checked against upstream defaults. Live bans were not retested on a Linux host."
 ---
 
 Fail2ban reads failure events from logs and applies ban actions. It complements protection for services such as SSH, but needs the correct log source, filter, and firewall action. Installing the service alone does not protect every entry point.
@@ -23,7 +21,7 @@ sudo apt install fail2ban
 fail2ban-client --version
 ```
 
-Prefer maintained distribution packages. The previous CentOS 7/8 and fixed `1.0.2` source examples are no longer presented as the current default. If source installation is required, consult [upstream guidance](https://github.com/fail2ban/fail2ban) for dependencies, service integration, and future updates.
+Prefer maintained distribution packages. If source installation is required, consult [upstream guidance](https://github.com/fail2ban/fail2ban) to select a release and confirm dependencies, service integration, and future updates.
 
 ## Identify the SSH log source
 

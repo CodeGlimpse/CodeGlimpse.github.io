@@ -8,11 +8,9 @@ categories:
 tags:
   - Python
 lastmod: 2026-09-07T00:00:00+08:00
-review_date: "2026-09-07"
-review_scope: "Checked against Python 3.14 documentation. Older screenshots are historical examples; installations were not repeated on each operating system."
 ---
 
-Choose a Python version for your project, identify the interpreter actually being run, then create a virtual environment. This review uses the **Python 3.14 documentation**. The older screenshots show 3.12/3.13 installers, not today's default installation interface.
+Choose a Python version for your project, identify the interpreter actually being run, then create a virtual environment. The following steps cover **Python 3.14**; screenshots of the standalone installer show the 3.12/3.13 interface.
 
 ## Windows: start with Python Install Manager
 

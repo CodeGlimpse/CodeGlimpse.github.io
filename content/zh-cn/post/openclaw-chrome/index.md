@@ -8,16 +8,12 @@ categories:
 tags:
     - OpenClaw
 lastmod: 2026-09-07T00:00:00+08:00
-review_date: "2026-09-07"
-review_scope: "已对照官方浏览器与扩展文档；未执行真实登录会话接管或浏览器配对实测。"
 series_id: openclaw
 series_order: 2
 tool_related: [json, diff]
 ---
 
-当前官方文档同时介绍三种浏览器模式：隔离的 `openclaw`、基于 Chrome DevTools MCP 的 `user`，以及基于 Chrome 扩展的 `chrome`。**不能将它们概括为“新版本已经全面弃用扩展”。**
-
-原文将迁移结论绑定到 `2026.3.23.1`，但没有提供足以支撑该精确历史结论的发布依据。本次按当前官方文档改写，保留原文章地址。
+OpenClaw 提供三种浏览器模式：隔离的 `openclaw`、基于 Chrome DevTools MCP 的 `user`，以及基于 Chrome 扩展的 `chrome`。它们主要区别在于是否复用个人登录态，以及连接时需要怎样的授权。
 
 ## 先选择连接模式
 
@@ -44,7 +40,7 @@ openclaw browser --browser-profile openclaw snapshot
 
 ## 使用 `user` 连接已有 Chrome
 
-官方当前说明要求目标 Chromium 浏览器 **144+**。不要把“144”继续描述成当前 Beta/Canary 版本标签。
+`user` 模式要求目标 Chromium 浏览器为 **144+**，并启用远程调试。
 
 1. 保持目标 Chrome 运行，在地址栏打开 `chrome://inspect/#remote-debugging`。
 2. 在该页面启用远程调试。
@@ -69,7 +65,7 @@ Brave、Edge 或其他资料目录可能需要显式设置 `userDataDir`；已�
 openclaw browser extension install
 ```
 
-然后依照[扩展文档](https://docs.openclaw.ai/tools/chrome-extension)完成安装、授权和配对。macOS/Linux 的本地主机引导与 Windows 的手动配对流程不同。不要沿用原文中未经当前文档确认的“填写插件 ID 即可连接”步骤。
+然后依照[扩展文档](https://docs.openclaw.ai/tools/chrome-extension)完成安装、授权和配对。macOS/Linux 的本地主机引导与 Windows 的手动配对流程不同，请选择对应系统的步骤。
 
 完成配对后，使用 `chrome` 配置检查连接：
 

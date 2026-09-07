@@ -8,8 +8,6 @@ categories:
 tags:
     - OpenClaw
 lastmod: 2026-09-07T00:00:00+08:00
-review_date: "2026-09-07"
-review_scope: "已对照官方卸载流程；附带脚本经过语法及范围检查，本轮未实际执行清理。"
 series_id: openclaw
 series_order: 3
 ---

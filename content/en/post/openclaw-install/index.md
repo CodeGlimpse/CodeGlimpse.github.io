@@ -8,8 +8,6 @@ categories:
 tags:
     - OpenClaw
 lastmod: 2026-09-07T00:00:00+08:00
-review_date: "2026-09-07"
-review_scope: "Checked against official installation documentation; runtime requirements are recorded below. No fresh-system installation was performed."
 series_id: openclaw
 series_order: 1
 tool_related: [json, diff]
@@ -19,7 +17,7 @@ OpenClaw runs a Gateway on your own device and connects it to messaging channels
 
 ## Check the environment first
 
-At the review date, the official requirements list **Node.js 22.22.3+, 24.15+, or 25.9+, with Node 26 recommended**. The earlier “Node 22.16+” requirement is outdated. Official Windows options now include the native Windows Hub, PowerShell CLI, and WSL2; this article focuses on the CLI.
+The official requirements list **Node.js 22.22.3+, 24.15+, or 25.9+, with Node 26 recommended**. Windows options include the native Windows Hub, PowerShell CLI, and WSL2; this article focuses on the CLI.
 
 Record your actual versions before choosing a command:
 
@@ -76,7 +74,7 @@ Get-Content -LiteralPath $installerPath
 & $installerPath
 ```
 
-Third-party forks and mirrors can differ in package names, configuration, and versions. This review covers official OpenClaw; the former `openclaw-cn` steps are no longer mixed into the official workflow. For source builds, follow the matching pnpm requirements on the [official installation page](https://docs.openclaw.ai/install).
+This guide uses the official OpenClaw distribution. Third-party forks and mirrors can differ in package names, configuration, and versions; follow their own installation documentation. For source builds, follow the matching pnpm requirements on the [official installation page](https://docs.openclaw.ai/install).
 
 ## Onboarding and verification
 

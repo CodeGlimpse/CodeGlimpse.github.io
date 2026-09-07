@@ -29,18 +29,6 @@
 */
 @import "tools.scss";
 
-.article-review {
-    margin: 0 var(--card-padding) 1.5rem;
-    padding: 1.2rem 1.5rem;
-    border-inline-start: 3px solid var(--accent-color);
-    background: var(--body-background);
-    color: var(--card-text-color-main);
-    font-size: 1.4rem;
-    line-height: 1.6;
-}
-
-.article-review p { margin: 0.4rem 0 0; }
-
 .article-series {
     padding: var(--card-padding);
     border-radius: var(--card-border-radius);

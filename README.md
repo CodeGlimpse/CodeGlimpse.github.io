@@ -148,7 +148,7 @@ npm run test:e2e
 
 项目复核结果与后续开发顺序见 [`docs/project-review-2026-09-06.md`](docs/project-review-2026-09-06.md)。
 
-博客现提供双语关于页、系列目录及 OpenClaw 前后篇导航。首页 RSS 只订阅文章；教程顶部区分资料复核与实机验证。维护结果和后续选题见 [`docs/content-maintenance-2026-09-07.md`](docs/content-maintenance-2026-09-07.md)。
+博客提供双语关于页及 OpenClaw 文章内的前后篇导航，通用阅读入口使用分类和归档。首页 RSS 只订阅文章；审查过程记录在维护文档中。维护结果和后续选题见 [`docs/content-maintenance-2026-09-07.md`](docs/content-maintenance-2026-09-07.md)。
 
 ## 提交前清单
 

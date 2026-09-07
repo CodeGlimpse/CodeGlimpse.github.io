@@ -47,14 +47,6 @@
         icon = "link"
 
 [[main]]
-    identifier = "series"
-    name = "系列阅读"
-    url = "/series/"
-    weight = 3
-    [main.params]
-        icon = "archives"
-
-[[main]]
     identifier = "about"
     name = "关于"
     url = "/about/"

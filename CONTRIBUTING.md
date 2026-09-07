@@ -48,8 +48,8 @@ assets/js/tools/<id>-core.js
 
 ## 文章复核与系列
 
-- 版本敏感教程使用 `review_date`（带引号的 ISO 日期）和 `review_scope` 说明资料复核范围，并在正文列出官方来源。只有完成实测后，才能记录对应环境的实测结论；`lastmod` 仅表示内容修改。
-- 系列文章使用相同的 `series_id` 和不重复的 `series_order`。对应入口放在 `content/<language>/page/<series_id>-series/index.md`；两种语言分别生成当前语言的前后篇链接。
+- 审查日期、范围和实测情况保存在 [`docs/tutorial-review-records.json`](docs/tutorial-review-records.json) 等维护文档中，不写入公开正文或文章 front matter。正文保留读者需要的版本要求、操作说明和参考来源；`lastmod` 仅表示内容修改，不能代替实测结论。
+- 系列文章使用相同的 `series_id` 和不重复的 `series_order`。对应说明页放在 `content/<language>/page/<series_id>-series/index.md`；两种语言分别生成当前语言的前后篇链接。当前不在侧栏设置独立系列入口。
 - 文章可用 `tool_related` 引用注册表中的工具 ID。说明工具的适用边界，例如 JSON 工具不能验证完整 JSON5 配置。
 - 首页 RSS 由 `layouts/home.rss.xml` 限定为 `mainSections` 的文章。新增普通页面不应进入文章订阅；运行 `e2e/reading.spec.cjs` 验证订阅、系列链接和移动导航。
 

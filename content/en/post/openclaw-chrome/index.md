@@ -8,16 +8,12 @@ categories:
 tags:
     - OpenClaw
 lastmod: 2026-09-07T00:00:00+08:00
-review_date: "2026-09-07"
-review_scope: "Checked against official browser and extension documentation. No signed-in browser attachment or pairing was tested."
 series_id: openclaw
 series_order: 2
 tool_related: [json, diff]
 ---
 
-Current official documentation describes three browser modes: the isolated `openclaw` browser, the Chrome DevTools MCP `user` profile, and the Chrome extension `chrome` profile. **It does not describe the extension as universally replaced or removed.**
-
-The previous article tied that migration claim to `2026.3.23.1` without sufficient release evidence for that exact historical claim. This revision follows current official documentation and keeps the existing article URL.
+OpenClaw provides three browser modes: the isolated `openclaw` browser, the Chrome DevTools MCP `user` profile, and the Chrome extension `chrome` profile. They differ mainly in whether they reuse personal login state and how the connection is authorized.
 
 ## Choose a connection mode
 
@@ -44,7 +40,7 @@ These commands check status, start the browser, open a test page, and inspect a 
 
 ## Attach to Chrome with `user`
 
-Current official guidance requires Chromium **144+**. “144” should not be described as the current Beta/Canary release label.
+The `user` profile requires Chromium **144+** with remote debugging enabled.
 
 1. Keep the target Chrome running and open `chrome://inspect/#remote-debugging`.
 2. Enable remote debugging there.
@@ -69,7 +65,7 @@ The current official setup entry point is:
 openclaw browser extension install
 ```
 
-Complete installation, consent, and pairing using the [extension documentation](https://docs.openclaw.ai/tools/chrome-extension). Native bootstrap on macOS/Linux differs from manual pairing on Windows. Do not reuse the previous article's unsupported “enter the extension ID to connect” shortcut.
+Complete installation, consent, and pairing using the [extension documentation](https://docs.openclaw.ai/tools/chrome-extension). Native bootstrap on macOS/Linux differs from manual pairing on Windows; follow the steps for your operating system.
 
 After pairing, inspect the `chrome` profile:
 

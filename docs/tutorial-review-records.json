@@ -1,0 +1,55 @@
+{
+  "purpose": "Maintainer records only; this file is not part of the Hugo site output.",
+  "records": [
+    {
+      "file": "content/zh-cn/post/openclaw-install/index.md",
+      "date": "2026-09-07",
+      "scope": "已对照官方安装资料；Node.js 与包管理器要求见正文，未在全新系统重新安装验证。"
+    },
+    {
+      "file": "content/zh-cn/post/openclaw-chrome/index.md",
+      "date": "2026-09-07",
+      "scope": "已对照官方浏览器与扩展文档；未执行真实登录会话接管或浏览器配对实测。"
+    },
+    {
+      "file": "content/zh-cn/post/openclaw-uninstall/index.md",
+      "date": "2026-09-07",
+      "scope": "已对照官方卸载流程；附带脚本经过语法及范围检查，本轮未实际执行清理。"
+    },
+    {
+      "file": "content/zh-cn/post/python-install/index.md",
+      "date": "2026-09-07",
+      "scope": "已对照 Python 3.14 官方资料；旧截图仅作历史示例，未在各操作系统重新安装实测。"
+    },
+    {
+      "file": "content/zh-cn/post/linux-fail2ban/index.md",
+      "date": "2026-09-07",
+      "scope": "示例范围为 Debian/Ubuntu 与 systemd；已对照上游默认配置，未在 Linux 主机重做封禁实测。"
+    },
+    {
+      "file": "content/en/post/openclaw-install/index.md",
+      "date": "2026-09-07",
+      "scope": "Checked against official installation documentation; runtime requirements are recorded below. No fresh-system installation was performed."
+    },
+    {
+      "file": "content/en/post/openclaw-chrome/index.md",
+      "date": "2026-09-07",
+      "scope": "Checked against official browser and extension documentation. No signed-in browser attachment or pairing was tested."
+    },
+    {
+      "file": "content/en/post/openclaw-uninstall/index.md",
+      "date": "2026-09-07",
+      "scope": "Checked against the official removal workflow. Bundled scripts passed syntax and scope checks; no cleanup was executed in this review."
+    },
+    {
+      "file": "content/en/post/python-install/index.md",
+      "date": "2026-09-07",
+      "scope": "Checked against Python 3.14 documentation. Older screenshots are historical examples; installations were not repeated on each operating system."
+    },
+    {
+      "file": "content/en/post/linux-fail2ban/index.md",
+      "date": "2026-09-07",
+      "scope": "Examples target Debian/Ubuntu with systemd and were checked against upstream defaults. Live bans were not retested on a Linux host."
+    }
+  ]
+}

@@ -7,8 +7,6 @@ categories:
 tags:
     - Linux
 lastmod: 2026-09-07T00:00:00+08:00
-review_date: "2026-09-07"
-review_scope: "示例范围为 Debian/Ubuntu 与 systemd；已对照上游默认配置，未在 Linux 主机重做封禁实测。"
 ---
 
 Fail2ban 根据日志中的失败事件执行封禁动作。它能补充 SSH 等服务的防护，但需要正确的日志来源、过滤器和防火墙动作；安装服务本身不等于已经保护所有入口。
@@ -23,7 +21,7 @@ sudo apt install fail2ban
 fail2ban-client --version
 ```
 
-优先使用发行版维护的软件包。原文中的 CentOS 7/8 与固定 `1.0.2` 源码安装示例不再作为当前默认路径；确需源码安装时，按[上游说明](https://github.com/fail2ban/fail2ban)评估依赖、服务文件和后续升级方式。
+优先使用发行版维护的软件包。确需源码安装时，按[上游说明](https://github.com/fail2ban/fail2ban)选择版本，并确认依赖、服务文件和后续升级方式。
 
 ## 先确认 SSH 日志在哪里
 

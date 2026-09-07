@@ -1,8 +1,8 @@
 # 内容维护与阅读导航（2026-09-07）
 
-五篇教程的中英文版本已完成官方资料复核；新增关于、系列阅读和 OpenClaw 系列入口，文章可按顺序前后跳转。首页 RSS 现只包含文章，避免订阅工具和隐私页面。
+五篇教程的中英文版本已完成官方资料复核，审查记录保存在维护文档中。网站提供关于页与 OpenClaw 文章内的阅读顺序，通用入口使用分类和归档。首页 RSS 只包含文章。
 
-本阶段运行代码已以 `3e2085d042df864e414201cec0210cf2433e65e4` 发布。[Actions Run 34084725573](https://github.com/CodeGlimpse/CodeGlimpse.github.io/actions/runs/34084725573) 的 Build、E2E、Deploy 全部成功；独立线上巡检通过 76 个端点与 147 个资源，12 项线上浏览器抽查通过。后续提交仅补充发布记录和方案文档。
+首轮内容与导航版本以 `3e2085d042df864e414201cec0210cf2433e65e4` 发布。[Actions Run 34084725573](https://github.com/CodeGlimpse/CodeGlimpse.github.io/actions/runs/34084725573) 的 Build、E2E、Deploy 全部成功；当次独立线上巡检通过 76 个端点与 147 个资源，12 项线上浏览器抽查通过。随后按用户反馈修正公开文案与入口，记录见下方。
 
 ## 教程修订与依据
 
@@ -16,18 +16,20 @@
 
 资料获取日期为 2026-09-07。Python 页面标注为 3.14.7 文档，正文按 3.14 系列说明；OpenClaw 与 Fail2ban 的资料是获取时的官方文档/主分支，不能当作对任意旧版本的保证。公开资料的下载记录、原文和 SHA-256 保存在本轮临时目录。
 
-`review_date` 与 `review_scope` 在文章顶部明确展示资料复核日期和范围。`lastmod` 记录内容修改，不代表实机安装测试日期。本轮未安装 OpenClaw、变更本机 Python、修改 Linux 服务或执行卸载；这些实测仍应在指定环境中单独记录。
+按用户对公开内容的要求，审查日期和范围已从文章 front matter 迁入 [`tutorial-review-records.json`](tutorial-review-records.json)，原先的审查提示组件与正文审查说明已移除。构建检查覆盖 HTML、搜索 JSON 和 RSS/XML，防止内审标记进入发布产物。`lastmod` 记录正常内容修改，不代表实机安装测试日期。本轮未安装 OpenClaw、变更本机 Python、修改 Linux 服务或执行卸载；这些实测仍应在指定环境中单独记录。
 
 ## 阅读入口
 
 - 关于：`/about/`、`/en/about/`。使用用户确认的 Fernweh 昵称和已有公开联系方式。
-- 系列目录：`/series/`、`/en/series/`；OpenClaw 专页：`/series/openclaw/`、`/en/series/openclaw/`。
+- 侧栏独立系列入口已取消，关于页使用分类入口。既有 `/series/`、`/en/series/` 及 OpenClaw 专页地址保持可访问，兼容已经发布的链接。
 - OpenClaw 阅读顺序由 `series_id: openclaw` 与 `series_order: 1/2/3` 表达；导航在当前语言内生成，并标注当前文章。
 - 原文章地址、发布日期、附带下载脚本及截图文件得到保留。标题调整的文章已有固定 slug。
 - 文章可以通过 `tool_related` 展示相关工具；JSON 示例与完整 OpenClaw JSON5 配置的验证边界已说明。
 - 首页 RSS 的地址和文章 GUID 保持稳定；每种语言目前各包含 5 篇文章。新增入口不进入文章订阅。
 
 ## 验证
+
+公开文案与入口修正：`npm.cmd run check:content`、`check:scripts`、`check:js`、独立 Hugo 构建及产物检查通过；`npm.cmd run test:e2e -- e2e/reading.spec.cjs --workers 2` 的 9 项定向测试通过，覆盖全部双语文章、搜索、RSS、分类入口、文章内导航及维护记录不对外提供。临时产物为 `copy-cleanup-public/`。以下为此前首轮版本的完整验证记录。
 
 - `npm.cmd test`：130/130 通过。
 - `npm.cmd run test:e2e -- --workers 2`：61/61 通过，新增 7 项双语阅读与 RSS 验证，覆盖系列前后跳转、作者与订阅入口、XML 解析、文章集合及移动布局。

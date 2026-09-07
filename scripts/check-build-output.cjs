@@ -227,6 +227,20 @@ function checkToolPages(language) {
     return toolIds;
 }
 
+function checkInternalReviewText(directory) {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+        const filePath = path.join(directory, entry.name);
+        if (entry.isDirectory()) {
+            checkInternalReviewText(filePath);
+        } else if (entry.isFile() && /\.(?:html|json|xml)$/i.test(entry.name)) {
+            const content = fs.readFileSync(filePath, 'utf8');
+            if (/\breview_(?:date|scope)\b|article-review|资料复核|Documentation review/i.test(content)) {
+                errors.push(`${relativePath(filePath)}: internal review notes must not appear in published output`);
+            }
+        }
+    }
+}
+
 if (!fs.existsSync(outputRoot)) {
     errors.push(`missing build output directory: ${relativePath(outputRoot)}`);
 } else {
@@ -320,6 +334,7 @@ if (!fs.existsSync(outputRoot)) {
         checkAnalytics(relativeFile, html);
         checkPrivacyMarkup(relativeFile, html);
     }
+    checkInternalReviewText(outputRoot);
 }
 
 if (errors.length > 0) {

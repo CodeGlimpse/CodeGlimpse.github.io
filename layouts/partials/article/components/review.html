@@ -1,6 +1,0 @@
-{{ with .Params.review_date }}
-<aside class="article-review" aria-label="{{ if eq $.Language.Lang "zh-cn" }}资料复核{{ else }}Documentation review{{ end }}">
-    <strong>{{ if eq $.Language.Lang "zh-cn" }}资料复核{{ else }}Documentation review{{ end }} · <time datetime="{{ . }}">{{ . }}</time></strong>
-    <p>{{ $.Params.review_scope }}</p>
-</aside>
-{{ end }}

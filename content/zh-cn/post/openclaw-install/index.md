@@ -8,8 +8,6 @@ categories:
 tags:
     - OpenClaw
 lastmod: 2026-09-07T00:00:00+08:00
-review_date: "2026-09-07"
-review_scope: "已对照官方安装资料；Node.js 与包管理器要求见正文，未在全新系统重新安装验证。"
 series_id: openclaw
 series_order: 1
 tool_related: [json, diff]
@@ -19,7 +17,7 @@ OpenClaw 可以在自己的设备上运行 Gateway，并连接聊天渠道和模
 
 ## 先检查适用环境
 
-截至资料复核日，官方安装页列出的 Node.js 范围为 **22.22.3+、24.15+ 或 25.9+，推荐 Node 26**。不能把旧文中的“Node 22.16+”继续当作当前要求。官方已提供原生 Windows Hub、PowerShell CLI 和 WSL2 等 Windows 路径；这里主要介绍 CLI。
+官方安装页列出的 Node.js 范围为 **22.22.3+、24.15+ 或 25.9+，推荐 Node 26**。Windows 用户可以选择原生 Windows Hub、PowerShell CLI 或 WSL2；这里主要介绍 CLI。
 
 先记录实际版本，再选用对应命令：
 
@@ -76,7 +74,7 @@ Get-Content -LiteralPath $installerPath
 & $installerPath
 ```
 
-第三方分支、国内镜像与官方发行版可能在包名、配置和版本上不同。本次只复核官方 OpenClaw；原文中的 `openclaw-cn` 安装步骤不再与官方步骤混用。源码构建请按[官方安装页](https://docs.openclaw.ai/install)对应版本的 pnpm 要求操作。
+本篇使用官方 OpenClaw 发行版。第三方分支、国内镜像可能采用不同的包名、配置和版本，应按其各自文档安装。源码构建请按[官方安装页](https://docs.openclaw.ai/install)对应版本的 pnpm 要求操作。
 
 ## 初始化和验收
 

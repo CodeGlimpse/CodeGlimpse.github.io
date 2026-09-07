@@ -8,8 +8,6 @@ categories:
 tags:
     - OpenClaw
 lastmod: 2026-09-07T00:00:00+08:00
-review_date: "2026-09-07"
-review_scope: "Checked against the official removal workflow. Bundled scripts passed syntax and scope checks; no cleanup was executed in this review."
 series_id: openclaw
 series_order: 3
 ---

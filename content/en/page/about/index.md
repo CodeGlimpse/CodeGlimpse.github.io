@@ -11,13 +11,13 @@ I'm Fernweh. This blog collects notes on OpenClaw, Python environments, and Linu
 
 ## Start reading
 
-- [Series](/en/series/): follow a topic in a practical order.
+- [Categories](/en/categories/): find articles by topic.
 - [Archives](/en/archives/): browse articles by date.
 - [Tools](/en/tools/): find format converters, encoders, and text utilities.
 
 ## Using the tutorials
 
-Software versions, operating systems, and installation methods affect the result of a command. “Documentation review” means an article was checked against official sources. Tests on an actual installation are identified separately with their environment and results. Check that installation, service, and cleanup steps fit your environment before running them.
+Software versions, operating systems, and installation methods affect the result of a command. Check that installation, service, and cleanup steps fit your environment before running them. Each article lists references for further reading.
 
 ## Subscribe and get in touch
 

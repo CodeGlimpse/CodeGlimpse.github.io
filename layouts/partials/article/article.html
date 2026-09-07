@@ -3,8 +3,6 @@
     {{ partial "article/components/header" . }}
     {{- .Scratch.Delete "renderArticleHeadingAsH1" -}}
 
-    {{ partial "article/components/review.html" . }}
-
     {{ partial "article/components/content" . }}
 
     {{ partial "article/components/footer" . }}

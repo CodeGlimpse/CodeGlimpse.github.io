@@ -47,14 +47,6 @@
         icon = "link"
 
 [[main]]
-    identifier = "series"
-    name = "Series"
-    url = "/en/series/"
-    weight = 3
-    [main.params]
-        icon = "archives"
-
-[[main]]
     identifier = "about"
     name = "About"
     url = "/en/about/"

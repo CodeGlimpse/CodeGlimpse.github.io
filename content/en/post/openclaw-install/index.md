@@ -1,126 +1,112 @@
 ---
-title: Complete Guide to OpenClaw Installation and Configuration
-description: A comprehensive guide on how to install and configure OpenClaw, the open-source personal AI assistant.
+title: "OpenClaw Installation: Environment Checks and Verification"
+description: "Check official Node.js and package-manager requirements, choose an installation method, onboard, and verify the OpenClaw Gateway."
 slug: openclaw-install
 date: 2026-03-23 22:00:00+0800
 categories:
     - Tutorials
 tags:
     - OpenClaw
+lastmod: 2026-09-07T00:00:00+08:00
+review_date: "2026-09-07"
+review_scope: "Checked against official installation documentation; runtime requirements are recorded below. No fresh-system installation was performed."
+series_id: openclaw
+series_order: 1
+tool_related: [json, diff]
 ---
 
-# Complete Guide to OpenClaw Installation and Configuration
+OpenClaw runs a Gateway on your own device and connects it to messaging channels and model services. This guide follows the official CLI workflow: check the environment, choose an installation method, run onboarding, and verify the result.
 
-OpenClaw is a personal AI assistant platform designed to run on your own devices. It integrates seamlessly with your favorite chat channels (such as WhatsApp, Telegram, Slack, Discord, etc.), providing a unified and "always-on" AI experience. This guide will walk you through the complete installation and configuration process.
+## Check the environment first
 
-## Prerequisites
+At the review date, the official requirements list **Node.js 22.22.3+, 24.15+, or 25.9+, with Node 26 recommended**. The earlier “Node 22.16+” requirement is outdated. Official Windows options now include the native Windows Hub, PowerShell CLI, and WSL2; this article focuses on the CLI.
 
-Before installing OpenClaw, please ensure your system meets the following requirements:
+Record your actual versions before choosing a command:
 
-- **Node.js**: Node 24 is highly recommended. Node 22.16+ is also supported.
-- **Operating System**: macOS, Linux, or Windows (WSL2 is strongly recommended for stability).
-- **Model API Keys**: You need API keys from providers like Anthropic, OpenAI, or Google.
-- **Network**: A stable internet connection for downloading packages and communicating with AI models.
+```bash
+node --version
+npm --version
+```
 
-## Installation Methods
+Model authentication depends on the provider. Complete it locally through the onboarding flow and keep credentials out of screenshots, shared links, and issue reports. Installation, onboarding, and daemon setup change the local environment.
 
-OpenClaw offers multiple installation methods. Choose the one that best fits your technical preference.
+## Option 1: a package manager
 
-### 1. Installation Script
+For **npm 12 or npm 11.16+**, the current official command explicitly permits OpenClaw's own lifecycle scripts:
 
-The installation script detects your OS, installs Node if necessary, and guides you through initialization. Remote scripts can change at any time, so do not execute them through `curl | bash` or `iwr | iex`: download the script to a temporary file, verify the domain, and review it first. If the publisher provides a checksum or signature, verify that too.
+```bash
+npm install -g openclaw@latest --allow-scripts=openclaw
+```
 
-#### macOS / Linux / WSL2
-**openclaw**
+**npm 11.15 and earlier** do not support that option:
+
+```bash
+npm install -g openclaw@latest
+```
+
+For pnpm, the current global installation command is:
+
+```bash
+pnpm add -g --allow-build=openclaw openclaw@latest
+```
+
+`pnpm approve-builds -g` is not the supported global installation flow. Because `latest` changes, use a reviewed explicit release number when reproducibility matters, and record Node.js, package-manager, and operating-system versions.
+
+## Option 2: the official installer
+
+The installer may install or select Node.js, install OpenClaw, and start onboarding. Download and inspect it before execution; verify any publisher-provided checksums or signatures as well.
+
+### macOS / Linux / WSL2
+
 ```bash
 installer_path="$(mktemp)"
 curl -fL https://openclaw.ai/install.sh -o "$installer_path"
 less "$installer_path"
-bash "$installer_path"
-```
-**openclaw-cn**
-```bash
-installer_path="$(mktemp)"
-curl -fL https://open-claw.org.cn/install-cn.sh -o "$installer_path"
-less "$installer_path"
+# Run only after reviewing the script
 bash "$installer_path"
 ```
 
-#### Windows (PowerShell)
-**openclaw**
+### Windows PowerShell
+
 ```powershell
 $installerPath = Join-Path $env:TEMP 'openclaw-install.ps1'
 Invoke-WebRequest -Uri 'https://openclaw.ai/install.ps1' -OutFile $installerPath
 Get-Content -LiteralPath $installerPath
-& $installerPath
-```
-**openclaw-cn (Ensure Git is installed):**
-```powershell
-$installerPath = Join-Path $env:TEMP 'openclaw-cn-install.ps1'
-Invoke-WebRequest -Uri 'https://open-claw.org.cn/install-cn.ps1' -OutFile $installerPath
-Get-Content -LiteralPath $installerPath
+# Run only after reviewing the script
 & $installerPath
 ```
 
-### 2. Manual Installation via npm or pnpm
+Third-party forks and mirrors can differ in package names, configuration, and versions. This review covers official OpenClaw; the former `openclaw-cn` steps are no longer mixed into the official workflow. For source builds, follow the matching pnpm requirements on the [official installation page](https://docs.openclaw.ai/install).
 
-If you prefer managing your Node environment manually, you can install the OpenClaw CLI globally.
+## Onboarding and verification
 
-#### Using npm
-```bash
-npm install -g openclaw@latest
-openclaw onboard --install-daemon
-```
-
-#### Using pnpm
-```bash
-pnpm add -g openclaw@latest
-pnpm approve-builds -g
-openclaw onboard --install-daemon
-```
-
-### 3. Source Installation (For Developers)
-
-If you want to contribute or run from the local codebase:
-
-**openclaw**
-```bash
-git clone https://github.com/openclaw/openclaw.git
-cd openclaw
-pnpm install && pnpm ui:build && pnpm build
-pnpm link --global
-openclaw onboard --install-daemon
-```
-
-**openclaw-cn (using Gitee and npmmirror):**
-```bash
-git clone https://gitee.com/OpenClaw-CN/openclaw-cn.git
-cd openclaw-cn
-pnpm config set registry https://registry.npmmirror.com/ # Set registry mirror
-pnpm install && pnpm ui:build && pnpm build
-pnpm link --global
-openclaw onboard --install-daemon
-```
-
-## Initialization and Configuration (Onboarding)
-
-After installation, the most important step is running the onboarding wizard. It will configure your workspace, gateway, and initial AI models.
+If the installer has not already completed onboarding:
 
 ```bash
 openclaw onboard --install-daemon
 ```
 
-The wizard will prompt you to:
-1. **Select Model Provider**: Choose between Anthropic, OpenAI, Google, etc.
-2. **Enter API Key**: Provide the API key for your chosen provider.
-3. **Install Daemon**: Install OpenClaw as a system service (recommended) to keep it running in the background.
-
-## Verifying Installation
-
-To ensure everything is running correctly, use the following commands:
+This configures model access, the Gateway, and background startup. Check the CLI and service separately:
 
 ```bash
-openclaw doctor         # Check for configuration issues
-openclaw status         # Check Gateway status
-openclaw dashboard      # Open the browser UI
+openclaw --version
+openclaw doctor
+openclaw gateway status
+openclaw dashboard
 ```
+
+`doctor` is a diagnostic entry point; some releases may offer configuration migrations or repairs. Read the output before accepting changes. A version number does not prove that the Gateway is running, and opening the Dashboard does not prove a successful model request.
+
+## Common failures and next steps
+
+- **`openclaw` is not found:** reopen the terminal, inspect `npm prefix -g` and command resolution, and confirm that you are using the Node environment that installed it.
+- **Lifecycle scripts are blocked:** check the package-manager version and the matching approval option above instead of approving unrelated packages.
+- **The Gateway is unavailable:** inspect service and connection details in `openclaw gateway status` before following the official troubleshooting guidance.
+
+The next article explains the three browser connection modes. Use the [JSON tool]({{< relref "tools/json" >}}) for ordinary JSON examples; full JSON5 configurations still require OpenClaw's own diagnostics.
+
+## Official references
+
+- [Installation and system requirements](https://docs.openclaw.ai/install)
+- [Getting started and onboarding](https://docs.openclaw.ai/start/getting-started)
+- [Release history](https://github.com/openclaw/openclaw/releases)

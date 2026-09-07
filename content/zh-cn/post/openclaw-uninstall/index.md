@@ -7,11 +7,34 @@ categories:
     - Tutorials
 tags:
     - OpenClaw
+lastmod: 2026-09-07T00:00:00+08:00
+review_date: "2026-09-07"
+review_scope: "已对照官方卸载流程；附带脚本经过语法及范围检查，本轮未实际执行清理。"
+series_id: openclaw
+series_order: 3
 ---
 
-OpenClaw 小龙虾，一个最近爆火的AI代理，它的安装和使用都非常方便。然而，在最近的新闻中我们同时也发现，这款工具有很大的安全风险，可能并不适合企业环境或者包含个人隐私的计算机中。但是，由于OpenClaw 小龙虾的安装方式与常规软件并不相同，所以我们可能并不是很轻易地就可以将其卸载，本文将提供详细的操作指南来教会大家卸载小龙虾。
+卸载 OpenClaw 涉及不同范围：Gateway 服务、状态目录、工作区、桌面应用和 CLI 包。先确定哪些内容需要保留，并确认备份，再开始清理。
 
-我们将针对不同的操作系统（Windows, Linux, macOS）提供手动卸载步骤以及推荐的自动化清理脚本。
+## 优先使用内置卸载器
+
+CLI 仍可用时，先预览所有清理范围：
+
+```bash
+openclaw uninstall --dry-run --all
+```
+
+核对实际目录和服务后，进入交互式卸载：
+
+```bash
+openclaw uninstall
+```
+
+当前官方交互流程初始只选中 Gateway 服务，状态、工作区和应用是独立选项；`--all` 会选择全部四项。删除状态不等于删除配置过的工作区。服务移除失败时，相关数据范围可能被保留，并报告部分清理失败。
+
+如果 CLI 已删除但后台服务仍在，按[官方手动移除说明](https://docs.openclaw.ai/install/uninstall)处理对应操作系统的服务，不要终止所有 Node.js 进程。
+
+下面的附带脚本只负责范围更窄的包、进程和 Docker 资源盘点及清理，不能替代内置卸载器对服务、状态和工作区的处理。
 
 ## 自动化卸载脚本（先检查，再执行）
 
@@ -62,37 +85,28 @@ bash "$script_path"          # dry-run，只读盘点
 bash "$script_path" --apply  # 要求输入 REMOVE OPENCLAW 后执行
 ```
 
-## 手动卸载步骤
+## 卸载 CLI 包并验收
 
-如果你更倾向于手动操作，请按照以下步骤进行：
-
-### 1. 停止相关进程
-确保没有任何 OpenClaw 相关的 Node.js 进程正在运行。你可以通过任务管理器（Windows）或 `top`/`ps` 命令（Linux/macOS）查找并终止它们。
-
-### 2. 卸载全局包
-使用你常用的包管理器执行卸载命令：
+处理完所选服务和数据范围后，使用当初安装它的包管理器卸载 CLI。下列命令按实际情况选择一种：
 
 ```bash
-# 使用 npm
-npm uninstall -g openclaw openclaw-cn
+# npm 安装
+npm uninstall -g openclaw
 
-# 使用 pnpm
-pnpm uninstall -g openclaw openclaw-cn
+# pnpm 安装
+pnpm remove -g openclaw
 ```
 
-### 3. 清理残留文件
-检查以下路径并删除与 OpenClaw 相关的文件夹：
-- **Windows**: `C:\Users\<YourUsername>\AppData\Roaming\npm\node_modules\openclaw`
-- **Linux/macOS**: `/usr/local/lib/node_modules/openclaw` 或 `~/.npm-global/lib/node_modules/openclaw`
+`openclaw-cn` 等第三方分支应单独确认。按实际包前缀和已审核清单处理残留，不照抄猜测的全局安装路径直接删除。随后检查原服务和命令搜索结果；仅 CLI 命令消失不能证明后台服务已经移除。
 
-## 常见问题解答
+## 常见问题
 
-**Q: 运行脚本时提示权限不足？**
-A: 请确保在 Windows 上使用管理员权限运行，在 Linux/macOS 上使用 `sudo`（如果需要）。
+- 权限不足时，先确认安装位置或 Docker 环境的实际要求，不统一使用管理员权限处理所有清理步骤。
 
-**Q: 脚本没有找到 Node.js 怎么办？**
-A: 请确保 Node.js 已正确安装在你的 PATH 环境变量中。脚本会尝试自动查找常见的安装路径（如 NVM 安装路径）。
+- 找不到命令时，核对当初安装使用的 PATH 和包管理器环境；脚本清单只覆盖实际检测到的范围。
 
----
+- dry-run 只报告计划，实际完成情况还要检查执行结果、剩余服务与资源。
 
-希望这篇指南能帮助你顺利完成 OpenClaw 的卸载工作。
+## 官方依据
+
+[OpenClaw 卸载范围、预览与手动服务移除](https://docs.openclaw.ai/install/uninstall)

@@ -6,158 +6,98 @@ categories:
     - Tutorials
 tags:
     - Linux
+lastmod: 2026-09-07T00:00:00+08:00
+review_date: "2026-09-07"
+review_scope: "Examples target Debian/Ubuntu with systemd and were checked against upstream defaults. Live bans were not retested on a Linux host."
 ---
 
-## What is Fail2ban?
+Fail2ban reads failure events from logs and applies ban actions. It complements protection for services such as SSH, but needs the correct log source, filter, and firewall action. Installing the service alone does not protect every entry point.
 
-Fail2ban is an intrusion prevention software framework that protects computer servers from brute-force attacks. It works by scanning log files (e.g., `/var/log/auth.log`) and banning IP addresses that show malicious signs, such as too many password failures, seeking for exploits, etc.
+## Scope and installation
 
-## Installing Fail2ban
+These examples cover SSH with distribution packages on systemd-based Debian/Ubuntu. Check the distribution, actual SSH port, and installed Fail2ban version first. Fedora, RHEL, and other distributions have different repositories and logging defaults.
 
-Choose the installation method according to your Linux distribution.
-
-### 1. Using Package Manager
-
-#### Debian / Ubuntu
 ```bash
 sudo apt update
 sudo apt install fail2ban
+fail2ban-client --version
 ```
 
-#### CentOS / RHEL (Using yum or dnf)
-On CentOS/RHEL, you typically need to install the EPEL repository first:
-```bash
-# CentOS 7
-sudo yum install epel-release
-sudo yum install fail2ban
+Prefer maintained distribution packages. The previous CentOS 7/8 and fixed `1.0.2` source examples are no longer presented as the current default. If source installation is required, consult [upstream guidance](https://github.com/fail2ban/fail2ban) for dependencies, service integration, and future updates.
 
-# CentOS 8 / RHEL 8 / Fedora (Using dnf)
-sudo dnf install epel-release
-sudo dnf install fail2ban
-```
+## Identify the SSH log source
 
-### 2. From Source (tar.gz)
-If you need a specific version or your distribution doesn't provide a package, you can install from source:
+Ubuntu/Debian commonly use the `ssh` service unit; other environments may use `sshd`. Inspect the actual unit and logs:
 
 ```bash
-# Download source (replace with the latest version link)
-wget https://github.com/fail2ban/fail2ban/archive/refs/tags/1.0.2.tar.gz
-tar -xvzf 1.0.2.tar.gz
-cd fail2ban-1.0.2
-
-# Install
-sudo python3 setup.py install
-```
-*Note: Source installation typically requires manual configuration of systemd service files and log paths.*
-
-After installation, it is recommended to set Fail2ban to start on boot:
-```bash
-sudo systemctl enable fail2ban
-sudo systemctl start fail2ban
+sudo systemctl status ssh --no-pager
+sudo journalctl -u ssh -n 30 --no-pager
 ```
 
-## Configuring Fail2ban
+For file-based logging, confirm that a file such as `/var/log/auth.log` exists and receives SSH authentication events. A path in a tutorial is not evidence that the machine writes to it.
 
-The default configuration file for Fail2ban is `/etc/fail2ban/jail.conf`. However, it's not recommended to modify this file directly, as it may be overwritten during package upgrades. Instead, you should create a local configuration file, `/etc/fail2ban/jail.local`, or new `.conf` files in the `/etc/fail2ban/jail.d/` directory to override the defaults.
+## Configure a small SSH jail override
 
-### Create a Local Configuration File
+Keep the distribution's `jail.conf` and place only the overrides in `/etc/fail2ban/jail.d/sshd.local`. Copying the entire default file makes later upstream changes harder to inherit.
 
-First, copy `jail.conf` to `jail.local`:
-
-```bash
-sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-```
-
-Now you can safely edit the `jail.local` file.
-
-### Configure SSH Protection
-
-Open the `/etc/fail2ban/jail.local` file and find the `[sshd]` section. You can customize the following parameters as needed:
+Before enabling protection, retain a second management session or console and add a verified fixed administration address to `ignoreip`. The example below contains loopback addresses only, not your remote management address.
 
 ```ini
+[DEFAULT]
+ignoreip = 127.0.0.1/8 ::1
+
 [sshd]
 enabled = true
-port    = ssh
-logpath = %(sshd_log)s
-backend = %(sshd_backend)s
+port = ssh
+backend = systemd
 maxretry = 5
 findtime = 10m
-bantime = 1d
+bantime = 1h
 ```
 
-- `enabled`: `true` enables this jail.
-- `port`: The port for the SSH service.
-- `logpath`: The path to the SSH authentication log file.
-- `maxretry`: The number of failures before a ban is imposed.
-- `findtime`: The time window during which the failures must occur.
-- `bantime`: The duration for which the IP address is banned. `1d` means one day.
+- Set `port` to the actual value if SSH uses a custom port.
+- The `systemd` backend reads the journal; **do not combine it with a copied file-based `logpath`**.
+- For file logs, choose a suitable backend and a verified path, for example `backend = polling` with `logpath = /var/log/auth.log`.
+- `maxretry` and `findtime` define the trigger; `bantime` sets the ban duration. Adjust them for the service and recovery options.
 
-### More Practical Scenarios
+## Validate before enabling
 
-In addition to SSH, Fail2ban can protect many other services. Add the following to `jail.local`:
-
-#### Nginx Prevention of Malicious Scans (Too many 404 errors)
-```ini
-[nginx-404]
-enabled  = true
-port     = http,https
-filter   = nginx-404
-logpath  = /var/log/nginx/access.log
-findtime = 600
-maxretry = 5
-bantime  = 1h
-```
-*Note: This requires you to define an `nginx-404.conf` filter under `/etc/fail2ban/filter.d/`.*
-
-#### MySQL/MariaDB Protection
-```ini
-[mariadb-jail]
-enabled  = true
-port     = 3306
-filter   = mysqld-auth
-logpath  = /var/log/mysql/error.log
-maxretry = 3
-```
-
-## Common Fail2ban Management Commands
-
-`fail2ban-client` is the primary tool for managing Fail2ban.
-
-### 1. Check Status
 ```bash
-# Check overall service running status
+sudo fail2ban-client -t
+```
+
+After configuration validation succeeds, enable or reload the service:
+
+```bash
+sudo systemctl enable --now fail2ban
+sudo fail2ban-client reload
 sudo fail2ban-client ping
-
-# Check the list of enabled jails
 sudo fail2ban-client status
-
-# Check detailed status of a specific jail (e.g., sshd)
 sudo fail2ban-client status sshd
 ```
 
-### 2. Manage Banned IPs
+Confirm that `sshd` is enabled, the log source is correct, and the ban action works. Test from a controlled source while retaining a recovery path rather than repeatedly failing authentication on your only management connection.
+
+## Bans, unbans, and persistence
+
+`192.0.2.10` is a documentation example address. Replace it with a verified target before running these commands:
+
 ```bash
-# Manually ban an IP (in the sshd jail)
-sudo fail2ban-client set sshd banip 1.2.3.4
-
-# Manually unban an IP
-sudo fail2ban-client set sshd unbanip 1.2.3.4
-
-# Unban an IP from all jails
-sudo fail2ban-client unban 1.2.3.4
+sudo fail2ban-client set sshd banip 192.0.2.10
+sudo fail2ban-client set sshd unbanip 192.0.2.10
+sudo fail2ban-client unban 192.0.2.10
 ```
 
-### 3. Reload Configuration
-When you modify `.local` files or filters, you can apply changes without restarting the entire service:
-```bash
-sudo fail2ban-client reload
-```
+Upstream defaults enable SQLite persistence, with `dbfile` set to `/var/lib/fail2ban/fail2ban.sqlite3`. It is therefore inaccurate to say that all bans disappear on restart. Restoration also depends on the database, remaining ban duration, purge policy, and distribution configuration. Check effective configuration and actual status after a restart.
 
-## FAQ & Tips
-- **Whitelist**: Set `ignoreip = 127.0.0.1/8 ::1 <Your Fixed IP>` in the `[DEFAULT]` section to prevent locking yourself out.
-- **Persistence**: By default, bans expire after a service restart. For persistence, you can configure database storage.
-- **Email Notifications**: Fail2ban supports sending email alerts to administrators when an IP is banned.
+## Before protecting other services
 
-## Summary
+Do not enable a `nginx-404` jail without its matching filter. Confirm the filter file, actual log format, and false-positive scope, then verify controlled samples with `fail2ban-regex`. A JavaScript regex tool does not replace Fail2ban's filter tests.
 
-Fail2ban is a simple yet effective tool that adds a significant layer of security to your server. With proper configuration, you can greatly reduce the risk of brute-force attacks.
+If no ban occurs, inspect the sequence: log production, backend ingestion, filter matching, and firewall action. Run `fail2ban-client -t` after configuration changes instead of guessing through repeated restarts.
+
+## Official references
+
+- [Fail2ban project and installation guidance](https://github.com/fail2ban/fail2ban)
+- [Default jails and backend documentation](https://github.com/fail2ban/fail2ban/blob/master/config/jail.conf)
+- [Default database and service configuration](https://github.com/fail2ban/fail2ban/blob/master/config/fail2ban.conf)

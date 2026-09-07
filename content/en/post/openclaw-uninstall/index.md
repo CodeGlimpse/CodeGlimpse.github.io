@@ -7,19 +7,34 @@ categories:
     - Tutorials
 tags:
     - OpenClaw
+lastmod: 2026-09-07T00:00:00+08:00
+review_date: "2026-09-07"
+review_scope: "Checked against the official removal workflow. Bundled scripts passed syntax and scope checks; no cleanup was executed in this review."
+series_id: openclaw
+series_order: 3
 ---
 
-OpenClaw, a recently popular AI agent, is very convenient to install and use. However, recent news has also revealed that this tool poses significant security risks and may not be suitable for enterprise environments or computers containing personal privacy. Nevertheless, due to the unique installation method of OpenClaw, it may not be easy to uninstall it. This article will provide a detailed guide to teach you how to uninstall OpenClaw.
+Removing OpenClaw involves separate scopes: the Gateway service, state, workspace, desktop app, and CLI package. Decide what to preserve before removal and confirm any backups first.
 
-We will cover manual removal steps and provide recommended automated cleanup scripts for Windows, Linux, and macOS.
+## Start with the built-in uninstaller
 
-## Why is a Complete Uninstall Necessary?
+If the CLI is still available, inspect all removal scopes first:
 
-In some cases, a simple `npm uninstall` may not be enough to remove all traces of OpenClaw. Remnants can include:
-- Lingering configuration files
-- Active background processes
-- Caches stored in various user directories
-- Paths added to environment variables
+```bash
+openclaw uninstall --dry-run --all
+```
+
+Review the exact directories and services, then use the interactive flow:
+
+```bash
+openclaw uninstall
+```
+
+The current official prompt initially selects only the Gateway service. State, workspace, and app are separate choices; `--all` selects all four scopes. Removing state does not imply removing configured workspaces. Service-removal failure may preserve data scopes and produce a partial-cleanup error.
+
+If the CLI is gone but its service remains, follow the operating-system-specific [official manual removal instructions](https://docs.openclaw.ai/install/uninstall). Do not terminate every Node.js process.
+
+The optional scripts below perform narrower package/process/Docker inventory and cleanup. They do not replace the built-in state, workspace, and service removal workflow.
 
 ## Automated Uninstallation (Inspect Before Applying)
 
@@ -70,40 +85,28 @@ bash "$script_path"          # dry-run; inventory only
 bash "$script_path" --apply  # requires typing REMOVE OPENCLAW
 ```
 
-## Manual Uninstallation Guide
+## Remove the CLI package and verify
 
-If you prefer to handle the uninstallation manually, please follow the steps below:
-
-### 1. Terminate Running Processes
-
-Ensure no OpenClaw-related Node.js processes are active. You can use Task Manager on Windows or the `top`/`ps` commands on Linux and macOS to find and terminate them.
-
-### 2. Uninstall Global Packages
-
-Use your preferred package manager to execute the uninstall command:
+After the requested service and data scopes are handled, uninstall the CLI with the package manager that installed it. Choose one:
 
 ```bash
-# Using npm
-npm uninstall -g openclaw openclaw-cn
+# npm installation
+npm uninstall -g openclaw
 
-# Using pnpm
-pnpm uninstall -g openclaw openclaw-cn
+# pnpm installation
+pnpm remove -g openclaw
 ```
 
-### 3. Clean Up Residual Files
+Treat third-party forks such as `openclaw-cn` separately. Use the actual package prefix and reviewed inventory rather than deleting a guessed system-wide directory. Recheck the former service and command resolution; the absence of a CLI command alone does not prove removal of a background service.
 
-Check the following locations and delete any folders related to OpenClaw:
-- **Windows**: `C:\Users\<YourUsername>\AppData\Roaming\npm\node_modules\openclaw`
-- **Linux/macOS**: `/usr/local/lib/node_modules/openclaw` or `~/.npm-global/lib/node_modules/openclaw`
+## Common problems
 
-## Frequently Asked Questions
+- For permission errors, identify the installation location or Docker permission requirement first. Do not elevate every cleanup action by default.
 
-**Q: I'm getting a "permission denied" error when running the script.**
-**A:** On Windows, ensure you are running PowerShell with administrator privileges. On Linux and macOS, you may need to use `sudo`.
+- If a command cannot be found, check the PATH and package-manager environment used for that installation. The inventory is limited to what the script can actually detect.
 
-**Q: The script reports that Node.js was not found.**
-**A:** This can happen if Node.js is not in your system's PATH. Our scripts attempt to locate common installation directories (like those used by NVM), but you may need to ensure your environment is configured correctly.
+- A dry run reports a plan. Successful cleanup requires checking the apply result and any remaining service or resource.
 
----
+## Official reference
 
-We hope this guide helps you successfully uninstall OpenClaw. If you have any questions, feel free to leave a comment below.
+[OpenClaw uninstall scopes, preview, and manual service removal](https://docs.openclaw.ai/install/uninstall)

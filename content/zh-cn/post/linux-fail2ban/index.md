@@ -6,166 +6,98 @@ categories:
     - Tutorials
 tags:
     - Linux
+lastmod: 2026-09-07T00:00:00+08:00
+review_date: "2026-09-07"
+review_scope: "示例范围为 Debian/Ubuntu 与 systemd；已对照上游默认配置，未在 Linux 主机重做封禁实测。"
 ---
 
-## 什么是 Fail2ban？
+Fail2ban 根据日志中的失败事件执行封禁动作。它能补充 SSH 等服务的防护，但需要正确的日志来源、过滤器和防火墙动作；安装服务本身不等于已经保护所有入口。
 
-Fail2ban 是一个入侵防御软件框架，可以保护计算机服务器免受暴力破解攻击。它通过扫描日志文件（例如 `/var/log/auth.log`）并禁止显示恶意迹象的 IP 地址——如密码失败次数过多，寻找漏洞等。
+## 适用范围与安装
 
-## 安装 Fail2ban
+下面以使用 systemd 的 Debian/Ubuntu 软件包环境和 SSH 为例。先核对发行版、SSH 实际端口及 Fail2ban 软件包版本；Fedora、RHEL 和其他发行版的仓库与日志配置不能直接套用。
 
-根据你使用的 Linux 发行版，选择相应的安装方式。
-
-### 1. 使用包管理器安装
-
-#### Debian / Ubuntu
 ```bash
 sudo apt update
 sudo apt install fail2ban
+fail2ban-client --version
 ```
 
-#### CentOS / RHEL (使用 yum 或 dnf)
-在 CentOS/RHEL 上，你通常需要先安装 EPEL 仓库：
-```bash
-# CentOS 7
-sudo yum install epel-release
-sudo yum install fail2ban
+优先使用发行版维护的软件包。原文中的 CentOS 7/8 与固定 `1.0.2` 源码安装示例不再作为当前默认路径；确需源码安装时，按[上游说明](https://github.com/fail2ban/fail2ban)评估依赖、服务文件和后续升级方式。
 
-# CentOS 8 / RHEL 8 / Fedora (使用 dnf)
-sudo dnf install epel-release
-sudo dnf install fail2ban
-```
+## 先确认 SSH 日志在哪里
 
-### 2. 通过源码安装 (tar.gz)
-如果你需要安装特定版本或者你的发行版没有提供包，可以从源码安装：
+Ubuntu/Debian 常见服务单元为 `ssh`，其他环境可能是 `sshd`。检查实际单元及日志：
 
 ```bash
-# 下载源码（请替换为最新版本链接）
-wget https://github.com/fail2ban/fail2ban/archive/refs/tags/1.0.2.tar.gz
-tar -xvzf 1.0.2.tar.gz
-cd fail2ban-1.0.2
-
-# 安装
-sudo python3 setup.py install
-```
-*注意：源码安装通常需要手动配置 systemd 服务文件和日志路径。*
-
-安装后，建议将 Fail2ban 设置为开机自启：
-```bash
-sudo systemctl enable fail2ban
-sudo systemctl start fail2ban
+sudo systemctl status ssh --no-pager
+sudo journalctl -u ssh -n 30 --no-pager
 ```
 
-## 配置 Fail2ban
+如果使用文件日志，先确认 `/var/log/auth.log` 等文件确实存在且包含 SSH 认证事件。不要仅因为某篇教程写了该路径，就假定机器正在向它写日志。
 
-Fail2ban 的默认配置文件是 `/etc/fail2ban/jail.conf`。但是，不建议直接修改此文件，因为软件包更新时可能会覆盖它。相反，你应该创建一个本地配置文件 `/etc/fail2ban/jail.local` 或在 `/etc/fail2ban/jail.d/` 目录下创建新的 `.conf` 文件来覆盖默认设置。
+## 用小型覆盖文件配置 SSH jail
 
-### 创建本地配置文件
+保留发行版的 `jail.conf`，在 `/etc/fail2ban/jail.d/sshd.local` 中写入需要覆盖的参数，避免复制整份默认配置后长期失去上游更新。
 
-首先，将 `jail.conf` 复制到 `jail.local`：
-
-```bash
-sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-```
-
-现在，你可以安全地编辑 `jail.local` 文件。
-
-### 配置 SSH 防护
-
-打开 `/etc/fail2ban/jail.local` 文件，找到 `[sshd]` 部分。你可以根据需要自定义以下参数：
+启用前先确保有第二条管理会话或控制台，并将确认过的固定管理地址加入 `ignoreip`。下面只列出回环地址；它不包含你的远程管理地址。
 
 ```ini
+[DEFAULT]
+ignoreip = 127.0.0.1/8 ::1
+
 [sshd]
 enabled = true
-port    = ssh
-logpath = %(sshd_log)s
-backend = %(sshd_backend)s
+port = ssh
+backend = systemd
 maxretry = 5
 findtime = 10m
-bantime = 1d
+bantime = 1h
 ```
 
-- `enabled`: `true` 表示启用此监狱（jail）。
-- `port`: SSH 服务的端口。
-- `logpath`: SSH 认证日志文件的路径。
-- `maxretry`: 在 `findtime` 时间内允许的最大失败尝试次数。
-- `findtime`: 监控失败尝试的时间窗口。
-- `bantime`: 禁止 IP 地址的时间长度。`1d` 表示一天。
+- 使用自定义 SSH 端口时，将 `port` 改为实际端口。
+- `systemd` 后端读取 journal，**不能同时照抄文件型 `logpath`**。
+- 若改用文件日志，选择合适的文件后端，并设置已确认的路径，例如 `backend = polling` 配合 `logpath = /var/log/auth.log`。
+- `maxretry` 和 `findtime` 控制触发条件；`bantime` 是封禁时长，按业务和恢复能力调整。
 
-### 重启 Fail2ban
-
-修改配置后，你需要重启 Fail2ban 服务以使更改生效：
+## 验证配置后再启用
 
 ```bash
-sudo systemctl restart fail2ban
+sudo fail2ban-client -t
 ```
 
-### 更多实用场景配置
+配置检查通过后，再启用或重新加载服务：
 
-除了 SSH，Fail2ban 还可以保护许多其他服务。在 `jail.local` 中添加以下内容：
-
-#### Nginx 防止恶意扫描 (404 错误过多)
-```ini
-[nginx-404]
-enabled  = true
-port     = http,https
-filter   = nginx-404
-logpath  = /var/log/nginx/access.log
-findtime = 600
-maxretry = 5
-bantime  = 1h
-```
-*注意：这需要你在 `/etc/fail2ban/filter.d/` 下定义 `nginx-404.conf` 过滤器。*
-
-#### MySQL/MariaDB 防护
-```ini
-[mariadb-jail]
-enabled  = true
-port     = 3306
-filter   = mysqld-auth
-logpath  = /var/log/mysql/error.log
-maxretry = 3
-```
-
-## Fail2ban 常用管理命令
-
-`fail2ban-client` 是管理 Fail2ban 的主要工具。
-
-### 1. 查看状态
 ```bash
-# 查看服务整体运行状态
+sudo systemctl enable --now fail2ban
+sudo fail2ban-client reload
 sudo fail2ban-client ping
-
-# 查看已启用的监狱列表
 sudo fail2ban-client status
-
-# 查看特定监狱的详细状态（如 sshd）
 sudo fail2ban-client status sshd
 ```
 
-### 2. 管理被禁 IP
+确认 `sshd` 已启用、日志来源正确，并检查实际的封禁动作。需要测试封禁时，使用受控测试来源并保留恢复入口，不要反复用唯一管理连接试错。
+
+## 封禁、解禁与持久化
+
+下面的 `192.0.2.10` 是文档示例地址，操作前替换为经过核实的目标：
+
 ```bash
-# 手动禁止一个 IP (在 sshd 监狱中)
-sudo fail2ban-client set sshd banip 1.2.3.4
-
-# 手动解禁一个 IP
-sudo fail2ban-client set sshd unbanip 1.2.3.4
-
-# 解禁所有监狱中的某个 IP
-sudo fail2ban-client unban 1.2.3.4
+sudo fail2ban-client set sshd banip 192.0.2.10
+sudo fail2ban-client set sshd unbanip 192.0.2.10
+sudo fail2ban-client unban 192.0.2.10
 ```
 
-### 3. 重新加载配置
-当你修改了 `.local` 文件或过滤器后，无需重启整个服务即可生效：
-```bash
-sudo fail2ban-client reload
-```
+上游默认配置启用 SQLite 持久化，`dbfile` 为 `/var/lib/fail2ban/fail2ban.sqlite3`。因此不能笼统地说“重启后所有封禁都会失效”；恢复结果还受数据库、封禁剩余时间、清理策略和发行版配置影响。应检查当前有效配置和服务重启后的实际状态。
 
-## 常见问题与小贴士
-- **白名单**：在 `[DEFAULT]` 部分设置 `ignoreip = 127.0.0.1/8 ::1 <你的固定IP>`，防止把自己关在外面。
-- **持久化**：默认情况下，重启服务后之前的禁令会失效。如果需要持久化，可以配置数据库存储。
-- **邮件通知**：Fail2ban 支持在封禁 IP 时向管理员发送邮件提醒。
+## 扩展到其他服务前
 
-## 总结
+不要只添加一个不存在过滤器的 `nginx-404` jail。先确认过滤器文件、真实日志格式和误报范围，再用 `fail2ban-regex` 对受控样例验证。JavaScript 正则工具也不能替代 Fail2ban 自身的过滤器测试。
 
-Fail2ban 是一个简单而有效的工具，可以为你的服务器增加一层重要的安全保护。通过正确配置，你可以大大减少受到暴力破解攻击的风险。
+如果没有封禁事件，按“日志是否产生 → 后端是否读取 → 过滤器是否匹配 → 防火墙动作是否成功”的顺序排查。修改配置后先运行 `fail2ban-client -t`，不要靠反复重启猜测原因。
+
+## 官方依据
+
+- [Fail2ban 项目与安装说明](https://github.com/fail2ban/fail2ban)
+- [默认 jail 配置与后端说明](https://github.com/fail2ban/fail2ban/blob/master/config/jail.conf)
+- [默认数据库与服务配置](https://github.com/fail2ban/fail2ban/blob/master/config/fail2ban.conf)

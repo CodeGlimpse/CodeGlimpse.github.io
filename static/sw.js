@@ -67,13 +67,15 @@ async function navigationResponse(request) {
 
 async function assetResponse(request) {
     const cached = await readCached(request);
-    if (cached) return cached;
+    const immutable = /\.[a-f0-9]{64}\.(?:css|js)$/i.test(new URL(request.url).pathname);
+    if (cached && immutable) return cached;
     try {
         const response = await fetch(request);
+        if (response.status >= 500 && cached) return cached;
         await cacheSuccessfulResponse(request, response);
         return response;
     } catch {
-        return Response.error();
+        return cached || Response.error();
     }
 }
 
@@ -83,7 +85,8 @@ self.addEventListener('fetch', (event) => {
     if (request.method !== 'GET' || url.origin !== self.location.origin) return;
 
     // The response promise includes cache writes, keeping them within the fetch
-    // event lifetime. Cached assets do not start a detached network request.
+    // event lifetime. Fingerprinted assets reuse their cache; fixed URLs such
+    // as search indexes refresh online and fall back to their cache offline.
     event.respondWith(request.mode === 'navigate'
         ? navigationResponse(request)
         : assetResponse(request));

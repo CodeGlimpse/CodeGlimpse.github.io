@@ -131,12 +131,30 @@ test('returns successful online pages even if writing the offline cache fails', 
     assert.equal(fixture.read('/tools/xml/'), undefined);
 });
 
-test('serves cached assets without starting a redundant offline network request', async () => {
+test('serves fingerprinted assets without starting a redundant offline network request', async () => {
     const fixture = workerFixture({ network: async () => { throw new Error('offline'); } });
-    fixture.seed('/js/tool.hash.js', 'cached script');
-    assert.equal(await (await fixture.request('/js/tool.hash.js', { mode: 'no-cors' })).text(), 'cached script');
+    const script = `/js/tool.${'a'.repeat(64)}.js`;
+    fixture.seed(script, 'cached script');
+    assert.equal(await (await fixture.request(script, { mode: 'no-cors' })).text(), 'cached script');
     assert.equal(fixture.calls.length, 0);
     assert.equal((await fixture.request('/js/missing.js', { mode: 'no-cors' })).type, 'error');
+});
+
+test('refreshes fixed-URL search indexes online and preserves them through outages', async () => {
+    let state = 'online';
+    const fixture = workerFixture({ network: async () => {
+        if (state === 'offline') throw new Error('offline');
+        return state === 'unavailable'
+            ? new Response('unavailable', { status: 503 })
+            : new Response('updated search index');
+    } });
+    fixture.seed('/search/index.json', 'old search index');
+    assert.equal(await (await fixture.request('/search/index.json', { mode: 'cors' })).text(), 'updated search index');
+    for (state of ['unavailable', 'offline']) {
+        assert.equal(await (await fixture.request('/search/index.json', { mode: 'cors' })).text(), 'updated search index');
+    }
+    assert.equal(await fixture.read('/search/index.json').text(), 'updated search index');
+    assert.equal(fixture.writes.length, 1);
 });
 
 test('caches successful asset responses and skips failed ones', async () => {

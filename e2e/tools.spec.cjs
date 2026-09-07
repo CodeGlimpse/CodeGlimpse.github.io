@@ -370,6 +370,27 @@ test.describe('online tools', () => {
         await expect(page.locator('#yaml-output')).toHaveValue('{\n  "name": "Offline",\n  "value": null,\n  "items": []\n}');
     });
 
+    test('refreshes search results from the fixed index URL after a content update', async ({ page, context }) => {
+        let title = 'Index revision one';
+        await context.route('**/search/index.json', (route) => route.fulfill({
+            contentType: 'application/json',
+            body: JSON.stringify([{
+                title, content: 'cache-refresh-sentinel', permalink: '/',
+                date: '2026-09-06T00:00:00Z', image: '',
+            }]),
+        }));
+        await page.goto('/search/');
+        await page.evaluate(async () => { await navigator.serviceWorker.ready; });
+        await page.reload();
+        await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+        await page.locator('input[name="keyword"]').fill('cache-refresh-sentinel');
+        await expect(page.locator('.search-result--list')).toContainText('Index revision one');
+        title = 'Index revision two';
+        await page.reload();
+        await expect(page.locator('.search-result--list')).toContainText('Index revision two');
+        await expect(page.locator('.search-result--list')).not.toContainText('Index revision one');
+    });
+
     test('supports keyboard navigation and exposes theme state', async ({ page }) => {
         await page.goto('/tools/json/');
 

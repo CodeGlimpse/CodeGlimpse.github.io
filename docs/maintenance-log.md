@@ -109,4 +109,6 @@
 - 验证：130/130 Node 单测、61/61 Chromium E2E；独立 Hugo ZH 60 / EN 59 构建及产物检查通过；桌面与手机暗色排版已查看。
 - 内容验证边界：官方资料复核与实机验证分别标注，本轮未安装或卸载教程软件、未操作真实登录浏览器、未修改 Linux 服务。
 - 资料、验证命令及后续四次选题见 [内容维护记录](content-maintenance-2026-09-07.md)。源代码与发布记录可按本条 Git 历史在 [部署工作流](https://github.com/CodeGlimpse/CodeGlimpse.github.io/actions/workflows/deploy.yml) 查询。
+- 发布：源提交 `3e2085d042df864e414201cec0210cf2433e65e4`，对应 [Actions Run 34084725573](https://github.com/CodeGlimpse/CodeGlimpse.github.io/actions/runs/34084725573)；Build、E2E、Deploy 成功，独立线上 76 个端点/147 个资源及 12 项浏览器抽查通过。
+- 游戏栏目：仅形成[可行方案](games-column-proposal-2026-09-07.md)，未实现游戏或修改对应运行能力。
 - 回退基线：本轮前已发布的 `f8997862e38b805065d9a77b4f8f4edb05845140`。

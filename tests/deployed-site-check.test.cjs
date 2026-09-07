@@ -54,6 +54,17 @@ test('checks inline games and discovers their lazy modules without executing the
     assert.ok(checker.validateResponse(check,200,body.replace(modulePath,'https://outside.example/game.js')).includes('missing local game module: memory'));
 });
 
+test('checks the catalog filter while rejecting early game loading and an external filter', () => {
+    const hash = 'a'.repeat(64);
+    const script = '/js/game-catalog.' + hash + '.js';
+    const body = '<html><head><title>Games</title><meta name="description" content="Games"><link rel="canonical" href="https://example.com/games/"><link rel="alternate" hreflang="zh-cn" href="https://example.com/games/"><link rel="alternate" hreflang="en" href="https://example.com/en/games/"><link rel="alternate" hreflang="x-default" href="https://example.com/games/"><link rel="stylesheet" href="/style.css"></head><body><main><input id="game-search" type="search"><section id="game-catalog"></section></main><script src="/js/toast.a.js"></script><script src="/js/workspace.a.js"></script><script src="' + script + '"></script></body></html>';
+    const check = { path: '/games/', status: 200, html: true, gameCatalog: true };
+    assert.deepEqual(checker.validateResponse(check, 200, body, 'https://example.com/games/'), []);
+    assert.ok(checker.validateResponse(check, 200, body.replace('id="game-search"', 'id="missing"')).includes('missing game search input'));
+    assert.ok(checker.validateResponse(check, 200, body.replace(script, 'https://outside.example' + script)).includes('missing local game search script'));
+    assert.ok(checker.validateResponse(check, 200, body.replace('</main>', '<script src="/js/games/snake.js"></script></main>')).includes('catalog must not load game code'));
+});
+
 test('validates HTML landmarks and tool containers', () => {
     const page = '<html lang="zh-cn"><head><title>JSON</title><meta name="description" content="Tool"><link rel="canonical" href="https://example.com/tools/json/"><link rel="alternate" hreflang="zh-cn" href="https://example.com/tools/json/"><link rel="alternate" hreflang="en" href="https://example.com/en/tools/json/"><link rel="alternate" hreflang="x-default" href="https://example.com/tools/json/"><link rel="stylesheet" href="/style.css"><script src="/js/toast.abc.js"></script><script src="/js/workspace.ghi.js"></script></head><body><main><div id="tool-json"></div><script src="/js/tools/json.abc.js"></script><script src="/js/tools/clipboard.def.js"></script><script src="/js/tools/tool-ui.ghi.js"></script><script src="/js/tools/share.jkl.js"></script></main></body></html>';
     assert.deepEqual(

@@ -7,6 +7,10 @@ const resetMetrics = {
     'lights-out': ['[data-game-moves]', '0'],
     'sliding-puzzle': ['[data-game-moves]', '0'],
     'connect-four': ['[data-game-moves]', '0'],
+    'sokoban': ['[data-game-moves]', '0'],
+    'tic-tac-toe': ['[data-game-moves]', '0'],
+    'mini-sudoku': ['[data-game-moves]', '0'],
+    reaction: ['[data-reaction-round]', '0 / 5'],
 };
 
 test.beforeEach(async ({ page }) => {
@@ -191,6 +195,9 @@ test('games fit a phone and expose usable touch controls', async ({page}) => {
         'whack-a-mole': '[data-cell-index]', 'lights-out': '[data-cell-index]',
         'sliding-puzzle': '.is-movable', 'tap-flight': '[data-flight-flap]',
         'connect-four': '[data-game-restart]',
+        'falling-blocks': '[data-blocks-action="left"]', sokoban: '[data-direction="left"]',
+        'tic-tac-toe': '[data-cell-index]', 'mini-sudoku': '[data-sudoku-value="1"]',
+        reaction: '[data-reaction-target]', 'memory-sequence': '[data-game-restart]',
     };
     for (const {id} of games) {
         const root = await openGame(page,id);
@@ -415,19 +422,25 @@ test('every new game remains playable with storage blocked and reload clears its
         });
         Math.random = () => .1;
     });
-    for (const id of ['minesweeper', 'breakout', 'whack-a-mole', 'lights-out', 'sliding-puzzle', 'tap-flight', 'connect-four']) {
+    for (const id of ['minesweeper', 'breakout', 'whack-a-mole', 'lights-out', 'sliding-puzzle', 'tap-flight', 'connect-four', 'falling-blocks', 'sokoban', 'tic-tac-toe', 'mini-sudoku', 'reaction', 'memory-sequence']) {
         const root = await openGame(page, id);
         if (id === 'minesweeper' || id === 'lights-out') await root.locator('[data-cell-index]').first().click();
         if (id === 'whack-a-mole') await page.keyboard.press('1');
         if (id === 'sliding-puzzle') await root.locator('.is-movable').first().click();
         if (id === 'connect-four') await root.locator('[data-connect-column]').first().click();
+        if (id === 'falling-blocks') await page.keyboard.press('Space');
+        if (id === 'sokoban') await page.keyboard.press('ArrowLeft');
+        if (id === 'tic-tac-toe') await root.locator('[data-cell-index]').first().click();
+        if (id === 'mini-sudoku') await page.keyboard.press('1');
+        if (id === 'reaction') await root.locator('[data-reaction-target]').click();
+        if (id === 'memory-sequence') { await page.clock.runFor(1050); await page.keyboard.press('1'); }
         if (id === 'breakout' || id === 'tap-flight') {
             await page.keyboard.press('Space');
             await page.clock.runFor(100);
         }
         const snapshot = () => root.locator('canvas').count().then(count => count
             ? root.locator('canvas').evaluate(canvas => canvas.toDataURL())
-            : root.locator('[data-mine-board], [data-mole-board], [data-lights-board], [data-sliding-board], [data-connect-board]').evaluate(board => board.innerHTML));
+            : root.locator('[data-mine-board], [data-mole-board], [data-lights-board], [data-sliding-board], [data-connect-board], [data-sokoban-board], [data-tic-board], [data-sudoku-board], [data-reaction-target], [data-sequence-board]').evaluate(board => board.innerHTML));
         const played = await snapshot();
         await page.reload();
         await expect(root).toHaveAttribute('data-phase', 'idle');
@@ -445,13 +458,17 @@ test.describe('actual touch input', () => {
         test.setTimeout(120000);
         await freezeTime(page);
         await page.addInitScript(() => { Math.random = () => .1; });
-        for (const id of ['minesweeper', 'breakout', 'whack-a-mole', 'lights-out', 'sliding-puzzle', 'tap-flight', 'connect-four']) {
+        for (const id of ['minesweeper', 'breakout', 'whack-a-mole', 'lights-out', 'sliding-puzzle', 'tap-flight', 'connect-four', 'falling-blocks', 'sokoban', 'tic-tac-toe', 'mini-sudoku', 'reaction', 'memory-sequence']) {
             const root = await openGame(page, id);
+            if (id === 'memory-sequence') await page.clock.runFor(1050);
             const target = root.locator({
                 minesweeper: '[data-cell-index="0"]', breakout: '[data-breakout-board]',
                 'whack-a-mole': '[data-up="true"]', 'lights-out': '[data-cell-index="12"]',
                 'sliding-puzzle': '.is-movable', 'tap-flight': '[data-flight-board]',
                 'connect-four': '[data-connect-column="0"]',
+                'falling-blocks': '[data-blocks-action="drop"]', sokoban: '[data-direction="left"]',
+                'tic-tac-toe': '[data-cell-index="0"]', 'mini-sudoku': '[data-sudoku-value="1"]',
+                reaction: '[data-reaction-target]', 'memory-sequence': '[data-cell-index="0"]',
             }[id]).first();
             const box = await target.boundingBox();
             expect(box.width).toBeGreaterThanOrEqual(24);
@@ -462,7 +479,10 @@ test.describe('actual touch input', () => {
             if (id === 'minesweeper') await expect(target).toHaveClass(/is-revealed/);
             if (id === 'breakout') await expect(root.locator('[data-breakout-launch]')).toBeDisabled();
             if (id === 'whack-a-mole') await expect(root.locator('[data-game-score]')).toHaveText('10');
-            if (['lights-out', 'sliding-puzzle', 'connect-four'].includes(id)) await expect(root.locator('[data-game-moves]')).toHaveText('1');
+            if (['lights-out', 'sliding-puzzle', 'connect-four', 'sokoban', 'tic-tac-toe', 'mini-sudoku'].includes(id)) await expect(root.locator('[data-game-moves]')).toHaveText('1');
+            if (id === 'falling-blocks') expect(Number(await root.locator('[data-game-score]').textContent())).toBeGreaterThan(0);
+            if (id === 'reaction') await expect(root.locator('[data-reaction-target]')).toHaveAttribute('data-stage', 'early');
+            if (id === 'memory-sequence') await expect(root.locator('[data-game-score]')).toHaveText('1');
         }
     });
 });

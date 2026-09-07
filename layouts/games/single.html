@@ -24,7 +24,7 @@
         {{ partial (printf "games/boards/%s.html" $id) . }}
         <div class="game-overlay" data-game-overlay><span>{{ if eq .Language.Lang "zh-cn" }}点击上方按钮，开始一局{{ else }}Press Start game to begin{{ end }}</span></div>
     </div>
-    {{ if in (slice "snake" "2048" "sliding-puzzle") $id }}
+    {{ if in (slice "snake" "2048" "sliding-puzzle" "sokoban") $id }}
     <div class="game-dpad" role="group" aria-label="{{ if eq .Language.Lang "zh-cn" }}方向控制{{ else }}Direction controls{{ end }}">
         {{ range slice "up" "left" "down" "right" }}
         {{ $arrows := dict "up" "↑" "left" "←" "down" "↓" "right" "→" }}

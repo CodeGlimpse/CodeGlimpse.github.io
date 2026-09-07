@@ -8,12 +8,25 @@
 <span>{{ if $en }}Flags{{ else }}旗标{{ end }} <strong data-mine-flags>0 / 10</strong></span>
 <span>{{ if $en }}Cleared{{ else }}安全格{{ end }} <strong data-mine-cleared>0 / 71</strong></span>
 <span>{{ if $en }}Time{{ else }}用时{{ end }} <strong data-game-time>0:00</strong></span>
-{{ else if in (slice "lights-out" "sliding-puzzle" "connect-four") $id }}
+{{ else if eq $id "reaction" }}
+<span>{{ if $en }}Rounds{{ else }}轮次{{ end }} <strong data-reaction-round>0 / 5</strong></span>
+<span>{{ if $en }}Last{{ else }}上次用时{{ end }} <strong data-reaction-last>—</strong></span>
+<span>{{ if $en }}Average{{ else }}平均用时{{ end }} <strong data-reaction-average>—</strong></span>
+{{ else if in (slice "lights-out" "sliding-puzzle" "connect-four" "sokoban" "mini-sudoku" "tic-tac-toe") $id }}
 <span>{{ if $en }}Moves{{ else }}步数{{ end }} <strong data-game-moves>0</strong></span>
+{{ if eq $id "sokoban" }}<span>{{ if $en }}Level{{ else }}关卡{{ end }} <strong data-sokoban-level>1 / 6</strong></span><span>{{ if $en }}Pushes{{ else }}推动{{ end }} <strong data-sokoban-pushes>0</strong></span>{{ end }}
+{{ if eq $id "mini-sudoku" }}<span>{{ if $en }}Empty{{ else }}空格{{ end }} <strong data-sudoku-empty>—</strong></span>{{ end }}
+{{ if eq $id "tic-tac-toe" }}<span>{{ if $en }}Turn{{ else }}轮到{{ end }} <strong data-tic-turn>{{ if $en }}You · X{{ else }}你 · X{{ end }}</strong></span>{{ end }}
 {{ if eq $id "lights-out" }}<span>{{ if $en }}Lights on{{ else }}亮灯{{ end }} <strong data-lights-on>—</strong></span>{{ end }}
 {{ if eq $id "connect-four" }}<span>{{ if $en }}Turn{{ else }}轮到{{ end }} <strong data-connect-turn>{{ if $en }}Player 1{{ else }}玩家 1{{ end }}</strong></span>{{ end }}
 {{ else }}
 <span>{{ if $en }}Score{{ else }}得分{{ end }} <strong data-game-score>0</strong></span>
+{{ if eq $id "falling-blocks" }}
+<span>{{ if $en }}Lines{{ else }}消行{{ end }} <strong data-blocks-lines>0</strong></span>
+<span>{{ if $en }}Level{{ else }}等级{{ end }} <strong data-blocks-level>1</strong></span>
+<span>{{ if $en }}Next{{ else }}下一块{{ end }} <strong class="blocks-preview" data-blocks-next role="img" aria-label="{{ if $en }}Next piece{{ else }}下一块{{ end }}">{{ range seq 16 }}<i aria-hidden="true"></i>{{ end }}</strong></span>
+{{ end }}
+{{ if eq $id "memory-sequence" }}<span>{{ if $en }}Round{{ else }}轮次{{ end }} <strong data-sequence-round>1 / 10</strong></span>{{ end }}
 {{ if eq $id "breakout" }}<span>{{ if $en }}Lives{{ else }}机会{{ end }} <strong data-game-lives>3</strong></span>{{ end }}
 {{ if eq $id "whack-a-mole" }}<span>{{ if $en }}Seconds left{{ else }}剩余秒数{{ end }} <strong data-game-time>45</strong></span>{{ end }}
 {{ end }}

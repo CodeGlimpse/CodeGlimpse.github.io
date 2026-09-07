@@ -1,12 +1,18 @@
 [
-  { "id": "memory", "label": { "zh-cn": "记忆", "en": "Memory" } },
-  { "id": "snake", "label": { "zh-cn": "反应", "en": "Reflexes" } },
-  { "id": "2048", "label": { "zh-cn": "数字", "en": "Numbers" } },
-  { "id": "minesweeper", "label": { "zh-cn": "推理", "en": "Logic" } },
-  { "id": "breakout", "label": { "zh-cn": "街机", "en": "Arcade" } },
-  { "id": "whack-a-mole", "label": { "zh-cn": "手速", "en": "Quick taps" } },
-  { "id": "lights-out", "label": { "zh-cn": "益智", "en": "Brain teaser" } },
-  { "id": "sliding-puzzle", "label": { "zh-cn": "数字", "en": "Numbers" } },
-  { "id": "tap-flight", "label": { "zh-cn": "反应", "en": "Reflexes" } },
-  { "id": "connect-four", "label": { "zh-cn": "双人", "en": "Two players" } }
+  { "id": "memory", "label": { "zh-cn": "记忆", "en": "Memory" }, "keywords": { "zh-cn": ["翻牌", "配对", "水果"], "en": ["cards", "pairs", "matching"] } },
+  { "id": "snake", "label": { "zh-cn": "反应", "en": "Reflexes" }, "keywords": { "zh-cn": ["贪吃蛇", "经典", "吃果实"], "en": ["snake", "classic", "fruit"] } },
+  { "id": "2048", "label": { "zh-cn": "数字", "en": "Numbers" }, "keywords": { "zh-cn": ["合并", "方块", "益智"], "en": ["merge", "tiles", "puzzle"] } },
+  { "id": "minesweeper", "label": { "zh-cn": "推理", "en": "Logic" }, "keywords": { "zh-cn": ["扫雷", "排雷", "插旗"], "en": ["mines", "flags", "logic"] } },
+  { "id": "breakout", "label": { "zh-cn": "街机", "en": "Arcade" }, "keywords": { "zh-cn": ["打砖块", "弹球", "挡板"], "en": ["bricks", "ball", "paddle"] } },
+  { "id": "whack-a-mole", "label": { "zh-cn": "手速", "en": "Quick taps" }, "keywords": { "zh-cn": ["打地鼠", "点按", "限时"], "en": ["mole", "tap", "timed"] } },
+  { "id": "lights-out", "label": { "zh-cn": "益智", "en": "Brain teaser" }, "keywords": { "zh-cn": ["关灯", "熄灯", "解谜"], "en": ["lights", "toggle", "logic", "puzzle"] } },
+  { "id": "sliding-puzzle", "label": { "zh-cn": "数字", "en": "Numbers" }, "keywords": { "zh-cn": ["数字滑块", "华容道", "八数码"], "en": ["sliding", "tiles", "8 puzzle"] } },
+  { "id": "tap-flight", "label": { "zh-cn": "反应", "en": "Reflexes" }, "keywords": { "zh-cn": ["小鸟", "飞行", "躲避", "点按"], "en": ["bird", "flight", "flap", "obstacles"] } },
+  { "id": "connect-four", "label": { "zh-cn": "双人", "en": "Two players" }, "keywords": { "zh-cn": ["四子棋", "双人棋", "连四", "对战"], "en": ["connect 4", "four in a row", "local multiplayer"] } },
+  { "id": "falling-blocks", "label": { "zh-cn": "街机", "en": "Arcade" }, "keywords": { "zh-cn": ["俄罗斯方块", "消行", "方块堆叠"], "en": ["tetris", "tetromino", "clear lines", "blocks"] } },
+  { "id": "sokoban", "label": { "zh-cn": "解谜", "en": "Puzzle" }, "keywords": { "zh-cn": ["推箱子", "仓库", "关卡", "撤销"], "en": ["sokoban", "boxes", "warehouse", "undo"] } },
+  { "id": "tic-tac-toe", "label": { "zh-cn": "人机", "en": "Vs computer" }, "keywords": { "zh-cn": ["井字棋", "三子棋", "电脑", "对战"], "en": ["tic tac toe", "tictactoe", "noughts and crosses", "computer"] } },
+  { "id": "mini-sudoku", "label": { "zh-cn": "数字", "en": "Numbers" }, "keywords": { "zh-cn": ["迷你数独", "数独", "四宫", "解谜"], "en": ["sudoku", "4x4", "logic", "puzzle"] } },
+  { "id": "reaction", "label": { "zh-cn": "手速", "en": "Reflexes" }, "keywords": { "zh-cn": ["反应测试", "变绿", "毫秒", "抢跑"], "en": ["reaction time", "reflex", "green", "milliseconds"] } },
+  { "id": "memory-sequence", "label": { "zh-cn": "记忆", "en": "Memory" }, "keywords": { "zh-cn": ["记忆序列", "颜色", "顺序", "闪烁"], "en": ["simon", "sequence", "pattern", "colours", "colors"] } }
 ]

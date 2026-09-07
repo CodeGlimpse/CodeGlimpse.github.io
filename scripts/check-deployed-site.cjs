@@ -203,7 +203,12 @@ function validateResponse(check, status, body, pageUrl = null, options = {}) {
             if (/<iframe\b/i.test(body)) errors.push('game must run inline without an iframe');
             if (!/\/js\/games\/bootstrap\.[a-f0-9]{64}\.js/.test(body)) errors.push('missing game bootstrap');
         }
-        if (check.gameCatalog && !findTag(body, 'section', attributes => attributes.id === 'game-catalog')) errors.push('missing game catalog');
+        if (check.gameCatalog) {
+            if (!findTag(body, 'section', attributes => attributes.id === 'game-catalog')) errors.push('missing game catalog');
+            if (!findTag(body, 'input', attributes => attributes.id === 'game-search' && attributes.type === 'search')) errors.push('missing game search input');
+            if (!findTag(body, 'script', attributes => /^\/js\/game-catalog\.[a-f0-9]{64}\.js$/.test(attributes.src || ''))) errors.push('missing local game search script');
+            if (/\/js\/games\//.test(body)) errors.push('catalog must not load game code');
+        }
         if (check.analytics) {
             if (!/data-codeglimpse-analytics-config/i.test(body)) {
                 errors.push('missing analytics configuration marker');

@@ -1,0 +1,3 @@
+<div class="sokoban-board" data-sokoban-board data-focus-board tabindex="0" role="group" aria-label="{{ if eq .Language.Lang "en" }}Warehouse. Arrow keys or WASD move, Space pauses{{ else }}仓库，方向键或 WASD 移动，空格暂停{{ end }}">
+    {{ range seq 49 }}<span class="sokoban-cell" data-sokoban-cell role="img"></span>{{ end }}
+</div>

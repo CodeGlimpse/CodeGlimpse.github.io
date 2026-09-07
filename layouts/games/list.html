@@ -6,18 +6,36 @@
     <h1>{{ .Title }}</h1>
     <p>{{ .Description }}</p>
 </header>
+<form class="games-finder clarity-mask" data-game-finder data-lang="{{ .Language.Lang }}" data-clarity-mask="true" role="search" aria-label="{{ if eq .Language.Lang "en" }}Find games{{ else }}查找游戏{{ end }}" hidden>
+    <label for="game-search">{{ if eq .Language.Lang "en" }}Search games{{ else }}搜索游戏{{ end }}</label>
+    <div class="games-search-row">
+        <input class="games-search-input" id="game-search" type="search" data-game-search-input maxlength="100" autocomplete="off" spellcheck="false" aria-controls="game-catalog" aria-describedby="game-results" placeholder="{{ if eq .Language.Lang "en" }}Name or play style, e.g. puzzle{{ else }}名称或玩法，如：扫雷、双人{{ end }}">
+        <button class="game-button" type="button" data-game-search-clear hidden>{{ if eq .Language.Lang "en" }}Clear{{ else }}清空{{ end }}</button>
+    </div>
+    <p id="game-results" data-game-results role="status" aria-live="polite" aria-atomic="true"></p>
+</form>
 <section class="games-grid" id="game-catalog" aria-label="{{ .Title }}">
     {{ range .Site.Data.games }}
+    {{ $entry := . }}
     {{ $id := .id }}
     {{ $tag := index .label $.Language.Lang }}
     {{ with $.Site.GetPage (printf "games/%s" $id) }}
-    <a class="game-card game-theme--{{ $id }}" href="{{ .RelPermalink }}" data-game-link="{{ $id }}">
+    {{ $search := slice $id .Title .Description }}
+    {{ range .Translations }}{{ $search = $search | append .Title }}{{ $search = $search | append .Description }}{{ end }}
+    {{ range slice "zh-cn" "en" }}{{ $search = $search | append (index $entry.label .) }}{{ range index $entry.keywords . }}{{ $search = $search | append . }}{{ end }}{{ end }}
+    <a class="game-card game-theme--{{ $id }}" href="{{ .RelPermalink }}" data-game-link="{{ $id }}" data-game-search="{{ delimit $search " " }}">
         {{ partial "games/cover.html" $id }}
         <div class="game-card-body"><span class="game-tag">{{ $tag }}</span><h2>{{ .Title }}</h2><p>{{ .Description }}</p><span class="game-card-action">{{ if eq $.Language.Lang "zh-cn" }}玩一局{{ else }}Play a round{{ end }} <span aria-hidden="true">→</span></span></div>
     </a>
     {{ end }}
     {{ end }}
 </section>
+<div class="games-empty" data-game-empty hidden>
+    <h2>{{ if eq .Language.Lang "en" }}No games found{{ else }}没有找到匹配的游戏{{ end }}</h2>
+    <p>{{ if eq .Language.Lang "en" }}Try another name or play style, or clear the search to see every game.{{ else }}换个名称或玩法试试，也可以清空搜索查看全部游戏。{{ end }}</p>
+</div>
 <div class="games-note">{{ .Content }}</div>
+{{ $catalog := resources.Get "js/game-catalog.js" | js.Build (dict "format" "esm" "minify" hugo.IsProduction) | fingerprint "sha256" }}
+<script type="module" src="{{ $catalog.RelPermalink }}"></script>
 {{ partialCached "footer/footer" . }}
 {{ end }}

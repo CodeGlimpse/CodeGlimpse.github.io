@@ -1,0 +1,5 @@
+<button type="button" class="reaction-target" data-reaction-target data-focus-board disabled>
+    <span class="reaction-symbol" aria-hidden="true">●</span>
+    <strong data-reaction-message>{{ if eq .Language.Lang "en" }}Ready to react?{{ else }}准备好了吗？{{ end }}</strong>
+    <small data-reaction-hint>{{ if eq .Language.Lang "en" }}Wait for the green signal{{ else }}等变绿后再点{{ end }}</small>
+</button>

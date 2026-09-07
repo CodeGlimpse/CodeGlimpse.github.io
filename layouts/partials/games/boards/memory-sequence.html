@@ -1,0 +1,4 @@
+{{ $labels := cond (eq .Language.Lang "en") (slice "Red" "Green" "Blue" "Yellow") (slice "红" "绿" "蓝" "黄") }}
+<div class="sequence-grid" data-sequence-board role="group" aria-label="{{ if eq .Language.Lang "en" }}Memory sequence. Repeat with pads or keys 1–4. P pauses{{ else }}记忆序列，点按色块或按数字键 1–4 重复顺序，P 暂停{{ end }}">
+    {{ range seq 0 3 }}<button type="button" class="sequence-pad" data-cell-index="{{ . }}" {{ if eq . 0 }}data-focus-board tabindex="0"{{ else }}tabindex="-1"{{ end }} disabled><strong>{{ add . 1 }}</strong><span>{{ index $labels . }}</span></button>{{ end }}
+</div>

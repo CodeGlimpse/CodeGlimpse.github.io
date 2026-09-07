@@ -15,4 +15,20 @@
 <div class="game-actions">
     <button class="game-button game-button--primary flight-flap" type="button" data-flight-flap data-game-action disabled>↑ {{ if $en }}Flap{{ else }}向上飞{{ end }}</button>
 </div>
+{{ else if eq $id "falling-blocks" }}
+<div class="game-actions blocks-actions" role="group" aria-label="{{ if $en }}Block controls{{ else }}方块控制{{ end }}">
+    {{ $icons := dict "left" "←" "rotate" "↻" "down" "↓" "right" "→" "drop" "⤓" }}
+    {{ $labels := cond $en (dict "left" "Move left" "rotate" "Rotate" "down" "Soft drop" "right" "Move right" "drop" "Hard drop") (dict "left" "向左" "rotate" "旋转" "down" "向下" "right" "向右" "drop" "落到底") }}
+    {{ range slice "left" "rotate" "down" "right" "drop" }}<button class="game-button" type="button" data-blocks-action="{{ . }}" data-game-action aria-label="{{ index $labels . }}" disabled>{{ index $icons . }}</button>{{ end }}
+</div>
+{{ else if eq $id "sokoban" }}
+<div class="game-actions">
+    <button class="game-button" type="button" data-sokoban-undo data-game-action disabled>{{ if $en }}Undo{{ else }}撤销{{ end }}</button>
+    <button class="game-button" type="button" data-sokoban-next data-game-action disabled>{{ if $en }}Next level{{ else }}下一关{{ end }}</button>
+</div>
+{{ else if eq $id "mini-sudoku" }}
+<div class="game-actions sudoku-actions" role="group" aria-label="{{ if $en }}Fill a cell{{ else }}填写数字{{ end }}">
+    {{ range seq 1 4 }}<button class="game-button" type="button" data-sudoku-value="{{ . }}" data-game-action disabled>{{ . }}</button>{{ end }}
+    <button class="game-button" type="button" data-sudoku-value="0" data-game-action aria-label="{{ if $en }}Erase cell{{ else }}擦除数字{{ end }}" disabled>⌫</button>
+</div>
 {{ end }}

@@ -1,0 +1,3 @@
+<div class="tic-grid" data-tic-board role="group" aria-label="{{ if eq .Language.Lang "en" }}Tic-tac-toe. Arrow keys select, Enter places X, P pauses{{ else }}井字棋，方向键选择，回车落 X，P 暂停{{ end }}">
+    {{ range seq 0 8 }}<button type="button" class="tic-cell" data-cell-index="{{ . }}" {{ if eq . 0 }}data-focus-board tabindex="0"{{ else }}tabindex="-1"{{ end }} disabled></button>{{ end }}
+</div>

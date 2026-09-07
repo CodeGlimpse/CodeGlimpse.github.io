@@ -332,6 +332,8 @@ if (!fs.existsSync(outputRoot)) {
         keyPages.push(catalog);
         requirePattern(catalog, html, /\bid=["']?game-catalog["']?(?:\s|>)/, 'missing game catalog');
         forbidPattern(catalog, html, /\/js\/games\//, 'catalog must not load game code');
+        requirePattern(catalog, html, /\bid=["']?game-search["']?(?:\s|>)/, 'missing game search input');
+        requirePattern(catalog, html, /src=["']?\/js\/game-catalog\.[a-f0-9]{64}\.js/, 'missing fingerprinted catalog filter');
         for (const game of games) {
             const file = `${prefix}games/${game.id}/index.html`;
             const content = readOutput(file);

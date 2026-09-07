@@ -381,6 +381,12 @@ function checkPrivacyPolicy() {
 
 function checkGames() {
     const ids = games.map(game => game.id);
+    for (const game of games) {
+        for (const language of languages) {
+            const keywords = game.keywords?.[language];
+            if (!Array.isArray(keywords) || !keywords.length || keywords.some(word => typeof word !== 'string' || !word.trim())) errors.push(game.id + ': missing or invalid ' + language + ' search keywords');
+        }
+    }
     if (new Set(ids).size !== ids.length || ids.some(id => !/^[a-z0-9-]+$/.test(id))) {
         errors.push('game registry requires unique, safe IDs');
         return;

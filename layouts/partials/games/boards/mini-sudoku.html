@@ -1,0 +1,3 @@
+<div class="sudoku-grid" data-sudoku-board role="group" aria-label="{{ if eq .Language.Lang "en" }}Mini Sudoku. Arrow keys select, 1–4 fill, Backspace erases, P pauses{{ else }}迷你数独，方向键选择，1–4 填写，退格擦除，P 暂停{{ end }}">
+    {{ range seq 0 15 }}<button type="button" class="sudoku-cell" data-cell-index="{{ . }}" tabindex="-1" disabled></button>{{ end }}
+</div>

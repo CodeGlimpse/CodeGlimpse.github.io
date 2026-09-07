@@ -55,7 +55,8 @@ assets/js/tools/<id>-core.js
 
 ## 小游戏
 
-- 游戏注册在 `data/games.json`，双语内容放在 `content/<language>/games/`。游戏与工具目录分别维护，首页 RSS 继续仅包含文章。
+- 游戏注册在 `data/games.json`，每款需提供双语标签和非空的 `keywords` 数组；双语内容放在 `content/<language>/games/`。游戏与工具目录分别维护，首页 RSS 继续仅包含文章。
+- 目录搜索只筛选已渲染的卡片，不导入游戏控制器、不调用搜索接口、不持久化查询。新增别名时同时检查中文和英文页面；保持 IME、清空、空结果和无 JavaScript 回退可用。
 - 游戏直接在当前页面的 DOM/Canvas 中运行，不使用 iframe。`assets/js/games/` 不使用持久化浏览器存储，刷新重置单局；新增游戏应遵守同样的约束。
 - 规则放在 `<id>-core.js`，交互放在 `<id>.js`；事件、选择器、样式与计时器限制在游戏区域，切换页面和重开时完成清理。
 - 每款棋盘放在 `layouts/partials/games/boards/<id>.html`；指标、操作按钮与封面使用对应的共享 partial。新增游戏同时更新布局、单元测试与浏览器测试，覆盖合法生成、胜负、输入、暂停与重开。维护约定及当前验证结果见 [`docs/games.md`](docs/games.md)。

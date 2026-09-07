@@ -401,6 +401,7 @@ function checkGames() {
         }
     }
     for (const game of games) {
+        if (!fs.existsSync(path.join(projectRoot, 'layouts/partials/games/boards', game.id + '.html'))) errors.push(game.id + ': missing game board layout');
         for (const suffix of ['', '-core']) {
             if (!fs.existsSync(path.join(projectRoot, 'assets/js/games', `${game.id}${suffix}.js`))) errors.push(`${game.id}: missing game implementation ${suffix || 'controller'}`);
         }

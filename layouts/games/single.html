@@ -16,31 +16,15 @@
             <button class="game-button" type="button" data-game-restart hidden>{{ if eq .Language.Lang "zh-cn" }}重新开始{{ else }}Restart{{ end }}</button>
         </div>
         <div class="game-metrics">
-            {{ if eq $id "memory" }}
-            <span>{{ if eq .Language.Lang "zh-cn" }}配对{{ else }}Pairs{{ end }} <strong data-memory-pairs>0 / 8</strong></span>
-            <span>{{ if eq .Language.Lang "zh-cn" }}步数{{ else }}Moves{{ end }} <strong data-memory-moves>0</strong></span>
-            <span>{{ if eq .Language.Lang "zh-cn" }}用时{{ else }}Time{{ end }} <strong data-memory-time>0:00</strong></span>
-            {{ else }}
-            <span>{{ if eq .Language.Lang "zh-cn" }}得分{{ else }}Score{{ end }} <strong data-game-score>0</strong></span>
-            {{ end }}
+            {{ partial "games/metrics.html" . }}
         </div>
     </div>
     <p class="game-status" data-game-status role="status" aria-live="polite">{{ if eq .Language.Lang "zh-cn" }}准备好了就开始吧。{{ else }}Ready when you are.{{ end }}</p>
     <div class="game-board-frame">
-        {{ if eq $id "memory" }}
-        <div class="memory-grid" data-memory-board role="group" aria-label="{{ if eq .Language.Lang "zh-cn" }}记忆卡片{{ else }}Memory cards{{ end }}">
-            {{ range seq 16 }}<button type="button" class="memory-card" disabled aria-hidden="true">?</button>{{ end }}
-        </div>
-        {{ else if eq $id "snake" }}
-        <canvas class="snake-board" data-snake-board data-focus-board width="400" height="400" tabindex="0" aria-label="{{ if eq .Language.Lang "zh-cn" }}贪吃蛇棋盘，方向键或 WASD 转向，空格暂停{{ else }}Snake board. Arrow keys or WASD to turn, Space to pause{{ end }}"></canvas>
-        {{ else }}
-        <div class="puzzle-board" data-puzzle-board data-focus-board tabindex="0" role="group" aria-label="{{ if eq .Language.Lang "zh-cn" }}2048 棋盘，使用方向键移动{{ else }}2048 board. Use arrow keys to move{{ end }}">
-            {{ range seq 16 }}<div class="puzzle-tile" data-value="0"></div>{{ end }}
-        </div>
-        {{ end }}
+        {{ partial (printf "games/boards/%s.html" $id) . }}
         <div class="game-overlay" data-game-overlay><span>{{ if eq .Language.Lang "zh-cn" }}点击上方按钮，开始一局{{ else }}Press Start game to begin{{ end }}</span></div>
     </div>
-    {{ if ne $id "memory" }}
+    {{ if in (slice "snake" "2048" "sliding-puzzle") $id }}
     <div class="game-dpad" role="group" aria-label="{{ if eq .Language.Lang "zh-cn" }}方向控制{{ else }}Direction controls{{ end }}">
         {{ range slice "up" "left" "down" "right" }}
         {{ $arrows := dict "up" "↑" "left" "←" "down" "↓" "right" "→" }}
@@ -49,6 +33,7 @@
         {{ end }}
     </div>
     {{ end }}
+    {{ partial "games/actions.html" . }}
     <noscript><p>{{ if eq .Language.Lang "zh-cn" }}请启用 JavaScript 后开始游戏。{{ else }}Enable JavaScript to play.{{ end }}</p></noscript>
     <p class="game-reset-note">{{ if eq .Language.Lang "zh-cn" }}刷新页面会重置本局。{{ else }}Refreshing the page resets this round.{{ end }}</p>
 </section>

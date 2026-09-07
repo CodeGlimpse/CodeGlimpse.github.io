@@ -1,0 +1,3 @@
+<div class="mine-grid" data-mine-board role="group" aria-label="{{ if eq .Language.Lang "en" }}Minefield. Arrow keys select a cell, Enter activates, F flags, P pauses{{ else }}雷区，方向键选择格子，回车操作，F 插旗，P 暂停{{ end }}">
+    {{ range seq 0 80 }}<button type="button" class="mine-cell" data-cell-index="{{ . }}" {{ if eq . 0 }}data-focus-board tabindex="0"{{ else }}tabindex="-1"{{ end }} disabled></button>{{ end }}
+</div>

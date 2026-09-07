@@ -1,5 +1,12 @@
 [
   { "id": "memory", "label": { "zh-cn": "记忆", "en": "Memory" } },
   { "id": "snake", "label": { "zh-cn": "反应", "en": "Reflexes" } },
-  { "id": "2048", "label": { "zh-cn": "数字", "en": "Numbers" } }
+  { "id": "2048", "label": { "zh-cn": "数字", "en": "Numbers" } },
+  { "id": "minesweeper", "label": { "zh-cn": "推理", "en": "Logic" } },
+  { "id": "breakout", "label": { "zh-cn": "街机", "en": "Arcade" } },
+  { "id": "whack-a-mole", "label": { "zh-cn": "手速", "en": "Quick taps" } },
+  { "id": "lights-out", "label": { "zh-cn": "益智", "en": "Brain teaser" } },
+  { "id": "sliding-puzzle", "label": { "zh-cn": "数字", "en": "Numbers" } },
+  { "id": "tap-flight", "label": { "zh-cn": "反应", "en": "Reflexes" } },
+  { "id": "connect-four", "label": { "zh-cn": "双人", "en": "Two players" } }
 ]

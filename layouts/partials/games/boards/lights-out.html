@@ -1,0 +1,3 @@
+<div class="lights-grid" data-lights-board role="group" aria-label="{{ if eq .Language.Lang "en" }}Lights Out. Arrow keys select a light, Enter toggles, P pauses{{ else }}关灯棋盘，方向键选择灯，回车切换，P 暂停{{ end }}">
+    {{ range seq 0 24 }}<button type="button" class="light-cell" data-cell-index="{{ . }}" {{ if eq . 0 }}data-focus-board tabindex="0"{{ else }}tabindex="-1"{{ end }} disabled><span aria-hidden="true">○</span></button>{{ end }}
+</div>

@@ -1,0 +1,5 @@
+<div class="mole-grid" data-mole-board role="group" aria-label="{{ if eq .Language.Lang "en" }}Mole holes. Press the numbered keys or tap a mole. P pauses{{ else }}地鼠洞，按对应数字键或点按地鼠，P 暂停{{ end }}">
+    {{ range seq 0 8 }}<button type="button" class="mole-hole" data-cell-index="{{ . }}" {{ if eq . 0 }}data-focus-board tabindex="0"{{ else }}tabindex="-1"{{ end }} disabled>
+        <span class="mole-number" aria-hidden="true">{{ add . 1 }}</span><span class="mole-character" aria-hidden="true"><i></i><b></b></span>
+    </button>{{ end }}
+</div>

@@ -1,0 +1,18 @@
+{{ $id := .Params.game_id }}
+{{ $en := eq .Language.Lang "en" }}
+{{ if eq $id "minesweeper" }}
+<div class="game-actions" role="group" aria-label="{{ if $en }}Cell action{{ else }}格子操作{{ end }}">
+    <button class="game-button" type="button" data-mine-mode="reveal" data-game-action aria-pressed="true" disabled>{{ if $en }}Reveal{{ else }}翻开{{ end }}</button>
+    <button class="game-button" type="button" data-mine-mode="flag" data-game-action aria-pressed="false" disabled>⚑ {{ if $en }}Flag{{ else }}插旗{{ end }}</button>
+</div>
+{{ else if eq $id "breakout" }}
+<div class="game-actions" role="group" aria-label="{{ if $en }}Paddle controls{{ else }}挡板控制{{ end }}">
+    <button class="game-button" type="button" data-paddle-direction="-1" data-game-action aria-label="{{ if $en }}Move left{{ else }}向左移动{{ end }}" disabled>←</button>
+    <button class="game-button game-button--primary" type="button" data-breakout-launch data-game-action disabled>{{ if $en }}Launch{{ else }}发球{{ end }}</button>
+    <button class="game-button" type="button" data-paddle-direction="1" data-game-action aria-label="{{ if $en }}Move right{{ else }}向右移动{{ end }}" disabled>→</button>
+</div>
+{{ else if eq $id "tap-flight" }}
+<div class="game-actions">
+    <button class="game-button game-button--primary flight-flap" type="button" data-flight-flap data-game-action disabled>↑ {{ if $en }}Flap{{ else }}向上飞{{ end }}</button>
+</div>
+{{ end }}

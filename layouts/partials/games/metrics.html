@@ -1,0 +1,19 @@
+{{ $id := .Params.game_id }}
+{{ $en := eq .Language.Lang "en" }}
+{{ if eq $id "memory" }}
+<span>{{ if $en }}Pairs{{ else }}配对{{ end }} <strong data-memory-pairs>0 / 8</strong></span>
+<span>{{ if $en }}Moves{{ else }}步数{{ end }} <strong data-memory-moves>0</strong></span>
+<span>{{ if $en }}Time{{ else }}用时{{ end }} <strong data-memory-time>0:00</strong></span>
+{{ else if eq $id "minesweeper" }}
+<span>{{ if $en }}Flags{{ else }}旗标{{ end }} <strong data-mine-flags>0 / 10</strong></span>
+<span>{{ if $en }}Cleared{{ else }}安全格{{ end }} <strong data-mine-cleared>0 / 71</strong></span>
+<span>{{ if $en }}Time{{ else }}用时{{ end }} <strong data-game-time>0:00</strong></span>
+{{ else if in (slice "lights-out" "sliding-puzzle" "connect-four") $id }}
+<span>{{ if $en }}Moves{{ else }}步数{{ end }} <strong data-game-moves>0</strong></span>
+{{ if eq $id "lights-out" }}<span>{{ if $en }}Lights on{{ else }}亮灯{{ end }} <strong data-lights-on>—</strong></span>{{ end }}
+{{ if eq $id "connect-four" }}<span>{{ if $en }}Turn{{ else }}轮到{{ end }} <strong data-connect-turn>{{ if $en }}Player 1{{ else }}玩家 1{{ end }}</strong></span>{{ end }}
+{{ else }}
+<span>{{ if $en }}Score{{ else }}得分{{ end }} <strong data-game-score>0</strong></span>
+{{ if eq $id "breakout" }}<span>{{ if $en }}Lives{{ else }}机会{{ end }} <strong data-game-lives>3</strong></span>{{ end }}
+{{ if eq $id "whack-a-mole" }}<span>{{ if $en }}Seconds left{{ else }}剩余秒数{{ end }} <strong data-game-time>45</strong></span>{{ end }}
+{{ end }}

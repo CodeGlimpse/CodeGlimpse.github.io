@@ -1,0 +1,6 @@
+<div class="connect-board" data-connect-board data-focus-board tabindex="0" role="group" aria-label="{{ if eq .Language.Lang "en" }}Connect Four. Left and right select a column, Enter drops a piece, P pauses{{ else }}四子棋，左右方向键选择列，回车落子，P 暂停{{ end }}">
+    <div class="connect-columns">
+        {{ range seq 0 6 }}<button type="button" class="game-button connect-drop" data-connect-column="{{ . }}" data-game-action tabindex="-1" disabled aria-label="{{ if eq $.Language.Lang "en" }}Drop in column {{ add . 1 }}{{ else }}在第 {{ add . 1 }} 列落子{{ end }}">↓<small>{{ add . 1 }}</small></button>{{ end }}
+    </div>
+    <div class="connect-grid">{{ range seq 42 }}<span class="connect-cell" data-connect-cell data-player="0" role="img"></span>{{ end }}</div>
+</div>

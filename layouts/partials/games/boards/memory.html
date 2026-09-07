@@ -1,0 +1,3 @@
+<div class="memory-grid" data-memory-board role="group" aria-label="{{ if eq .Language.Lang "en" }}Memory cards{{ else }}记忆卡片{{ end }}">
+    {{ range seq 16 }}<button type="button" class="memory-card" disabled aria-hidden="true">?</button>{{ end }}
+</div>

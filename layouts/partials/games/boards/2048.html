@@ -1,0 +1,3 @@
+<div class="puzzle-board" data-puzzle-board data-focus-board tabindex="0" role="group" aria-label="{{ if eq .Language.Lang "en" }}2048 board. Use arrow keys to move{{ else }}2048 棋盘，使用方向键移动{{ end }}">
+    {{ range seq 16 }}<div class="puzzle-tile" data-value="0"></div>{{ end }}
+</div>

@@ -5,6 +5,7 @@
 ## 开始之前
 
 - 使用 Hugo Extended 0.157.0、Go 1.23.6 和 Node.js 22 系列。
+- 首次开发先运行 `npm ci --ignore-scripts`，浏览器测试另需 `npx playwright install chromium`。YAML/XML 解析库由 Hugo 打包到本站，升级时同步 lockfile、`static/licenses.txt` 和转换回归测试。
 - 中文内容放在 `content/zh-cn/`，英文内容放在 `content/en/`。
 - 在线工具的页面、浏览器脚本和核心逻辑应保持清晰对应。
 - 不要提交 `.env`、访问令牌、私钥、构建产物或本地临时文件。
@@ -43,13 +44,15 @@ assets/js/tools/<id>-core.js
 
 新增工具还应在 scripts/tool-registry.cjs 登记分类、关键词和相关工具，并在双语 front matter 中同步 category 与 keywords。工具索引支持分类筛选、关键词搜索、收藏和最近使用；浏览器本地偏好只保存工具 ID，不应保存密码、JWT、密钥或用户输入。工具页面的分享链接、快照导出和在线/离线提示由共享脚本提供；新增控件应使用稳定的 `id`，并避免将密码、令牌等敏感数据自动写入 URL。如果控件不应参与分享或快照，可添加 `data-share-ignore="true"`。Service Worker 只缓存同源页面和静态资源，不得缓存跨域请求。
 
+转换方向等按钮状态不会自动成为表单字段。新增此类选项时，需同步 `assets/js/tools/share.js` 的状态收集与恢复逻辑；恢复顺序为模式、输入字段、执行转换。旧版本分享链接仍须可用，模式必须经过白名单校验。
+
 ## 发布与 Pull Request
 
 - Pull Request 会运行版本、工作流安全、JavaScript、内容结构、Node 测试、Hugo 构建和浏览器 E2E 检查，不会发布到生产站点。
 - 推送到 `master` 后，部署工作流会使用经过 E2E 验证的同一份构建产物发布到 `gh-pages`，然后运行线上端点和本地资源 Smoke Test。
 - Actions Summary 会记录源提交、Go/Hugo/Node.js 版本、页面数量、工具页面数量和验证阶段。
 - 主题更新工作流每周一运行并创建或更新 Pull Request；合并前应查看模块差异、桌面端和移动端页面，并再次运行完整检查。
-- 每周线上监控只读访问生产站点，检查全部双语工具、页面元数据和本地资源；它不会自动修改代码或回滚。
+- 每日 06:00 UTC 的线上监控只读访问生产站点，检查源提交、全部双语工具、页面元数据和本地资源；它不会自动修改代码或回滚。
 
 ## 长期维护
 

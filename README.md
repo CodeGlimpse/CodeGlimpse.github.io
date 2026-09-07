@@ -84,7 +84,7 @@ assets/js/tools/<id>-core.js       # 需要单元测试的纯逻辑
 
 工具页面支持“分享与导出”：分享链接只在用户点击后生成，并将当前输入和选项放在 URL 片段中；不要把敏感信息放入分享链接。导出快照会下载当前工具的输入、选项和结果字段，文件只在本地生成。
 
-站点还提供渐进式离线能力：访问过的页面和资源会由 Service Worker 缓存，断网时可继续打开缓存页面并使用浏览器端工具。离线缓存不是数据同步或云端备份，部署新版本后缓存会按版本自动清理。
+站点还提供渐进式离线能力：成功访问的同源页面和资源会由 Service Worker 缓存，断网或服务器返回 5xx 时优先使用已有成功页面，再回退到离线说明页。带内容指纹的脚本与样式直接使用缓存；搜索索引等固定 URL 资源优先联网更新，断网或 5xx 时使用成功缓存。离线缓存不是数据同步或云端备份；缓存版本升级时只清理本站旧版本缓存，需再次访问工具页面以建立新缓存。
 
 站点默认加载 Google Analytics 4、百度统计和 Microsoft Clarity，用于页面访问与整体交互分析。页面底部会显示双语隐私提示，工具输入、输出、密码、JWT、分享 Hash 和本地预设不会作为统计事件发送；工具表单和结果区域带有 Clarity 屏蔽标记。用户可以在 [隐私说明](/privacy/) 页面关闭后续统计脚本。
 
@@ -126,10 +126,10 @@ assets/js/tools/<id>-core.js       # 需要单元测试的纯逻辑
 推送到 `master` 后，`.github/workflows/deploy.yml` 会自动：
 
 1. 安装固定版本的 Go、Node.js 和 Hugo Extended。
-2. 检查所有工具脚本语法。
-3. 运行 Node.js 测试。
-4. 构建并压缩 Hugo 站点。
-5. 将 `public/` 部署到 `gh-pages`。
+2. 按 lockfile 安装 npm 依赖，执行版本、工作流、JavaScript、内容、下载脚本和对比度检查。
+3. 运行 Node.js 测试，构建 Hugo 站点并校验产物中的源提交标记。
+4. 对同一份构建产物运行浏览器 E2E。
+5. 将通过验证的 `public/` 部署到 `gh-pages`，再执行线上 Smoke Test。
 
 工作流中的第三方 Actions 使用完整 commit SHA 固定，并通过 `check:workflow` 检查；部署后的 Smoke Test 会检查中英文全部工具路由、关键静态资源和 HTML 工具容器。
 
@@ -144,7 +144,9 @@ npm run check
 npm run test:e2e
 ```
 
-`.github/workflows/site-monitor.yml` 每周一运行线上只读巡检，也支持手动触发。它覆盖首页、索引、搜索资源、sitemap、robots.txt、全部 44 个双语工具页面、页面元数据以及页面引用的本地 CSS、JavaScript 和图片资源。
+`.github/workflows/site-monitor.yml` 每日 06:00 UTC（北京时间 14:00）运行线上只读巡检，也支持手动触发。它覆盖首页、索引、搜索资源、sitemap、robots.txt、全部 44 个双语工具页面、页面元数据以及页面引用的本地 CSS、JavaScript 和图片资源，并校验部署源提交。
+
+项目复核结果与后续开发顺序见 [`docs/project-review-2026-09-06.md`](docs/project-review-2026-09-06.md)。
 
 ## 提交前清单
 

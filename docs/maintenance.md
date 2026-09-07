@@ -9,11 +9,14 @@
 | 本地开发 | 每次修改后 | `npm.cmd run check`、相关 E2E |
 | Pull Request | 每个 PR | CI 版本、工作流、内容、测试和构建 |
 | 发布后 | 每次推送到 `master` | 构建产物、E2E、线上端点和资源 |
-| 定期维护 | 每周或每月 | 线上监控、主题更新、工具链版本复核 |
+| 线上监控 | 每日 | 源提交、页面、工具和本地资源 |
+| 定期维护 | 每周或每月 | 主题更新、工具链版本复核 |
 
 ## 常用命令
 
 在 Windows PowerShell 中使用 `npm.cmd`：
+
+首次构建前运行 `npm.cmd ci --ignore-scripts`，按 lockfile 安装本地打包所需的 YAML/XML 解析库和测试依赖。首次运行浏览器测试前执行 `npx.cmd playwright install chromium`。
 
 ```powershell
 npm.cmd run check
@@ -59,9 +62,10 @@ Build and test -> Browser E2E -> Deploy gh-pages -> Online smoke test
 
 ## 线上监控
 
-`.github/workflows/site-monitor.yml` 每周一 06:00 UTC 运行，也支持手动触发。它不重新部署，只访问 `https://blog.codeglimpse.top`，对短暂网络错误重试后检查：
+`.github/workflows/site-monitor.yml` 每日 06:00 UTC（北京时间 14:00）运行，也支持手动触发。它不重新部署，只访问 `https://blog.codeglimpse.top`，对短暂网络错误重试后检查：
 
 - 中文默认路由和英文路由。
+- 页面源提交是否与预期发布提交一致。
 - 22 个工具的 44 个双语页面。
 - 页面标题、描述、Canonical 和 hreflang。
 - 工具容器、工具脚本、公共脚本和 CSS。
@@ -70,6 +74,13 @@ Build and test -> Browser E2E -> Deploy gh-pages -> Online smoke test
 - 搜索 JSON、robots.txt、sitemap 和预期的首页 JSON 404。
 
 监控失败时先查看失败端点，再根据最近部署提交判断是代码、主题、资源、DNS 还是持续性网络问题。监控不会自动修改代码或回滚。部署后的 Smoke Test 会等待最多约 120 秒，以覆盖 GitHub Pages/CDN 的短暂传播延迟。
+
+## 离线缓存与解析器维护
+
+- Service Worker 的导航请求优先访问网络，只缓存成功响应；断网或 5xx 时优先返回成功缓存，随后尝试 `/offline.html`。真实 404 仍返回 404。
+- 带 SHA-256 内容指纹的脚本和样式直接使用缓存；搜索索引等固定 URL 资源优先联网更新，断网或 5xx 时回退到成功缓存，避免新文章长期无法被搜索。缓存写入必须被等待，写入失败不应影响正常网络访问。版本升级只清理 `codeglimpse-v` 前缀的本站旧缓存。
+- 发布缓存版本后，需要重新访问工具页面以建立新缓存；至少验证一次缓存页面重载、503 回退、断网转换和未访问页面的离线回退。
+- YAML/XML 解析库精确锁定版本，随站点发布许可证。升级需覆盖嵌套结构、null、空集合、XML 混合文本、CDATA、属性错误以及浏览器打包结果；不要仅以“能生成输出”判断转换正确。
 
 ## 版本更新策略
 

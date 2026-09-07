@@ -26,7 +26,7 @@
     identifier = "links"
     name = "链接"
     url = "/links/"
-    weight = 7
+    weight = 8
     [main.params]
         icon = "link"
 
@@ -42,15 +42,23 @@
     identifier = "privacy"
     name = "隐私"
     url = "/privacy/"
-    weight = 8
+    weight = 9
     [main.params]
         icon = "link"
+
+[[main]]
+    identifier = "games"
+    name = "游戏"
+    url = "/games/"
+    weight = 6
+    [main.params]
+        icon = "gamepad"
 
 [[main]]
     identifier = "about"
     name = "关于"
     url = "/about/"
-    weight = 6
+    weight = 7
     [main.params]
         icon = "link"
 

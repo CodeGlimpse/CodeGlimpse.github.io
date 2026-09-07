@@ -43,6 +43,17 @@ test('publishes both language routes for every registered tool', () => {
     assert.ok(toolChecks.every((check) => check.status === 200 && check.html));
 });
 
+test('checks inline games and discovers their lazy modules without executing them', () => {
+    const hash = 'a'.repeat(64);
+    const modulePath = `/js/games/memory.${hash}.js`;
+    const body = `<html><head><title>Memory</title><meta name="description" content="Game"><link rel="canonical" href="https://example.com/games/memory/"><link rel="alternate" hreflang="zh-cn" href="https://example.com/games/memory/"><link rel="alternate" hreflang="en" href="https://example.com/en/games/memory/"><link rel="alternate" hreflang="x-default" href="https://example.com/games/memory/"><link rel="stylesheet" href="/style.css"></head><body><main><section id="game-memory" data-game-id="memory" data-game-module="${modulePath}" data-clarity-mask="true"></section></main><script src="/js/toast.a.js"></script><script src="/js/workspace.a.js"></script><script src="/js/games/bootstrap.${hash}.js"></script></body></html>`;
+    const check = { path:'/games/memory/', status:200, html:true, gameId:'memory' };
+    assert.deepEqual(checker.validateResponse(check,200,body,'https://example.com/games/memory/'),[]);
+    assert.ok(checker.collectLocalAssetUrls('https://example.com/games/memory/',body).includes(`https://example.com${modulePath}`));
+    assert.ok(checker.validateResponse(check,200,body.replace('</main>','<iframe></iframe></main>')).includes('game must run inline without an iframe'));
+    assert.ok(checker.validateResponse(check,200,body.replace(modulePath,'https://outside.example/game.js')).includes('missing local game module: memory'));
+});
+
 test('validates HTML landmarks and tool containers', () => {
     const page = '<html lang="zh-cn"><head><title>JSON</title><meta name="description" content="Tool"><link rel="canonical" href="https://example.com/tools/json/"><link rel="alternate" hreflang="zh-cn" href="https://example.com/tools/json/"><link rel="alternate" hreflang="en" href="https://example.com/en/tools/json/"><link rel="alternate" hreflang="x-default" href="https://example.com/tools/json/"><link rel="stylesheet" href="/style.css"><script src="/js/toast.abc.js"></script><script src="/js/workspace.ghi.js"></script></head><body><main><div id="tool-json"></div><script src="/js/tools/json.abc.js"></script><script src="/js/tools/clipboard.def.js"></script><script src="/js/tools/tool-ui.ghi.js"></script><script src="/js/tools/share.jkl.js"></script></main></body></html>';
     assert.deepEqual(

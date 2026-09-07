@@ -1,0 +1,97 @@
+.games-page .main { max-width: 1040px; margin-inline: auto; }
+.games-heading { margin-block: 1rem 2rem; }
+.games-heading h1 { margin: .5rem 0 1rem; color: var(--card-text-color-main); font-size: clamp(3rem, 5vw, 4.4rem); }
+.games-heading > p { margin: .6rem 0; color: var(--card-text-color-secondary); font-size: 1.7rem; line-height: 1.6; }
+.games-heading .games-eyebrow { color: var(--accent-color); font-size: 1.3rem; font-weight: 700; letter-spacing: .15em; }
+.games-heading--single { width: 100%; max-width: 76rem; margin-inline: auto; }
+.game-back, .game-translations a { color: var(--accent-color); font-size: 1.4rem; }
+.game-translations { margin-top: 1rem; }
+.games-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; }
+.game-theme--memory { --game-accent: #126c65; --game-tint: #e0f4ec; }
+.game-theme--snake { --game-accent: #287340; --game-tint: #e7f3d5; }
+.game-theme--2048 { --game-accent: #905016; --game-tint: #fff0d2; }
+.game-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; border: 1px solid var(--card-separator-color, #d9dfe3); border-radius: 1.8rem; background: var(--card-background); color: var(--card-text-color-main); box-shadow: var(--shadow-l1); transition: transform .18s ease, box-shadow .18s ease; }
+.game-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-l2); }
+.game-card-body { display: flex; flex: 1; flex-direction: column; align-items: flex-start; padding: 2rem; }
+.game-card h2 { margin: 1rem 0 .7rem; font-size: 2.3rem; }
+.game-card p { margin: 0 0 2rem; font-size: 1.5rem; line-height: 1.6; color: var(--card-text-color-secondary); }
+.game-tag { padding: .3rem .8rem; border-radius: 2rem; background: var(--game-tint); color: var(--game-accent); font-size: 1.2rem; font-weight: 700; }
+.game-card-action { display: flex; width: 100%; justify-content: space-between; margin-top: auto; color: var(--game-accent); font-size: 1.5rem; font-weight: 700; }
+.game-cover { display: grid; grid-template-columns: repeat(2, 6rem); grid-template-rows: repeat(2, 6rem); gap: .9rem; place-content: center; height: 20rem; background: var(--game-tint); }
+.cover-card, .cover-number { display: grid; place-items: center; border-radius: .8rem; background: #fff; color: #126c65; font-size: 3.2rem; font-weight: 800; box-shadow: 0 .3rem 0 #00000010; transform: rotate(-5deg); }
+.cover-card--face { transform: rotate(5deg); }
+.game-cover--snake { display: grid; background-image: linear-gradient(#28734012 1px, transparent 1px), linear-gradient(90deg, #28734012 1px, transparent 1px); background-size: 2rem 2rem; }
+.cover-snake { display: grid; grid-template: repeat(4, 2.4rem) / repeat(5, 2.4rem); gap: .4rem; width: 14rem; }
+.cover-snake i { display: block; border-radius: .5rem; background: #4c985c; }
+.cover-snake i:nth-child(1) { grid-area: 2 / 3; background: #1e6235; position: relative; }
+.cover-snake i:nth-child(1)::after { content: ""; position: absolute; width: .4rem; height: .4rem; background: white; border-radius: 50%; top: .5rem; right: .5rem; }
+.cover-snake i:nth-child(2) { grid-area: 2 / 2; }
+.cover-snake i:nth-child(3) { grid-area: 3 / 2; }
+.cover-snake i:nth-child(4) { grid-area: 4 / 2; }
+.cover-snake i:nth-child(5) { grid-area: 4 / 1; }
+.cover-snake b { grid-area: 2 / 5; align-self: center; color: #c94b3e; font-size: 2.8rem; }
+.cover-number { color: #705531; background: #fffaf0; transform: none; font-size: 2.8rem; }
+.cover-number:nth-child(2) { background: #f9d890; }
+.cover-number:nth-child(3) { background: #edac63; }
+.cover-number--goal { color: #543407; background: #f3c74c; font-size: 1.9rem; }
+.games-note { color: var(--card-text-color-secondary); font-size: 1.5rem; line-height: 1.7; }
+.cg-game { width: 100%; max-width: 76rem; margin-inline: auto; scroll-margin-top: 1rem; padding: clamp(1.4rem, 3vw, 2.8rem); border: 1px solid var(--card-separator-color, #d9dfe3); border-radius: 1.8rem; background: var(--card-background); color: var(--card-text-color-main); box-shadow: var(--shadow-l1); }
+.game-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+.game-buttons { display: flex; flex-wrap: wrap; gap: .8rem; }
+.game-button { min-width: 4.4rem; min-height: 4.4rem; padding: .8rem 1.4rem; border: 1px solid var(--card-separator-color, #c8d1d8); border-radius: .9rem; background: var(--card-background); color: var(--card-text-color-main); font: inherit; font-size: 1.5rem; font-weight: 600; cursor: pointer; }
+.game-button--primary { background: var(--game-accent); color: #fff; border-color: var(--game-accent); }
+.game-button:hover:not(:disabled) { filter: brightness(.93); }
+.game-button:disabled { opacity: .5; cursor: default; }
+.cg-game [hidden] { display: none !important; }
+.game-metrics { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+.game-metrics > span { display: flex; flex-direction: column; gap: .3rem; color: var(--card-text-color-secondary); font-size: 1.2rem; }
+.game-metrics strong { color: var(--card-text-color-main); font-size: 2rem; font-variant-numeric: tabular-nums; }
+.game-status { min-height: 2.4rem; margin: 1.5rem 0; font-size: 1.5rem; line-height: 1.6; }
+.game-board-frame { position: relative; width: min(100%, 44rem); margin-inline: auto; }
+.game-overlay { position: absolute; inset: 0; display: grid; place-content: center; padding: 2rem; border-radius: 1.2rem; color: var(--card-text-color-main); background: color-mix(in srgb, var(--card-background) 88%, transparent); text-align: center; font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 700; pointer-events: none; }
+.memory-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .8rem; }
+.memory-card { aspect-ratio: 1; min-width: 0; padding: .2rem; border: 2px solid transparent; border-radius: 1rem; background: var(--game-tint); color: var(--game-accent); font: inherit; font-size: clamp(2rem, 6vw, 3.8rem); font-weight: 700; cursor: pointer; transition: background .15s ease, transform .15s ease; }
+.memory-card:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--game-accent); }
+.memory-card.is-revealed { background: #fff8e8; }
+.memory-card.is-matched { background: #d2efce; }
+.memory-card:disabled { cursor: default; }
+.snake-board { display: block; width: 100%; height: auto; aspect-ratio: 1; border-radius: 1rem; background-color: var(--game-tint); background-image: linear-gradient(#28734010 1px, transparent 1px), linear-gradient(90deg, #28734010 1px, transparent 1px); background-size: 5% 5%; touch-action: none; }
+.puzzle-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .8rem; padding: .8rem; background: #aa9c8b; border-radius: 1rem; touch-action: none; }
+.puzzle-tile { display: grid; place-items: center; aspect-ratio: 1; min-width: 0; border-radius: .6rem; background: #cfc4b7; color: #564a3e; font-size: clamp(2rem, 6vw, 3.6rem); font-weight: 800; font-variant-numeric: tabular-nums; }
+.puzzle-tile[data-value="2"] { background: #f7f0e5; }
+.puzzle-tile[data-value="4"] { background: #f4e1ba; }
+.puzzle-tile[data-value="8"] { background: #ffc180; }
+.puzzle-tile[data-value="16"] { background: #fca06b; color: #51270c; }
+.puzzle-tile[data-value="32"] { background: #f78668; color: #512018; }
+.puzzle-tile[data-value="64"] { background: #eb634d; color: #fff; }
+.puzzle-tile[data-value="128"], .puzzle-tile[data-value="256"], .puzzle-tile[data-value="512"] { background: #eed36b; color: #594407; font-size: clamp(1.8rem, 5vw, 3.1rem); }
+.puzzle-tile[data-value="1024"], .puzzle-tile[data-value="2048"] { background: #f3c74c; color: #543407; font-size: clamp(1.6rem, 4vw, 2.7rem); }
+.game-dpad { display: grid; grid-template: repeat(2, 4.8rem) / repeat(3, 5.6rem); gap: .6rem; justify-content: center; margin-top: 1.8rem; }
+.game-dpad .game-button { font-size: 2.4rem; padding: .4rem; }
+.game-direction--up { grid-area: 1 / 2; }
+.game-direction--left { grid-area: 2 / 1; }
+.game-direction--down { grid-area: 2 / 2; }
+.game-direction--right { grid-area: 2 / 3; }
+.game-reset-note { margin: 1.8rem 0 0; text-align: center; color: var(--card-text-color-secondary); font-size: 1.3rem; }
+.game-instructions { width: 100%; max-width: 76rem; margin-inline: auto; padding: 2rem 2.4rem; border-radius: 1.2rem; background: var(--card-background); color: var(--card-text-color-main); }
+.game-instructions h2 { margin-top: 0; font-size: 2rem; color: var(--card-text-color-main); }
+.game-instructions p { font-size: 1.5rem; line-height: 1.8; color: var(--card-text-color-main); }
+.game-card:focus-visible, .game-button:focus-visible, .memory-card:focus-visible, [data-focus-board]:focus-visible { outline: 3px solid var(--game-accent, var(--accent-color)); outline-offset: 4px; }
+[data-scheme="dark"] .game-theme--memory { --game-accent: #87dcca; --game-tint: #183f39; }
+[data-scheme="dark"] .game-theme--snake { --game-accent: #a6da8e; --game-tint: #283c23; }
+[data-scheme="dark"] .game-theme--2048 { --game-accent: #f3cd82; --game-tint: #473920; }
+[data-scheme="dark"] .game-button--primary { color: #15231e; }
+[data-scheme="dark"] .memory-card.is-revealed { background: #675a3c; }
+[data-scheme="dark"] .memory-card.is-matched { background: #3c6243; }
+@media (max-width: 1000px) { .games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) {
+    .games-grid { grid-template-columns: minmax(0, 1fr); }
+    .game-toolbar { align-items: flex-start; }
+    .game-metrics { width: 100%; justify-content: space-around; }
+    .game-buttons { width: 100%; }
+    .game-buttons .game-button { flex: 1; }
+    .game-instructions { padding: 1.5rem; }
+    .memory-grid, .puzzle-board { gap: .6rem; }
+    .puzzle-board { padding: .6rem; }
+}
+@media (prefers-reduced-motion: reduce) { .game-card, .memory-card { transition: none; } .game-card:hover, .memory-card:hover:not(:disabled) { transform: none; } }

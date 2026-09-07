@@ -1,0 +1,9 @@
+<div class="game-cover game-cover--{{ . }}" aria-hidden="true">
+    {{ if eq . "memory" }}
+    <span class="cover-card">?</span><span class="cover-card cover-card--face">🍋</span><span class="cover-card cover-card--face">🍋</span><span class="cover-card">?</span>
+    {{ else if eq . "snake" }}
+    <div class="cover-snake"><i></i><i></i><i></i><i></i><i></i><b>●</b></div>
+    {{ else }}
+    <span class="cover-number">2</span><span class="cover-number">4</span><span class="cover-number">8</span><span class="cover-number cover-number--goal">2048</span>
+    {{ end }}
+</div>

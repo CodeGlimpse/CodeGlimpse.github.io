@@ -6,6 +6,7 @@ const contentRoot = path.join(projectRoot, 'content');
 const toolsRoot = path.join(projectRoot, 'assets', 'js', 'tools');
 const templatePath = path.join(projectRoot, 'layouts', 'shortcodes', 'tool.html');
 const { LANGUAGES: languages, TOOL_IDS, TOOL_REGISTRY } = require('./tool-registry.cjs');
+const games = require('../data/games.json');
 const errors = [];
 
 function relativePath(filePath) {
@@ -378,12 +379,47 @@ function checkPrivacyPolicy() {
     }
 }
 
+function checkGames() {
+    const ids = games.map(game => game.id);
+    if (new Set(ids).size !== ids.length || ids.some(id => !/^[a-z0-9-]+$/.test(id))) {
+        errors.push('game registry requires unique, safe IDs');
+        return;
+    }
+    for (const language of languages) {
+        const directory = path.join(contentRoot, language, 'games');
+        const actual = collectDirectories(directory).sort();
+        if (actual.join('|') !== [...ids].sort().join('|')) errors.push(`${language}: game pages differ from the game registry`);
+        if (!fs.existsSync(path.join(directory, '_index.md'))) errors.push(`${language}: game catalog is missing`);
+        for (const game of games) {
+            const file = path.join(directory, game.id, 'index.md');
+            if (!fs.existsSync(file)) continue;
+            const { fields, valid } = parseFrontMatter(file);
+            if (!valid || !hasValue(fields, 'title') || !hasValue(fields, 'description')) errors.push(`${relativePath(file)}: game metadata is incomplete`);
+            if (scalarValue(fields.get('game_id') ?? '') !== game.id) errors.push(`${relativePath(file)}: game ID does not match the registry`);
+            if (isTrue(fields, 'draft')) errors.push(`${relativePath(file)}: registered game must be published`);
+            if (!game.label?.[language]) errors.push(`${game.id}: missing ${language} label`);
+        }
+    }
+    for (const game of games) {
+        for (const suffix of ['', '-core']) {
+            if (!fs.existsSync(path.join(projectRoot, 'assets/js/games', `${game.id}${suffix}.js`))) errors.push(`${game.id}: missing game implementation ${suffix || 'controller'}`);
+        }
+    }
+    for (const file of collectFiles(path.join(projectRoot, 'assets/js/games'), file => file.endsWith('.js'))) {
+        if (/\b(?:localStorage|sessionStorage|indexedDB)\b|document\s*\.\s*cookie/.test(fs.readFileSync(file, 'utf8'))) {
+            errors.push(`${relativePath(file)}: game rounds must not use persistent browser storage`);
+        }
+    }
+    console.log(`Game directories: ${ids.length} games in each language`);
+}
+
 const toolIdsByLanguage = checkFrontMatterAndPages();
 checkToolDirectories(toolIdsByLanguage);
 checkToolImplementations();
 checkImageBudgets();
 checkContentLinks();
 checkPrivacyPolicy();
+checkGames();
 
 if (errors.length > 0) {
     console.error(`Content structure check failed: ${errors.length} issue(s)`);

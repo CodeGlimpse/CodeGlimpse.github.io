@@ -1,5 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const games = require('../data/games.json');
 
 const projectRoot = path.resolve(__dirname, '..');
 const contentRoot = path.join(projectRoot, 'content');
@@ -325,6 +326,26 @@ if (!fs.existsSync(outputRoot)) {
         ...zhTools.map((toolId) => `tools/${toolId}/index.html`),
         ...enTools.map((toolId) => `en/tools/${toolId}/index.html`),
     ];
+    for (const prefix of ['', 'en/']) {
+        const catalog = `${prefix}games/index.html`;
+        const html = readOutput(catalog);
+        keyPages.push(catalog);
+        requirePattern(catalog, html, /\bid=["']?game-catalog["']?(?:\s|>)/, 'missing game catalog');
+        forbidPattern(catalog, html, /\/js\/games\//, 'catalog must not load game code');
+        for (const game of games) {
+            const file = `${prefix}games/${game.id}/index.html`;
+            const content = readOutput(file);
+            keyPages.push(file);
+            requirePattern(file, content, new RegExp(`data-game-id=["']?${game.id}["']?(?:\\s|>)`), 'missing inline game container');
+            forbidPattern(file, content, /<iframe\b/i, 'games must run directly in the page');
+            const modulePath = content.match(/data-game-module=["']?(\/js\/games\/[^\s"'>]+\.js)/)?.[1];
+            if (!modulePath || !new RegExp(`/${game.id}\\.[a-f0-9]{64}\\.js$`).test(modulePath)) errors.push(`${file}: missing fingerprinted game module`);
+            else {
+                const script = requireFile(modulePath.slice(1));
+                if (fs.existsSync(script) && fs.statSync(script).size > 128 * 1024) errors.push(`${file}: game bundle exceeds 128 KB`);
+            }
+        }
+    }
     for (const relativeFile of keyPages) {
         const html = readOutput(relativeFile);
         if (!html) continue;

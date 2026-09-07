@@ -63,7 +63,7 @@
         {{ $currentPage := . }}
         {{ range .Site.Menus.main }}
         {{ $exactActive := or (eq $currentPage.RelPermalink .URL) (or ($currentPage.HasMenuCurrent "main" .) ($currentPage.IsMenuCurrent "main" .)) }}
-        {{ $sectionActive := and (eq .Identifier "tools") (eq $currentPage.Section "tools") }}
+        {{ $sectionActive := and (in (slice "tools" "games") .Identifier) (eq $currentPage.Section .Identifier) }}
         {{ $active := or $exactActive $sectionActive }}
         <li {{ if $active }}class='current'{{ end }}>
             <a href='{{ .URL }}' {{ if eq .Params.newTab true }}target="_blank" rel="noopener"{{ end }}

@@ -1,0 +1,5 @@
+[
+  { "id": "memory", "label": { "zh-cn": "记忆", "en": "Memory" } },
+  { "id": "snake", "label": { "zh-cn": "反应", "en": "Reflexes" } },
+  { "id": "2048", "label": { "zh-cn": "数字", "en": "Numbers" } }
+]

@@ -1,0 +1,23 @@
+{{ define "head" }}{{ partial "games/styles.html" . }}{{ end }}
+{{ define "body-class" }}games-page{{ end }}
+{{ define "main" }}
+<header class="games-heading">
+    <p class="games-eyebrow">{{ if eq .Language.Lang "zh-cn" }}一点小乐趣{{ else }}A little playtime{{ end }}</p>
+    <h1>{{ .Title }}</h1>
+    <p>{{ .Description }}</p>
+</header>
+<section class="games-grid" id="game-catalog" aria-label="{{ .Title }}">
+    {{ range .Site.Data.games }}
+    {{ $id := .id }}
+    {{ $tag := index .label $.Language.Lang }}
+    {{ with $.Site.GetPage (printf "games/%s" $id) }}
+    <a class="game-card game-theme--{{ $id }}" href="{{ .RelPermalink }}" data-game-link="{{ $id }}">
+        {{ partial "games/cover.html" $id }}
+        <div class="game-card-body"><span class="game-tag">{{ $tag }}</span><h2>{{ .Title }}</h2><p>{{ .Description }}</p><span class="game-card-action">{{ if eq $.Language.Lang "zh-cn" }}玩一局{{ else }}Play a round{{ end }} <span aria-hidden="true">→</span></span></div>
+    </a>
+    {{ end }}
+    {{ end }}
+</section>
+<div class="games-note">{{ .Content }}</div>
+{{ partialCached "footer/footer" . }}
+{{ end }}

@@ -26,7 +26,7 @@
     identifier = "links"
     name = "Links"
     url = "/en/links/"
-    weight = 7
+    weight = 8
     [main.params]
         icon = "link"
 
@@ -42,15 +42,23 @@
     identifier = "privacy"
     name = "Privacy"
     url = "/en/privacy/"
-    weight = 8
+    weight = 9
     [main.params]
         icon = "link"
+
+[[main]]
+    identifier = "games"
+    name = "Games"
+    url = "/en/games/"
+    weight = 6
+    [main.params]
+        icon = "gamepad"
 
 [[main]]
     identifier = "about"
     name = "About"
     url = "/en/about/"
-    weight = 6
+    weight = 7
     [main.params]
         icon = "link"
 

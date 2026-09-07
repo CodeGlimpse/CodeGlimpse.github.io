@@ -53,6 +53,13 @@ assets/js/tools/<id>-core.js
 - 文章可用 `tool_related` 引用注册表中的工具 ID。说明工具的适用边界，例如 JSON 工具不能验证完整 JSON5 配置。
 - 首页 RSS 由 `layouts/home.rss.xml` 限定为 `mainSections` 的文章。新增普通页面不应进入文章订阅；运行 `e2e/reading.spec.cjs` 验证订阅、系列链接和移动导航。
 
+## 小游戏
+
+- 游戏注册在 `data/games.json`，双语内容放在 `content/<language>/games/`。游戏与工具目录分别维护，首页 RSS 继续仅包含文章。
+- 游戏直接在当前页面的 DOM/Canvas 中运行，不使用 iframe。`assets/js/games/` 不使用持久化浏览器存储，刷新重置单局；新增游戏应遵守同样的约束。
+- 规则放在 `<id>-core.js`，交互放在 `<id>.js`；事件、选择器、样式与计时器限制在游戏区域，切换页面和重开时完成清理。
+- 新增游戏同时更新布局、单元测试与浏览器测试。维护约定及当前验证结果见 [`docs/games.md`](docs/games.md)。
+
 ## 发布与 Pull Request
 
 - Pull Request 会运行版本、工作流安全、JavaScript、内容结构、Node 测试、Hugo 构建和浏览器 E2E 检查，不会发布到生产站点。

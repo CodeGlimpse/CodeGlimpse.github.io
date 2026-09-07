@@ -1,4 +1,5 @@
 const { TOOL_IDS, TOOL_REGISTRY } = require('./tool-registry.cjs');
+const games = require('../data/games.json');
 
 const checks = [
     { path: '/', status: 200, html: true, language: 'zh-cn' },
@@ -45,6 +46,12 @@ for (const script of [
 for (const toolId of TOOL_IDS) {
     checks.push({ path: `/tools/${toolId}/`, status: 200, html: true, language: 'zh-cn', toolId });
     checks.push({ path: `/en/tools/${toolId}/`, status: 200, html: true, language: 'en', toolId });
+}
+
+for (const language of ['zh-cn', 'en']) {
+    const prefix = language === 'en' ? '/en' : '';
+    checks.push({ path: `${prefix}/games/`, status: 200, html: true, language, gameCatalog: true });
+    for (const game of games) checks.push({ path: `${prefix}/games/${game.id}/`, status: 200, html: true, language, gameId: game.id });
 }
 
 for (const check of checks) {
@@ -96,9 +103,9 @@ function findTag(body, tagName, predicate) {
 
 function collectLocalAssetUrls(pageUrl, body) {
     const assets = new Set();
-    for (const tag of [...extractTags(body, 'script'), ...extractTags(body, 'link'), ...extractTags(body, 'img')]) {
+    for (const tag of [...extractTags(body, 'script'), ...extractTags(body, 'link'), ...extractTags(body, 'img'), ...extractTags(body, 'section')]) {
         const attributes = extractAttributes(tag);
-        const raw = attributes.src ?? attributes.href;
+        const raw = attributes['data-game-module'] ?? attributes.src ?? attributes.href;
         if (!raw || /^(?:data|blob|mailto|javascript):/i.test(raw)) continue;
         try {
             const url = new URL(raw, pageUrl);
@@ -188,6 +195,15 @@ function validateResponse(check, status, body, pageUrl = null, options = {}) {
                 }
             }
         }
+        if (check.gameId) {
+            const game = findTag(body, 'section', attributes => attributes['data-game-id'] === check.gameId);
+            if (game?.id !== `game-${check.gameId}`) errors.push(`missing game container: ${check.gameId}`);
+            if (!new RegExp(`^/js/games/${check.gameId}\\.[a-f0-9]{64}\\.js$`).test(game?.['data-game-module'] || '')) errors.push(`missing local game module: ${check.gameId}`);
+            if (game?.['data-clarity-mask'] !== 'true') errors.push('game region must be masked');
+            if (/<iframe\b/i.test(body)) errors.push('game must run inline without an iframe');
+            if (!/\/js\/games\/bootstrap\.[a-f0-9]{64}\.js/.test(body)) errors.push('missing game bootstrap');
+        }
+        if (check.gameCatalog && !findTag(body, 'section', attributes => attributes.id === 'game-catalog')) errors.push('missing game catalog');
         if (check.analytics) {
             if (!/data-codeglimpse-analytics-config/i.test(body)) {
                 errors.push('missing analytics configuration marker');

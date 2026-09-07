@@ -1,0 +1,2 @@
+{{ $style := resources.Get "css/games.css" | resources.Minify | fingerprint "sha256" }}
+<link rel="stylesheet" href="{{ $style.RelPermalink }}">

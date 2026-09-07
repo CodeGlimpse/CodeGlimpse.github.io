@@ -78,8 +78,9 @@ gzip 为本地测量，不代表服务器实际传输编码。产物检查将单
 - 版本、工作流、75 个 JS 文件、内容、分发脚本和分类对比度检查通过；独立 Hugo 构建为 ZH 71 / EN 70，产物检查通过。Windows 缺少 Bash 解析器，分发脚本的 `bash -n` 由现有 Ubuntu CI 执行。
 - 首页 RSS 仍只包含文章，既有阅读与工具测试继续通过。
 - 线上巡检随注册表纳入双语游戏目录和二十个游戏页面，并检查无需执行即可发现的延迟加载模块，共 98 个端点。
+- 功能提交 `1899523da28406b92ee8add772bd5a31f445493c` 的 [部署运行 34121942712](https://github.com/CodeGlimpse/CodeGlimpse.github.io/actions/runs/34121942712) 成功；独立线上巡检通过 98 个端点和 183 个引用资源，源提交标记匹配。`E2E_BASE_URL=https://blog.codeglimpse.top` 下以一个 worker 执行的 37 项游戏浏览器测试全部通过，无需重试。
 
-本轮日志和测试截图保存在 `F:/agents/code/temp/codeglimpse-handoff-20260907-01a079a5/`，构建目录为 `games-public/`；完整回归日志为 `seven-games-full-e2e.log`。已查看扫雷、关灯和滑块的首轮测试截图；新截图脚本及直接预览被自动审批接口的 404 错误阻止，未完成额外的全套外观抽查。十款游戏均通过手机布局、深色说明文字对比度及触屏相关自动检查；本轮没有安装或验证其他浏览器引擎。
+本轮日志和测试截图保存在 `F:/agents/code/temp/codeglimpse-handoff-20260907-01a079a5/`，构建目录为 `games-public/`；完整回归日志为 `seven-games-full-e2e.log`，线上日志为 `seven-games-production-site.log` 和 `seven-games-production-e2e.log`。已完成桌面游戏目录与七款新增游戏在 375×812 手机深色视口下的逐款外观核对。十款游戏均通过手机布局、深色说明文字对比度及触屏相关自动检查；本轮没有安装或验证其他浏览器引擎。
 
 ## 添加下一款小游戏
 

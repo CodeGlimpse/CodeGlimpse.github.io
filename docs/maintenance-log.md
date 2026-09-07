@@ -140,3 +140,5 @@
 - 资源：没有新增依赖或第三方图片、音频。新增单款 minified JS 为 5,597–9,686 B；仅在点击开始后加载。维护文档、README、贡献指南及方案同步更新；内部验证记录不进入网站内容。
 - 发布：沿用对应源码提交的 [部署工作流](https://github.com/CodeGlimpse/CodeGlimpse.github.io/actions/workflows/deploy.yml)，线上检查扩展至 98 个端点。
 - 回退基线：`5b732e5e2acd97aba0f90749b870a677ba2901da`。
+- 收尾补充：审批恢复后已逐款查看七款新增游戏的 375×812 手机深色画面，并核对桌面目录；此前受阻的外观核对已完成。
+- 发布结果：功能提交 `1899523da28406b92ee8add772bd5a31f445493c`，对应 [Actions Run 34121942712](https://github.com/CodeGlimpse/CodeGlimpse.github.io/actions/runs/34121942712) 成功；独立线上巡检通过 98 个端点、183 个引用资源，37/37 游戏浏览器测试一次通过。后续提交仅同步这份完成记录与维护文档。

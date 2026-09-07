@@ -92,10 +92,12 @@
 
 - 类型：缺陷修复 / 项目复核
 - 影响范围：SQL、YAML/JSON、XML、共享状态、隐私提示、Service Worker、双语说明及维护文档。
-- 变更内容：修复 SQL 参数与注释边界；引入精确锁定且本地打包的 `yaml@2.9.0`、`@xmldom/xmldom@0.9.12`，保留转换数据与 XML 文本；分享/快照记录 CSV、YAML 方向并兼容旧链接；修复存储属性读取失败导致的隐私按钮异常；Service Worker 升至 v4，只缓存成功响应，5xx 回退、等待写入并只清理本站旧缓存；监控文档同步为每日。
-- 验证命令：逐项执行 `npm.cmd run check` 的检查链，Hugo 构建与输出检查隔离在 `F:/agents/code/temp/codeglimpse-review-20260906/public`；`npm.cmd run test:e2e -- --workers 2 --output F:/agents/code/temp/codeglimpse-review-20260906/full-e2e`；`npm.cmd audit --omit=dev --json --registry=https://registry.npmjs.org --fetch-retries=0 --fetch-timeout=20000`。
-- 验证结果：128/128 单元测试、53/53 Chromium E2E（含移动视口、真实 503 和离线解析）、53 个 JS 语法、双语内容、工作流、工具链、对比度及 Hugo ZH 57 / EN 56 构建检查通过；生产依赖审计报告 0 项已知漏洞。本次 Windows 检查未找到可用 Bash，分发 `.sh` 的语法检查仍需 Ubuntu CI。
-- 源代码提交：`099c398`、`e57ed61`、`31c112b`、`c119ad5`、`894fa32`；文档提交见本条 Git 历史。
+- 变更内容：修复 SQL 参数与注释边界；引入精确锁定且本地打包的 `yaml@2.9.0`、`@xmldom/xmldom@0.9.12`，保留转换数据与 XML 文本；分享/快照记录 CSV、YAML 方向并兼容旧链接；修复存储属性读取失败导致的隐私按钮异常；Service Worker 升至 v4，只缓存成功响应，5xx 回退、等待写入并只清理本站旧缓存；固定 URL 的搜索索引优先联网更新，指纹脚本和样式复用缓存；监控文档同步为每日。
+- 收尾验证日期：2026-09-07；完整验收源码为 `1d66de8`，后续文档提交沿用相同运行代码。
+- 验证命令：逐项执行 `npm.cmd run check` 的检查链，Hugo 构建与输出检查隔离在 `F:/agents/code/temp/codeglimpse-handoff-20260907-01a079a5/public`；同级 `check-output.cjs` 读取仓库检查器并校验当前完整 HEAD；`npm.cmd run test:e2e -- --workers 2 --output F:/agents/code/temp/codeglimpse-handoff-20260907-01a079a5/e2e`，设置 `SITE_ROOT` 为该隔离产物并使用本地回环服务。
+- 验证结果：129/129 单元测试、54/54 Chromium E2E（含移动视口、真实 503、离线解析和搜索索引更新）、53 个 JS 语法、双语内容、工作流、工具链、对比度及 Hugo ZH 57 / EN 56 构建检查通过。检查脚本在 Windows 上跳过 `bash -n`，分发 `.sh` 的该项检查仍需 Ubuntu CI。
+- 依赖审计：原任务执行 `npm.cmd audit --omit=dev --json --registry=https://registry.npmjs.org --fetch-retries=0 --fetch-timeout=20000`，报告 0 项已知生产依赖漏洞；本次接替未重新联网审计，也未审计开发依赖。
+- 源代码提交：`099c398`、`e57ed61`、`31c112b`、`c119ad5`、`894fa32`、`0267df6`；文档提交见本条 Git 历史。
 - GitHub Actions Run：尚未推送或部署，待发布授权后记录。
 - 回滚：本轮开始前的 `46b1a27ea74e5a6cb424b274256632bedfd4760d`。
 - 后续事项：发布后核对源提交与线上资源；单独验证真实统计 SDK 及后台脱敏设置；按 [项目复核建议](project-review-2026-09-06.md) 优先复核已有教程、补作者介绍与系列导航。

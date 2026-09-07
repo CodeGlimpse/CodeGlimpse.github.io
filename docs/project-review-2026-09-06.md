@@ -1,5 +1,7 @@
 # 2026-09-06 项目复核与开发建议
 
+最后验收日期：2026-09-07。本次接替原任务完成搜索缓存补充修复、完整验收和本地提交。
+
 本轮发现的六项可复现问题已修复，并补齐了转换语义、分享恢复、受限存储与真实离线场景的回归测试。项目已有完整的静态构建、双语工具和发布检查基础；后续开发建议优先服务博客内容与阅读路径。
 
 本报告对应本地修复，尚未推送或部署。线上版本不能视为已经包含这些修复。
@@ -31,7 +33,7 @@
 
 原有 103 项单元测试虽能通过，但未覆盖以上关键输入和受限环境。新增测试重点检查转换前后数据是否一致、用户选项能否恢复，以及离线页面是否仍能执行工具。
 
-修复提交：`099c398`（SQL）、`e57ed61`（YAML/XML）、`31c112b`（分享）、`c119ad5`（隐私提示）、`894fa32`（离线缓存）。维护文档另外同步了每日监控、依赖安装和实际发布流程。
+修复提交：`099c398`（SQL）、`e57ed61`（YAML/XML）、`31c112b`（分享）、`c119ad5`（隐私提示）、`894fa32`（离线缓存）、`0267df6`（固定 URL 搜索索引更新）。维护文档另外同步了每日监控、依赖安装和实际发布流程。
 
 ## 依赖与验证结果
 
@@ -44,18 +46,18 @@
 
 这些包仅在对应工具页面加载；gzip 数值是本地测量，不代表生产服务器的实际传输编码。完整许可证保存在 [static/licenses.txt](../static/licenses.txt)，构建检查要求该文件随站点发布。
 
-本次执行了与 `npm.cmd run check` 相同的检查链。为保留原有 `public/`，构建目录隔离在 `F:/agents/code/temp/codeglimpse-review-20260906/public`，临时输出检查器仅替换输出目录：
+2026-09-07 对提交 `1d66de8` 执行了与 `npm.cmd run check` 相同的检查链及完整浏览器测试。构建目录隔离在 `F:/agents/code/temp/codeglimpse-handoff-20260907-01a079a5/public`，同级保存各项验证日志；临时 `check-output.cjs` 读取当前仓库检查器，仅替换输出目录，并校验当前完整 HEAD。后续文档提交沿用相同运行代码。
 
 | 验证 | 结果 |
 | --- | --- |
 | `npm.cmd run check:versions`、`check:workflow` | 通过；工具链约束一致，Actions 固定 SHA、权限明确 |
 | `npm.cmd run check:js` | 53 个 JavaScript 文件通过 |
 | `npm.cmd run check:content`、`check:contrast` | 22 × 2 工具结构及 4 个分类的对比度通过 |
-| `npm.cmd run check:scripts` | 脚本范围、dry-run、确认机制及文章哈希通过；本次检查未找到可用 Bash，`.sh` 的 `bash -n` 留给 Ubuntu CI |
-| `npm.cmd test` | 128/128 通过 |
-| `npm.cmd run build -- --destination F:/agents/code/temp/codeglimpse-review-20260906/public` | Hugo ZH 57 / EN 56；构建产物检查通过，并校验 40 位源提交标记 |
-| `npm.cmd run test:e2e -- --workers 2 --output F:/agents/code/temp/codeglimpse-review-20260906/full-e2e` | `SITE_ROOT` 指向上述隔离产物，53/53 Chromium 测试通过，包含移动视口、503 和断网转换 |
-| `npm.cmd audit --omit=dev --json --registry=https://registry.npmjs.org --fetch-retries=0 --fetch-timeout=20000` | 返回 0 项已知生产依赖漏洞；不包含开发依赖审计 |
+| `npm.cmd run check:scripts` | 脚本范围、dry-run、确认机制及文章哈希通过；检查脚本在 Windows 上跳过 `.sh` 的 `bash -n`，该项留给 Ubuntu CI |
+| `npm.cmd test` | 129/129 通过 |
+| `npm.cmd run build -- --destination F:/agents/code/temp/codeglimpse-handoff-20260907-01a079a5/public` | Hugo ZH 57 / EN 56；构建产物检查通过，并校验 40 位源提交标记 |
+| `npm.cmd run test:e2e -- --workers 2 --output F:/agents/code/temp/codeglimpse-handoff-20260907-01a079a5/e2e` | `SITE_ROOT` 指向上述隔离产物，54/54 Chromium 测试通过，包含移动视口、503、断网转换和搜索索引更新 |
+| `npm.cmd audit --omit=dev --json --registry=https://registry.npmjs.org --fetch-retries=0 --fetch-timeout=20000` | 原任务记录为 0 项已知生产依赖漏洞；本次接替未重新联网审计，也未审计开发依赖 |
 
 本轮开始时，生产基线 `46b1a27` 的线上检查通过了 68 个端点与 141 个资源。这个结果属于原版本；本轮修复发布后仍须重新执行 `check:site` 并比对新提交。
 

@@ -46,6 +46,13 @@ assets/js/tools/<id>-core.js
 
 转换方向等按钮状态不会自动成为表单字段。新增此类选项时，需同步 `assets/js/tools/share.js` 的状态收集与恢复逻辑；恢复顺序为模式、输入字段、执行转换。旧版本分享链接仍须可用，模式必须经过白名单校验。
 
+## 文章复核与系列
+
+- 版本敏感教程使用 `review_date`（带引号的 ISO 日期）和 `review_scope` 说明资料复核范围，并在正文列出官方来源。只有完成实测后，才能记录对应环境的实测结论；`lastmod` 仅表示内容修改。
+- 系列文章使用相同的 `series_id` 和不重复的 `series_order`。对应入口放在 `content/<language>/page/<series_id>-series/index.md`；两种语言分别生成当前语言的前后篇链接。
+- 文章可用 `tool_related` 引用注册表中的工具 ID。说明工具的适用边界，例如 JSON 工具不能验证完整 JSON5 配置。
+- 首页 RSS 由 `layouts/home.rss.xml` 限定为 `mainSections` 的文章。新增普通页面不应进入文章订阅；运行 `e2e/reading.spec.cjs` 验证订阅、系列链接和移动导航。
+
 ## 发布与 Pull Request
 
 - Pull Request 会运行版本、工作流安全、JavaScript、内容结构、Node 测试、Hugo 构建和浏览器 E2E 检查，不会发布到生产站点。

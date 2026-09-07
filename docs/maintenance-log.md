@@ -98,6 +98,15 @@
 - 验证结果：129/129 单元测试、54/54 Chromium E2E（含移动视口、真实 503、离线解析和搜索索引更新）、53 个 JS 语法、双语内容、工作流、工具链、对比度及 Hugo ZH 57 / EN 56 构建检查通过。检查脚本在 Windows 上跳过 `bash -n`，分发 `.sh` 的该项检查仍需 Ubuntu CI。
 - 依赖审计：原任务执行 `npm.cmd audit --omit=dev --json --registry=https://registry.npmjs.org --fetch-retries=0 --fetch-timeout=20000`，报告 0 项已知生产依赖漏洞；本次接替未重新联网审计，也未审计开发依赖。
 - 源代码提交：`099c398`、`e57ed61`、`31c112b`、`c119ad5`、`894fa32`、`0267df6`；文档提交见本条 Git 历史。
-- GitHub Actions Run：尚未推送或部署，待发布授权后记录。
+- GitHub Actions Run：[34079013482](https://github.com/CodeGlimpse/CodeGlimpse.github.io/actions/runs/34079013482)，源提交 `f8997862e38b805065d9a77b4f8f4edb05845140`；Build、E2E、Deploy、线上 Smoke Test 全部通过。独立线上复核通过 68 个端点和 141 个资源，Ubuntu 分发脚本检查通过。
 - 回滚：本轮开始前的 `46b1a27ea74e5a6cb424b274256632bedfd4760d`。
 - 后续事项：发布后核对源提交与线上资源；单独验证真实统计 SDK 及后台脱敏设置；按 [项目复核建议](project-review-2026-09-06.md) 优先复核已有教程、补作者介绍与系列导航。
+
+## 2026-09-07 - 教程复核与双语阅读导航
+
+- 影响范围：五篇教程的中英文版本、关于及系列页面、前后篇导航、资料复核标记、相关工具和 RSS。
+- 变更内容：按官方资料纠正 OpenClaw、Python 和 Fail2ban 内容；保留原文章地址；补作者和系列入口；首页 RSS 从普通页面集合改为文章集合；线上检查增加新入口与 RSS。
+- 验证：130/130 Node 单测、61/61 Chromium E2E；独立 Hugo ZH 60 / EN 59 构建及产物检查通过；桌面与手机暗色排版已查看。
+- 内容验证边界：官方资料复核与实机验证分别标注，本轮未安装或卸载教程软件、未操作真实登录浏览器、未修改 Linux 服务。
+- 资料、验证命令及后续四次选题见 [内容维护记录](content-maintenance-2026-09-07.md)。源代码与发布记录可按本条 Git 历史在 [部署工作流](https://github.com/CodeGlimpse/CodeGlimpse.github.io/actions/workflows/deploy.yml) 查询。
+- 回退基线：本轮前已发布的 `f8997862e38b805065d9a77b4f8f4edb05845140`。

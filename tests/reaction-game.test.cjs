@@ -15,7 +15,7 @@ test('reaction false starts do not consume a scored attempt', () => {
 test('reaction measures from the green signal and rejects duplicate or invalid timestamps', () => {
     const ready = game.arm(game.createState(), 1000);
     assert.equal(game.arm(ready, 1100), ready);
-    for (const now of [999, NaN, Infinity]) assert.equal(game.respond(ready, now), ready);
+    for (const now of [-1, NaN, Infinity]) assert.equal(game.respond(ready, now), ready);
     const result = game.respond(ready, 1173.4);
     assert.deepEqual(result.samples, [173]);
     assert.equal(game.respond(result, 1200), result);
@@ -43,4 +43,20 @@ test('reaction restarting an unfinished wait cannot retain an old green timestam
     assert.equal(game.respond(restarted, 900).samples.length, 0);
     const fresh = game.respond(game.arm(restarted, 1000), 1100);
     assert.deepEqual(fresh.samples, [100]);
+});
+
+test('reaction treats an input from before the signal as a false start even if delivered later', () => {
+    const ready = game.arm(game.createState(), 1000);
+    const early = game.respond(ready, 999);
+    assert.equal(early.stage, 'early');
+    assert.equal(early.falseStarts, 1);
+    assert.deepEqual(early.samples, []);
+});
+
+test('reaction uses the event creation timestamp with an epoch fallback and safe invalid-value handling', () => {
+    const origin = 1788825600000;
+    assert.equal(game.inputTime(1230, 1310, origin), 1230);
+    assert.equal(game.inputTime(origin + 1230, 1310, origin), 1230);
+    for (const timestamp of [0, -1, NaN, Infinity, 1400, origin + 1400]) assert.equal(game.inputTime(timestamp, 1310, origin), 1310);
+    assert.equal(game.inputTime(undefined, 1310, undefined), 1310);
 });

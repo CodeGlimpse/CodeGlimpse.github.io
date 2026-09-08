@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { advanceToReactionSignal } = require('./helpers/reaction-clock.cjs');
 
 test.beforeEach(async ({ page }) => {
     await page.route(/^https:\/\/(?:www\.googletagmanager\.com|www\.clarity\.ms|hm\.baidu\.com)\//i, route => route.fulfill({ body: '', contentType: 'application/javascript' }));
@@ -167,20 +168,19 @@ test('reaction ignores false starts, cancels paused signals and records five mea
     await expect(pad).toHaveAttribute('data-stage', 'early');
     await expect(root.locator('[data-reaction-round]')).toHaveText('0 / 5');
     await page.keyboard.press('Enter');
-    await page.clock.runFor(1200);
-    await expect(pad).toHaveAttribute('data-stage', 'ready');
+    await advanceToReactionSignal(page, pad);
     await page.clock.runFor(173);
     await page.keyboard.press('Space');
     await expect(root.locator('[data-reaction-last]')).toHaveText('173 ms');
     await page.keyboard.press('Enter');
-    await page.clock.runFor(1200);
+    await advanceToReactionSignal(page, pad);
     await page.keyboard.press('p');
     await page.clock.fastForward(10000);
     await expect(root.locator('[data-reaction-round]')).toHaveText('1 / 5');
     await page.keyboard.press('p');
     await expect(pad).toHaveAttribute('data-stage', 'waiting');
     for (const delay of [200, 250, 300, 350]) {
-        await page.clock.runFor(1200);
+        await advanceToReactionSignal(page, pad);
         await page.clock.runFor(delay);
         await page.keyboard.press('Space');
         if (delay !== 350) await page.keyboard.press('Enter');

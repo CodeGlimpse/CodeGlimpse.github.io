@@ -261,6 +261,8 @@ if (!fs.existsSync(outputRoot)) {
     for (const searchPage of ['archives/index.html', 'en/archives/index.html']) {
         const html = readOutput(searchPage);
         requirePattern(searchPage, html, /data-article-finder/, 'archives must expose article search');
+        requirePattern(searchPage, html, /<meta\b[^>]*name=["']?description["']?[^>]+content=(?:["'][^"']+["']|[^\s"'>]+)/i,
+            'archives must have a nonempty meta description');
         const scriptPath = html.match(/src=["']?(\/ts\/search\.[a-f0-9]{64}\.js)/i)?.[1];
         if (!scriptPath) {
             errors.push(`${searchPage}: missing fingerprinted search script`);

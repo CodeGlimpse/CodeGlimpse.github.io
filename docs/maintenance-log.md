@@ -176,3 +176,8 @@
 - 验证命令：`npm.cmd test`、`npm.cmd run test:e2e`、各项 `check:*`、`npm.cmd run build -- --destination <任务临时目录>/public`；隔离目录通过 `SITE_ROOT` 交给产物检查和浏览器测试。
 - 发布：使用本节所在提交的部署工作流，线上巡检包含 116 个端点，其中四个旧搜索地址必须为 404。完整测试日志位于工作区 `temp/codeglimpse-site-usability-20260908/verified-e2e.log`。
 - 回退基线：`6f35f7c6c9c61c3d9974b74b40ca68f42c0a168f`；实施前本地检查点为 `dffec22`。
+
+## 2026-09-08 - 补齐博客搜索页的摘要元数据
+
+- 首次发布 `17e16c9` 的线上巡检发现两个 archives 页面缺少 meta description，其余地址与资源检查通过，四个旧搜索地址为 404。
+- 补充中英文页面摘要，并将非空摘要验证加入构建产物检查和对应的浏览器用例，避免只在线上才发现。

@@ -22,6 +22,7 @@ for (const language of ['zh-cn', 'en']) {
     test(`removes the standalone search and limits article search to posts in ${language}`, async ({ page, request }) => {
         for (const path of ['/search/', '/search/index.json']) expect((await request.get(prefix + path)).status()).toBe(404);
         await open(page, prefix + '/archives/');
+        await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /\S/);
         await expect(page.locator('#main-menu a[href*="/search/"]')).toHaveCount(0);
         const input = page.locator('#article-search');
         await expect(input).toBeVisible();

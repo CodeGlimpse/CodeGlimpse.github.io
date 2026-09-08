@@ -148,12 +148,12 @@ test('refreshes fixed-URL search indexes online and preserves them through outag
             ? new Response('unavailable', { status: 503 })
             : new Response('updated search index');
     } });
-    fixture.seed('/search/index.json', 'old search index');
-    assert.equal(await (await fixture.request('/search/index.json', { mode: 'cors' })).text(), 'updated search index');
+    fixture.seed('/archives/index.json', 'old search index');
+    assert.equal(await (await fixture.request('/archives/index.json', { mode: 'cors' })).text(), 'updated search index');
     for (state of ['unavailable', 'offline']) {
-        assert.equal(await (await fixture.request('/search/index.json', { mode: 'cors' })).text(), 'updated search index');
+        assert.equal(await (await fixture.request('/archives/index.json', { mode: 'cors' })).text(), 'updated search index');
     }
-    assert.equal(await fixture.read('/search/index.json').text(), 'updated search index');
+    assert.equal(await fixture.read('/archives/index.json').text(), 'updated search index');
     assert.equal(fixture.writes.length, 1);
 });
 

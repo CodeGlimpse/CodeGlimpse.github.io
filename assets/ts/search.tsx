@@ -1,6 +1,9 @@
+import { normalizeSearch, matchesSearch } from '../js/search-core.js';
+
 interface PageData {
     title: string;
-    date: string;
+    description?: string;
+    tags?: string[];
     permalink: string;
     content: string;
     image?: string;
@@ -106,26 +109,35 @@ class Search {
     private form: HTMLFormElement;
     private input: HTMLInputElement;
     private list: HTMLDivElement;
-    private resultTitle: HTMLHeadingElement;
-    private resultTitleTemplate: string;
+    private resultTitle: HTMLElement;
+    private archive: HTMLElement;
+    private results: HTMLElement;
+    private clearButton: HTMLButtonElement;
+    private en: boolean;
+    private requestId = 0;
+    private pendingData: Promise<PageData[]> | null = null;
+    private composing = false;
 
-    constructor({ form, input, list, resultTitle, resultTitleTemplate }) {
+    constructor({ form, input, list, resultTitle }) {
         this.form = form;
         this.input = input;
         this.list = list;
         this.resultTitle = resultTitle;
-        this.resultTitleTemplate = resultTitleTemplate;
+        this.archive = document.getElementById('article-archives');
+        this.results = document.getElementById('article-search-results');
+        this.clearButton = form.querySelector('[data-article-clear]');
+        this.en = form.dataset.lang === 'en';
 
-        if (this.input.value.trim() !== '') this.doSearch(this.input.value.split(' '));
-        else this.handleQueryString();
-
-        this.bindQueryStringChange();
+        this.handleQueryString();
+        window.addEventListener('popstate', () => this.handleQueryString());
         this.bindSearchForm();
+        this.form.hidden = false;
     }
 
     private async searchKeywords(keywords: string[]): Promise<SearchResult[]> {
         const rawData = await this.getData();
         const results: SearchResult[] = [];
+        const query = keywords.join(' ');
         const pattern = keywords
             .map((keyword) => keyword.trim())
             .filter(Boolean)
@@ -135,14 +147,14 @@ class Search {
         const regex = new RegExp(pattern, 'gi');
 
         for (const item of rawData) {
+            if (!matchesSearch([item.title, item.description, ...(item.tags || []), item.content].join(' '), query)) continue;
             const titleMatches = Search.findMatches(item.title, regex);
             const contentMatches = Search.findMatches(item.content, regex);
             const matchCount = titleMatches.length + contentMatches.length;
-            if (!matchCount) continue;
 
             results.push({
                 ...item,
-                matchCount,
+                matchCount: matchCount + (matchesSearch(item.title, query) ? 10 : 0),
                 titleSegments: titleMatches.length
                     ? processMatches(item.title, titleMatches, false)
                     : [{ text: item.title, marked: false }],
@@ -163,64 +175,90 @@ class Search {
     }
 
     private async doSearch(keywords: string[]): Promise<void> {
-        const startTime = performance.now();
-        const results = await this.searchKeywords(keywords);
-        this.clear();
-        results.forEach((item) => this.list.append(Search.render(item)));
-        const seconds = ((performance.now() - startTime) / 1000).toPrecision(1);
-        this.resultTitle.textContent = this.generateResultTitle(results.length, seconds);
-    }
-
-    private generateResultTitle(resultLength: number, seconds: string): string {
-        return this.resultTitleTemplate
-            .replace('#PAGES_COUNT', String(resultLength))
-            .replace('#TIME_SECONDS', seconds);
+        const request = ++this.requestId;
+        this.clearButton.hidden = !this.input.value;
+        this.resultTitle.textContent = this.en ? 'Searching articles…' : '正在查找文章…';
+        this.list.replaceChildren();
+        this.results.hidden = true;
+        this.archive.hidden = false;
+        try {
+            const results = await this.searchKeywords(keywords);
+            if (request !== this.requestId) return;
+            results.forEach((item) => this.list.append(Search.render(item)));
+            this.archive.hidden = true;
+            this.results.hidden = false;
+            this.resultTitle.textContent = results.length
+                ? (this.en ? results.length + ' articles found' : '找到 ' + results.length + ' 篇文章')
+                : (this.en ? 'No matching articles. Try another keyword or clear the search.' : '没有找到匹配的文章，换个关键词或清空搜索试试。');
+        } catch {
+            if (request !== this.requestId) return;
+            this.resultTitle.textContent = this.en
+                ? 'Search is unavailable. You can still browse all articles below; try again when connected.'
+                : '暂时无法搜索，你仍可浏览下方全部文章，联网后再试。';
+        }
     }
 
     public async getData(): Promise<PageData[]> {
-        if (!this.data) {
-            const jsonUrl = this.form.dataset.json;
-            this.data = await fetch(jsonUrl).then((response) => response.json());
-            const parser = new DOMParser();
-            this.data.forEach((item) => {
-                item.content = parser.parseFromString(item.content, 'text/html').body.textContent || '';
-            });
+        if (this.data) return this.data;
+        if (!this.pendingData) {
+            this.pendingData = fetch(this.form.dataset.json)
+                .then((response) => {
+                    if (!response.ok) throw new Error('Search index unavailable');
+                    return response.json();
+                }).then((entries) => {
+                    if (!Array.isArray(entries)) throw new Error('Invalid search index');
+                    this.data = entries.filter(item => item && typeof item.title === 'string' && typeof item.content === 'string' && typeof item.permalink === 'string')
+                        .map(item => ({ ...item, tags: Array.isArray(item.tags) ? item.tags.filter(tag => typeof tag === 'string') : [] }));
+                    return this.data;
+                }).finally(() => { this.pendingData = null; });
         }
-        return this.data;
+        return this.pendingData;
     }
 
     private bindSearchForm(): void {
-        let lastSearch = '';
         const eventHandler = (event: Event) => {
             event.preventDefault();
+            if (this.composing || (event as InputEvent).isComposing) return;
             const keywords = this.input.value.trim();
             Search.updateQueryString(keywords, true);
             if (!keywords) {
-                lastSearch = '';
                 this.clear();
                 return;
             }
-            if (lastSearch === keywords) return;
-            lastSearch = keywords;
-            this.doSearch(keywords.split(' '));
+            this.doSearch(normalizeSearch(keywords).split(' '));
         };
+        this.form.addEventListener('submit', eventHandler);
         this.input.addEventListener('input', eventHandler);
-        this.input.addEventListener('compositionend', eventHandler);
+        this.input.addEventListener('search', eventHandler);
+        this.input.addEventListener('compositionstart', () => { this.composing = true; });
+        this.input.addEventListener('compositionend', (event) => { this.composing = false; eventHandler(event); });
+        const reset = () => {
+            this.input.value = '';
+            this.composing = false;
+            Search.updateQueryString('', true);
+            this.clear();
+            this.input.focus();
+        };
+        this.clearButton.addEventListener('click', reset);
+        this.input.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && !this.composing && this.input.value) { event.preventDefault(); reset(); }
+        });
     }
 
     private clear(): void {
+        this.requestId += 1;
         this.list.replaceChildren();
-        this.resultTitle.textContent = '';
-    }
-
-    private bindQueryStringChange(): void {
-        window.addEventListener('popstate', () => this.handleQueryString());
+        this.results.hidden = true;
+        this.archive.hidden = false;
+        this.clearButton.hidden = !this.input.value;
+        const count = this.archive.querySelectorAll('.article-list--compact article').length;
+        this.resultTitle.textContent = this.en ? count + ' articles' : '共 ' + count + ' 篇文章';
     }
 
     private handleQueryString(): void {
-        const keywords = new URL(window.location.toString()).searchParams.get('keyword') || '';
+        const keywords = (new URL(window.location.toString()).searchParams.get('keyword') || '').slice(0, 100);
         this.input.value = keywords;
-        if (keywords) this.doSearch(keywords.split(' '));
+        if (keywords.trim()) this.doSearch(normalizeSearch(keywords).split(' '));
         else this.clear();
     }
 
@@ -265,24 +303,15 @@ class Search {
     }
 }
 
-declare global {
-    interface Window {
-        searchResultTitleTemplate: string;
-    }
-}
-
-window.addEventListener('load', () => {
-    window.setTimeout(() => {
-        const searchForm = document.querySelector('.search-form') as HTMLFormElement;
-        if (!searchForm) return;
-        new Search({
-            form: searchForm,
-            input: searchForm.querySelector('input') as HTMLInputElement,
-            list: document.querySelector('.search-result--list') as HTMLDivElement,
-            resultTitle: document.querySelector('.search-result--title') as HTMLHeadingElement,
-            resultTitleTemplate: window.searchResultTitleTemplate
-        });
-    }, 0);
+document.addEventListener('DOMContentLoaded', () => {
+    const searchForm = document.querySelector('[data-article-finder]') as HTMLFormElement;
+    if (!searchForm) return;
+    new Search({
+        form: searchForm,
+        input: searchForm.querySelector('input') as HTMLInputElement,
+        list: document.querySelector('.search-result--list') as HTMLDivElement,
+        resultTitle: document.querySelector('#article-results') as HTMLElement
+    });
 });
 
 export default Search;

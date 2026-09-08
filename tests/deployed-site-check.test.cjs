@@ -11,7 +11,7 @@ test('normalizes site URLs and resolves endpoint paths', () => {
 
 test('validates expected success responses and JSON arrays', () => {
     const errors = checker.validateResponse(
-        { path: '/search/index.json', status: 200, jsonArray: true },
+        { path: '/archives/index.json', status: 200, jsonArray: true },
         200,
         '[{"title":"JSON"}]',
     );
@@ -116,14 +116,14 @@ test('accepts the intentional homepage JSON 404', () => {
 
 test('reports invalid status and JSON payloads', () => {
     const errors = checker.validateResponse(
-        { path: '/search/index.json', status: 200, jsonArray: true },
+        { path: '/archives/index.json', status: 200, jsonArray: true },
         500,
         '{invalid',
     );
     assert.deepEqual(errors, ['expected HTTP 200, received 500']);
 
     const jsonErrors = checker.validateResponse(
-        { path: '/search/index.json', status: 200, jsonArray: true },
+        { path: '/archives/index.json', status: 200, jsonArray: true },
         200,
         '{invalid',
     );

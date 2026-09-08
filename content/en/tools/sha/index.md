@@ -25,7 +25,7 @@ For input `abc`, SHA-256 in lower-case is `ba7816bf8f01cfea414140de5dae2223b0036
 ### Available Algorithms
 -   **SHA-1**: Produces a 160-bit (40-character) hash. No longer considered secure for cryptographic purposes but still used for non-security tasks like Git checksums.
 -   **SHA-256**: Part of the SHA-2 family, produces a 256-bit (64-character) hash. It is currently one of the most widely used hash functions (e.g., in Bitcoin).
--   **SHA-384**: A more secure version of SHA-2, producing a 384-bit (96-character) hash.
--   **SHA-512**: The strongest of the SHA-2 family, producing a 512-bit (128-character) hash.
+-   **SHA-384**: A member of the SHA-2 family, producing a 384-bit (96-character) hash.
+-   **SHA-512**: A member of the SHA-2 family, producing a 512-bit (128-character) hash.
 
-> **Note**: For modern security needs, SHA-256 or higher is recommended. SHA-1 is considered weak and should be avoided for sensitive data.
+> **Note**: Hashing produces a digest, not decryptable ciphertext. SHA-256 is suitable for general digests; avoid SHA-1 when collision resistance is required. Use a dedicated scheme such as Argon2id or scrypt for password storage rather than a plain SHA hash.

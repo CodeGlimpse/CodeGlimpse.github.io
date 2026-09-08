@@ -58,7 +58,7 @@ Build and test -> Browser E2E -> Deploy gh-pages -> Online smoke test
 4. 在 Actions Summary 中记录模块差异和构建指标。
 5. 创建或更新 `automation/update-hugo-theme` Pull Request。
 
-主题更新 PR 必须人工查看首页、工具索引、工具页面、搜索页、深色模式和移动端布局后再合并。
+主题更新 PR 必须人工查看首页、工具索引、工具页面、博客搜索、深色模式和移动端布局后再合并。
 
 ## 线上监控
 

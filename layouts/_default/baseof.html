@@ -8,7 +8,7 @@
         {{- $workspaceScript := resources.Get "js/workspace.js" | resources.Minify | fingerprint "sha256" -}}
         <script type="text/javascript" src="{{ $workspaceScript.RelPermalink }}" defer></script>
     </head>
-    <body class="{{ block `body-class` . }}{{ end }}">
+    <body class="{{ block `body-class` . }}{{ end }}{{ if .IsHome }} has-mobile-home-nav{{ end }}">
         {{- partial "head/colorScheme" . -}}
 
         <a class="skip-link" href="#main-content">
@@ -31,6 +31,7 @@
             </main>
         </div>
         {{ partial "footer/include.html" . }}
+        {{ if .IsHome }}{{ partial "navigation/mobile-home.html" . }}{{ end }}
         <aside id="codeglimpse-privacy-notice" class="codeglimpse-privacy-notice" role="region"
             aria-labelledby="codeglimpse-privacy-notice-title" data-notice-version="1">
             <div class="codeglimpse-privacy-notice__content">

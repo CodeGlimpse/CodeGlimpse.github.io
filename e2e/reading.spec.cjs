@@ -71,7 +71,7 @@ for (const language of ['zh-cn', 'en']) {
 
     test(`keeps maintainer review notes out of ${language} articles and search`, async ({ page, request }) => {
         expect((await request.get(`${prefix}/docs/tutorial-review-records.json`)).status()).toBe(404);
-        const response = await request.get(`${prefix}/search/index.json`);
+        const response = await request.get(`${prefix}/archives/index.json`);
         expect(response.ok()).toBe(true);
         const entries = await response.json();
         expect(JSON.stringify(entries)).not.toMatch(INTERNAL_REVIEW_PATTERN);

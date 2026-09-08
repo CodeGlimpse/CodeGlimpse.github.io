@@ -1,0 +1,6 @@
+{{- $entries := slice -}}
+{{- $pages := where .Site.RegularPages "Section" "post" -}}
+{{- range where $pages "Params.hidden" "!=" true -}}
+    {{- $entries = $entries | append (dict "title" .Title "description" .Description "tags" (.Params.tags | default slice) "content" .Plain "permalink" .Permalink) -}}
+{{- end -}}
+{{- $entries | jsonify | safeJS -}}

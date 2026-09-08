@@ -32,12 +32,41 @@
         return INDENTS[value] || INDENTS['2'];
     }
 
+    function tokens(input) {
+        const text = String(input);
+        // Use the native parser only to validate syntax. Serializing its result
+        // would round large numbers, alter escapes and discard duplicate keys.
+        parseJson(text);
+        return text.match(/"(?:\\[\s\S]|[^"\\])*"|-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?|true|false|null|[{}\[\],:]/g);
+    }
+
     function formatJson(input, indent) {
-        return JSON.stringify(parseJson(input), null, getIndent(indent));
+        const parts = tokens(input);
+        const whitespace = getIndent(indent);
+        const output = [];
+        let depth = 0;
+        const newline = () => output.push('\n', whitespace.repeat(depth));
+        parts.forEach((token, index) => {
+            if (token === '{' || token === '[') {
+                output.push(token);
+                depth += 1;
+                if (parts[index + 1] !== '}' && parts[index + 1] !== ']') newline();
+            } else if (token === '}' || token === ']') {
+                depth -= 1;
+                if (parts[index - 1] !== '{' && parts[index - 1] !== '[') newline();
+                output.push(token);
+            } else if (token === ',') {
+                output.push(token);
+                newline();
+            } else {
+                output.push(token === ':' ? ': ' : token);
+            }
+        });
+        return output.join('');
     }
 
     function minifyJson(input) {
-        return JSON.stringify(parseJson(input));
+        return tokens(input).join('');
     }
 
     function validateJson(input) {

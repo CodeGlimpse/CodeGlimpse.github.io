@@ -13,7 +13,7 @@ The JSON formatter helps you format and validate JSON data. It can also escape J
 {{< tool id="json" >}}
 
 ### Examples and limits
-Formatting `{"name":"Alice","items":[1,true]}` produces readable multi-line JSON using the selected indentation. Invalid JSON reports a parse error; escape and unescape operate on text and never execute it. Everything is processed locally.
+Formatting `{"name":"Alice","items":[1,true]}` produces readable multi-line JSON using the selected indentation. Invalid JSON reports a parse error; escape and unescape operate on text and never execute it. Formatting and minifying change only whitespace outside strings, preserving the original spelling of large integers, decimals, exponents, key order, and string escapes. Everything is processed locally.
 
 ### How to use
 

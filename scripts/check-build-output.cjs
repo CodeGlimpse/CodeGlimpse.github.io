@@ -4,7 +4,7 @@ const games = require('../data/games.json');
 
 const projectRoot = path.resolve(__dirname, '..');
 const contentRoot = path.join(projectRoot, 'content');
-const outputRoot = path.join(projectRoot, 'public');
+const outputRoot = path.resolve(process.env.SITE_ROOT || path.join(projectRoot, 'public'));
 const errors = [];
 const googleAnalyticsId = 'G-Q70SQCVRF7';
 const baiduAnalyticsId = 'ffa021be8a9760a0c063cb6e6b71e095';
@@ -245,18 +245,22 @@ function checkInternalReviewText(directory) {
 if (!fs.existsSync(outputRoot)) {
     errors.push(`missing build output directory: ${relativePath(outputRoot)}`);
 } else {
-    // The homepage intentionally exposes HTML/RSS only. Search pages are the
-    // only JSON page outputs currently supported by the project.
+    // The homepage exposes HTML/RSS. Article search belongs to the archives;
+    // the former standalone search pages and indexes must no longer exist.
     for (const homepageJson of ['index.json', 'en/index.json']) {
         if (fs.existsSync(path.join(outputRoot, homepageJson))) {
             errors.push(`homepage JSON must not be generated: ${homepageJson}`);
         }
     }
 
-    requireJson('search/index.json');
-    requireJson('en/search/index.json');
-    for (const searchPage of ['search/index.html', 'en/search/index.html']) {
+    for (const removed of ['search/index.html', 'en/search/index.html', 'search/index.json', 'en/search/index.json']) {
+        if (fs.existsSync(path.join(outputRoot, removed))) errors.push(`retired search URL must not be generated: ${removed}`);
+    }
+    requireJson('archives/index.json');
+    requireJson('en/archives/index.json');
+    for (const searchPage of ['archives/index.html', 'en/archives/index.html']) {
         const html = readOutput(searchPage);
+        requirePattern(searchPage, html, /data-article-finder/, 'archives must expose article search');
         const scriptPath = html.match(/src=["']?(\/ts\/search\.[a-f0-9]{64}\.js)/i)?.[1];
         if (!scriptPath) {
             errors.push(`${searchPage}: missing fingerprinted search script`);
@@ -298,6 +302,9 @@ if (!fs.existsSync(outputRoot)) {
     const chineseHome = readOutput('index.html');
     const englishHome = readOutput('en/index.html');
     for (const [relativeFile, html] of [['index.html', chineseHome], ['en/index.html', englishHome]]) {
+        if ((html.match(/<h1\b/gi) || []).length !== 1) errors.push(`${relativeFile}: homepage must have exactly one h1`);
+        forbidPattern(relativeFile, html, /href=["']?\/(?:en\/)?search\//i, 'home must not link to retired search pages');
+        requirePattern(relativeFile, html, /mobile-home-nav/, 'home must expose the mobile navigation');
         requirePattern(
             relativeFile,
             html,

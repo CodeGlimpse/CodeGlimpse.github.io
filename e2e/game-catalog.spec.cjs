@@ -42,6 +42,10 @@ for (const language of ['zh-cn', 'en']) {
         await expect(input).toHaveValue('snake');
         await input.press('Tab');
         await page.keyboard.press('Tab');
+        await expect(page.locator('select[data-game-category]')).toBeFocused();
+        await page.keyboard.press('Tab');
+        await expect(page.locator('[data-game-random]')).toBeFocused();
+        await page.keyboard.press('Tab');
         await expect(visible).toBeFocused();
         await input.focus();
         await input.press('Escape');

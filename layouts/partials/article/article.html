@@ -1,7 +1,5 @@
 <article class="{{ if .Params.image }}has-image {{ end }}main-article">
-    {{- .Scratch.Set "renderArticleHeadingAsH1" true -}}
-    {{ partial "article/components/header" . }}
-    {{- .Scratch.Delete "renderArticleHeadingAsH1" -}}
+    {{ partial "article/components/header" (dict "Context" . "HeadingAsH1" true) }}
 
     {{ partial "article/components/content" . }}
 

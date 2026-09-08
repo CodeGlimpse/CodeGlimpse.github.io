@@ -1,6 +1,24 @@
 {{ define "body-class" }}template-archives{{ end }}
+{{ define "head" }}
+    {{ with .OutputFormats.Get "json" }}<link rel="preload" href="{{ .RelPermalink }}" as="fetch" crossorigin="anonymous">{{ end }}
+{{ end }}
 {{ define "main" }}
     <h1 class="section-title">{{ .Title }}</h1>
+
+    <form class="catalog-finder clarity-mask" data-article-finder data-lang="{{ .Language.Lang }}" data-clarity-mask="true" hidden
+        role="search" aria-label="{{ if eq .Language.Lang "en" }}Find articles{{ else }}查找文章{{ end }}"{{ with .OutputFormats.Get "json" }} data-json="{{ .RelPermalink }}"{{ end }}>
+        <label for="article-search">{{ if eq .Language.Lang "en" }}Search articles{{ else }}搜索文章{{ end }}</label>
+        <div class="catalog-search-row">
+            <input type="search" id="article-search" name="keyword" maxlength="100" autocomplete="off" spellcheck="false" aria-controls="article-search-results article-archives" aria-describedby="article-results"
+                placeholder="{{ if eq .Language.Lang "en" }}Title, topic or article text{{ else }}标题、主题或正文关键词{{ end }}">
+            <button type="button" data-article-clear hidden>{{ if eq .Language.Lang "en" }}Clear{{ else }}清空{{ end }}</button>
+        </div>
+        <p id="article-results" role="status" aria-live="polite" aria-atomic="true"></p>
+    </form>
+    <section id="article-search-results" class="search-result" hidden aria-label="{{ if eq .Language.Lang "en" }}Matching articles{{ else }}匹配的文章{{ end }}">
+        <div class="search-result--list article-list--compact"></div>
+    </section>
+    <div id="article-archives">
 
     <header>
         {{- $taxonomy := $.Site.GetPage "taxonomyTerm" "categories" -}}
@@ -32,5 +50,8 @@
     </div>
     {{ end }}
 
+    </div>
+    {{ $search := resources.Get "ts/search.tsx" | js.Build (dict "minify" hugo.IsProduction) | fingerprint "sha256" }}
+    <script src="{{ $search.RelPermalink }}" defer></script>
     {{ partialCached "footer/footer" . }}
 {{ end }}

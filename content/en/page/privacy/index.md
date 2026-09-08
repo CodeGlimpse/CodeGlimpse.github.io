@@ -28,7 +28,7 @@ The site loads these third-party analytics services by default to understand vis
 - Baidu Analytics: page views and referrer information.
 - Microsoft Clarity: interaction and usability analysis.
 
-Analytics scripts are not given tool inputs or custom events containing complete text. Tool forms, result areas, share panels, and JWT/password containers carry explicit Clarity masking markers; the Clarity project settings must also keep “mask all input and sensitive text” enabled.
+Analytics scripts are not given tool inputs or custom events containing complete text. Tool forms, result areas, share panels, and JWT/password containers are marked as masked regions.
 
 The site does not send passwords, JWTs, private keys, complete text, tool results, local presets, or `#cgshare=` share content in analytics events. Page analytics use a path without query parameters or fragments.
 

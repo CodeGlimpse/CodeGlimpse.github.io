@@ -1,4 +1,6 @@
-document.addEventListener('DOMContentLoaded', function () {
+import { matchesSearch } from '../search-core.js';
+
+function mountCatalog() {
     const searchInput = document.getElementById('tool-search');
     if (!searchInput) return;
 
@@ -10,12 +12,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const recentSection = document.getElementById('tool-recent');
     const recentList = document.getElementById('tool-recent-list');
     const storageKey = 'codeglimpse.tool-preferences';
-    const language = document.documentElement.lang === 'zh-CN' ? 'zh' : 'en';
+    const finder = document.querySelector('[data-tool-finder]');
+    const clear = finder.querySelector('[data-tool-search-clear]');
+    let composing = false;
+    const language = document.documentElement.lang.toLowerCase() === 'zh-cn' ? 'zh' : 'en';
     const countText = (visible, total) => language === 'zh'
         ? visible + ' / ' + total + ' 个工具'
         : visible + ' / ' + total + ' tools';
-    const savedText = language === 'zh' ? '已收藏' : 'Saved';
-    const removedText = language === 'zh' ? '已取消收藏' : 'Removed';
 
     function readPreferences() {
         try {
@@ -52,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
             button.title = saved
                 ? (language === 'zh' ? '取消收藏' : 'Remove favorite')
                 : (language === 'zh' ? '收藏工具' : 'Favorite tool');
+            button.setAttribute('aria-label', button.title);
         });
     }
 
@@ -78,14 +82,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function applyFilters() {
-        const searchTerm = searchInput.value.trim().toLowerCase();
+        const searchTerm = searchInput.value;
         const category = categorySelect?.value || 'all';
         const preferences = readPreferences();
         const onlyFavorites = favoritesOnly?.getAttribute('aria-pressed') === 'true';
         let visibleCount = 0;
 
         toolCards.forEach((card) => {
-            const isVisible = (!searchTerm || card.dataset.search.includes(searchTerm))
+            const isVisible = matchesSearch(card.dataset.search, searchTerm)
                 && (category === 'all' || card.dataset.category === category)
                 && (!onlyFavorites || preferences.favorites.includes(card.dataset.toolId));
             card.hidden = !isVisible;
@@ -93,7 +97,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         if (emptyState) emptyState.hidden = visibleCount > 0;
-        if (countElement) countElement.textContent = countText(visibleCount, toolCards.length);
+        const message = countText(visibleCount, toolCards.length);
+        if (countElement && countElement.textContent !== message) countElement.textContent = message;
+        clear.hidden = !searchInput.value;
     }
 
     toolCards.forEach((card) => {
@@ -115,11 +121,24 @@ document.addEventListener('DOMContentLoaded', function () {
             writePreferences(preferences);
             updateFavoriteButtons(preferences.favorites);
             applyFilters();
-            favorite.setAttribute('aria-label', index >= 0 ? removedText : savedText);
         });
     });
 
-    searchInput.addEventListener('input', applyFilters);
+    const reset = () => {
+        searchInput.value = '';
+        composing = false;
+        applyFilters();
+        searchInput.focus();
+    };
+    finder.addEventListener('submit', event => event.preventDefault());
+    searchInput.addEventListener('compositionstart', () => { composing = true; });
+    searchInput.addEventListener('compositionend', () => { composing = false; applyFilters(); });
+    searchInput.addEventListener('input', event => { if (!composing && !event.isComposing) applyFilters(); });
+    searchInput.addEventListener('search', applyFilters);
+    searchInput.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && !composing && searchInput.value) { event.preventDefault(); reset(); }
+    });
+    clear.addEventListener('click', reset);
     categorySelect?.addEventListener('change', applyFilters);
     favoritesOnly?.addEventListener('click', () => {
         const pressed = favoritesOnly.getAttribute('aria-pressed') !== 'true';
@@ -131,4 +150,8 @@ document.addEventListener('DOMContentLoaded', function () {
     updateFavoriteButtons(preferences.favorites);
     updateRecent(preferences.recent);
     applyFilters();
-});
+    finder.hidden = false;
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountCatalog, { once: true });
+else mountCatalog();

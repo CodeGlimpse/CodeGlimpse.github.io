@@ -1,0 +1,5 @@
+<nav class="mobile-home-nav" aria-label="{{ if eq .Language.Lang "en" }}Explore the site{{ else }}逛逛本站{{ end }}">
+    <a href="{{ "archives/" | relLangURL }}">{{ partial "helper/icon" "archives" }}<span>{{ if eq .Language.Lang "en" }}Read articles{{ else }}读文章{{ end }}</span></a>
+    <a href="{{ "tools/" | relLangURL }}">{{ partial "helper/icon" "tool" }}<span>{{ if eq .Language.Lang "en" }}Use tools{{ else }}用工具{{ end }}</span></a>
+    <a href="{{ "games/" | relLangURL }}">{{ partial "helper/icon" "gamepad" }}<span>{{ if eq .Language.Lang "en" }}Play games{{ else }}玩游戏{{ end }}</span></a>
+</nav>

@@ -117,7 +117,7 @@ assets/js/tools/<id>-core.js       # 需要单元测试的纯逻辑
 
 - 中文内容位于 `content/zh-cn/`，英文内容位于 `content/en/`。
 - 首页输出为 HTML 和 RSS，不生成首页 JSON。
-- 搜索页额外生成 JSON：`/search/index.json` 和 `/en/search/index.json`。
+- 所有博客页额外生成文章搜索 JSON：`/archives/index.json` 和 `/en/archives/index.json`。
 - `static/robots.txt` 和 sitemap 用于搜索引擎抓取。
 - `baseurl` 配置在 `config/_default/config.toml`。
 
@@ -152,6 +152,8 @@ npm run test:e2e
 
 游戏栏目位于 `/games/` 和 `/en/games/`，提供十六款双语小游戏，支持按中英文名称、别名和玩法关键词即时搜索。本批新增方块堆叠、推箱子、井字棋人机对战、迷你数独、反应测试和记忆序列。游戏直接在页面运行，点击开始后加载代码，刷新重置单局，不提供存档。实现与扩展方式见 [`docs/games.md`](docs/games.md)。
 
+博客、工具、游戏分别在各自目录内搜索；博客搜索入口位于 `/archives/`，旧 `/search/` 地址已删除。手机首页提供文章、工具、游戏的固定底栏；工具页提供专注模式，游戏目录支持玩法筛选和随机选择。实现与验证说明见 [`docs/site-usability.md`](docs/site-usability.md)。后续新增内容仅列为候选，见 [`docs/next-content-candidates-2026-09-08.md`](docs/next-content-candidates-2026-09-08.md)。
+
 ## 提交前清单
 
 - [ ] 内容 front matter 完整，未误设置 `draft: true`
@@ -159,7 +161,7 @@ npm run test:e2e
 - [ ] `npm run check` 通过
 - [ ] `npm run test:e2e` 通过
 - [ ] 检查生成的搜索 JSON、sitemap 和 robots.txt
-- [ ] 确认首页 JSON 未生成，搜索页 JSON 正常生成
+- [ ] 确认首页 JSON 未生成，博客搜索 JSON 正常生成，旧搜索地址不再生成
 - [ ] 确认 Service Worker 和离线回退资源已发布
 - [ ] 确认敏感工具（JWT、密码）未开放 URL 分享
 - [ ] 确认统计披露、Clarity 屏蔽标记和退出开关正常

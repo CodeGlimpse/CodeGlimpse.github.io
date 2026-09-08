@@ -5,6 +5,8 @@ if (finder) {
     const input = finder.querySelector('[data-game-search-input]');
     const clear = finder.querySelector('[data-game-search-clear]');
     const count = finder.querySelector('[data-game-results]');
+    const category = finder.querySelector('select[data-game-category]');
+    const random = finder.querySelector('[data-game-random]');
     const empty = document.querySelector('[data-game-empty]');
     const cards = [...document.querySelectorAll('[data-game-link]')];
     const en = finder.dataset.lang === 'en';
@@ -13,7 +15,8 @@ if (finder) {
     function update() {
         let visible = 0;
         cards.forEach((card) => {
-            card.hidden = !matchesSearch(card.dataset.gameSearch, input.value);
+            card.hidden = !matchesSearch(card.dataset.gameSearch, input.value)
+                || (category.value !== 'all' && card.dataset.gameCategory !== category.value);
             if (!card.hidden) visible += 1;
         });
         const message = en ? 'Showing ' + visible + ' of ' + cards.length + ' games'
@@ -21,6 +24,7 @@ if (finder) {
         if (count.textContent !== message) count.textContent = message;
         clear.hidden = input.value.length === 0;
         empty.hidden = visible !== 0;
+        random.disabled = visible === 0;
     }
     function reset() {
         input.value = '';
@@ -37,6 +41,11 @@ if (finder) {
         if (event.key === 'Escape' && !composing && input.value) { event.preventDefault(); reset(); }
     });
     clear.addEventListener('click', reset);
+    category.addEventListener('change', update);
+    random.addEventListener('click', () => {
+        const visible = cards.filter(card => !card.hidden);
+        if (visible.length) window.location.assign(visible[Math.floor(Math.random() * visible.length)].href);
+    });
     window.addEventListener('pageshow', update);
     update();
     finder.hidden = false;

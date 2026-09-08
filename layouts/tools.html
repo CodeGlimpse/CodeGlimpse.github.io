@@ -11,16 +11,14 @@
 {{ $categoryLabelsZh := dict "data" "数据处理" "encoding" "编码解码" "text" "文本与内容" "security" "安全与哈希" "conversion" "转换与计算" "development" "开发辅助" }}
 {{ $categoryLabelsEn := dict "data" "Data" "encoding" "Encoding" "text" "Text & Content" "security" "Security & Hash" "conversion" "Conversion" "development" "Development" }}
 
-<div class="search-wrapper">
-    <input type="search" id="tool-search"
+<form class="catalog-finder clarity-mask" data-tool-finder data-clarity-mask="true" hidden role="search" aria-label="{{ if eq .Language.Lang "zh-cn" }}查找工具{{ else }}Find tools{{ end }}">
+    <label for="tool-search">{{ if eq .Language.Lang "zh-cn" }}搜索工具{{ else }}Search tools{{ end }}</label>
+    <div class="catalog-search-row">
+    <input type="search" id="tool-search" maxlength="100" autocomplete="off" spellcheck="false" aria-controls="tool-catalog" aria-describedby="tool-catalog-count"
         placeholder="{{ if eq .Language.Lang "zh-cn" }}搜索工具...{{ else }}Search tools...{{ end }}"
         aria-label="{{ if eq .Language.Lang "zh-cn" }}搜索工具{{ else }}Search tools{{ end }}">
-    <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-search">
-        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-        <circle cx="10" cy="10" r="7"></circle>
-        <line x1="21" y1="21" x2="15" y2="15"></line>
-    </svg>
-</div>
+    <button type="button" data-tool-search-clear hidden>{{ if eq .Language.Lang "zh-cn" }}清空{{ else }}Clear{{ end }}</button>
+    </div>
 
 <div class="tool-catalog-controls" role="group" aria-label="{{ if eq .Language.Lang "zh-cn" }}工具筛选{{ else }}Tool filters{{ end }}">
     <div class="tool-filter-row">
@@ -36,9 +34,10 @@
         <button type="button" class="tool-filter-button" id="tool-favorites-only" aria-pressed="false">
             {{ if eq .Language.Lang "zh-cn" }}只看收藏{{ else }}Favorites only{{ end }}
         </button>
-        <span class="tool-catalog-count" id="tool-catalog-count" aria-live="polite"></span>
     </div>
 </div>
+<p class="tool-catalog-count" id="tool-catalog-count" role="status" aria-live="polite" aria-atomic="true"></p>
+</form>
 
 <section class="tool-recent" id="tool-recent" hidden aria-labelledby="tool-recent-title">
     <h2 id="tool-recent-title">{{ if eq .Language.Lang "zh-cn" }}最近使用{{ else }}Recently used{{ end }}</h2>
@@ -89,6 +88,6 @@
 <div class="article-content">
     {{ .Content }}
 </div>
-{{ $searchJS := resources.Get "js/tools/search.js" | resources.Minify | fingerprint "sha256" }}
-<script src="{{ $searchJS.RelPermalink }}" defer></script>
+{{ $searchJS := resources.Get "js/tools/search.js" | js.Build (dict "format" "esm" "minify" hugo.IsProduction) | fingerprint "sha256" }}
+<script type="module" src="{{ $searchJS.RelPermalink }}"></script>
 {{ end }}

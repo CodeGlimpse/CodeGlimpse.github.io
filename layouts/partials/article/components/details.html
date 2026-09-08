@@ -1,3 +1,10 @@
+{{- $context := . -}}
+{{- $headingAsH1 := false -}}
+{{- if reflect.IsMap . -}}
+    {{- $context = .Context -}}
+    {{- $headingAsH1 = .HeadingAsH1 -}}
+{{- end -}}
+{{- with $context -}}
 <div class="article-details">
     {{ if .Params.categories }}
     <header class="article-category">
@@ -13,7 +20,7 @@
     {{ end }}
 
     <div class="article-title-wrapper">
-        {{ if (.Scratch.Get "renderArticleHeadingAsH1") }}
+        {{ if $headingAsH1 }}
             <h1 class="article-title">{{ .Title }}</h1>
         {{ else }}
             <h2 class="article-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
@@ -24,8 +31,8 @@
         {{ end }}
     </div>
 
-    {{ $showReadingTime := .Params.readingTime | default (.Site.Params.article.readingTime) }}
-    {{ $showDate := not .Date.IsZero }}
+    {{ $showReadingTime := and (ne .Section "tools") (.Params.readingTime | default (.Site.Params.article.readingTime)) }}
+    {{ $showDate := and (ne .Section "tools") (not .Date.IsZero) }}
     {{ $showFooter := or $showDate $showReadingTime }}
     {{ if $showFooter }}
     <footer class="article-time">
@@ -57,3 +64,4 @@
         </footer>
     {{ end }}
 </div>
+{{- end -}}

@@ -1,7 +1,9 @@
-const CACHE_VERSION = 'codeglimpse-v4';
+const CACHE_VERSION = 'codeglimpse-v5';
 const PRECACHE_URLS = [
     '/',
     '/en/',
+    '/archives/',
+    '/en/archives/',
     '/tools/',
     '/en/tools/',
     '/links/',
@@ -10,8 +12,8 @@ const PRECACHE_URLS = [
     '/favicon.png',
     '/signature.svg',
     '/img/github-mark.svg',
-    '/search/index.json',
-    '/en/search/index.json'
+    '/archives/index.json',
+    '/en/archives/index.json'
 ];
 
 self.addEventListener('install', (event) => {

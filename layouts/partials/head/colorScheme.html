@@ -1,0 +1,13 @@
+{{- $defaultColorScheme := default "auto" .Site.Params.colorScheme.default -}}
+<script>
+    (function () {
+        let scheme = "{{ $defaultColorScheme }}";
+        try {
+            const saved = localStorage.getItem('StackColorScheme');
+            if ({{ if .Site.Params.colorScheme.toggle }}true{{ else }}false{{ end }} && ['light', 'dark', 'auto'].includes(saved)) scheme = saved;
+            else localStorage.setItem('StackColorScheme', scheme);
+        } catch (_) { /* Keep the default when browser storage is unavailable. */ }
+        document.documentElement.dataset.colorSchemePreference = scheme;
+        document.documentElement.dataset.scheme = scheme === 'dark' || (scheme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    })();
+</script>

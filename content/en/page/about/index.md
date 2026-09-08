@@ -7,13 +7,14 @@ comments: false
 readingTime: false
 ---
 
-I'm Fernweh. This blog collects notes on OpenClaw, Python environments, and Linux administration, alongside developer tools that run in the browser.
+I'm Fernweh. This blog collects notes on OpenClaw, Python environments, and Linux administration, alongside browser-based developer tools and games for a quick break.
 
 ## Start reading
 
 - [Categories](/en/categories/): find articles by topic.
 - [Archives](/en/archives/): browse articles by date.
 - [Tools](/en/tools/): find format converters, encoders, and text utilities.
+- [Games](/en/games/): play directly on the page; refresh to start a new round.
 
 ## Using the tutorials
 

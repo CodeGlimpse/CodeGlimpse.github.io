@@ -1,5 +1,6 @@
 {{ define "body-class" }}
     article-page
+    {{ if eq .Section "tools" }}tool-page{{ end }}
     {{- $HasWidgetNotTOC := false -}}
     {{- $TOCWidgetEnabled := false -}}
     {{- range .Site.Params.widgets.page -}}
@@ -11,13 +12,21 @@
     {{- end -}}
 
     {{- $TOCManuallyDisabled := eq .Params.toc false -}}
-    {{- $TOCEnabled := and (not $TOCManuallyDisabled) $TOCWidgetEnabled -}}
+    {{- $TOCEnabled := and (ne .Section "tools") (not $TOCManuallyDisabled) $TOCWidgetEnabled -}}
     {{- $hasTOC := ge (len .TableOfContents) 100 -}}
     {{- .Scratch.Set "TOCEnabled" (and $TOCEnabled $hasTOC) -}}
     {{- .Scratch.Set "hasWidget" (or $HasWidgetNotTOC (and $TOCEnabled $hasTOC)) -}}
 {{ end }}
 
 {{ define "main" }}
+    {{ if eq .Section "tools" }}
+    <div class="tool-workspace-bar">
+        <a href="{{ "tools/" | relLangURL }}">← {{ if eq .Language.Lang "en" }}All tools{{ else }}全部工具{{ end }}</a>
+        <button type="button" data-tool-focus-toggle aria-pressed="false" hidden>{{ if eq .Language.Lang "en" }}Focus mode{{ else }}专注模式{{ end }}</button>
+    </div>
+    {{ $focus := resources.Get "js/tool-focus.js" | js.Build (dict "minify" hugo.IsProduction) | fingerprint "sha256" }}
+    <script src="{{ $focus.RelPermalink }}" defer></script>
+    {{ end }}
     {{ partial "article/article.html" . }}
 
     {{ partial "article/series.html" . }}
@@ -40,6 +49,10 @@
         {{ partialCached "article/components/photoswipe" . }}
     {{ end }}
     {{ partial "article/components/mermaid" . }}
+    {{ if eq .Section "post" }}
+    {{ $links := resources.Get "js/article-links.js" | js.Build (dict "format" "esm" "minify" hugo.IsProduction) | fingerprint "sha256" }}
+    <script type="module" src="{{ $links.RelPermalink }}"></script>
+    {{ end }}
 {{ end }}
 
 {{ define "right-sidebar" }}

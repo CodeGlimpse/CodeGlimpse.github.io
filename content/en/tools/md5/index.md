@@ -21,9 +21,9 @@ The MD5 digest of `hello` is `5d41402abc4b2a76b9719d911017c592`. Output is alway
 3.  Copy the resulting MD5 hash for your use.
 
 ### Understanding MD5
--   **One-way Function**: MD5 is designed to be a one-way function, meaning it is computationally infeasible to reverse the process and retrieve the original input from the hash.
+-   **One-way Function**: A hash is not encrypted text that can be decrypted. Predictable inputs such as short passwords can still be guessed by enumeration or dictionary matching.
 -   **Fixed Length**: Regardless of the input size, the MD5 hash is always 32 characters (hexadecimal).
 -   **Deterministic**: The same input will always produce the same hash value.
 -   **Sensitivity**: Even a tiny change in the input (like adding a single space) will result in a completely different hash.
 
-> **Note**: MD5 is no longer considered secure for cryptographic purposes such as password hashing due to vulnerabilities to collision attacks. For security-sensitive applications, use stronger algorithms like SHA-256 or bcrypt.
+> **Note**: MD5 no longer provides reliable collision resistance. SHA-256 is suitable for general data digests; password storage requires a dedicated password-hashing scheme such as Argon2id or scrypt with appropriate salts and work factors, not plain SHA-256.

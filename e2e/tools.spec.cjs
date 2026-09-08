@@ -372,14 +372,14 @@ test.describe('online tools', () => {
 
     test('refreshes search results from the fixed index URL after a content update', async ({ page, context }) => {
         let title = 'Index revision one';
-        await context.route('**/search/index.json', (route) => route.fulfill({
+        await context.route('**/archives/index.json', (route) => route.fulfill({
             contentType: 'application/json',
             body: JSON.stringify([{
                 title, content: 'cache-refresh-sentinel', permalink: '/',
                 date: '2026-09-06T00:00:00Z', image: '',
             }]),
         }));
-        await page.goto('/search/');
+        await page.goto('/archives/');
         await page.evaluate(async () => { await navigator.serviceWorker.ready; });
         await page.reload();
         await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
@@ -745,7 +745,7 @@ test.describe('online tools', () => {
     });
 
     test('searches published content', async ({ page }) => {
-        await page.goto('/search/');
+        await page.goto('/archives/');
 
         const input = page.locator('input[name="keyword"]');
         await input.fill('OpenClaw');
@@ -754,7 +754,7 @@ test.describe('online tools', () => {
     });
 
     test('renders untrusted search metadata as text', async ({ page }) => {
-        await page.route('**/search/index.json', async (route) => {
+        await page.route('**/archives/index.json', async (route) => {
             await route.fulfill({
                 contentType: 'application/json',
                 body: JSON.stringify([{
@@ -766,7 +766,7 @@ test.describe('online tools', () => {
                 }])
             });
         });
-        await page.goto('/search/');
+        await page.goto('/archives/');
         await page.locator('input[name="keyword"]').fill('OpenClaw');
 
         const result = page.locator('.search-result--list article');

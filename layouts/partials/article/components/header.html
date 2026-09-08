@@ -1,3 +1,10 @@
+{{- $context := . -}}
+{{- $headingAsH1 := false -}}
+{{- if reflect.IsMap . -}}
+    {{- $context = .Context -}}
+    {{- $headingAsH1 = .HeadingAsH1 -}}
+{{- end -}}
+{{- with $context -}}
 <header class="article-header">
     {{- $image := partialCached "helper/image" (dict "Context" . "Type" "article") .RelPermalink "article" -}}
     {{ if $image.exists }}
@@ -31,6 +38,6 @@
         </div>
     {{ end }}
 
-    {{- $headingAsH1 := default false (.Scratch.Get "renderArticleHeadingAsH1") -}}
-    {{ partialCached "article/components/details" . .RelPermalink $headingAsH1 }}
+    {{ partialCached "article/components/details" (dict "Context" . "HeadingAsH1" $headingAsH1) .RelPermalink $headingAsH1 }}
 </header>
+{{- end -}}

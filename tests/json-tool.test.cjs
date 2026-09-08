@@ -30,3 +30,27 @@ test('escapes and unescapes JSON text, including Unicode and control characters'
 test('unescapes a complete JSON string literal', () => {
     assert.equal(jsonTool.unescapeJsonText('"{\\"ok\\":true}"'), '{"ok":true}');
 });
+
+test('formatting and minifying preserve large integers and numeric literals', () => {
+    const input = '{"id":9007199254740993,"negative":-9223372036854775808,"decimal":1.234567890123456789,"exponent":1E+400,"tiny":1e-400,"zero":-0,"trailing":1.2300}';
+    for (const indent of ['2', '4', 'tab']) {
+        assert.equal(jsonTool.minifyJson(jsonTool.formatJson(input, indent)), input);
+    }
+    for (const scalar of ['9007199254740993', '-0', '1e400', '1.000']) {
+        assert.equal(jsonTool.formatJson(scalar), scalar);
+    }
+});
+
+test('formatting preserves key order, duplicate keys, string escapes and empty containers', () => {
+    const input = '{"2":{},"1":[],"same":1,"same":2,"text":"{[,]} : \\\" \\u4f60\\n"}';
+    assert.equal(jsonTool.minifyJson(jsonTool.formatJson(input)), input);
+    assert.equal(jsonTool.formatJson('{"a":[],"b":{}}'), '{\n  "a": [],\n  "b": {}\n}');
+    assert.equal(jsonTool.formatJson('[]'), '[]');
+});
+
+test('lossless formatting still rejects malformed JSON before producing output', () => {
+    for (const input of ['', '{"x":01}', '[1,]', 'NaN', 'Infinity', '1 2', '{"a":"unterminated}', '{"x":+1}']) {
+        assert.throws(() => jsonTool.formatJson(input), SyntaxError);
+        assert.throws(() => jsonTool.minifyJson(input), SyntaxError);
+    }
+});

@@ -1,0 +1,15 @@
+{{ if eq .Section "post" }}
+    {{ $related := slice }}
+    {{ range .Site.RegularPages.Related . }}
+        {{ $sameSeries := and $.Params.series_id (eq .Params.series_id $.Params.series_id) }}
+        {{ if and (eq .Section "post") (not $sameSeries) (intersect ($.Params.tags | default slice) (.Params.tags | default slice)) }}
+            {{ $related = $related | append . }}
+        {{ end }}
+    {{ end }}
+    {{ with first 3 $related }}
+    <aside class="related-content">
+        <h2 class="section-title">{{ T "article.relatedContent" }}</h2>
+        <div class="article-list--compact">{{ range . }}{{ partial "article-list/compact" . }}{{ end }}</div>
+    </aside>
+    {{ end }}
+{{ end }}

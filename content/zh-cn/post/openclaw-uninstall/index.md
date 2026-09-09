@@ -9,7 +9,7 @@ tags:
     - OpenClaw
 lastmod: 2026-09-07T00:00:00+08:00
 series_id: openclaw
-series_order: 3
+series_order: 4
 ---
 
 卸载 OpenClaw 涉及不同范围：Gateway 服务、状态目录、工作区、桌面应用和 CLI 包。先确定哪些内容需要保留，并确认备份，再开始清理。

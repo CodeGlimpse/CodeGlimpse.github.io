@@ -27,7 +27,7 @@ for (const language of ['zh-cn', 'en']) {
         const input = page.locator('#article-search');
         await expect(input).toBeVisible();
         await input.fill('ＯＰＥＮＣＬＡＷ');
-        await expect(page.locator('.search-result--list article')).toHaveCount(3);
+        await expect(page.locator('.search-result--list article')).toHaveCount(4);
         await expect(page.locator('#article-archives')).toBeHidden();
         await input.fill('扫雷');
         await expect(page.locator('.search-result--list article')).toHaveCount(0);
@@ -39,9 +39,9 @@ for (const language of ['zh-cn', 'en']) {
         await input.fill('python');
         await expect(page.locator('#article-archives')).toBeVisible();
         await input.dispatchEvent('compositionend');
-        await expect(page.locator('.search-result--list article')).toHaveCount(1);
+        await expect(page.locator('.search-result--list article')).toHaveCount(2);
         await input.press('Enter');
-        await expect(page.locator('.search-result--list article')).toHaveCount(1);
+        await expect(page.locator('.search-result--list article')).toHaveCount(2);
         await input.press('Escape');
         await expect(input).toHaveValue('');
         await expect(page.locator('#article-archives')).toBeVisible();
@@ -112,7 +112,7 @@ for (const language of ['zh-cn', 'en']) {
         const series = await page.locator('.article-series a').evaluateAll(links => links.map(link => link.pathname));
         const related = await page.locator('.related-content a').evaluateAll(links => links.map(link => link.pathname));
         expect(related.filter(path => series.includes(path))).toEqual([]);
-        await expect(page.locator('.article-series ol a')).toHaveCount(3);
+        await expect(page.locator('.article-series ol a')).toHaveCount(4);
     });
 }
 
@@ -165,7 +165,7 @@ test('article search ignores obsolete async results after clearing and recovers 
     release();
     await expect(page.locator('#article-archives')).toBeVisible();
     await page.locator('#article-search').fill('python');
-    await expect(page.locator('.search-result--list article')).toHaveCount(1);
+    await expect(page.locator('.search-result--list article')).toHaveCount(2);
 });
 
 test('article and tool catalogs remain browsable without JavaScript', async ({ browser, baseURL }) => {
@@ -173,7 +173,7 @@ test('article and tool catalogs remain browsable without JavaScript', async ({ b
     try {
         const page = await context.newPage();
         await page.goto('/archives/');
-        await expect(page.locator('#article-archives .article-list--compact article')).toHaveCount(5);
+        await expect(page.locator('#article-archives .article-list--compact article')).toHaveCount(8);
         await expect(page.locator('[data-article-finder]')).toBeHidden();
         await page.goto('/tools/');
         await expect(page.locator('.tool-card:visible')).toHaveCount(22);

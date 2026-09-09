@@ -9,7 +9,7 @@ tags:
     - OpenClaw
 lastmod: 2026-09-07T00:00:00+08:00
 series_id: openclaw
-series_order: 3
+series_order: 4
 ---
 
 Removing OpenClaw involves separate scopes: the Gateway service, state, workspace, desktop app, and CLI package. Decide what to preserve before removal and confirm any backups first.

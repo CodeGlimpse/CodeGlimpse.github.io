@@ -50,6 +50,36 @@
       "file": "content/en/post/linux-fail2ban/index.md",
       "date": "2026-09-07",
       "scope": "Examples target Debian/Ubuntu with systemd and were checked against upstream defaults. Live bans were not retested on a Linux host."
+    },
+    {
+      "file": "content/zh-cn/post/python-environment-mismatch/index.md",
+      "date": "2026-09-09",
+      "scope": "Windows Python 3.13.2: two isolated venvs and a local wheel reproduce failed and corrected imports."
+    },
+    {
+      "file": "content/zh-cn/post/openclaw-troubleshooting/index.md",
+      "date": "2026-09-09",
+      "scope": "Official 2026.9.2 launcher rejects Node 22.13.1 in isolation; no global installation, Gateway or provider authentication performed."
+    },
+    {
+      "file": "content/zh-cn/post/reaction-timing/index.md",
+      "date": "2026-09-09",
+      "scope": "Uses the existing deterministic mouse-press and release regression, plus explicit browser paint-time limitations."
+    },
+    {
+      "file": "content/en/post/python-environment-mismatch/index.md",
+      "date": "2026-09-09",
+      "scope": "Windows Python 3.13.2: two isolated venvs and a local wheel reproduce failed and corrected imports."
+    },
+    {
+      "file": "content/en/post/openclaw-troubleshooting/index.md",
+      "date": "2026-09-09",
+      "scope": "Official 2026.9.2 launcher rejects Node 22.13.1 in isolation; no global installation, Gateway or provider authentication performed."
+    },
+    {
+      "file": "content/en/post/reaction-timing/index.md",
+      "date": "2026-09-09",
+      "scope": "Uses the existing deterministic mouse-press and release regression, plus explicit browser paint-time limitations."
     }
   ]
 }

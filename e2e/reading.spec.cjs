@@ -46,14 +46,14 @@ for (const language of ['zh-cn', 'en']) {
     test(`follows the complete OpenClaw reading order in ${language}`, async ({ page }) => {
         await page.goto(`${prefix}/series/openclaw/`);
         const chapters = page.locator('.article-content ol a');
-        await expect(chapters).toHaveCount(3);
+        await expect(chapters).toHaveCount(4);
         const paths = await chapters.evaluateAll((links) => links.map((link) => new URL(link.href).pathname));
         await page.goto(paths[0]);
         for (let index = 0; index < paths.length; index += 1) {
             await expect(page).toHaveURL(new RegExp(`${paths[index]}$`));
             await expect(page.locator('h1')).toHaveCount(1);
             await expect(page.locator('.article-review')).toHaveCount(0);
-            await expect(page.locator('.article-series ol a')).toHaveCount(3);
+            await expect(page.locator('.article-series ol a')).toHaveCount(4);
             await expect(page.locator('.article-series [aria-current="page"]')).toHaveAttribute('href', paths[index]);
             await expect(page.locator(`#main-menu a[href="${prefix}/series/"]`)).toHaveCount(0);
             const previous = page.locator('.article-series a[rel="prev"]');

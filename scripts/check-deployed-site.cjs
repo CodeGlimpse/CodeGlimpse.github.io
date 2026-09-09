@@ -56,6 +56,9 @@ for (const toolId of TOOL_IDS) {
 
 for (const language of ['zh-cn', 'en']) {
     const prefix = language === 'en' ? '/en' : '';
+    for (const slug of ['python-environment-mismatch', 'openclaw-troubleshooting', 'reaction-timing']) {
+        checks.push({ path: `${prefix}/p/${slug}/`, status: 200, html: true, language });
+    }
     checks.push({ path: `${prefix}/games/`, status: 200, html: true, language, gameCatalog: true });
     for (const game of games) checks.push({ path: `${prefix}/games/${game.id}/`, status: 200, html: true, language, gameId: game.id });
 }

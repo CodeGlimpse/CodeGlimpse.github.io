@@ -21,6 +21,8 @@
   },
   "dependencies": {
     "@xmldom/xmldom": "0.9.12",
+    "jsqr": "1.4.0",
+    "qrcode-generator": "2.0.4",
     "yaml": "2.9.0"
   }
 }

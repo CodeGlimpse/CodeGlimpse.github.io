@@ -39,7 +39,7 @@ test('does not require GitHub Pages to expose the consumed CNAME file', () => {
 
 test('publishes both language routes for every registered tool', () => {
     const toolChecks = checker.checks.filter((check) => check.toolId);
-    assert.equal(toolChecks.length, 44);
+    assert.equal(toolChecks.length, require('../scripts/tool-registry.cjs').TOOL_IDS.length * 2);
     assert.ok(toolChecks.every((check) => check.status === 200 && check.html));
 });
 

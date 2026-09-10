@@ -6,8 +6,8 @@ const { LANGUAGES, TOOL_IDS, TOOL_REGISTRY } = require('../scripts/tool-registry
 test('registers the supported bilingual tool set', () => {
     assert.deepEqual(LANGUAGES, ['zh-cn', 'en']);
     assert.deepEqual(TOOL_IDS, [
-        'base64', 'binary', 'bmi', 'color', 'csv', 'diff', 'html', 'json', 'jsonpath', 'jwt',
-        'markdown', 'md5', 'password', 'regex', 'sha', 'sql', 'text', 'time', 'url', 'uuid', 'xml', 'yaml'
+        'base64', 'binary', 'bmi', 'color', 'csv', 'diff', 'html', 'image', 'json', 'jsonpath', 'jwt',
+        'markdown', 'md5', 'password', 'qrcode', 'regex', 'sha', 'sql', 'text', 'time', 'url', 'uuid', 'xml', 'yaml'
     ]);
     assert.equal(Object.keys(TOOL_REGISTRY).length, TOOL_IDS.length);
 });

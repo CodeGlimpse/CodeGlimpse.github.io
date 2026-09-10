@@ -1,11 +1,13 @@
 {{- $toolID := lower (.Get "id") -}}
-<div class="tool-wrapper{{ if or (eq $toolID "jwt") (eq $toolID "password") }} clarity-mask{{ end }}" id="tool-{{ .Get "id" }}" data-lang="{{ .Page.Language.Lang }}" data-clarity-region="tool"{{ if or (eq $toolID "jwt") (eq $toolID "password") }} data-clarity-mask="true"{{ end }}>
+{{- $opts := dict "minify" hugo.IsProduction -}}
+{{- $worker := resources.Get (printf "js/tools/%s-worker.js" $toolID) -}}
+{{- $private := in (slice "jwt" "password" "image" "qrcode") $toolID -}}
+<div class="tool-wrapper{{ if $private }} clarity-mask{{ end }}" id="tool-{{ $toolID }}" data-lang="{{ .Page.Language.Lang }}" data-clarity-region="tool"{{ if $private }} data-clarity-mask="true"{{ end }}{{ if in (slice "image" "qrcode") $toolID }} data-share-disabled="true"{{ end }}{{ with $worker }}{{ $built := . | js.Build $opts | fingerprint "sha256" }} data-tool-worker="{{ $built.RelPermalink }}"{{ end }}>
     <div class="tool-loader" role="status" aria-live="polite">
         {{ if eq .Page.Language.Lang "zh-cn" }}加载中...{{ else }}Loading...{{ end }}
     </div>
 </div>
 
-{{ $opts := dict "minify" hugo.IsProduction }}
 {{ $clipboard := resources.Get "js/tools/clipboard.js" | js.Build $opts | fingerprint "sha256" }}
 <script src="{{ $clipboard.RelPermalink }}" defer></script>
 {{ $ui := resources.Get "js/tools/tool-ui.js" | js.Build $opts | fingerprint "sha256" }}
@@ -13,10 +15,10 @@
 
 {{ $id := .Get "id" }}
 {{ $corePath := printf "js/tools/%s-core.js" $id }}
-{{ with resources.Get $corePath }}
+{{ if not $worker }}{{ with resources.Get $corePath }}
     {{ $core := . | js.Build $opts | fingerprint "sha256" }}
     <script src="{{ $core.RelPermalink }}" defer></script>
-{{ end }}
+{{ end }}{{ end }}
 
 {{ $js := resources.Get (printf "js/tools/%s.js" $id) | js.Build $opts | fingerprint "sha256" }}
 <script src="{{ $js.RelPermalink }}" defer></script>

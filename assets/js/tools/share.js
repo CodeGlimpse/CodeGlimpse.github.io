@@ -280,7 +280,7 @@
     }
 
     function mount(wrapper, document, windowObject = root) {
-        if (!wrapper || wrapper.dataset.shareMounted === 'true') return null;
+        if (!wrapper || wrapper.dataset.shareMounted === 'true' || wrapper.dataset.shareDisabled === 'true') return null;
         wrapper.dataset.shareMounted = 'true';
         const lang = wrapper.getAttribute('data-lang') || 'en';
         const t = messages(lang);

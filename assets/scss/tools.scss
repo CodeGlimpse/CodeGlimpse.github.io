@@ -43,6 +43,26 @@
     margin: 1px 0;
 }
 
+.media-tool { display: grid; gap: 1.5rem; min-width: 0; }
+.media-tool > section, .media-columns > section { min-width: 0; }
+.media-tool h3 { margin: 0 0 1.2rem; font-size: 2rem; }
+.media-tool p { margin: .8rem 0; font-size: 1.4rem; line-height: 1.6; overflow-wrap: anywhere; }
+.media-tool .media-hint { color: var(--card-text-color-secondary); }
+.media-tool [hidden] { display: none !important; }
+.media-tool :is(input, select, textarea) { max-width: 100%; min-width: 0; box-sizing: border-box; font-size: 1.6rem; }
+.media-tool :is(input, select, button) { min-height: 4.4rem; }
+.media-tool input[type="file"] { width: 100%; font-size: 1.4rem; }
+.media-tool input[type="range"] { width: 100%; accent-color: var(--accent-color); }
+.media-tool input[type="color"] { display: block; width: 100%; padding: .3rem; }
+.media-tool canvas { display: block; max-width: 100%; height: auto; margin: 1rem auto; border: 1px solid var(--card-separator-color); border-radius: .6rem; }
+.media-tool .qr-preview { width: 320px; max-width: 100%; image-rendering: pixelated; }
+.media-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; }
+.media-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-block: 1rem; }
+.media-options > label { display: block; min-width: 0; font-size: 1.4rem; color: var(--card-text-color-main); }
+.media-options label :is(input, select) { display: block; width: 100%; margin-top: .5rem; }
+.media-tool #image-original-preview, .media-tool #image-result-preview { background: repeating-conic-gradient(#ddd 0 25%, #fff 0 50%) 0 / 16px 16px; }
+@media (max-width: 680px) { .media-columns { grid-template-columns: minmax(0, 1fr); } }
+
 .tool-search-empty {
     margin: 1.2rem 0;
     color: var(--card-text-color-tertiary);

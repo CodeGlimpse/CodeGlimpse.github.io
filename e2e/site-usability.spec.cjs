@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const games = require('../data/games.json');
+const { TOOL_IDS } = require('../scripts/tool-registry.cjs');
 test.use({ serviceWorkers: 'block' });
 
 test.beforeEach(async ({ page }) => {
@@ -52,15 +53,15 @@ for (const language of ['zh-cn', 'en']) {
         const input = page.locator('#tool-search');
         await input.fill('ＢＡＳＥ６４');
         await expect(page.locator('.tool-card:visible')).toHaveCount(1);
-        await expect(page.locator('#tool-catalog-count')).toHaveText(language === 'en' ? '1 / 22 tools' : '1 / 22 个工具');
+        await expect(page.locator('#tool-catalog-count')).toHaveText(language === 'en' ? `1 / ${TOOL_IDS.length} tools` : `1 / ${TOOL_IDS.length} 个工具`);
         await page.locator('[data-tool-id="base64"] [data-tool-favorite]').click();
         await expect(page.locator('[data-tool-id="base64"] [data-tool-favorite]')).toHaveAttribute('aria-label', language === 'en' ? 'Remove favorite' : '取消收藏');
         await page.locator('[data-tool-search-clear]').click();
         await expect(input).toBeFocused();
-        await expect(page.locator('.tool-card:visible')).toHaveCount(22);
+        await expect(page.locator('.tool-card:visible')).toHaveCount(TOOL_IDS.length);
         await input.dispatchEvent('compositionstart');
         await input.fill('no-match-sentinel');
-        await expect(page.locator('.tool-card:visible')).toHaveCount(22);
+        await expect(page.locator('.tool-card:visible')).toHaveCount(TOOL_IDS.length);
         await input.dispatchEvent('compositionend');
         await expect(page.locator('#tool-search-empty')).toBeVisible();
         await input.press('Escape');
@@ -176,7 +177,7 @@ test('article and tool catalogs remain browsable without JavaScript', async ({ b
         await expect(page.locator('#article-archives .article-list--compact article')).toHaveCount(8);
         await expect(page.locator('[data-article-finder]')).toBeHidden();
         await page.goto('/tools/');
-        await expect(page.locator('.tool-card:visible')).toHaveCount(22);
+        await expect(page.locator('.tool-card:visible')).toHaveCount(TOOL_IDS.length);
         await expect(page.locator('[data-tool-finder]')).toBeHidden();
     } finally { await context.close(); }
 });

@@ -112,9 +112,9 @@ function findTag(body, tagName, predicate) {
 
 function collectLocalAssetUrls(pageUrl, body) {
     const assets = new Set();
-    for (const tag of [...extractTags(body, 'script'), ...extractTags(body, 'link'), ...extractTags(body, 'img'), ...extractTags(body, 'section')]) {
+    for (const tag of [...extractTags(body, 'script'), ...extractTags(body, 'link'), ...extractTags(body, 'img'), ...extractTags(body, 'section'), ...extractTags(body, 'div')]) {
         const attributes = extractAttributes(tag);
-        const raw = attributes['data-game-module'] ?? attributes.src ?? attributes.href;
+        const raw = attributes['data-game-module'] ?? attributes['data-tool-worker'] ?? attributes.src ?? attributes.href;
         if (!raw || /^(?:data|blob|mailto|javascript):/i.test(raw)) continue;
         try {
             const url = new URL(raw, pageUrl);

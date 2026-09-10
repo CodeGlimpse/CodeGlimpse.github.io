@@ -39,6 +39,8 @@
 
     {{ partial "article/components/related-content" . }}
 
+    {{ if eq .Section "tools" }}{{ partial "feedback.html" . }}{{ end }}
+
     {{ if not (eq .Params.comments false) }}
         {{ partial "comments/include" . }}
     {{ end }}

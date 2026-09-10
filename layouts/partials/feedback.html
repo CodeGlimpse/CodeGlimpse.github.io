@@ -1,0 +1,14 @@
+{{ $en := eq .Language.Lang "en" }}
+{{/* Only published page context is prefilled; never include live tool input or URL query/fragment data. */}}
+{{ $subject := printf "[%s] %s" (cond $en "Site feedback" "网站反馈") .Title }}
+{{ $body := printf "%s: %s\n\n%s\n\n%s\n\n%s\n\n%s" (cond $en "Page" "页面") .Permalink (cond $en "What happened?" "遇到了什么问题？") (cond $en "Steps to reproduce:" "复现步骤：") (cond $en "Expected and actual result:" "期望与实际结果：") (cond $en "Remove passwords, tokens, and private content before sending." "发送前请移除密码、令牌和私人内容。") }}
+{{ $encodedSubject := replace (urlquery $subject) "+" "%20" }}
+{{ $encodedBody := replace (urlquery $body) "+" "%20" }}
+<section class="page-feedback" aria-labelledby="page-feedback-title">
+    <h2 id="page-feedback-title">{{ if $en }}Report a problem{{ else }}问题反馈{{ end }}</h2>
+    <p>{{ if $en }}The links prefill this page's title and address. Add what happened and how to reproduce it.{{ else }}链接会预填本页标题和地址，你可以补充遇到的现象和复现步骤。{{ end }}</p>
+    <div class="page-feedback-actions">
+        <a data-feedback-issue href="{{ printf "https://github.com/CodeGlimpse/CodeGlimpse.github.io/issues/new?template=site-feedback.md&title=%s&body=%s" $encodedSubject $encodedBody | safeURL }}" target="_blank" rel="noopener noreferrer">{{ if $en }}Report on GitHub{{ else }}在 GitHub 反馈{{ end }}</a>
+        <a data-feedback-email href="{{ printf "mailto:libochen@codeglimpse.top?subject=%s&body=%s" $encodedSubject $encodedBody | safeURL }}">{{ if $en }}Send an email{{ else }}邮件反馈{{ end }}</a>
+    </div>
+</section>

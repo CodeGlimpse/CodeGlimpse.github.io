@@ -154,7 +154,7 @@ npm run test:e2e
 
 游戏栏目位于 `/games/` 和 `/en/games/`，提供十九款双语小游戏，支持按中英文名称、别名和玩法关键词即时搜索。新增舒尔特方格、连连看和本地双人五子棋。游戏直接在页面运行，点击开始后加载代码，刷新重置单局，不提供存档。实现与扩展方式见 [`docs/games.md`](docs/games.md)。
 
-博客、工具、游戏分别在各自目录内搜索；博客搜索入口位于 `/archives/`，旧 `/search/` 地址已删除。手机首页提供文章、工具、游戏的固定底栏；工具页提供专注模式，游戏目录支持玩法筛选和随机选择。实现与验证说明见 [`docs/site-usability.md`](docs/site-usability.md)。后续新增内容仅列为候选，见 [`docs/next-content-candidates-2026-09-08.md`](docs/next-content-candidates-2026-09-08.md)。
+博客、工具、游戏分别在各自目录内搜索；博客搜索入口位于 `/archives/`，旧 `/search/` 地址已删除。手机首页提供文章、工具、游戏的固定底栏；工具页提供专注模式，游戏目录支持玩法筛选和随机选择。实现与验证说明见 [`docs/site-usability.md`](docs/site-usability.md)。ABCD 扩展已完成，实施记录见 [`docs/next-content-candidates-2026-09-08.md`](docs/next-content-candidates-2026-09-08.md)。
 
 ## 提交前清单
 
@@ -180,3 +180,5 @@ npm run test:e2e
 
 长期维护流程、版本升级、发布验证和故障回滚见 [`docs/maintenance.md`](docs/maintenance.md)，维护记录格式见 [`docs/maintenance-log.md`](docs/maintenance-log.md)。
 产品扩展边界、离线和本地预设能力见 [`docs/product-expansion.md`](docs/product-expansion.md)。
+
+工具与游戏详情页提供 GitHub 和邮件问题反馈，预填公开页面标题与地址，不携带输入内容。维护说明见 [docs/page-feedback.md](docs/page-feedback.md)。

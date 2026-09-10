@@ -38,6 +38,7 @@
     <p class="game-reset-note">{{ if eq .Language.Lang "zh-cn" }}刷新页面会重置本局。{{ else }}Refreshing the page resets this round.{{ end }}</p>
 </section>
 <section class="game-instructions article-content">{{ .Content }}</section>
+{{ partial "feedback.html" . }}
 {{ $bootstrap := resources.Get "js/games/bootstrap.js" | js.Build (dict "format" "esm" "minify" hugo.IsProduction) | fingerprint "sha256" }}
 <script type="module" src="{{ $bootstrap.RelPermalink }}"></script>
 {{ partialCached "footer/footer" . }}

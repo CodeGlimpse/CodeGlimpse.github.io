@@ -1,6 +1,7 @@
-const tool = (script, core, category, keywords, related = []) => Object.freeze({
+const tool = (script, core, category, keywords, related = [], worker = null) => Object.freeze({
     script,
     core,
+    worker,
     category,
     keywords: Object.freeze(keywords),
     related: Object.freeze(related),
@@ -21,7 +22,7 @@ const TOOL_REGISTRY = Object.freeze({
     markdown: tool('markdown.js', 'markdown-core.js', 'text', ['markdown', 'md', 'preview', '预览'], ['html', 'diff']),
     md5: tool('md5.js', 'md5-core.js', 'security', ['md5', 'hash', '哈希'], ['sha', 'password']),
     password: tool('password.js', 'password-core.js', 'security', ['password', '密码', 'random'], ['uuid', 'sha']),
-    qrcode: tool('qrcode.js', 'qrcode-core.js', 'encoding', ['qrcode', '二维码', 'qr', 'encode', 'decode'], ['image', 'url']),
+    qrcode: tool('qrcode.js', 'qrcode-core.js', 'encoding', ['qrcode', '二维码', 'qr', 'encode', 'decode'], ['image', 'url'], 'qrcode-worker.js'),
     regex: tool('regex.js', 'regex-core.js', 'text', ['regex', 'regexp', '正则'], ['diff', 'text']),
     sha: tool('sha.js', 'sha-core.js', 'security', ['sha', 'hash', '哈希'], ['md5', 'password']),
     sql: tool('sql.js', 'sql-core.js', 'development', ['sql', 'database', '数据库', 'format'], ['json', 'diff']),

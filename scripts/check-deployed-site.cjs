@@ -197,7 +197,14 @@ function validateResponse(check, status, body, pageUrl = null, options = {}) {
         }
         if (check.toolId) {
             const requiredAssets = [check.toolId, 'clipboard', 'tool-ui', 'share'];
-            if (TOOL_REGISTRY[check.toolId]?.core) requiredAssets.push(`${check.toolId}-core`);
+            const spec = TOOL_REGISTRY[check.toolId];
+            if (spec?.worker) {
+                const container = findTag(body, 'div', attributes => attributes.id === `tool-${check.toolId}`);
+                if (!new RegExp(`^/js/tools/${check.toolId}-worker\\.[a-f0-9]{64}\\.js$`).test(container?.['data-tool-worker'] || '')) {
+                    errors.push(`missing tool worker: ${check.toolId}`);
+                }
+                requiredAssets.push(`${check.toolId}-worker`);
+            } else if (spec?.core) requiredAssets.push(`${check.toolId}-core`);
             for (const asset of requiredAssets) {
                 if (!new RegExp(`/js/tools/${asset}\\.[^"']+\\.js`, 'i').test(body)) {
                     errors.push(`missing tool asset: ${asset}`);

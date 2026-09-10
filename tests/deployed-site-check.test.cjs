@@ -43,6 +43,15 @@ test('publishes both language routes for every registered tool', () => {
     assert.ok(toolChecks.every((check) => check.status === 200 && check.html));
 });
 
+test('worker-backed QR pages require a local worker rather than a duplicate main-thread core', () => {
+    const worker = '/js/tools/qrcode-worker.' + 'a'.repeat(64) + '.js';
+    const html = `<html><head><title>QR</title><link rel="stylesheet" href="/style.css"><meta name="description" content="QR tool"><link rel="canonical" href="https://example.com/tools/qrcode/"><link rel="alternate" hreflang="zh-cn" href="/tools/qrcode/"><link rel="alternate" hreflang="en" href="/en/tools/qrcode/"><link rel="alternate" hreflang="x-default" href="/tools/qrcode/"></head><body><main><div id="tool-qrcode" data-tool-worker="${worker}"></div></main>${['qrcode', 'clipboard', 'tool-ui', 'share'].map(id => `<script src="/js/tools/${id}.abc.js"></script>`).join('')}<script src="/js/toast.abc.js"></script><script src="/js/workspace.abc.js"></script></body></html>`;
+    const check = { path: '/tools/qrcode/', status: 200, html: true, toolId: 'qrcode' };
+    assert.deepEqual(checker.validateResponse(check, 200, html, 'https://example.com/tools/qrcode/'), []);
+    assert.ok(checker.collectLocalAssetUrls('https://example.com/tools/qrcode/', html).includes('https://example.com' + worker));
+    assert.ok(checker.validateResponse(check, 200, html.replace(worker, 'https://external.example/worker.js')).includes('missing tool worker: qrcode'));
+});
+
 test('checks inline games and discovers their lazy modules without executing them', () => {
     const hash = 'a'.repeat(64);
     const modulePath = `/js/games/memory.${hash}.js`;

@@ -1,0 +1,6 @@
+<div class="link-stage">
+<div class="link-grid" data-link-board role="group" aria-label="{{ if eq .Language.Lang "en" }}Matching tile board{{ else }}连连看棋盘{{ end }}">
+{{ range seq 0 23 }}<button type="button" class="link-tile" data-cell-index="{{ . }}"{{ if eq . 0 }} data-focus-board tabindex="0"{{ else }} tabindex="-1"{{ end }} disabled>?</button>{{ end }}
+</div>
+<svg class="link-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline data-link-path fill="none" vector-effect="non-scaling-stroke"/></svg>
+</div>

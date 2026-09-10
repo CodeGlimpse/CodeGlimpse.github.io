@@ -7,6 +7,7 @@ const resetMetrics = {
     'lights-out': ['[data-game-moves]', '0'],
     'sliding-puzzle': ['[data-game-moves]', '0'],
     'connect-four': ['[data-game-moves]', '0'],
+    gomoku: ['[data-game-moves]', '0'],
     'sokoban': ['[data-game-moves]', '0'],
     'tic-tac-toe': ['[data-game-moves]', '0'],
     'mini-sudoku': ['[data-game-moves]', '0'],
@@ -198,6 +199,7 @@ test('games fit a phone and expose usable touch controls', async ({page}) => {
         'falling-blocks': '[data-blocks-action="left"]', sokoban: '[data-direction="left"]',
         'tic-tac-toe': '[data-cell-index]', 'mini-sudoku': '[data-sudoku-value="1"]',
         reaction: '[data-reaction-target]', 'memory-sequence': '[data-game-restart]',
+        schulte: '[data-cell-index]', 'link-pairs': '[data-cell-index]', gomoku: '[data-gomoku-place]',
     };
     for (const {id} of games) {
         const root = await openGame(page,id);
@@ -212,6 +214,7 @@ test('games fit a phone and expose usable touch controls', async ({page}) => {
         }));
         expect(contrastRatio(colors.text,colors.background)).toBeGreaterThanOrEqual(4.5);
         expect(contrastRatio(colors.heading,colors.background)).toBeGreaterThanOrEqual(3);
+        expect(targets[id], `Missing mobile control mapping for ${id}`).toBeTruthy();
         const target = root.locator(targets[id]).first();
         const box = await target.boundingBox();
         expect(box.width).toBeGreaterThanOrEqual(44);

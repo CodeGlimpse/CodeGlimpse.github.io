@@ -1,0 +1,3 @@
+<div class="schulte-grid" data-schulte-board role="group" aria-label="{{ if eq .Language.Lang "en" }}Find numbers from 1 to 25{{ else }}依次找到 1 到 25{{ end }}">
+{{ range seq 0 24 }}<button type="button" class="schulte-cell" data-cell-index="{{ . }}"{{ if eq . 0 }} data-focus-board tabindex="0"{{ else }} tabindex="-1"{{ end }} disabled>?</button>{{ end }}
+</div>

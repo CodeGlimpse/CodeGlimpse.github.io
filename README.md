@@ -152,7 +152,7 @@ npm run test:e2e
 
 博客提供双语关于页及 OpenClaw 文章内的前后篇导航，通用阅读入口使用分类和归档。首页 RSS 只订阅文章；审查过程记录在维护文档中。维护结果和后续选题见 [`docs/content-maintenance-2026-09-07.md`](docs/content-maintenance-2026-09-07.md)。
 
-游戏栏目位于 `/games/` 和 `/en/games/`，提供十六款双语小游戏，支持按中英文名称、别名和玩法关键词即时搜索。本批新增方块堆叠、推箱子、井字棋人机对战、迷你数独、反应测试和记忆序列。游戏直接在页面运行，点击开始后加载代码，刷新重置单局，不提供存档。实现与扩展方式见 [`docs/games.md`](docs/games.md)。
+游戏栏目位于 `/games/` 和 `/en/games/`，提供十九款双语小游戏，支持按中英文名称、别名和玩法关键词即时搜索。新增舒尔特方格、连连看和本地双人五子棋。游戏直接在页面运行，点击开始后加载代码，刷新重置单局，不提供存档。实现与扩展方式见 [`docs/games.md`](docs/games.md)。
 
 博客、工具、游戏分别在各自目录内搜索；博客搜索入口位于 `/archives/`，旧 `/search/` 地址已删除。手机首页提供文章、工具、游戏的固定底栏；工具页提供专注模式，游戏目录支持玩法筛选和随机选择。实现与验证说明见 [`docs/site-usability.md`](docs/site-usability.md)。后续新增内容仅列为候选，见 [`docs/next-content-candidates-2026-09-08.md`](docs/next-content-candidates-2026-09-08.md)。
 

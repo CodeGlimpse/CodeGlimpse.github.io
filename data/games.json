@@ -14,5 +14,8 @@
   {"id":"tic-tac-toe","label":{"zh-cn":"人机","en":"Vs computer"},"keywords":{"zh-cn":["井字棋","三子棋","电脑","对战"],"en":["tic tac toe","tictactoe","noughts and crosses","computer"]},"category":"puzzle"},
   {"id":"mini-sudoku","label":{"zh-cn":"数字","en":"Numbers"},"keywords":{"zh-cn":["迷你数独","数独","四宫","解谜"],"en":["sudoku","4x4","logic","puzzle"]},"category":"puzzle"},
   {"id":"reaction","label":{"zh-cn":"手速","en":"Reflexes"},"keywords":{"zh-cn":["反应测试","变绿","毫秒","抢跑"],"en":["reaction time","reflex","green","milliseconds"]},"category":"reflex"},
-  {"id":"memory-sequence","label":{"zh-cn":"记忆","en":"Memory"},"keywords":{"zh-cn":["记忆序列","颜色","顺序","闪烁"],"en":["simon","sequence","pattern","colours","colors"]},"category":"memory"}
+  {"id":"memory-sequence","label":{"zh-cn":"记忆","en":"Memory"},"keywords":{"zh-cn":["记忆序列","颜色","顺序","闪烁"],"en":["simon","sequence","pattern","colours","colors"]},"category":"memory"},
+  {"id":"schulte","category":"reflex","label":{"zh-cn":"专注","en":"Focus"},"keywords":{"zh-cn":["舒尔特","找数字","注意力","顺序"],"en":["schulte","numbers","focus","visual search"]}},
+  {"id":"link-pairs","category":"puzzle","label":{"zh-cn":"配对","en":"Matching"},"keywords":{"zh-cn":["连连看","连线","消除","配对"],"en":["link pairs","connect tiles","matching","onet"]}},
+  {"id":"gomoku","category":"multiplayer","label":{"zh-cn":"双人","en":"Two players"},"keywords":{"zh-cn":["五子棋","双人","黑白棋子","连五"],"en":["gomoku","five in a row","two players","freestyle"]}}
 ]

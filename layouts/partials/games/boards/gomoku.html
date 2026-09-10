@@ -1,0 +1,3 @@
+<div class="gomoku-grid" data-gomoku-board role="group" aria-label="{{ if eq .Language.Lang "en" }}15 by 15 Gomoku board{{ else }}15 × 15 五子棋棋盘{{ end }}">
+{{ range seq 0 224 }}<button type="button" class="gomoku-cell{{ if in (slice 48 56 112 168 176) . }} star-point{{ end }}" data-cell-index="{{ . }}" data-player="0"{{ if eq . 112 }} data-focus-board tabindex="0"{{ else }} tabindex="-1"{{ end }} disabled aria-label="{{ if eq $.Language.Lang "en" }}Empty intersection{{ else }}空位{{ end }}"></button>{{ end }}
+</div>

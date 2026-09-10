@@ -1,6 +1,17 @@
 {{ $id := .Params.game_id }}
 {{ $en := eq .Language.Lang "en" }}
-{{ if eq $id "minesweeper" }}
+{{ if eq $id "link-pairs" }}
+<div class="game-actions">
+    <button type="button" class="game-button" data-link-hint data-game-action disabled>{{ if $en }}Hint{{ else }}提示{{ end }}</button>
+    <button type="button" class="game-button" data-link-shuffle data-game-action disabled>{{ if $en }}Shuffle{{ else }}重排{{ end }}</button>
+</div>
+{{ else if eq $id "gomoku" }}
+<div class="game-actions gomoku-actions"><span data-gomoku-selection></span>
+{{ $arrows := dict "left" "←" "up" "↑" "down" "↓" "right" "→" }}
+{{ $names := cond $en (dict "left" "Select left" "up" "Select above" "down" "Select below" "right" "Select right") (dict "left" "向左选择" "up" "向上选择" "down" "向下选择" "right" "向右选择") }}
+{{ range slice "left" "up" "down" "right" }}<button type="button" class="game-button" data-gomoku-step="{{ . }}" data-game-action aria-label="{{ index $names . }}" disabled>{{ index $arrows . }}</button>{{ end }}
+<button type="button" class="game-button game-button--primary" data-gomoku-place data-game-action disabled>{{ if $en }}Place stone{{ else }}落子{{ end }}</button></div>
+{{ else if eq $id "minesweeper" }}
 <div class="game-actions" role="group" aria-label="{{ if $en }}Cell action{{ else }}格子操作{{ end }}">
     <button class="game-button" type="button" data-mine-mode="reveal" data-game-action aria-pressed="true" disabled>{{ if $en }}Reveal{{ else }}翻开{{ end }}</button>
     <button class="game-button" type="button" data-mine-mode="flag" data-game-action aria-pressed="false" disabled>⚑ {{ if $en }}Flag{{ else }}插旗{{ end }}</button>

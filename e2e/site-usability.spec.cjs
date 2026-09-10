@@ -76,6 +76,7 @@ for (const language of ['zh-cn', 'en']) {
         await expect(page.locator('[data-game-random]')).toBeDisabled();
         await page.locator('[data-game-search-clear]').click();
         await page.locator('select[data-game-category]').selectOption('multiplayer');
+        await page.locator('[data-game-search-input]').fill('四子棋');
         await expect(page.locator('[data-game-link]:visible')).toHaveCount(1);
         await page.locator('[data-game-random]').click();
         await expect(page).toHaveURL(new RegExp(prefix + '/games/connect-four/$'));

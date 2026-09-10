@@ -4,6 +4,18 @@
 <span>{{ if $en }}Pairs{{ else }}配对{{ end }} <strong data-memory-pairs>0 / 8</strong></span>
 <span>{{ if $en }}Moves{{ else }}步数{{ end }} <strong data-memory-moves>0</strong></span>
 <span>{{ if $en }}Time{{ else }}用时{{ end }} <strong data-memory-time>0:00</strong></span>
+{{ else if eq $id "schulte" }}
+<span>{{ if $en }}Found{{ else }}找到{{ end }} <strong data-game-score>0</strong> / 25</span>
+<span>{{ if $en }}Next{{ else }}下一个{{ end }} <strong data-schulte-next>1</strong></span>
+<span>{{ if $en }}Mistakes{{ else }}误点{{ end }} <strong data-schulte-mistakes>0</strong></span>
+<span>{{ if $en }}Time{{ else }}用时{{ end }} <strong data-game-time>0:00</strong></span>
+{{ else if eq $id "link-pairs" }}
+<span>{{ if $en }}Pairs{{ else }}配对{{ end }} <strong data-game-score>0</strong> / 12</span>
+<span>{{ if $en }}Shuffles{{ else }}重排{{ end }} <strong data-link-shuffles>0</strong></span>
+<span>{{ if $en }}Time{{ else }}用时{{ end }} <strong data-game-time>0:00</strong></span>
+{{ else if eq $id "gomoku" }}
+<span>{{ if $en }}Moves{{ else }}步数{{ end }} <strong data-game-moves>0</strong></span>
+<span>{{ if $en }}Turn{{ else }}轮到{{ end }} <strong data-gomoku-turn>{{ if $en }}Black{{ else }}黑方{{ end }}</strong></span>
 {{ else if eq $id "minesweeper" }}
 <span>{{ if $en }}Flags{{ else }}旗标{{ end }} <strong data-mine-flags>0 / 10</strong></span>
 <span>{{ if $en }}Cleared{{ else }}安全格{{ end }} <strong data-mine-cleared>0 / 71</strong></span>

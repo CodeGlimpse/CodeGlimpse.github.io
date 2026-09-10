@@ -1,5 +1,12 @@
 <div class="game-cover game-cover--{{ . }}" aria-hidden="true">
-    {{ if eq . "memory" }}
+    {{ if eq . "schulte" }}
+    <div class="cover-mini-grid cover-schulte">{{ range slice "7" "3" "9" "2" "1" "6" "8" "4" "5" }}<span>{{ . }}</span>{{ end }}</div>
+    {{ else if eq . "link-pairs" }}
+    <span class="cover-card cover-card--face">🍒</span><span class="cover-card">🍐</span><span class="cover-card">🍐</span><span class="cover-card cover-card--face">🍒</span>
+    {{ else if eq . "gomoku" }}
+    <svg viewBox="0 0 180 140"><rect x="14" y="10" width="152" height="120" rx="8" fill="#e5cfa7"/><path d="M30 28h120M30 49h120M30 70h120M30 91h120M30 112h120M30 28v84M54 28v84M78 28v84M102 28v84M126 28v84M150 28v84" stroke="#927751"/>
+    <g fill="#27333d">{{ range slice 30 54 78 102 126 }}<circle cx="{{ . }}" cy="70" r="9"/>{{ end }}</g><g fill="#fff" stroke="#af9a78"><circle cx="54" cy="49" r="9"/><circle cx="102" cy="91" r="9"/><circle cx="126" cy="49" r="9"/></g></svg>
+    {{ else if eq . "memory" }}
     <span class="cover-card">?</span><span class="cover-card cover-card--face">🍋</span><span class="cover-card cover-card--face">🍋</span><span class="cover-card">?</span>
     {{ else if eq . "snake" }}
     <div class="cover-snake"><i></i><i></i><i></i><i></i><i></i><b>●</b></div>

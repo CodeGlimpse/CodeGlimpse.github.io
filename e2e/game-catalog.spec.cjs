@@ -21,7 +21,7 @@ for (const language of ['zh-cn', 'en']) {
         const input = await catalog(page, prefix);
         const visible = page.locator('[data-game-link]:visible');
         await expect(visible).toHaveCount(games.length);
-        for (const [query, id] of [['ＳＮＡＫＥ', 'snake'], ['扫雷', 'minesweeper'], ['水果 配对', 'memory'], ['双人', 'connect-four'], ['tetris', 'falling-blocks'], ['4x4', 'mini-sudoku']]) {
+        for (const [query, id] of [['ＳＮＡＫＥ', 'snake'], ['扫雷', 'minesweeper'], ['水果 配对', 'memory'], ['四子棋', 'connect-four'], ['tetris', 'falling-blocks'], ['4x4', 'mini-sudoku']]) {
             await input.fill(query);
             await expect(visible).toHaveCount(1);
             await expect(visible).toHaveAttribute('data-game-link', id);

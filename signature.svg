@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1700 180" width="100%" height="180">
+
+  <defs>
+
+    <!-- 🌊 渐变 -->
+    <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4a5568"/>
+      <stop offset="50%" stop-color="#f6ad55"/>
+      <stop offset="100%" stop-color="#4a5568"/>
+      <animateTransform attributeName="gradientTransform"
+        type="translate"
+        from="-1 0" to="1 0"
+        dur="5s"
+        repeatCount="indefinite"/>
+    </linearGradient>
+
+    <!-- ✨ 轻量光晕（只扩散，不糊字） -->
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="1.2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+      </feMerge>
+    </filter>
+
+    <!-- 🌟 粒子轻光 -->
+    <filter id="particleGlow">
+      <feGaussianBlur stdDeviation="0.8"/>
+    </filter>
+
+    <style>
+      .text {
+        font-family: 'Noto Serif JP','Yu Mincho',serif;
+        font-size: 30px;
+        letter-spacing: 3px;
+      }
+
+      /* 🖋️ 描边 */
+      .stroke {
+        fill:none;
+        stroke:#e2e8f0;
+        stroke-width:1;
+        stroke-dasharray:1600;
+        stroke-dashoffset:1600;
+        animation: draw 4s ease forwards;
+      }
+
+      @keyframes draw {
+        to { stroke-dashoffset:0; }
+      }
+
+      /* 🌟 粒子（更清晰） */
+      .particle {
+        fill:#f6ad55;
+        opacity:0;
+        filter:url(#particleGlow);
+        animation: float 12s infinite ease-in-out;
+      }
+
+      @keyframes float {
+        0%   { transform: translate(0,180px) scale(0.6); opacity:0; }
+        25%  { opacity:0.9; }
+        50%  { transform: translate(30px,60px) scale(1); }
+        75%  { opacity:0.7; }
+        100% { transform: translate(-30px,-30px) scale(0.7); opacity:0; }
+      }
+
+      .line {
+        stroke:#e2e8f0;
+        stroke-width:1;
+        opacity:0.5;
+      }
+
+    </style>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="100%" height="100%" fill="#fdfbf7"/>
+
+  <!-- 线 -->
+  <line class="line" x1="5%" y1="25%" x2="95%" y2="25%"/>
+  <line class="line" x1="5%" y1="75%" x2="95%" y2="75%"/>
+
+  <!-- 🖋️ 描边 -->
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+        class="text stroke">
+    人間の命がこんなに短いことは、ずっと前から知っていたのに、なぜもっと彼を理解しようとしなかったのだろう
+  </text>
+
+  <!-- ✨ 光晕层（单独一层） -->
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+        class="text"
+        fill="url(#flowGradient)"
+        filter="url(#softGlow)"
+        opacity="0.6">
+    人間の命がこんなに短いことは、ずっと前から知っていたのに、なぜもっと彼を理解しようとしなかったのだろう
+  </text>
+
+  <!-- ✅ 清晰主文字（关键） -->
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+        class="text"
+        fill="url(#flowGradient)">
+    人間の命がこんなに短いことは、ずっと前から知っていたのに、なぜもっと彼を理解しようとしなかったのだろう
+  </text>
+
+  <!-- 🌟 粒子（降低模糊 + 提高清晰度） -->
+  <g>
+ <circle class="particle" cx="100" cy="0" r="2.5" style="animation-delay:0s"/>
+    <circle class="particle" cx="300" cy="0" r="2.5" style="animation-delay:2s"/>
+    <circle class="particle" cx="500" cy="0" r="2.5" style="animation-delay:4s"/>
+    <circle class="particle" cx="700" cy="0" r="2.5" style="animation-delay:1s"/>
+    <circle class="particle" cx="900" cy="0" r="2.5" style="animation-delay:3s"/>
+    <circle class="particle" cx="1100" cy="0" r="2.5" style="animation-delay:5s"/>
+    <circle class="particle" cx="1300" cy="0" r="2.5" style="animation-delay:6s"/>
+    <circle class="particle" cx="1500" cy="0" r="2.5" style="animation-delay:2.5s"/>
+
+    <circle class="particle" cx="200" cy="0" r="1.2" style="animation-delay:1s"/>
+    <circle class="particle" cx="400" cy="0" r="1.2" style="animation-delay:2.5s"/>
+    <circle class="particle" cx="600" cy="0" r="1.2" style="animation-delay:3.5s"/>
+    <circle class="particle" cx="800" cy="0" r="1.2" style="animation-delay:4.5s"/>
+    <circle class="particle" cx="1000" cy="0" r="1.2" style="animation-delay:5.5s"/>
+    <circle class="particle" cx="1200" cy="0" r="1.2" style="animation-delay:6.5s"/>
+    <circle class="particle" cx="1400" cy="0" r="1.2" style="animation-delay:7.5s"/>
+  </g>
+
+</svg>

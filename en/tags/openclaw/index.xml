@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>OpenClaw on Personal Blogs for Fernweh</title><link>https://blog.codeglimpse.top/en/tags/openclaw/</link><description>Recent content in OpenClaw on Personal Blogs for Fernweh</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Wed, 09 Sep 2026 00:01:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/en/tags/openclaw/index.xml" rel="self" type="application/rss+xml"/><item><title>OpenClaw is installed but unusable: trace the runtime and Gateway</title><link>https://blog.codeglimpse.top/en/p/openclaw-troubleshooting/</link><pubDate>Wed, 09 Sep 2026 00:01:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/p/openclaw-troubleshooting/</guid><description>&lt;p&gt;An installation finishing does not establish that a task can run. The runtime, Gateway, authentication, and browser connection are separate stages. Locate the failing stage before choosing the next action.&lt;/p&gt;
+&lt;h2 id="check-command-resolution-and-runtime-first"&gt;Check command resolution and runtime first
+&lt;/h2&gt;&lt;p&gt;In Windows PowerShell:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Get-Command&lt;/span&gt; &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;npm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;openclaw&lt;/span&gt; &lt;span class="n"&gt;-All&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;openclaw&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;If a command is missing, check its installation method, executable directory, and the current terminal&amp;rsquo;s PATH. Once the CLI can be found, confirm that the Node.js version running it meets that OpenClaw release&amp;rsquo;s requirements.&lt;/p&gt;
+&lt;p&gt;This machine runs Node.js &lt;code&gt;v22.13.1&lt;/code&gt;. Running the &lt;strong&gt;launcher from the OpenClaw 2026.9.2 release package&lt;/strong&gt; in an isolated directory rejected even &lt;code&gt;--version&lt;/code&gt;, with exit code 1:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw: Node.js &amp;gt;=22.22.3 &amp;lt;23, &amp;gt;=24.15.0 &amp;lt;25, or &amp;gt;=25.9.0 is required (current: v22.13.1).
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;This reproduction ran only the package launcher and runtime guard; it did not install OpenClaw globally or start a Gateway. &lt;strong&gt;Being on Node 22 is insufficient if the patch version is below the supported floor.&lt;/strong&gt; Execution has not reached model authentication or browser pairing, so changing those settings cannot fix this error.&lt;/p&gt;
+&lt;p&gt;Both the 2026.9.2 package metadata and launcher specify this range. Choose a supported Node runtime for the OpenClaw release you use, then recheck both version commands. See &lt;a class="link" href="https://blog.codeglimpse.top/en/p/openclaw-install/" &gt;installation and configuration&lt;/a&gt; for the installation options.&lt;/p&gt;
+&lt;h2 id="once-the-cli-runs-inspect-the-gateway"&gt;Once the CLI runs, inspect the Gateway
+&lt;/h2&gt;&lt;p&gt;These are next-step checks for a working CLI, not successful output from the isolated experiment above:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw gateway status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw logs --follow
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;logs --follow&lt;/code&gt; streams logs until Ctrl+C. The official troubleshooting guide identifies &lt;code&gt;Runtime: running&lt;/code&gt;, &lt;code&gt;Connectivity probe: ok&lt;/code&gt;, and &lt;code&gt;Capability: ...&lt;/code&gt; as useful Gateway signals. Fields can vary by release; read the complete error.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Symptom&lt;/th&gt;
+&lt;th&gt;First check&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Service is not running&lt;/td&gt;
+&lt;td&gt;Installation method, startup logs, and service account&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ECONNREFUSED&lt;/code&gt; / connection refused&lt;/td&gt;
+&lt;td&gt;Destination address, port, and whether the intended service is listening&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Process runs but its probe fails&lt;/td&gt;
+&lt;td&gt;Address, port, authentication, and the actual probe error&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Terminal CLI and background service differ&lt;/td&gt;
+&lt;td&gt;OpenClaw/Node executable paths, versions, and configuration sources&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;openclaw doctor&lt;/code&gt; provides diagnostics. Read repair, migration, or restart prompts before accepting them. &lt;code&gt;doctor --fix&lt;/code&gt; and &lt;code&gt;gateway restart&lt;/code&gt; change state and belong after the problem has been narrowed down.&lt;/p&gt;
+&lt;h2 id="verify-model-requests-and-browser-connections-separately"&gt;Verify model requests and browser connections separately
+&lt;/h2&gt;&lt;p&gt;A reachable Gateway does not prove that model requests work. Using your own model configuration, try a simple request without sensitive content. Interpret authentication, provider quota, model-name, and network errors using the corresponding log messages. Read provider-specific details for 401, 403, and 429 responses.&lt;/p&gt;
+&lt;p&gt;For the browser, select the intended profile and connection mode:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile openclaw status
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;This checks the managed browser. To reuse a signed-in session, follow the &lt;a class="link" href="https://blog.codeglimpse.top/en/p/openclaw-chrome/" &gt;browser modes guide&lt;/a&gt; for &lt;code&gt;user&lt;/code&gt; or &lt;code&gt;chrome&lt;/code&gt; and complete the appropriate authorization. Opening a page, installing an extension, and attaching to the correct tab are distinct checks.&lt;/p&gt;
+&lt;h2 id="capture-useful-reproduction-details"&gt;Capture useful reproduction details
+&lt;/h2&gt;&lt;p&gt;Record system and software versions, commands, non-sensitive destination details, error times, and relevant log excerpts. Remove tokens, keys, cookies, and personal session content.&lt;/p&gt;
+&lt;p&gt;Check ordinary JSON examples with the &lt;a class="link" href="https://blog.codeglimpse.top/en/tools/json/" &gt;JSON tool&lt;/a&gt; and compare sanitized examples with &lt;a class="link" href="https://blog.codeglimpse.top/en/tools/diff/" &gt;Text Diff&lt;/a&gt;. Full OpenClaw configuration can be JSON5; use OpenClaw&amp;rsquo;s diagnostics rather than rewriting it with an ordinary JSON formatter.&lt;/p&gt;
+&lt;h2 id="references"&gt;References
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/gateway/troubleshooting" target="_blank" rel="noopener"
+&gt;Official OpenClaw troubleshooting&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/install" target="_blank" rel="noopener"
+&gt;Installation and runtime requirements&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/tools/browser" target="_blank" rel="noopener"
+&gt;Browser modes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://www.npmjs.com/package/openclaw/v/2026.9.2" target="_blank" rel="noopener"
+&gt;OpenClaw 2026.9.2 package&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>OpenClaw Browser Modes: Managed, MCP, and Chrome Extension</title><link>https://blog.codeglimpse.top/en/p/openclaw-chrome/</link><pubDate>Tue, 24 Mar 2026 23:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/p/openclaw-chrome/</guid><description>&lt;p&gt;OpenClaw provides three browser modes: the isolated &lt;code&gt;openclaw&lt;/code&gt; browser, the Chrome DevTools MCP &lt;code&gt;user&lt;/code&gt; profile, and the Chrome extension &lt;code&gt;chrome&lt;/code&gt; profile. They differ mainly in whether they reuse personal login state and how the connection is authorized.&lt;/p&gt;
+&lt;h2 id="choose-a-connection-mode"&gt;Choose a connection mode
+&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Profile&lt;/th&gt;
+&lt;th&gt;Browser connection&lt;/th&gt;
+&lt;th&gt;Suitable use&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;openclaw&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Separate profile managed by OpenClaw&lt;/td&gt;
+&lt;td&gt;Practice and testing that do not need personal login state&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;user&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Chrome DevTools MCP attaches to a running browser&lt;/td&gt;
+&lt;td&gt;Existing login state is needed and someone can approve the connection&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;chrome&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;OpenClaw Chrome extension&lt;/td&gt;
+&lt;td&gt;Existing login state is needed and extension installation and pairing are complete&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The isolated browser is the default. Both modes that reuse a signed-in browser expose more content to automation; choose them according to the task and browser permissions.&lt;/p&gt;
+&lt;h2 id="use-the-managed-browser"&gt;Use the managed browser
+&lt;/h2&gt;&lt;p&gt;With a working Gateway:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile openclaw status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile openclaw start
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile openclaw open https://example.com
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile openclaw snapshot
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;These commands check status, start the browser, open a test page, and inspect a snapshot separately. Successful command exit alone does not replace checking the actual page and snapshot.&lt;/p&gt;
+&lt;h2 id="attach-to-chrome-with-user"&gt;Attach to Chrome with &lt;code&gt;user&lt;/code&gt;
+&lt;/h2&gt;&lt;p&gt;The &lt;code&gt;user&lt;/code&gt; profile requires Chromium &lt;strong&gt;144+&lt;/strong&gt; with remote debugging enabled.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Keep the target Chrome running and open &lt;code&gt;chrome://inspect/#remote-debugging&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Enable remote debugging there.&lt;/li&gt;
+&lt;li&gt;Run the connection commands and approve Chrome&amp;rsquo;s connection prompt in person:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile user start
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile user status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile user tabs
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile user snapshot --format ai
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;user&lt;/code&gt; is built in; the simplest case does not require writing a complete profile configuration. Successful status should include &lt;code&gt;driver: existing-session&lt;/code&gt;, &lt;code&gt;transport: chrome-mcp&lt;/code&gt;, and &lt;code&gt;running: true&lt;/code&gt;. Tab listings and snapshots should also match the real browser.&lt;/p&gt;
+&lt;p&gt;Brave, Edge, or a different profile directory may need an explicit &lt;code&gt;userDataDir&lt;/code&gt;. A browser already started with a debugging port may need &lt;code&gt;cdpUrl&lt;/code&gt;. Follow the matching conditions in the &lt;a class="link" href="https://docs.openclaw.ai/tools/browser#existing-session-via-chrome-devtools-mcp" target="_blank" rel="noopener"
+&gt;existing-session documentation&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="the-chrome-extension-remains-supported"&gt;The Chrome extension remains supported
+&lt;/h2&gt;&lt;p&gt;The current official setup entry point is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser extension install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Complete installation, consent, and pairing using the &lt;a class="link" href="https://docs.openclaw.ai/tools/chrome-extension" target="_blank" rel="noopener"
+&gt;extension documentation&lt;/a&gt;. Native bootstrap on macOS/Linux differs from manual pairing on Windows; follow the steps for your operating system.&lt;/p&gt;
+&lt;p&gt;After pairing, inspect the &lt;code&gt;chrome&lt;/code&gt; profile:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile chrome status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile chrome tabs
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="troubleshooting-order"&gt;Troubleshooting order
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;No &lt;code&gt;browser&lt;/code&gt; subcommand:&lt;/strong&gt; check the OpenClaw version and whether the browser plugin is enabled.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;user&lt;/code&gt; cannot attach:&lt;/strong&gt; check browser version, remote debugging, consent, and the target profile directory.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Status succeeds but the expected page is absent:&lt;/strong&gt; confirm the selected profile, then inspect &lt;code&gt;tabs&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The extension cannot connect:&lt;/strong&gt; follow installation and pairing for the current operating system. MCP remote debugging does not replace extension pairing.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="official-references"&gt;Official references
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/tools/browser" target="_blank" rel="noopener"
+&gt;Browser modes, CLI, and existing sessions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/tools/chrome-extension" target="_blank" rel="noopener"
+&gt;Chrome extension installation and pairing&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>OpenClaw Installation: Environment Checks and Verification</title><link>https://blog.codeglimpse.top/en/p/openclaw-install/</link><pubDate>Mon, 23 Mar 2026 22:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/p/openclaw-install/</guid><description>&lt;p&gt;OpenClaw runs a Gateway on your own device and connects it to messaging channels and model services. This guide follows the official CLI workflow: check the environment, choose an installation method, run onboarding, and verify the result.&lt;/p&gt;
+&lt;h2 id="check-the-environment-first"&gt;Check the environment first
+&lt;/h2&gt;&lt;p&gt;The official requirements list &lt;strong&gt;Node.js 22.22.3+, 24.15+, or 25.9+, with Node 26 recommended&lt;/strong&gt;. Windows options include the native Windows Hub, PowerShell CLI, and WSL2; this article focuses on the CLI.&lt;/p&gt;
+&lt;p&gt;Record your actual versions before choosing a command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;node --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Model authentication depends on the provider. Complete it locally through the onboarding flow and keep credentials out of screenshots, shared links, and issue reports. Installation, onboarding, and daemon setup change the local environment.&lt;/p&gt;
+&lt;h2 id="option-1-a-package-manager"&gt;Option 1: a package manager
+&lt;/h2&gt;&lt;p&gt;For &lt;strong&gt;npm 12 or npm 11.16+&lt;/strong&gt;, the current official command explicitly permits OpenClaw&amp;rsquo;s own lifecycle scripts:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm install -g openclaw@latest --allow-scripts&lt;span class="o"&gt;=&lt;/span&gt;openclaw
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;npm 11.15 and earlier&lt;/strong&gt; do not support that option:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm install -g openclaw@latest
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;For pnpm, the current global installation command is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm add -g --allow-build&lt;span class="o"&gt;=&lt;/span&gt;openclaw openclaw@latest
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;pnpm approve-builds -g&lt;/code&gt; is not the supported global installation flow. Because &lt;code&gt;latest&lt;/code&gt; changes, use a reviewed explicit release number when reproducibility matters, and record Node.js, package-manager, and operating-system versions.&lt;/p&gt;
+&lt;h2 id="option-2-the-official-installer"&gt;Option 2: the official installer
+&lt;/h2&gt;&lt;p&gt;The installer may install or select Node.js, install OpenClaw, and start onboarding. Download and inspect it before execution; verify any publisher-provided checksums or signatures as well.&lt;/p&gt;
+&lt;h3 id="macos--linux--wsl2"&gt;macOS / Linux / WSL2
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;installer_path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;mktemp&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -fL https://openclaw.ai/install.sh -o &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$installer_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;less &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$installer_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Run only after reviewing the script&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bash &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$installer_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="windows-powershell"&gt;Windows PowerShell
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;$installerPath&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;Join-Path&lt;/span&gt; &lt;span class="nv"&gt;$env:TEMP&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;openclaw-install.ps1&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Invoke-WebRequest&lt;/span&gt; &lt;span class="n"&gt;-Uri&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;https://openclaw.ai/install.ps1&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;-OutFile&lt;/span&gt; &lt;span class="nv"&gt;$installerPath&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Get-Content&lt;/span&gt; &lt;span class="n"&gt;-LiteralPath&lt;/span&gt; &lt;span class="nv"&gt;$installerPath&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# Run only after reviewing the script&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt; &lt;span class="nv"&gt;$installerPath&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;This guide uses the official OpenClaw distribution. Third-party forks and mirrors can differ in package names, configuration, and versions; follow their own installation documentation. For source builds, follow the matching pnpm requirements on the &lt;a class="link" href="https://docs.openclaw.ai/install" target="_blank" rel="noopener"
+&gt;official installation page&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="onboarding-and-verification"&gt;Onboarding and verification
+&lt;/h2&gt;&lt;p&gt;If the installer has not already completed onboarding:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw onboard --install-daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;This configures model access, the Gateway, and background startup. Check the CLI and service separately:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw doctor
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw gateway status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw dashboard
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;doctor&lt;/code&gt; is a diagnostic entry point; some releases may offer configuration migrations or repairs. Read the output before accepting changes. A version number does not prove that the Gateway is running, and opening the Dashboard does not prove a successful model request.&lt;/p&gt;
+&lt;h2 id="common-failures-and-next-steps"&gt;Common failures and next steps
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;openclaw&lt;/code&gt; is not found:&lt;/strong&gt; reopen the terminal, inspect &lt;code&gt;npm prefix -g&lt;/code&gt; and command resolution, and confirm that you are using the Node environment that installed it.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Lifecycle scripts are blocked:&lt;/strong&gt; check the package-manager version and the matching approval option above instead of approving unrelated packages.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The Gateway is unavailable:&lt;/strong&gt; inspect service and connection details in &lt;code&gt;openclaw gateway status&lt;/code&gt; before following the official troubleshooting guidance.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The next article explains the three browser connection modes. Use the &lt;a class="link" href="https://blog.codeglimpse.top/en/tools/json/" &gt;JSON tool&lt;/a&gt; for ordinary JSON examples; full JSON5 configurations still require OpenClaw&amp;rsquo;s own diagnostics.&lt;/p&gt;
+&lt;h2 id="official-references"&gt;Official references
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/install" target="_blank" rel="noopener"
+&gt;Installation and system requirements&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/start/getting-started" target="_blank" rel="noopener"
+&gt;Getting started and onboarding&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/openclaw/openclaw/releases" target="_blank" rel="noopener"
+&gt;Release history&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>How to Completely Uninstall OpenClaw</title><link>https://blog.codeglimpse.top/en/p/how-to-completely-uninstall-openclaw/</link><pubDate>Wed, 18 Mar 2026 17:22:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/p/how-to-completely-uninstall-openclaw/</guid><description>&lt;p&gt;Removing OpenClaw involves separate scopes: the Gateway service, state, workspace, desktop app, and CLI package. Decide what to preserve before removal and confirm any backups first.&lt;/p&gt;
+&lt;h2 id="start-with-the-built-in-uninstaller"&gt;Start with the built-in uninstaller
+&lt;/h2&gt;&lt;p&gt;If the CLI is still available, inspect all removal scopes first:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw uninstall --dry-run --all
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Review the exact directories and services, then use the interactive flow:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw uninstall
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;The current official prompt initially selects only the Gateway service. State, workspace, and app are separate choices; &lt;code&gt;--all&lt;/code&gt; selects all four scopes. Removing state does not imply removing configured workspaces. Service-removal failure may preserve data scopes and produce a partial-cleanup error.&lt;/p&gt;
+&lt;p&gt;If the CLI is gone but its service remains, follow the operating-system-specific &lt;a class="link" href="https://docs.openclaw.ai/install/uninstall" target="_blank" rel="noopener"
+&gt;official manual removal instructions&lt;/a&gt;. Do not terminate every Node.js process.&lt;/p&gt;
+&lt;p&gt;The optional scripts below perform narrower package/process/Docker inventory and cleanup. They do not replace the built-in state, workspace, and service removal workflow.&lt;/p&gt;
+&lt;h2 id="automated-uninstallation-inspect-before-applying"&gt;Automated Uninstallation (Inspect Before Applying)
+&lt;/h2&gt;&lt;p&gt;The cleanup scripts default to a read-only &lt;strong&gt;dry run&lt;/strong&gt;. They list detected OpenClaw global packages, Node.js processes whose command line explicitly identifies OpenClaw, and resources in the current Docker context whose name or image explicitly matches OpenClaw. They do not stop every Node.js process or scan and remove user directories, configuration files, registry values, or arbitrary Docker resources.&lt;/p&gt;
+&lt;p&gt;Do not execute remote scripts through &lt;code&gt;curl | bash&lt;/code&gt; or &lt;code&gt;irm | iex&lt;/code&gt;. Download the file, verify its SHA-256 digest, inspect it, and run the dry-run first. After reviewing the plan, use &lt;code&gt;-Apply&lt;/code&gt;/&lt;code&gt;--apply&lt;/code&gt;; interactive mode also requires typing &lt;code&gt;REMOVE OPENCLAW&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id="windows-powershell"&gt;Windows (PowerShell)
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;$scriptUrl&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForWindows.ps1&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;$scriptPath&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;Join-Path&lt;/span&gt; &lt;span class="nv"&gt;$env:TEMP&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;CleanupOpenClawForWindows.ps1&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Invoke-WebRequest&lt;/span&gt; &lt;span class="n"&gt;-Uri&lt;/span&gt; &lt;span class="nv"&gt;$scriptUrl&lt;/span&gt; &lt;span class="n"&gt;-OutFile&lt;/span&gt; &lt;span class="nv"&gt;$scriptPath&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;$expectedSha256&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;eab731bd073f42fb75569be6c1dd3af37aca3214957057241ed13072fcc40daa&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="nb"&gt;Get-FileHash&lt;/span&gt; &lt;span class="n"&gt;-Algorithm&lt;/span&gt; &lt;span class="n"&gt;SHA256&lt;/span&gt; &lt;span class="n"&gt;-LiteralPath&lt;/span&gt; &lt;span class="nv"&gt;$scriptPath&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="py"&gt;Hash&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;ToLowerInvariant&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;-ne&lt;/span&gt; &lt;span class="nv"&gt;$expectedSha256&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;throw&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;SHA-256 verification failed. Do not run this file.&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Get-Content&lt;/span&gt; &lt;span class="n"&gt;-LiteralPath&lt;/span&gt; &lt;span class="nv"&gt;$scriptPath&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt; &lt;span class="nv"&gt;$scriptPath&lt;/span&gt; &lt;span class="c"&gt;# dry-run; inventory only&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt; &lt;span class="nv"&gt;$scriptPath&lt;/span&gt; &lt;span class="n"&gt;-Apply&lt;/span&gt; &lt;span class="c"&gt;# asks for explicit confirmation before changing anything&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Administrator privileges are normally unnecessary. Use an elevated terminal only if your installation location or Docker environment specifically requires it. &lt;code&gt;-Apply -Yes&lt;/code&gt; is reserved for controlled automation after the plan has been reviewed.&lt;/p&gt;
+&lt;h3 id="linux-bash"&gt;Linux (Bash)
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;script_path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;mktemp&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -fL &lt;span class="s1"&gt;&amp;#39;https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForLinux.sh&amp;#39;&lt;/span&gt; -o &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;printf&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;%s %s\n&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;0cfab4f8823a1644ef2e5b47275b144417c271372b7b11b795cf8c60a6689cb8&amp;#39;&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sha256sum -c -
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;less &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bash &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; &lt;span class="c1"&gt;# dry-run; inventory only&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bash &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; --apply &lt;span class="c1"&gt;# requires typing REMOVE OPENCLAW&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="macos-bash"&gt;macOS (Bash)
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;script_path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;mktemp&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -fL &lt;span class="s1"&gt;&amp;#39;https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForMacOS.sh&amp;#39;&lt;/span&gt; -o &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;printf&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;%s %s\n&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;a7e6048a20a933e4297edfe64847afc8f5a206add153502ff6ac260be9d7a801&amp;#39;&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; shasum -a &lt;span class="m"&gt;256&lt;/span&gt; -c -
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;less &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bash &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; &lt;span class="c1"&gt;# dry-run; inventory only&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bash &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; --apply &lt;span class="c1"&gt;# requires typing REMOVE OPENCLAW&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="remove-the-cli-package-and-verify"&gt;Remove the CLI package and verify
+&lt;/h2&gt;&lt;p&gt;After the requested service and data scopes are handled, uninstall the CLI with the package manager that installed it. Choose one:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# npm installation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm uninstall -g openclaw
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# pnpm installation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm remove -g openclaw
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Treat third-party forks such as &lt;code&gt;openclaw-cn&lt;/code&gt; separately. Use the actual package prefix and reviewed inventory rather than deleting a guessed system-wide directory. Recheck the former service and command resolution; the absence of a CLI command alone does not prove removal of a background service.&lt;/p&gt;
+&lt;h2 id="common-problems"&gt;Common problems
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;For permission errors, identify the installation location or Docker permission requirement first. Do not elevate every cleanup action by default.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If a command cannot be found, check the PATH and package-manager environment used for that installation. The inventory is limited to what the script can actually detect.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;A dry run reports a plan. Successful cleanup requires checking the apply result and any remaining service or resource.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="official-reference"&gt;Official reference
+&lt;/h2&gt;&lt;p&gt;&lt;a class="link" href="https://docs.openclaw.ai/install/uninstall" target="_blank" rel="noopener"
+&gt;OpenClaw uninstall scopes, preview, and manual service removal&lt;/a&gt;&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on Personal Blogs for Fernweh</title><link>https://blog.codeglimpse.top/en/page/</link><description>Recent content in Pages on Personal Blogs for Fernweh</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Fri, 04 Sep 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/en/page/index.xml" rel="self" type="application/rss+xml"/><item><title>Privacy</title><link>https://blog.codeglimpse.top/en/privacy/</link><pubDate>Fri, 04 Sep 2026 00:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/privacy/</guid><description>&lt;h1 id="privacy"&gt;Privacy
+&lt;/h1&gt;&lt;p&gt;Last updated: 2026-09-06&lt;/p&gt;
+&lt;p&gt;CodeGlimpse is a static blog and browser-tool site. The online tools perform their main calculations in your current browser; the site does not provide accounts, server-side workspaces, or cloud storage.&lt;/p&gt;
+&lt;h2 id="tool-inputs-and-local-data"&gt;Tool inputs and local data
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;JSON, text, regular expressions, SQL, JWTs, passwords, and similar content are processed by browser-side scripts.&lt;/li&gt;
+&lt;li&gt;Tool inputs, outputs, passwords, JWTs, private keys, and local presets are not sent as analytics events.&lt;/li&gt;
+&lt;li&gt;Favorites, recent tools, and presets are stored only in this browser&amp;rsquo;s &lt;code&gt;localStorage&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Sharing puts ordinary-tool input into a URL fragment; never put passwords, JWTs, private keys, or other sensitive data in a share link.&lt;/li&gt;
+&lt;li&gt;JWT and password tools do not generate share links by default.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="site-analytics"&gt;Site analytics
+&lt;/h2&gt;&lt;p&gt;The site loads these third-party analytics services by default to understand visits and overall interaction quality:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Google Analytics 4: page views, language, and general device/referrer information.&lt;/li&gt;
+&lt;li&gt;Baidu Analytics: page views and referrer information.&lt;/li&gt;
+&lt;li&gt;Microsoft Clarity: interaction and usability analysis.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Analytics scripts are not given tool inputs or custom events containing complete text. Tool forms, result areas, share panels, and JWT/password containers are marked as masked regions.&lt;/p&gt;
+&lt;p&gt;The site does not send passwords, JWTs, private keys, complete text, tool results, local presets, or &lt;code&gt;#cgshare=&lt;/code&gt; share content in analytics events. Page analytics use a path without query parameters or fragments.&lt;/p&gt;
+&lt;h2 id="disable-analytics"&gt;Disable analytics
+&lt;/h2&gt;&lt;p&gt;You can choose “Disable analytics” in the privacy notice at the bottom of a page, or use the buttons below. The choice is stored in this browser and analytics scripts will no longer initialize after a reload.&lt;/p&gt;
+&lt;p&gt;If persistent storage is blocked, the site tries to retain your choice for the current tab session. If both storage types are unavailable, the page stays open with an in-memory opt-out and requests that supporting analytics services stop collection. It cannot guarantee that every already-loaded third-party script stops. Reloading or opening another page loses this choice in that case.&lt;/p&gt;
+&lt;p&gt;&lt;button type="button" data-analytics-optout&gt;Disable analytics&lt;/button&gt;
+&lt;button type="button" data-analytics-optin&gt;Re-enable analytics&lt;/button&gt;&lt;/p&gt;
+&lt;p&gt;Disabling analytics cannot retract data that a third-party service has already received. For deletion or access requests in those services, use the provider&amp;rsquo;s own privacy controls.&lt;/p&gt;
+&lt;h2 id="service-worker-and-external-links"&gt;Service Worker and external links
+&lt;/h2&gt;&lt;p&gt;The Service Worker caches only same-origin pages and static assets; it does not cache cross-origin analytics requests. External websites, downloads, and third-party services linked from articles are governed by their own privacy policies.&lt;/p&gt;
+&lt;p&gt;If the tool behavior differs from this statement, report the page, browser, and reproduction steps through &lt;a class="link" href="https://blog.codeglimpse.top/en/links/" &gt;Contacts&lt;/a&gt;; do not send real passwords, tokens, or private keys.&lt;/p&gt;</description></item><item><title>About Fernweh</title><link>https://blog.codeglimpse.top/en/about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/about/</guid><description>&lt;p&gt;I&amp;rsquo;m Fernweh. This blog collects notes on OpenClaw, Python environments, and Linux administration, alongside browser-based developer tools and games for a quick break.&lt;/p&gt;
+&lt;h2 id="start-reading"&gt;Start reading
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://blog.codeglimpse.top/en/categories/" &gt;Categories&lt;/a&gt;: find articles by topic.&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://blog.codeglimpse.top/en/archives/" &gt;Archives&lt;/a&gt;: browse articles by date.&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://blog.codeglimpse.top/en/tools/" &gt;Tools&lt;/a&gt;: find format converters, encoders, and text utilities.&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://blog.codeglimpse.top/en/games/" &gt;Games&lt;/a&gt;: play directly on the page; refresh to start a new round.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="using-the-tutorials"&gt;Using the tutorials
+&lt;/h2&gt;&lt;p&gt;Software versions, operating systems, and installation methods affect the result of a command. Check that installation, service, and cleanup steps fit your environment before running them. Each article lists references for further reading.&lt;/p&gt;
+&lt;h2 id="subscribe-and-get-in-touch"&gt;Subscribe and get in touch
+&lt;/h2&gt;&lt;p&gt;Add the &lt;a class="link" href="https://blog.codeglimpse.top/en/index.xml" &gt;English RSS feed&lt;/a&gt; to your reader to follow new articles. A &lt;a class="link" href="https://blog.codeglimpse.top/index.xml" &gt;Chinese RSS feed&lt;/a&gt; is also available.&lt;/p&gt;
+&lt;p&gt;Contact me on &lt;a class="link" href="https://github.com/CodeGlimpse" target="_blank" rel="noopener"
+&gt;GitHub&lt;/a&gt; or by &lt;a class="link" href="mailto:libochen@codeglimpse.top" &gt;email&lt;/a&gt; to discuss a post, share reproduction details, or report a correction.&lt;/p&gt;</description></item><item><title>Archives</title><link>https://blog.codeglimpse.top/en/archives/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/archives/</guid><description/></item><item><title>Contacts</title><link>https://blog.codeglimpse.top/en/links/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/links/</guid><description>&lt;p&gt;Here are several ways to contact me. Welcome to communicate and exchange ideas with me!&lt;/p&gt;</description></item><item><title>Series</title><link>https://blog.codeglimpse.top/en/series/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/series/</guid><description>&lt;h2 id="using-and-maintaining-openclaw"&gt;Using and maintaining OpenClaw
+&lt;/h2&gt;&lt;p&gt;Check the runtime first, choose a browser connection mode, then understand the scope of service removal and uninstallation.&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://blog.codeglimpse.top/en/series/openclaw/" &gt;Read the OpenClaw series: installation → browser → removal&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="environments-and-administration"&gt;Environments and administration
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://blog.codeglimpse.top/en/p/python-install/" &gt;Download and install Python&lt;/a&gt;: choose an interpreter, create a virtual environment, and check command resolution.&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://blog.codeglimpse.top/en/p/protect-your-linux-server-with-fail2ban/" &gt;Protect a Linux server with Fail2ban&lt;/a&gt;: identify SSH logs, configure a jail, and inspect service status.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a class="link" href="https://blog.codeglimpse.top/en/index.xml" &gt;Subscribe through RSS&lt;/a&gt; or visit the &lt;a class="link" href="https://blog.codeglimpse.top/en/archives/" &gt;archives&lt;/a&gt; for all articles.&lt;/p&gt;</description></item><item><title>Using and maintaining OpenClaw</title><link>https://blog.codeglimpse.top/en/series/openclaw/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://blog.codeglimpse.top/en/series/openclaw/</guid><description>&lt;p&gt;These four articles follow a local installation through its lifecycle: check installation requirements, choose a browser connection mode, troubleshoot failures, then learn about removal and cleanup.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class="link" href="https://blog.codeglimpse.top/en/p/openclaw-install/" &gt;Installation and configuration&lt;/a&gt;: check Node.js and package-manager versions, run onboarding, and verify the Gateway.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class="link" href="https://blog.codeglimpse.top/en/p/openclaw-chrome/" &gt;Browser connection modes&lt;/a&gt;: distinguish the managed browser, Chrome DevTools MCP, and Chrome extension.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class="link" href="https://blog.codeglimpse.top/en/p/openclaw-troubleshooting/" &gt;Troubleshooting&lt;/a&gt;: distinguish runtime, Gateway, model, and browser failures.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class="link" href="https://blog.codeglimpse.top/en/p/how-to-completely-uninstall-openclaw/" &gt;Removal and cleanup&lt;/a&gt;: preview removal scopes and handle the service, state, workspace, and CLI separately.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Use the &lt;a class="link" href="https://blog.codeglimpse.top/en/tools/json/" &gt;JSON tool&lt;/a&gt; to practice with ordinary JSON examples, or &lt;a class="link" href="https://blog.codeglimpse.top/en/tools/diff/" &gt;Text Diff&lt;/a&gt; to compare two sample configurations. Full OpenClaw configurations may use JSON5; the JSON tool does not replace OpenClaw&amp;rsquo;s own diagnostics.&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://blog.codeglimpse.top/en/categories/tutorials/" &gt;More tutorials&lt;/a&gt; · &lt;a class="link" href="https://blog.codeglimpse.top/en/index.xml" &gt;RSS feed&lt;/a&gt;&lt;/p&gt;</description></item></channel></rss>

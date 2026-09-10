@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Python on Fernweh的个人博客</title><link>https://blog.codeglimpse.top/tags/python/</link><description>Recent content in Python on Fernweh的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Wed, 09 Sep 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/tags/python/index.xml" rel="self" type="application/rss+xml"/><item><title>Python 装了包却无法导入：先确认解释器和 pip</title><link>https://blog.codeglimpse.top/p/python-environment-mismatch/</link><pubDate>Wed, 09 Sep 2026 00:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/python-environment-mismatch/</guid><description>&lt;p&gt;&lt;code&gt;pip install&lt;/code&gt; 显示成功，运行程序却出现 &lt;code&gt;ModuleNotFoundError&lt;/code&gt;，首先需要回答的是：&lt;strong&gt;安装包和运行程序，用的是同一个 Python 吗？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;下面的例子使用 Windows、Python 3.13.2 和两个独立虚拟环境。重点是找到实际解释器的路径，这个方法也适用于其他 Python 3 版本。&lt;/p&gt;
+&lt;h2 id="先看命令指向哪里"&gt;先看命令指向哪里
+&lt;/h2&gt;&lt;p&gt;在运行程序的同一个 PowerShell 窗口中执行：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Get-Command&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;py&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="n"&gt;-All&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import sys; print(sys.executable); print(sys.prefix); print(sys.base_prefix)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;Get-Command&lt;/code&gt; 显示命令解析结果；&lt;code&gt;sys.executable&lt;/code&gt; 显示真正运行的解释器；&lt;code&gt;python -m pip&lt;/code&gt; 让这个解释器加载自己的 pip。仅比较版本号不够，同一个版本也可以存在于多个目录。&lt;/p&gt;
+&lt;p&gt;在本机，&lt;code&gt;python&lt;/code&gt; 指向 &lt;code&gt;D:\JDKs\Python3.13\python.exe&lt;/code&gt;，旧版 &lt;code&gt;py&lt;/code&gt; 启动器的列表同时包含普通版 3.13、自由线程版 3.13t 和 2.7。&lt;code&gt;py&lt;/code&gt; 的默认条目还是 3.13t。因此，直接输入 &lt;code&gt;py&lt;/code&gt; 与输入 &lt;code&gt;python&lt;/code&gt; 并不一定选择同一套运行时。&lt;/p&gt;
+&lt;p&gt;旧启动器可用 &lt;code&gt;py --list-paths&lt;/code&gt; 查看条目；新版 Python Install Manager 使用 &lt;code&gt;py list&lt;/code&gt;。先根据帮助输出判断自己用的是哪一种，再选择明确的版本，例如 &lt;code&gt;py -3.13&lt;/code&gt;。安装方式见&lt;a class="link" href="https://blog.codeglimpse.top/p/python-install/" &gt;Python 安装教程&lt;/a&gt;。&lt;/p&gt;
+&lt;h2 id="一次环境错位的实际复现"&gt;一次环境错位的实际复现
+&lt;/h2&gt;&lt;p&gt;我在隔离目录创建了 &lt;code&gt;env-a&lt;/code&gt;、&lt;code&gt;env-b&lt;/code&gt;，并制作了一个名为 &lt;code&gt;blog-env-demo&lt;/code&gt; 的本地演示包。它只提供一个字符串，用来验证包安装在哪个环境；&lt;strong&gt;它不是需要你从 PyPI 下载的依赖&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;两个环境都是 Python 3.13，pip 输出也都是 24.3.1，但路径分别落在各自的目录中。下列输出把实验目录统一缩写为 &lt;code&gt;&amp;lt;实验目录&amp;gt;&lt;/code&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;env-a:
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip 24.3.1 from &amp;lt;实验目录&amp;gt;\env-a\Lib\site-packages\pip (python 3.13)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;env-b:
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip 24.3.1 from &amp;lt;实验目录&amp;gt;\env-b\Lib\site-packages\pip (python 3.13)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;只给 A 安装演示包后，A 可以导入，B 则报错：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\&lt;/span&gt;&lt;span class="nb"&gt;env-a&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import blog_env_demo; print(blog_env_demo.MARKER)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# installed in this interpreter&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\&lt;/span&gt;&lt;span class="nb"&gt;env-b&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import blog_env_demo&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# ModuleNotFoundError: No module named &amp;#39;blog_env_demo&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;随后，用 &lt;strong&gt;B 自己的解释器&lt;/strong&gt;执行 &lt;code&gt;-m pip&lt;/code&gt;，把同一个本地 wheel 装入 B，B 的导入也成功了。整个过程中没有重装 Python，也没有改全局 PATH。报错来自环境错位。&lt;/p&gt;
+&lt;h2 id="在自己的项目中怎么修正"&gt;在自己的项目中怎么修正
+&lt;/h2&gt;&lt;p&gt;先确定项目实际使用的解释器。已有 &lt;code&gt;.venv&lt;/code&gt; 时，可以直接检查它：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import sys; print(sys.executable)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果这是尚未创建虚拟环境的新项目，再用已安装的目标版本创建环境：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="mf"&gt;-3.13&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;venv&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;venv&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在提供了 &lt;code&gt;requirements.txt&lt;/code&gt; 的项目中，让安装和运行使用同一路径：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;-r&lt;/span&gt; &lt;span class="n"&gt;requirements&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;txt&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;py&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;将版本号、依赖文件和入口文件替换为项目实际使用的值。IDE、调试器、定时任务也应选同一个解释器。直接调用 &lt;code&gt;.venv&lt;/code&gt; 中的 Python 不要求先运行激活脚本，因此也不必为此修改 PowerShell 执行策略。&lt;/p&gt;
+&lt;h2 id="路径一致后还需要检查什么"&gt;路径一致后，还需要检查什么
+&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;现象&lt;/th&gt;
+&lt;th&gt;下一步&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;安装名和导入名不同&lt;/td&gt;
+&lt;td&gt;查包的使用文档，例如安装 &lt;code&gt;Pillow&lt;/code&gt; 后导入的是 &lt;code&gt;PIL&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;报错指向项目内的同名文件&lt;/td&gt;
+&lt;td&gt;检查是否用 &lt;code&gt;json.py&lt;/code&gt;、&lt;code&gt;requests.py&lt;/code&gt; 等文件名遮蔽了真正的模块&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;pip 有包，IDE 仍报错&lt;/td&gt;
+&lt;td&gt;查看 IDE 当前运行配置中的解释器路径，而不只看终端状态&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;自由线程版与普通版混用&lt;/td&gt;
+&lt;td&gt;核对运行时及二进制扩展支持情况，不直接复制另一个环境的 &lt;code&gt;site-packages&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;sys.prefix != sys.base_prefix&lt;/code&gt; 通常表示当前解释器处于虚拟环境。最终应以实际运行程序的解释器和完整错误为准。&lt;/p&gt;
+&lt;h2 id="参考"&gt;参考
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/library/venv.html" target="_blank" rel="noopener"
+&gt;Python：venv 虚拟环境&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/using/windows.html" target="_blank" rel="noopener"
+&gt;Python：Windows 上的 Python&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pip.pypa.io/en/stable/user_guide/" target="_blank" rel="noopener"
+&gt;pip：用户指南&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Python 下载与安装教程</title><link>https://blog.codeglimpse.top/p/python-install/</link><pubDate>Sun, 28 Sep 2025 16:20:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/python-install/</guid><description>&lt;p&gt;先选择适合项目的 Python 版本，再确认实际执行的解释器，最后为项目创建虚拟环境。以下介绍 &lt;strong&gt;Python 3.14&lt;/strong&gt; 的安装方式；独立安装器的截图展示的是 3.12/3.13 界面。&lt;/p&gt;
+&lt;h2 id="windows优先了解-python-install-manager"&gt;Windows：优先了解 Python Install Manager
+&lt;/h2&gt;&lt;p&gt;官方目前推荐从 &lt;a class="link" href="https://www.python.org/downloads/windows/" target="_blank" rel="noopener"
+&gt;python.org&lt;/a&gt; 或 Microsoft Store 获取 &lt;strong&gt;Python Install Manager&lt;/strong&gt;。它与旧版独立 &lt;code&gt;.exe&lt;/code&gt; 安装器及旧 &lt;code&gt;py&lt;/code&gt; 启动器需要区分；遇到命令冲突时先查看官方 Windows 文档。&lt;/p&gt;
+&lt;p&gt;安装管理器后，在 PowerShell 中确认可用命令，再安装所需版本。以下以 3.14 为例，实际项目仍需检查依赖兼容性：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;help&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="mf"&gt;3.14&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;list&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="mf"&gt;-3.14&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="mf"&gt;-3.14&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import sys; print(sys.executable)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;管理器会下载运行时。Python 3.14 的 Windows 支持范围见官方说明；不要把旧系统支持和当前受维护系统混为一谈。&lt;/p&gt;
+&lt;h3 id="已有-312313-独立安装器时"&gt;已有 3.12/3.13 独立安装器时
+&lt;/h3&gt;&lt;p&gt;旧界面仍可能在已有环境中出现。一般开发场景先选择当前用户安装；只有明确需要所有用户共用时，才选择系统范围安装并提升权限。&lt;code&gt;py&lt;/code&gt; 启动器提供版本选择，不等于所有终端中的 &lt;code&gt;python&lt;/code&gt; 都会指向同一个解释器。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://blog.codeglimpse.top/p/python-install/1.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/p/python-install/1_hu_75941b03da09acbf.png 480w, https://blog.codeglimpse.top/p/python-install/1_hu_5a66238aca6937f8.png 1024w"
+loading="lazy"
+alt="旧版 Windows Python 安装器示例"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/p&gt;
+&lt;p&gt;安装时保留 pip；调试符号、调试二进制和完整标准库测试套件是按需组件。PATH 和文件关联也应结合已有解释器决定，不要统一勾选全部选项。&lt;/p&gt;
+&lt;p&gt;静默安装必须使用&lt;strong&gt;已经下载并核对的具体安装器文件名&lt;/strong&gt;。例如，下面的参数用于旧安装器的当前用户安装：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# 将文件名替换为已核对的安装包&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;./&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;3.13&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;7&lt;/span&gt;&lt;span class="n"&gt;-amd64&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="n"&gt;quiet&lt;/span&gt; &lt;span class="n"&gt;InstallAllUsers&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;0&lt;/span&gt; &lt;span class="n"&gt;PrependPath&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;1&lt;/span&gt; &lt;span class="n"&gt;Include_test&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这里的文件名仅演示旧安装器语法，不表示 3.13.7 是推荐下载的最新补丁版本。3.14 文档已将完整安装器列为弃用方式，新环境应先评估安装管理器。&lt;/p&gt;
+&lt;h2 id="macos"&gt;macOS
+&lt;/h2&gt;&lt;h3 id="使用官方安装包"&gt;使用官方安装包
+&lt;/h3&gt;&lt;p&gt;从 &lt;a class="link" href="https://www.python.org/downloads/macos/" target="_blank" rel="noopener"
+&gt;Python for macOS&lt;/a&gt; 下载与你的 macOS 和处理器兼容的安装包，阅读安装器中的支持范围与许可说明。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://blog.codeglimpse.top/p/python-install/9.png"
+width="621"
+height="442"
+srcset="https://blog.codeglimpse.top/p/python-install/9_hu_815802463d774b41.png 480w, https://blog.codeglimpse.top/p/python-install/9_hu_88508ecc55777416.png 1024w"
+loading="lazy"
+alt="macOS Python 安装器历史示例"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+&gt;&lt;/p&gt;
+&lt;p&gt;安装完成后，按当前安装器说明运行对应版本目录中的 &lt;code&gt;Install Certificates.command&lt;/code&gt;。它会联网安装该 Python 使用的证书组件。不要照抄旧截图中的版本目录。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 -c &lt;span class="s2"&gt;&amp;#34;import sys; print(sys.executable)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;不要删除或修改 Apple 管理的 &lt;code&gt;/usr/bin/python3&lt;/code&gt;。官方 Python 可以与系统开发工具使用的解释器并存。&lt;/p&gt;
+&lt;h3 id="已使用-homebrew-时"&gt;已使用 Homebrew 时
+&lt;/h3&gt;&lt;p&gt;先查看 &lt;a class="link" href="https://docs.brew.sh/Installation" target="_blank" rel="noopener"
+&gt;Homebrew 当前安装要求&lt;/a&gt;。其要求涉及受支持的 macOS、硬件和 Xcode Command Line Tools，不能概括为“必须先安装系统 Python”。&lt;/p&gt;
+&lt;p&gt;在 Homebrew 已正常配置的终端中：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;brew --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;brew install python
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;command&lt;/span&gt; -v python3
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果尚未安装 Homebrew，先按官网说明下载、审阅安装脚本再执行。出现路径冲突时先检查终端配置，不要直接强制覆盖链接。&lt;/p&gt;
+&lt;h2 id="linux使用发行版软件包"&gt;Linux：使用发行版软件包
+&lt;/h2&gt;&lt;h3 id="debian--ubuntu"&gt;Debian / Ubuntu
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt update
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install python3 python3-pip python3-venv
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;安装 Python 不需要顺带升级整台机器、修改整个 &lt;code&gt;~/.local&lt;/code&gt; 的所有者或删除 APT 锁文件。遇到锁占用时，先确认另一个包管理任务是否仍在运行，等待完成或按发行版的故障处理流程排查。&lt;/p&gt;
+&lt;h3 id="fedora"&gt;Fedora
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf install python3 python3-pip
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;RHEL 及其他发行版的软件包版本和仓库策略不同，应按对应发行版文档选择。不要替换系统 Python，也不要默认使用 &lt;code&gt;sudo pip&lt;/code&gt; 安装项目依赖。&lt;/p&gt;
+&lt;h2 id="为每个项目创建虚拟环境"&gt;为每个项目创建虚拟环境
+&lt;/h2&gt;&lt;p&gt;在项目目录中执行。Windows 示例明确使用已安装的 3.14：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="mf"&gt;-3.14&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;venv&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;venv&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;macOS / Linux：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 -m venv .venv
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;.venv/bin/python --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;.venv/bin/python -m pip --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;直接调用虚拟环境中的解释器即可，不必为了运行示例而修改 PowerShell 执行策略。安装依赖时沿用同一个解释器的 &lt;code&gt;-m pip&lt;/code&gt;。&lt;/p&gt;
+&lt;h2 id="验收与常见问题"&gt;验收与常见问题
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;记录操作系统、&lt;code&gt;--version&lt;/code&gt; 输出、&lt;code&gt;sys.executable&lt;/code&gt; 和 &lt;code&gt;pip --version&lt;/code&gt;，确认它们属于预期环境。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;python&lt;/code&gt; 打开商店或版本不对：检查应用执行别名、&lt;code&gt;py list&lt;/code&gt; 与 PATH。&lt;/li&gt;
+&lt;li&gt;提示 &lt;code&gt;externally-managed-environment&lt;/code&gt;：为项目创建虚拟环境，不绕过发行版保护。&lt;/li&gt;
+&lt;li&gt;缺少 &lt;code&gt;venv&lt;/code&gt;/&lt;code&gt;ensurepip&lt;/code&gt;：安装发行版对应的虚拟环境组件，再重新创建环境。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="官方依据"&gt;官方依据
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/using/windows.html" target="_blank" rel="noopener"
+&gt;Python on Windows&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/using/mac.html" target="_blank" rel="noopener"
+&gt;Python on macOS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/library/venv.html" target="_blank" rel="noopener"
+&gt;venv 虚拟环境&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.brew.sh/Installation" target="_blank" rel="noopener"
+&gt;Homebrew 安装要求&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

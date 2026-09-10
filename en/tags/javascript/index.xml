@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>JavaScript on Personal Blogs for Fernweh</title><link>https://blog.codeglimpse.top/en/tags/javascript/</link><description>Recent content in JavaScript on Personal Blogs for Fernweh</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Wed, 09 Sep 2026 00:02:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/en/tags/javascript/index.xml" rel="self" type="application/rss+xml"/><item><title>Why a reaction test can add extra milliseconds: press, release, and rendering</title><link>https://blog.codeglimpse.top/en/p/reaction-timing/</link><pubDate>Wed, 09 Sep 2026 00:02:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/p/reaction-timing/</guid><description>&lt;p&gt;The &lt;a class="link" href="https://blog.codeglimpse.top/en/games/reaction/" &gt;reaction test&lt;/a&gt; on this site once reported over 300 milliseconds for a person who typically measured about 220–250 milliseconds elsewhere. The old implementation included the time between pressing and releasing the mouse button.&lt;/p&gt;
+&lt;h2 id="a-click-usually-arrives-after-the-press"&gt;A click usually arrives after the press
+&lt;/h2&gt;&lt;p&gt;A typical mouse click includes a press, a release, and then a &lt;code&gt;click&lt;/code&gt; event. If the intended measurement is how quickly someone presses after seeing green, handling &lt;code&gt;click&lt;/code&gt; can select a later endpoint.&lt;/p&gt;
+&lt;p&gt;In a controlled browser-input comparison, the mouse was pressed 230 milliseconds after green, held for 80 milliseconds, and released. The old implementation recorded &lt;strong&gt;310 milliseconds&lt;/strong&gt; on release. The corrected implementation records &lt;strong&gt;230 milliseconds&lt;/strong&gt; on press and ignores the later release for scoring.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://blog.codeglimpse.top/en/p/reaction-timing/timing.svg"
+loading="lazy"
+alt="Press at 230 milliseconds, release at 310; click includes the extra hold time"
+&gt;&lt;/p&gt;
+&lt;p&gt;Those numbers are specified test timings, not average human reaction times or a fixed correction to subtract from every score.&lt;/p&gt;
+&lt;h2 id="define-the-input-endpoint"&gt;Define the input endpoint
+&lt;/h2&gt;&lt;p&gt;The game now records these events:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Input&lt;/th&gt;
+&lt;th&gt;Measurement endpoint&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Mouse&lt;/td&gt;
+&lt;td&gt;Primary-button &lt;code&gt;pointerdown&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Touch&lt;/td&gt;
+&lt;td&gt;The primary pointer contacting the panel&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Keyboard&lt;/td&gt;
+&lt;td&gt;The initial Space or Enter &lt;code&gt;keydown&lt;/code&gt;, excluding auto-repeat&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Virtual activation from assistive technology&lt;/td&gt;
+&lt;td&gt;A supported &lt;code&gt;click&lt;/code&gt; path without duplicate scoring&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;A compatibility &lt;code&gt;click&lt;/code&gt; following an already-recorded mouse or touch press must not start another round. Additional pointers, non-primary buttons, and modifier combinations should not count as ordinary reactions.&lt;/p&gt;
+&lt;h2 id="measure-when-the-event-happened"&gt;Measure when the event happened
+&lt;/h2&gt;&lt;p&gt;An event may occur before the main thread can process it. If a press occurs at 230 milliseconds but its handler runs at 310, reading &lt;code&gt;performance.now()&lt;/code&gt; inside that handler includes 80 milliseconds of queue delay.&lt;/p&gt;
+&lt;p&gt;The input path therefore prefers the event&amp;rsquo;s &lt;code&gt;timeStamp&lt;/code&gt;, normalized to the same clock as the start time. The core call is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;pressedAt&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;inputTime&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;timeStamp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;performance&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;now&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;performance&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;timeOrigin&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nx"&gt;state&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;respond&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;state&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;pressedAt&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Normalization handles invalid values and older timestamps based on Unix time rather than the page&amp;rsquo;s time origin. Subtracting unrelated clocks is not meaningful.&lt;/p&gt;
+&lt;p&gt;It also affects false starts: a press that occurred before green remains early even if it is processed after the signal appears.&lt;/p&gt;
+&lt;h2 id="align-the-visual-update-and-start-time"&gt;Align the visual update and start time
+&lt;/h2&gt;&lt;p&gt;A timeout expiring means its callback can run; it does not prove that the display is already green. Starting a timer before updating the display can include extra presentation delay.&lt;/p&gt;
+&lt;p&gt;After the random wait, the game updates the panel and records its start in the same animation-frame callback. Omitting pause and state checks, the sequence is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nx"&gt;requestAnimationFrame&lt;/span&gt;&lt;span class="p"&gt;(()&lt;/span&gt; &lt;span class="p"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ready&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;state&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;arm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;state&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;performance&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;now&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;requestAnimationFrame&lt;/code&gt; runs before painting, narrowing the gap between the script update and the next paint. &lt;strong&gt;It is not a timestamp of the physical pixels lighting up.&lt;/strong&gt; Display refresh, input hardware, browser behavior, and operating-system scheduling still affect the result.&lt;/p&gt;
+&lt;h2 id="pauses-and-restarts-belong-to-the-timing-model"&gt;Pauses and restarts belong to the timing model
+&lt;/h2&gt;&lt;p&gt;Pausing or leaving the game cancels both the pending timeout and any scheduled signal frame. Resuming starts a new wait while keeping completed samples. Otherwise an old callback could turn a new round green unexpectedly.&lt;/p&gt;
+&lt;p&gt;Early presses do not count toward the five valid samples. After a result, another press begins the next wait. Restarting clears the current round and pending work.&lt;/p&gt;
+&lt;p&gt;Use the same device, input method, and similar foreground conditions when comparing sites. These changes remove identifiable event-endpoint and queue-delay errors; a browser game still does not replace dedicated measurement hardware.&lt;/p&gt;
+&lt;h2 id="further-reading"&gt;Further reading
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://blog.codeglimpse.top/en/games/reaction/" &gt;Play the reaction test&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/CodeGlimpse/CodeGlimpse.github.io/blob/master/assets/js/games/reaction.js" target="_blank" rel="noopener"
+&gt;Game controller source&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerdown_event" target="_blank" rel="noopener"
+&gt;MDN: pointerdown&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.mozilla.org/en-US/docs/Web/API/Event/timeStamp" target="_blank" rel="noopener"
+&gt;MDN: Event.timeStamp&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame" target="_blank" rel="noopener"
+&gt;MDN: requestAnimationFrame&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

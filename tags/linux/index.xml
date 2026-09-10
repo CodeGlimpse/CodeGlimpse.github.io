@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on Fernweh的个人博客</title><link>https://blog.codeglimpse.top/tags/linux/</link><description>Recent content in Linux on Fernweh的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Mon, 07 Sep 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/tags/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>保护 Linux 服务器的一大利器：Fail2ban</title><link>https://blog.codeglimpse.top/p/%E4%BF%9D%E6%8A%A4-linux-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E4%B8%80%E5%A4%A7%E5%88%A9%E5%99%A8fail2ban/</link><pubDate>Wed, 01 Apr 2026 15:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/%E4%BF%9D%E6%8A%A4-linux-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E4%B8%80%E5%A4%A7%E5%88%A9%E5%99%A8fail2ban/</guid><description>&lt;p&gt;Fail2ban 根据日志中的失败事件执行封禁动作。它能补充 SSH 等服务的防护，但需要正确的日志来源、过滤器和防火墙动作；安装服务本身不等于已经保护所有入口。&lt;/p&gt;
+&lt;h2 id="适用范围与安装"&gt;适用范围与安装
+&lt;/h2&gt;&lt;p&gt;下面以使用 systemd 的 Debian/Ubuntu 软件包环境和 SSH 为例。先核对发行版、SSH 实际端口及 Fail2ban 软件包版本；Fedora、RHEL 和其他发行版的仓库与日志配置不能直接套用。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt update
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install fail2ban
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;fail2ban-client --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;优先使用发行版维护的软件包。确需源码安装时，按&lt;a class="link" href="https://github.com/fail2ban/fail2ban" target="_blank" rel="noopener"
+&gt;上游说明&lt;/a&gt;选择版本，并确认依赖、服务文件和后续升级方式。&lt;/p&gt;
+&lt;h2 id="先确认-ssh-日志在哪里"&gt;先确认 SSH 日志在哪里
+&lt;/h2&gt;&lt;p&gt;Ubuntu/Debian 常见服务单元为 &lt;code&gt;ssh&lt;/code&gt;，其他环境可能是 &lt;code&gt;sshd&lt;/code&gt;。检查实际单元及日志：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo systemctl status ssh --no-pager
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo journalctl -u ssh -n &lt;span class="m"&gt;30&lt;/span&gt; --no-pager
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果使用文件日志，先确认 &lt;code&gt;/var/log/auth.log&lt;/code&gt; 等文件确实存在且包含 SSH 认证事件。不要仅因为某篇教程写了该路径，就假定机器正在向它写日志。&lt;/p&gt;
+&lt;h2 id="用小型覆盖文件配置-ssh-jail"&gt;用小型覆盖文件配置 SSH jail
+&lt;/h2&gt;&lt;p&gt;保留发行版的 &lt;code&gt;jail.conf&lt;/code&gt;，在 &lt;code&gt;/etc/fail2ban/jail.d/sshd.local&lt;/code&gt; 中写入需要覆盖的参数，避免复制整份默认配置后长期失去上游更新。&lt;/p&gt;
+&lt;p&gt;启用前先确保有第二条管理会话或控制台，并将确认过的固定管理地址加入 &lt;code&gt;ignoreip&lt;/code&gt;。下面只列出回环地址；它不包含你的远程管理地址。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[DEFAULT]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ignoreip&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;127.0.0.1/8 ::1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[sshd]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;enabled&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;ssh&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;backend&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;systemd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;maxretry&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;findtime&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;10m&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;bantime&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;1h&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;使用自定义 SSH 端口时，将 &lt;code&gt;port&lt;/code&gt; 改为实际端口。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;systemd&lt;/code&gt; 后端读取 journal，&lt;strong&gt;不能同时照抄文件型 &lt;code&gt;logpath&lt;/code&gt;&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;若改用文件日志，选择合适的文件后端，并设置已确认的路径，例如 &lt;code&gt;backend = polling&lt;/code&gt; 配合 &lt;code&gt;logpath = /var/log/auth.log&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;maxretry&lt;/code&gt; 和 &lt;code&gt;findtime&lt;/code&gt; 控制触发条件；&lt;code&gt;bantime&lt;/code&gt; 是封禁时长，按业务和恢复能力调整。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="验证配置后再启用"&gt;验证配置后再启用
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client -t
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;配置检查通过后，再启用或重新加载服务：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo systemctl &lt;span class="nb"&gt;enable&lt;/span&gt; --now fail2ban
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client reload
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client ping
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client status sshd
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;确认 &lt;code&gt;sshd&lt;/code&gt; 已启用、日志来源正确，并检查实际的封禁动作。需要测试封禁时，使用受控测试来源并保留恢复入口，不要反复用唯一管理连接试错。&lt;/p&gt;
+&lt;h2 id="封禁解禁与持久化"&gt;封禁、解禁与持久化
+&lt;/h2&gt;&lt;p&gt;下面的 &lt;code&gt;192.0.2.10&lt;/code&gt; 是文档示例地址，操作前替换为经过核实的目标：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client &lt;span class="nb"&gt;set&lt;/span&gt; sshd banip 192.0.2.10
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client &lt;span class="nb"&gt;set&lt;/span&gt; sshd unbanip 192.0.2.10
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client unban 192.0.2.10
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;上游默认配置启用 SQLite 持久化，&lt;code&gt;dbfile&lt;/code&gt; 为 &lt;code&gt;/var/lib/fail2ban/fail2ban.sqlite3&lt;/code&gt;。因此不能笼统地说“重启后所有封禁都会失效”；恢复结果还受数据库、封禁剩余时间、清理策略和发行版配置影响。应检查当前有效配置和服务重启后的实际状态。&lt;/p&gt;
+&lt;h2 id="扩展到其他服务前"&gt;扩展到其他服务前
+&lt;/h2&gt;&lt;p&gt;不要只添加一个不存在过滤器的 &lt;code&gt;nginx-404&lt;/code&gt; jail。先确认过滤器文件、真实日志格式和误报范围，再用 &lt;code&gt;fail2ban-regex&lt;/code&gt; 对受控样例验证。JavaScript 正则工具也不能替代 Fail2ban 自身的过滤器测试。&lt;/p&gt;
+&lt;p&gt;如果没有封禁事件，按“日志是否产生 → 后端是否读取 → 过滤器是否匹配 → 防火墙动作是否成功”的顺序排查。修改配置后先运行 &lt;code&gt;fail2ban-client -t&lt;/code&gt;，不要靠反复重启猜测原因。&lt;/p&gt;
+&lt;h2 id="官方依据"&gt;官方依据
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/fail2ban/fail2ban" target="_blank" rel="noopener"
+&gt;Fail2ban 项目与安装说明&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/fail2ban/fail2ban/blob/master/config/jail.conf" target="_blank" rel="noopener"
+&gt;默认 jail 配置与后端说明&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/fail2ban/fail2ban/blob/master/config/fail2ban.conf" target="_blank" rel="noopener"
+&gt;默认数据库与服务配置&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 280" role="img" aria-labelledby="t d">
+<title id="t">Press versus release timing</title><desc id="d">Green at zero, press at 230 milliseconds, release at 310. The 80 millisecond hold is not part of the press reaction time.</desc>
+<rect width="540" height="280" rx="18" fill="#f3f6f8"/>
+<g font-family="system-ui,sans-serif" fill="#253746"><text x="28" y="40" font-size="21" font-weight="700">One input, two different endpoints</text>
+<path d="M50 127H485" stroke="#748494" stroke-width="3"/>
+<path d="M50 115V139M340 115V139M455 115V139" stroke="#253746" stroke-width="3"/>
+<text x="50" y="80" font-size="26" font-weight="700">0 ms</text><text x="50" y="105" font-size="17">Green</text>
+<text x="300" y="80" font-size="26" font-weight="700">230 ms</text><text x="315" y="105" font-size="17">Press</text>
+<text x="419" y="80" font-size="26" font-weight="700">310 ms</text><text x="427" y="105" font-size="17">Release</text>
+<path d="M50 174H340" stroke="#28734d" stroke-width="12" stroke-linecap="round"/><text x="50" y="206" font-size="18">Press reaction: 230 ms</text>
+<path d="M340 174H455" stroke="#bf7726" stroke-width="12" stroke-linecap="round"/><text x="351" y="206" font-size="17">Hold: 80 ms</text>
+<text x="28" y="252" font-size="16">Scoring on click can include the hold time.</text></g></svg>

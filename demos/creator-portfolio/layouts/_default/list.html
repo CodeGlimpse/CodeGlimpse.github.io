@@ -1,0 +1,14 @@
+{{ define "main" }}
+<main id="main" class="shell listing-page">
+  <header class="page-heading">
+    <p class="eyebrow">{{ if eq .Section "works" }}Gallery{{ else }}Case studies{{ end }}</p>
+    <h1>{{ .Title }}</h1>
+    <p>{{ .Params.summary }}</p>
+  </header>
+  <div class="card-grid">
+    {{ range .Pages.ByWeight }}
+      {{ partial "work-card.html" . }}
+    {{ end }}
+  </div>
+</main>
+{{ end }}

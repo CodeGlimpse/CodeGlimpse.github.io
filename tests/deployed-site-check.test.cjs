@@ -123,6 +123,13 @@ test('accepts the intentional homepage JSON 404', () => {
     assert.deepEqual(errors, []);
 });
 
+test('requires the portfolio demo marker in the deployed HTML', () => {
+    const check = { path: '/demos/creator-portfolio/', status: 200, containsText: '虚构演示' };
+    assert.deepEqual(checker.validateResponse(check, 200, '<html>虚构演示</html>'), []);
+    assert.deepEqual(checker.validateResponse(check, 200, '<html>Not Found</html>'),
+        ['missing expected text "虚构演示"']);
+});
+
 test('reports invalid status and JSON payloads', () => {
     const errors = checker.validateResponse(
         { path: '/archives/index.json', status: 200, jsonArray: true },

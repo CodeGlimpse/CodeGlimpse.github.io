@@ -88,6 +88,9 @@ jobs:
                   SOURCE_COMMIT: ${{ github.sha }}
               run: npm run check:output
 
+            - name: Check portfolio demo links
+              run: python3 demos/creator-portfolio/scripts/check_build.py public/demos/creator-portfolio --base-url https://blog.codeglimpse.top/demos/creator-portfolio/ --check-demo-pages
+
             - name: Write build summary
               if: always()
               env:

@@ -82,7 +82,7 @@
     .has-mobile-home-nav .main-container { padding-bottom: calc(var(--mobile-home-nav-height) + env(safe-area-inset-bottom) + 2rem); }
     .mobile-home-nav {
         position: fixed; inset-inline: 0; bottom: 0; z-index: 1000;
-        display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem;
+        display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem;
         height: calc(var(--mobile-home-nav-height) + env(safe-area-inset-bottom));
         padding: .6rem calc(1rem + env(safe-area-inset-right)) calc(.6rem + env(safe-area-inset-bottom)) calc(1rem + env(safe-area-inset-left));
         box-sizing: border-box; border-top: 1px solid var(--card-separator-color);

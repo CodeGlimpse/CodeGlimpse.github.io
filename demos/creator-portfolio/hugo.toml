@@ -1,0 +1,15 @@
+baseURL = 'https://example.github.io/creator-portfolio/'
+languageCode = 'zh-CN'
+title = '弧光｜虚构作品集演示'
+disableKinds = ['taxonomy', 'term', 'RSS']
+
+[params]
+description = '用于验证图片画廊、项目案例与 Markdown 更新流程的原创虚构演示站。'
+siteLabel = '弧光 / PORTFOLIO'
+homeHeading = '弧光视觉作品集'
+homeIntro = '用图片呈现作品，用项目页面讲述制作过程。这里的全部作品与项目均为虚构示例，用于检验网站的展示和更新方式。'
+demoNotice = '虚构演示 · 原创素材'
+footerNote = '虚构演示 · 原创素材。本站不展示真实客户项目。'
+
+[markup.goldmark.renderer]
+unsafe = false

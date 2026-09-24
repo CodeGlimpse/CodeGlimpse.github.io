@@ -1,0 +1,28 @@
+{{ define "body-class" }}demos-page{{ end }}
+{{ define "main" }}
+<header class="demos-heading">
+    <p class="demos-eyebrow">{{ if eq .Language.Lang "en" }}Website examples{{ else }}网站样例{{ end }}</p>
+    <h1>{{ .Title }}</h1>
+    <p>{{ .Description }}</p>
+</header>
+<section class="demos-grid" aria-label="{{ .Title }}">
+    <a class="demo-card" href="{{ "demos/creator-portfolio/" | relURL }}">
+        <div class="demo-card-preview">
+            <div class="demo-preview-header" aria-hidden="true">
+                <span class="demo-preview-mark"></span>
+                <span>弧光 / PORTFOLIO</span>
+            </div>
+            <img src="{{ "demos/creator-portfolio/projects/leaf-atlas/cover.svg" | relURL }}"
+                alt="{{ if eq .Language.Lang "en" }}Abstract leaf illustration from the fictional portfolio{{ else }}虚构作品集中的抽象叶片插画{{ end }}"
+                loading="lazy" decoding="async" width="800" height="600">
+        </div>
+        <div class="demo-card-copy">
+            <span class="demo-card-label">{{ if eq .Language.Lang "en" }}Fictional · Chinese{{ else }}原创虚构示例{{ end }}</span>
+            <h2>{{ if eq .Language.Lang "en" }}Creator portfolio{{ else }}创作者作品集{{ end }}</h2>
+            <p>{{ if eq .Language.Lang "en" }}Gallery and project pages with original fictional content. In Chinese.{{ else }}浏览图片画廊与项目案例，查看电脑和手机上的作品展示。{{ end }}</p>
+            <span class="demo-card-action">{{ if eq .Language.Lang "en" }}Open demo{{ else }}打开演示站{{ end }} <span aria-hidden="true">→</span></span>
+        </div>
+    </a>
+</section>
+<div class="demos-note">{{ .Content }}</div>
+{{ end }}

@@ -1,4 +1,10 @@
 const { spawnSync } = require('node:child_process');
+const path = require('node:path');
+
+const projectRoot = path.resolve(__dirname, '..');
+const portfolioRoot = path.join(projectRoot, 'demos', 'creator-portfolio');
+const portfolioOutput = path.join(projectRoot, 'public', 'demos', 'creator-portfolio');
+const portfolioBaseURL = 'https://blog.codeglimpse.top/demos/creator-portfolio/';
 
 function resolveSourceCommit(environment = process.env) {
     const configured = String(environment.HUGO_PARAMS_SOURCECOMMIT || '').trim();
@@ -19,12 +25,27 @@ function buildSite(args = process.argv.slice(2), environment = process.env) {
     const sourceCommit = resolveSourceCommit(environment);
     const hugoArgs = ['--cleanDestinationDir', '--minify', '--gc', ...args];
     const result = spawnSync('hugo', hugoArgs, {
+        cwd: projectRoot,
         env: { ...environment, HUGO_PARAMS_SOURCECOMMIT: sourceCommit },
         stdio: 'inherit',
         windowsHide: true,
     });
     if (result.error) throw result.error;
-    return result.status ?? 1;
+    if (result.status !== 0) return result.status ?? 1;
+
+    // The portfolio is a separate Hugo site so its layouts and global CSS stay isolated.
+    const portfolio = spawnSync('hugo', [
+        '--cleanDestinationDir', '--minify', '--gc', '--panicOnWarning',
+        '--baseURL', portfolioBaseURL,
+        '--destination', portfolioOutput,
+    ], {
+        cwd: portfolioRoot,
+        env: environment,
+        stdio: 'inherit',
+        windowsHide: true,
+    });
+    if (portfolio.error) throw portfolio.error;
+    return portfolio.status ?? 1;
 }
 
 if (require.main === module) {

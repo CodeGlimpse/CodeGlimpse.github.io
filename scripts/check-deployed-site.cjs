@@ -6,6 +6,11 @@ const checks = [
     { path: '/en/', status: 200, html: true, language: 'en' },
     { path: '/archives/', status: 200, html: true, language: 'zh-cn' },
     { path: '/en/archives/', status: 200, html: true, language: 'en' },
+    { path: '/demos/', status: 200, html: true, language: 'zh-cn' },
+    { path: '/en/demos/', status: 200, html: true, language: 'en' },
+    { path: '/demos/creator-portfolio/', status: 200, containsText: '虚构演示' },
+    { path: '/demos/creator-portfolio/css/site.css', status: 200 },
+    { path: '/demos/creator-portfolio/projects/leaf-atlas/cover.svg', status: 200 },
     { path: '/search/', status: 404 },
     { path: '/en/search/', status: 404 },
     { path: '/search/index.json', status: 404 },
@@ -165,6 +170,9 @@ function validateResponse(check, status, body, pageUrl = null, options = {}) {
 
     if (check.exactText !== undefined && status === check.status && body.trim() !== check.exactText) {
         errors.push(`expected exact text ${JSON.stringify(check.exactText)}`);
+    }
+    if (check.containsText && status === check.status && !body.includes(check.containsText)) {
+        errors.push(`missing expected text ${JSON.stringify(check.containsText)}`);
     }
 
     if (check.html && status === check.status) {

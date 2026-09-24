@@ -1,0 +1,15 @@
+{{ $cover := .Resources.GetMatch .Params.cover }}
+{{ if not $cover }}{{ errorf "Missing cover image for %s: %v" .File.Path .Params.cover }}{{ end }}
+<article class="work-card">
+  <a href="{{ .RelPermalink }}" class="work-card-link" aria-label="查看{{ .Title }}">
+    <div class="card-media">
+      {{ with $cover }}<img src="{{ .RelPermalink }}" alt="{{ $.Params.cover_alt }}" width="1200" height="800" loading="lazy">{{ end }}
+      <span class="card-arrow" aria-hidden="true">↗</span>
+    </div>
+    <div class="card-copy">
+      <p class="card-category">{{ .Params.category }}</p>
+      <h3>{{ .Title }}</h3>
+      <p>{{ .Params.summary }}</p>
+    </div>
+  </a>
+</article>

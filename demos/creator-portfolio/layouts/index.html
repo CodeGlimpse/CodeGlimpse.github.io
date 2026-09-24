@@ -1,0 +1,43 @@
+{{ define "main" }}
+<main id="main">
+  <section class="intro shell" aria-labelledby="intro-title">
+    <div>
+      {{ with .Site.Params.demoNotice }}<p class="eyebrow">{{ . }}</p>{{ end }}
+      <h1 id="intro-title">{{ .Site.Params.homeHeading }}</h1>
+    </div>
+    <p>{{ .Site.Params.homeIntro }}</p>
+  </section>
+
+  {{ $works := .Site.GetPage "/works" }}
+  <section class="showcase shell" aria-labelledby="works-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">01 / Gallery</p>
+        <h2 id="works-title">图片作品</h2>
+      </div>
+      <a class="text-link" href="{{ $works.RelPermalink }}">查看全部 <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="card-grid">
+      {{ range first 2 $works.Pages.ByWeight }}
+        {{ partial "work-card.html" . }}
+      {{ end }}
+    </div>
+  </section>
+
+  {{ $projects := .Site.GetPage "/projects" }}
+  <section class="showcase shell" aria-labelledby="projects-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">02 / Case studies</p>
+        <h2 id="projects-title">项目案例</h2>
+      </div>
+      <a class="text-link" href="{{ $projects.RelPermalink }}">查看全部 <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="card-grid">
+      {{ range first 2 $projects.Pages.ByWeight }}
+        {{ partial "work-card.html" . }}
+      {{ end }}
+    </div>
+  </section>
+</main>
+{{ end }}

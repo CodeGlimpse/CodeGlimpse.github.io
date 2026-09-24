@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{ $description := .Site.Params.description }}
+    {{ with .Params.summary }}{{ $description = . }}{{ end }}
+    <meta name="description" content="{{ $description }}">
+    <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ "favicon.svg" | relURL }}">
+    <link rel="stylesheet" href="{{ "css/site.css" | relURL }}">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到正文</a>
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="{{ site.Home.RelPermalink }}" aria-label="返回作品集首页">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>{{ .Site.Params.siteLabel }}</span>
+        </a>
+        <nav class="site-nav" aria-label="主导航">
+          <a href="{{ (site.GetPage "/works").RelPermalink }}" {{ if eq .Section "works" }}aria-current="page"{{ end }}>图片作品</a>
+          <a href="{{ (site.GetPage "/projects").RelPermalink }}" {{ if eq .Section "projects" }}aria-current="page"{{ end }}>项目案例</a>
+        </nav>
+      </div>
+    </header>
+
+    {{ block "main" . }}{{ end }}
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        {{ with .Site.Params.footerNote }}<p>{{ . }}</p>{{ end }}
+        <a href="{{ site.Home.RelPermalink }}">返回首页 ↑</a>
+      </div>
+    </footer>
+  </body>
+</html>

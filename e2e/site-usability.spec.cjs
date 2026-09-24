@@ -127,8 +127,8 @@ test('mobile home navigation stays visible without covering the privacy prompt o
             const nav = page.locator('.mobile-home-nav');
             await expect(nav).toBeVisible();
             const links = nav.locator('a');
-            await expect(links).toHaveCount(3);
-            expect(await links.evaluateAll(nodes => nodes.map(node => node.getAttribute('href')))).toEqual([prefix + '/archives/', prefix + '/tools/', prefix + '/games/']);
+            await expect(links).toHaveCount(4);
+            expect(await links.evaluateAll(nodes => nodes.map(node => node.getAttribute('href')))).toEqual([prefix + '/archives/', prefix + '/tools/', prefix + '/games/', prefix + '/demos/']);
             const navBox = await nav.boundingBox();
             const notice = page.locator('#codeglimpse-privacy-notice');
             if (await notice.isVisible()) {

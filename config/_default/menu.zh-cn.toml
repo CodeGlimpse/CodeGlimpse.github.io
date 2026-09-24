@@ -18,7 +18,7 @@
     identifier = "links"
     name = "链接"
     url = "/links/"
-    weight = 8
+    weight = 9
     [main.params]
         icon = "link"
 
@@ -34,7 +34,7 @@
     identifier = "privacy"
     name = "隐私"
     url = "/privacy/"
-    weight = 9
+    weight = 10
     [main.params]
         icon = "link"
 
@@ -50,9 +50,17 @@
     identifier = "about"
     name = "关于"
     url = "/about/"
-    weight = 7
+    weight = 8
     [main.params]
         icon = "link"
+
+[[main]]
+    identifier = "demos"
+    name = "演示"
+    url = "/demos/"
+    weight = 7
+    [main.params]
+        icon = "photo"
 
 [[social]]
     identifier = "rss"

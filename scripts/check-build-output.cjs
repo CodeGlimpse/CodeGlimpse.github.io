@@ -322,6 +322,8 @@ if (!fs.existsSync(outputRoot)) {
     const keyPages = [
         'index.html',
         'en/index.html',
+        'demos/index.html',
+        'en/demos/index.html',
         'privacy/index.html',
         'en/privacy/index.html',
         'links/index.html',
@@ -366,6 +368,28 @@ if (!fs.existsSync(outputRoot)) {
         checkAnalytics(relativeFile, html);
         checkPrivacyMarkup(relativeFile, html);
     }
+    for (const catalog of ['demos/index.html', 'en/demos/index.html']) {
+        requirePattern(catalog, readOutput(catalog), /href=["']?\/demos\/creator-portfolio\//i,
+            'missing creator portfolio link');
+    }
+    for (const page of [
+        'index.html',
+        'works/index.html',
+        'projects/index.html',
+        'works/window-light/index.html',
+        'works/paper-tide/index.html',
+        'projects/rain-notes/index.html',
+        'projects/leaf-atlas/index.html',
+    ]) {
+        requireFile(`demos/creator-portfolio/${page}`);
+    }
+    requireFile('demos/creator-portfolio/css/site.css');
+    requireFile('demos/creator-portfolio/projects/leaf-atlas/cover.svg');
+    const portfolioHome = readOutput('demos/creator-portfolio/index.html');
+    requirePattern('demos/creator-portfolio/index.html', portfolioHome, /虚构演示/,
+        'portfolio must disclose that its content is fictional');
+    forbidPattern('demos/creator-portfolio/index.html', portfolioHome, /livereload/i,
+        'development livereload script must not appear in published demo');
     checkInternalReviewText(outputRoot);
 }
 

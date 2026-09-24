@@ -1,0 +1,21 @@
+{{- $page := . -}}
+{{- $cover := $page.Resources.GetMatch $page.Params.cover -}}
+{{- if not $cover -}}{{ errorf "Missing cover for %s" $page.File.Path }}{{ end -}}
+{{- $preview := $cover.Resize "760x jpg q76" -}}
+{{- $preview = resources.Copy (printf "previews/%s.jpg" $page.Slug) $preview -}}
+<article class="work-card">
+  <a class="work-card-link" href="{{ $page.RelPermalink }}" aria-label="查看《{{ $page.Title }}》作品详情">
+    <div class="work-card-media">
+      <img src="{{ $preview.RelPermalink }}" width="{{ $preview.Width }}" height="{{ $preview.Height }}" alt="{{ $page.Params.cover_alt }}" loading="lazy" decoding="async">
+      <span class="card-arrow" aria-hidden="true">↗</span>
+    </div>
+    <div class="work-card-caption">
+      <div>
+        <p class="kicker">{{ $page.Params.series }}</p>
+        <h3>{{ $page.Title }}</h3>
+      </div>
+      <span class="card-index" aria-hidden="true">0{{ $page.Weight }}</span>
+    </div>
+    <p class="card-summary">{{ $page.Params.summary }}</p>
+  </a>
+</article>

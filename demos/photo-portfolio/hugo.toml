@@ -1,0 +1,13 @@
+baseURL = 'https://blog.codeglimpse.top/demos/photo-portfolio/'
+languageCode = 'zh-CN'
+title = '留光｜摄影作品集演示'
+disableKinds = ['taxonomy', 'term', 'RSS']
+
+[params]
+creatorName = '林予安'
+description = '虚构摄影师林予安的作品集演示。图片由 AI 生成，用于检验摄影作品展示与 Markdown 更新流程。'
+demoNotice = '虚构演示 · 图片由 AI 生成，非真实摄影作品或客户案例。'
+contactPlaceholder = 'contact@example.invalid'
+
+[markup.goldmark.renderer]
+unsafe = false

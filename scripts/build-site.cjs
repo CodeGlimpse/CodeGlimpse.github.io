@@ -5,6 +5,9 @@ const projectRoot = path.resolve(__dirname, '..');
 const portfolioRoot = path.join(projectRoot, 'demos', 'creator-portfolio');
 const portfolioOutput = path.join(projectRoot, 'public', 'demos', 'creator-portfolio');
 const portfolioBaseURL = 'https://blog.codeglimpse.top/demos/creator-portfolio/';
+const photoRoot = path.join(projectRoot, 'demos', 'photo-portfolio');
+const photoOutput = path.join(projectRoot, 'public', 'demos', 'photo-portfolio');
+const photoBaseURL = 'https://blog.codeglimpse.top/demos/photo-portfolio/';
 
 function resolveSourceCommit(environment = process.env) {
     const configured = String(environment.HUGO_PARAMS_SOURCECOMMIT || '').trim();
@@ -45,7 +48,20 @@ function buildSite(args = process.argv.slice(2), environment = process.env) {
         windowsHide: true,
     });
     if (portfolio.error) throw portfolio.error;
-    return portfolio.status ?? 1;
+    if (portfolio.status !== 0) return portfolio.status ?? 1;
+
+    const photo = spawnSync('hugo', [
+        '--cleanDestinationDir', '--minify', '--gc', '--panicOnWarning',
+        '--baseURL', photoBaseURL,
+        '--destination', photoOutput,
+    ], {
+        cwd: photoRoot,
+        env: environment,
+        stdio: 'inherit',
+        windowsHide: true,
+    });
+    if (photo.error) throw photo.error;
+    return photo.status ?? 1;
 }
 
 if (require.main === module) {

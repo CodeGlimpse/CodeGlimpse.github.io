@@ -371,6 +371,10 @@ if (!fs.existsSync(outputRoot)) {
     for (const catalog of ['demos/index.html', 'en/demos/index.html']) {
         requirePattern(catalog, readOutput(catalog), /href=["']?\/demos\/creator-portfolio\//i,
             'missing creator portfolio link');
+        requirePattern(catalog, readOutput(catalog), /href=["']?\/demos\/photo-portfolio\//i,
+            'missing photography portfolio link');
+        requirePattern(catalog, readOutput(catalog), /src=["']?\/demos\/photo-portfolio\/previews\/rain-street\.jpg/i,
+            'missing photography portfolio cover');
     }
     for (const page of [
         'index.html',
@@ -390,6 +394,37 @@ if (!fs.existsSync(outputRoot)) {
         'portfolio must disclose that its content is fictional');
     forbidPattern('demos/creator-portfolio/index.html', portfolioHome, /livereload/i,
         'development livereload script must not appear in published demo');
+
+    const photoPages = [
+        'index.html',
+        'works/index.html',
+        'works/rain-street/index.html',
+        'works/window-light/index.html',
+        'works/low-tide/index.html',
+        'about/index.html',
+    ];
+    for (const page of photoPages) {
+        const file = `demos/photo-portfolio/${page}`;
+        const html = readOutput(file);
+        if (!html) continue;
+        checkImagesHaveAlt(file, html);
+        requirePattern(file, html, /\/demos\/photo-portfolio\/css\/site\.css/i,
+            'missing photography portfolio stylesheet');
+        forbidPattern(file, html, /livereload/i,
+            'development livereload script must not appear in published demo');
+    }
+    requireFile('demos/photo-portfolio/css/site.css');
+    requireFile('demos/photo-portfolio/previews/rain-street.jpg');
+    const photoHome = readOutput('demos/photo-portfolio/index.html');
+    requirePattern('demos/photo-portfolio/index.html', photoHome, /虚构演示/,
+        'photography portfolio must disclose that its content is fictional');
+    requirePattern('demos/photo-portfolio/index.html', photoHome, /AI 生成/,
+        'photography portfolio must disclose AI-generated imagery');
+    for (const section of ['works', 'about']) {
+        requirePattern('demos/photo-portfolio/index.html', photoHome,
+            new RegExp(`href=["']?\\/demos\\/photo-portfolio\\/${section}\\/`, 'i'),
+            `photography portfolio is missing its ${section} navigation link`);
+    }
     checkInternalReviewText(outputRoot);
 }
 

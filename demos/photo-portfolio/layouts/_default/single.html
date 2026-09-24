@@ -1,0 +1,22 @@
+{{ define "main" }}
+<main id="main" class="shell about-page" tabindex="-1">
+  <header class="page-heading">
+    <p class="eyebrow">ABOUT / CONTACT</p>
+    <h1>{{ .Title }}</h1>
+    <p>一个小型作品集所需的自我介绍与联系入口，都放在这里。</p>
+  </header>
+  <div class="about-grid">
+    <div class="about-monogram" aria-hidden="true"><span>留<br>光</span><small>LIGHT / STILL</small></div>
+    <div>
+      <p class="eyebrow">林予安 / 虚构摄影师</p>
+      <div class="prose">{{ .Content }}</div>
+      <section id="contact" class="contact-panel" aria-labelledby="contact-title">
+        <p class="eyebrow">CONTACT</p>
+        <h2 id="contact-title">联系入口</h2>
+        <p>演示邮箱：<strong>{{ site.Params.contactPlaceholder }}</strong></p>
+        <p class="contact-note">此地址为占位示例，请勿发送邮件。正式使用前请替换为本人确认的联系方式。</p>
+      </section>
+    </div>
+  </div>
+</main>
+{{ end }}

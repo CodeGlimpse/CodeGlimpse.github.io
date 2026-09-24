@@ -1,0 +1,12 @@
+{{ define "main" }}
+<main id="main" class="shell listing-page" tabindex="-1">
+  <header class="page-heading">
+    <p class="eyebrow">ARCHIVE / 01—03</p>
+    <h1>{{ .Title }}</h1>
+    <p>{{ .Params.summary }}</p>
+  </header>
+  <div class="card-grid works-grid">
+    {{ range .Pages.ByWeight }}{{ partial "work-card.html" . }}{{ end }}
+  </div>
+</main>
+{{ end }}

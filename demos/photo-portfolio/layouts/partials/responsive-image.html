@@ -1,0 +1,15 @@
+{{- $page := .page -}}
+{{- $source := $page.Resources.GetMatch .name -}}
+{{- if not $source -}}
+  {{- errorf "Missing image %q in %s" .name $page.File.Path -}}
+{{- else -}}
+  {{- $small := $source.Resize "640x jpg q76" -}}
+  {{- $medium := $source.Resize "1080x jpg q80" -}}
+  {{- $large := $source.Resize "1440x jpg q82" -}}
+  {{- $sizes := .sizes | default "(max-width: 700px) 100vw, 80vw" -}}
+  {{- $loading := .loading | default "lazy" -}}
+  <picture class="{{ .class }}">
+    <source type="image/jpeg" srcset="{{ $small.RelPermalink }} 640w, {{ $medium.RelPermalink }} 1080w, {{ $large.RelPermalink }} 1440w" sizes="{{ $sizes }}">
+    <img src="{{ $source.RelPermalink }}" alt="{{ .alt }}" width="{{ $source.Width }}" height="{{ $source.Height }}" loading="{{ $loading }}" decoding="async">
+  </picture>
+{{- end -}}

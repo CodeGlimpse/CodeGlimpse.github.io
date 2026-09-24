@@ -91,6 +91,9 @@ jobs:
             - name: Check portfolio demo links
               run: python3 demos/creator-portfolio/scripts/check_build.py public/demos/creator-portfolio --base-url https://blog.codeglimpse.top/demos/creator-portfolio/ --check-demo-pages
 
+            - name: Check photography demo links and image descriptions
+              run: python3 demos/creator-portfolio/scripts/check_build.py public/demos/photo-portfolio --base-url https://blog.codeglimpse.top/demos/photo-portfolio/
+
             - name: Write build summary
               if: always()
               env:

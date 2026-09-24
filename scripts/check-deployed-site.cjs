@@ -11,6 +11,14 @@ const checks = [
     { path: '/demos/creator-portfolio/', status: 200, containsText: '虚构演示' },
     { path: '/demos/creator-portfolio/css/site.css', status: 200 },
     { path: '/demos/creator-portfolio/projects/leaf-atlas/cover.svg', status: 200 },
+    { path: '/demos/photo-portfolio/', status: 200, demoHtml: true, demoNavigation: true, requiredText: ['虚构演示', 'AI 生成'] },
+    { path: '/demos/photo-portfolio/works/', status: 200, demoHtml: true },
+    { path: '/demos/photo-portfolio/works/rain-street/', status: 200, demoHtml: true },
+    { path: '/demos/photo-portfolio/works/window-light/', status: 200, demoHtml: true },
+    { path: '/demos/photo-portfolio/works/low-tide/', status: 200, demoHtml: true },
+    { path: '/demos/photo-portfolio/about/', status: 200, demoHtml: true },
+    { path: '/demos/photo-portfolio/css/site.css', status: 200 },
+    { path: '/demos/photo-portfolio/previews/rain-street.jpg', status: 200 },
     { path: '/search/', status: 404 },
     { path: '/en/search/', status: 404 },
     { path: '/search/index.json', status: 404 },
@@ -174,6 +182,26 @@ function validateResponse(check, status, body, pageUrl = null, options = {}) {
     if (check.containsText && status === check.status && !body.includes(check.containsText)) {
         errors.push(`missing expected text ${JSON.stringify(check.containsText)}`);
     }
+    for (const text of check.requiredText ?? []) {
+        if (status === check.status && !body.includes(text)) errors.push(`missing expected text ${JSON.stringify(text)}`);
+    }
+
+    // Standalone Hugo demos have their own layout, CSS, and metadata contract.
+    if (check.demoHtml && status === check.status) {
+        if (!/<html\b/i.test(body)) errors.push('expected an HTML document');
+        if (!/<main\b/i.test(body)) errors.push('missing main landmark');
+        if (!/<title\b[^>]*>[^<]+<\/title>/i.test(body)) errors.push('missing page title');
+        if (!/\/demos\/photo-portfolio\/css\/site\.css/i.test(body)) errors.push('missing demo stylesheet');
+        if (/livereload/i.test(body)) errors.push('development livereload script is present');
+        if (check.demoNavigation) {
+            const links = pageUrl ? collectLocalLinkUrls(pageUrl, body) : [];
+            for (const section of ['works', 'about']) {
+                if (!links.some((link) => new URL(link).pathname === `/demos/photo-portfolio/${section}/`)) {
+                    errors.push(`missing ${section} navigation link`);
+                }
+            }
+        }
+    }
 
     if (check.html && status === check.status) {
         if (!/<html\b/i.test(body)) errors.push('expected an HTML document');
@@ -293,7 +321,7 @@ async function checkEndpoint(baseUrl, check) {
                 url,
                 status: response.status,
                 body,
-                assets: check.html && response.status === check.status
+                assets: (check.html || check.demoHtml) && response.status === check.status
                     ? [...collectLocalAssetUrls(url, body), ...collectLocalLinkUrls(url, body)]
                     : [],
                 errors: validateResponse(check, response.status, body, url, options),

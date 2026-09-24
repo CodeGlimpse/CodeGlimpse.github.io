@@ -23,6 +23,23 @@
             <span class="demo-card-action">{{ if eq .Language.Lang "en" }}Open demo{{ else }}打开演示站{{ end }} <span aria-hidden="true">→</span></span>
         </div>
     </a>
+    <a class="demo-card" href="{{ "demos/photo-portfolio/" | relURL }}">
+        <div class="demo-card-preview">
+            <div class="demo-preview-header" aria-hidden="true">
+                <span class="demo-preview-mark"></span>
+                <span>PHOTO / PORTFOLIO</span>
+            </div>
+            <img src="{{ "demos/photo-portfolio/previews/rain-street.jpg" | relURL }}"
+                alt="{{ if eq .Language.Lang "en" }}AI-generated fictional rainy street photograph from the portfolio demo{{ else }}摄影作品集演示中的虚构雨后街景，图片由 AI 生成{{ end }}"
+                loading="lazy" decoding="async" width="800" height="600">
+        </div>
+        <div class="demo-card-copy">
+            <span class="demo-card-label">{{ if eq .Language.Lang "en" }}Fictional photography · AI imagery{{ else }}虚构摄影 · AI 生成图片{{ end }}</span>
+            <h2>{{ if eq .Language.Lang "en" }}Photography portfolio{{ else }}摄影作品集{{ end }}</h2>
+            <p>{{ if eq .Language.Lang "en" }}Browse fictional photo stories, project pages, and a personal profile. In Chinese.{{ else }}浏览虚构摄影故事、作品详情与个人介绍，体验手机和电脑上的图片展示。{{ end }}</p>
+            <span class="demo-card-action">{{ if eq .Language.Lang "en" }}Open demo{{ else }}打开演示站{{ end }} <span aria-hidden="true">→</span></span>
+        </div>
+    </a>
 </section>
 <div class="demos-note">{{ .Content }}</div>
 {{ end }}

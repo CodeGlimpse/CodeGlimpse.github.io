@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Python on Personal Blogs for Fernweh</title><link>https://blog.codeglimpse.top/en/tags/python/</link><description>Recent content in Python on Personal Blogs for Fernweh</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Wed, 09 Sep 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/en/tags/python/index.xml" rel="self" type="application/rss+xml"/><item><title>Installed a Python package but cannot import it? Check the interpreter</title><link>https://blog.codeglimpse.top/en/p/python-environment-mismatch/</link><pubDate>Wed, 09 Sep 2026 00:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/p/python-environment-mismatch/</guid><description>&lt;p&gt;When &lt;code&gt;pip install&lt;/code&gt; succeeds but a program raises &lt;code&gt;ModuleNotFoundError&lt;/code&gt;, first check whether &lt;strong&gt;installation and execution use the same Python interpreter&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;This example uses Windows, Python 3.13.2, and two isolated virtual environments. The useful evidence is the interpreter path; the same approach applies to other Python 3 versions.&lt;/p&gt;
+&lt;h2 id="identify-the-commands-you-are-running"&gt;Identify the commands you are running
+&lt;/h2&gt;&lt;p&gt;Run these commands in the same PowerShell window that launches the program:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Get-Command&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;py&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="n"&gt;-All&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import sys; print(sys.executable); print(sys.prefix); print(sys.base_prefix)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;Get-Command&lt;/code&gt; shows command resolution, &lt;code&gt;sys.executable&lt;/code&gt; identifies the running interpreter, and &lt;code&gt;python -m pip&lt;/code&gt; loads pip through that interpreter. Matching version numbers are insufficient: several directories can contain the same Python version.&lt;/p&gt;
+&lt;p&gt;On this machine, &lt;code&gt;python&lt;/code&gt; resolves to &lt;code&gt;D:\JDKs\Python3.13\python.exe&lt;/code&gt;. The legacy &lt;code&gt;py&lt;/code&gt; launcher lists regular 3.13, free-threaded 3.13t, and 2.7; its default entry is 3.13t. Thus &lt;code&gt;py&lt;/code&gt; and &lt;code&gt;python&lt;/code&gt; can choose different runtimes.&lt;/p&gt;
+&lt;p&gt;The legacy launcher supports &lt;code&gt;py --list-paths&lt;/code&gt;; the newer Python Install Manager uses &lt;code&gt;py list&lt;/code&gt;. Check the help output to identify your launcher, then select an explicit version such as &lt;code&gt;py -3.13&lt;/code&gt;. See the &lt;a class="link" href="https://blog.codeglimpse.top/en/p/python-install/" &gt;Python installation guide&lt;/a&gt; for installation options.&lt;/p&gt;
+&lt;h2 id="reproducing-an-environment-mismatch"&gt;Reproducing an environment mismatch
+&lt;/h2&gt;&lt;p&gt;I created &lt;code&gt;env-a&lt;/code&gt; and &lt;code&gt;env-b&lt;/code&gt; in an isolated directory and built a local demonstration package named &lt;code&gt;blog-env-demo&lt;/code&gt;. It exposes a string to identify a successful import. &lt;strong&gt;It is not a dependency you need to download from PyPI.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Both environments run Python 3.13 and report pip 24.3.1, but pip lives in different directories. The experiment directory is abbreviated below:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;env-a:
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip 24.3.1 from &amp;lt;experiment&amp;gt;\env-a\Lib\site-packages\pip (python 3.13)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;env-b:
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip 24.3.1 from &amp;lt;experiment&amp;gt;\env-b\Lib\site-packages\pip (python 3.13)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;After installing the local wheel only in A, the import succeeds in A and fails in B:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\&lt;/span&gt;&lt;span class="nb"&gt;env-a&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import blog_env_demo; print(blog_env_demo.MARKER)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# installed in this interpreter&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\&lt;/span&gt;&lt;span class="nb"&gt;env-b&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import blog_env_demo&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# ModuleNotFoundError: No module named &amp;#39;blog_env_demo&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Installing that same wheel through &lt;strong&gt;B&amp;rsquo;s interpreter with &lt;code&gt;-m pip&lt;/code&gt;&lt;/strong&gt; makes the import succeed in B too. No Python reinstallation or global PATH change was needed. The failure was an environment mismatch.&lt;/p&gt;
+&lt;h2 id="apply-the-fix-to-your-project"&gt;Apply the fix to your project
+&lt;/h2&gt;&lt;p&gt;If a project already has a &lt;code&gt;.venv&lt;/code&gt;, inspect it directly:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import sys; print(sys.executable)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;For a new project without an environment, create one with an installed target version:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="mf"&gt;-3.13&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;venv&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;venv&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;For a project that supplies &lt;code&gt;requirements.txt&lt;/code&gt;, use the same interpreter for installation and execution:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;-r&lt;/span&gt; &lt;span class="n"&gt;requirements&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;txt&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;py&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Substitute the project&amp;rsquo;s actual Python version, dependency file, and entry point. Configure the IDE, debugger, or scheduled task to use that interpreter too. Calling the executable directly does not require activation or a PowerShell execution-policy change.&lt;/p&gt;
+&lt;h2 id="if-the-paths-already-match"&gt;If the paths already match
+&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Symptom&lt;/th&gt;
+&lt;th&gt;Next check&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Distribution and import names differ&lt;/td&gt;
+&lt;td&gt;Consult the package documentation: &lt;code&gt;Pillow&lt;/code&gt;, for example, is imported as &lt;code&gt;PIL&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;The traceback points to a local file&lt;/td&gt;
+&lt;td&gt;Look for files such as &lt;code&gt;json.py&lt;/code&gt; or &lt;code&gt;requests.py&lt;/code&gt; that shadow another module&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;pip lists the package but the IDE fails&lt;/td&gt;
+&lt;td&gt;Inspect the interpreter in the actual run configuration&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Regular and free-threaded builds are mixed&lt;/td&gt;
+&lt;td&gt;Check runtime and binary-extension compatibility; do not copy another environment&amp;rsquo;s &lt;code&gt;site-packages&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;sys.prefix != sys.base_prefix&lt;/code&gt; normally indicates a virtual environment. Diagnose the interpreter that actually runs the program and retain the complete error message.&lt;/p&gt;
+&lt;h2 id="references"&gt;References
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/library/venv.html" target="_blank" rel="noopener"
+&gt;Python: venv&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/using/windows.html" target="_blank" rel="noopener"
+&gt;Using Python on Windows&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pip.pypa.io/en/stable/user_guide/" target="_blank" rel="noopener"
+&gt;pip user guide&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>How to Download and Install Python</title><link>https://blog.codeglimpse.top/en/p/python-install/</link><pubDate>Sun, 28 Sep 2025 16:20:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/p/python-install/</guid><description>&lt;p&gt;Choose a Python version for your project, identify the interpreter actually being run, then create a virtual environment. The following steps cover &lt;strong&gt;Python 3.14&lt;/strong&gt;; screenshots of the standalone installer show the 3.12/3.13 interface.&lt;/p&gt;
+&lt;h2 id="windows-start-with-python-install-manager"&gt;Windows: start with Python Install Manager
+&lt;/h2&gt;&lt;p&gt;Official guidance now recommends obtaining &lt;strong&gt;Python Install Manager&lt;/strong&gt; from &lt;a class="link" href="https://www.python.org/downloads/windows/" target="_blank" rel="noopener"
+&gt;python.org&lt;/a&gt; or Microsoft Store. Distinguish it from the older standalone &lt;code&gt;.exe&lt;/code&gt; installer and legacy &lt;code&gt;py&lt;/code&gt; launcher; consult the Windows documentation if their commands conflict.&lt;/p&gt;
+&lt;p&gt;After installing the manager, check its commands and install the required version. These examples select 3.14; check your project&amp;rsquo;s dependency compatibility first:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;help&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="mf"&gt;3.14&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;list&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="mf"&gt;-3.14&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="mf"&gt;-3.14&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import sys; print(sys.executable)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;The manager downloads the runtime. Check the official Windows support requirements for Python 3.14 rather than assuming that historical platform support still applies.&lt;/p&gt;
+&lt;h3 id="existing-standalone-312313-installers"&gt;Existing standalone 3.12/3.13 installers
+&lt;/h3&gt;&lt;p&gt;You may still encounter the older interface. Start with a per-user installation for ordinary development; install for all users with elevated privileges only when that scope is needed. The &lt;code&gt;py&lt;/code&gt; launcher selects versions, but does not make &lt;code&gt;python&lt;/code&gt; resolve identically in every terminal.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://blog.codeglimpse.top/en/p/python-install/1.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/1_hu_75941b03da09acbf.png 480w, https://blog.codeglimpse.top/en/p/python-install/1_hu_5a66238aca6937f8.png 1024w"
+loading="lazy"
+alt="Historical Windows Python installer"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Keep pip available. Debug symbols, debug binaries, and the full standard-library test suite are optional components. Choose PATH changes and file associations according to the interpreters already installed rather than selecting every option.&lt;/p&gt;
+&lt;p&gt;For a silent installation, use the exact filename of an installer you have already downloaded and checked. These older-installer options demonstrate a per-user installation:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# Replace the filename with your verified installer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;./&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;3.13&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;7&lt;/span&gt;&lt;span class="n"&gt;-amd64&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="n"&gt;quiet&lt;/span&gt; &lt;span class="n"&gt;InstallAllUsers&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;0&lt;/span&gt; &lt;span class="n"&gt;PrependPath&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;1&lt;/span&gt; &lt;span class="n"&gt;Include_test&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;The filename demonstrates syntax; it does not recommend 3.13.7 as the latest patch release. The 3.14 documentation marks the full installer as deprecated, so evaluate the install manager first for new environments.&lt;/p&gt;
+&lt;h2 id="macos"&gt;macOS
+&lt;/h2&gt;&lt;h3 id="official-installer"&gt;Official installer
+&lt;/h3&gt;&lt;p&gt;Download a package compatible with your macOS version and processor from &lt;a class="link" href="https://www.python.org/downloads/macos/" target="_blank" rel="noopener"
+&gt;Python for macOS&lt;/a&gt;, then read its platform and license information.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://blog.codeglimpse.top/en/p/python-install/9.png"
+width="800"
+height="595"
+srcset="https://blog.codeglimpse.top/en/p/python-install/9_hu_bc40f6fa3bcf60a4.png 480w, https://blog.codeglimpse.top/en/p/python-install/9_hu_5c672be36a442214.png 1024w"
+loading="lazy"
+alt="Historical macOS Python installer"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="322px"
+&gt;&lt;/p&gt;
+&lt;p&gt;After installation, follow the current installer&amp;rsquo;s instructions for &lt;code&gt;Install Certificates.command&lt;/code&gt; in the matching version directory. It downloads certificate components for that Python installation. Do not copy an outdated version directory from a screenshot.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 -c &lt;span class="s2"&gt;&amp;#34;import sys; print(sys.executable)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Do not modify or remove Apple&amp;rsquo;s &lt;code&gt;/usr/bin/python3&lt;/code&gt;. An official Python installation can coexist with the interpreter used by Apple&amp;rsquo;s developer tools.&lt;/p&gt;
+&lt;h3 id="if-you-already-use-homebrew"&gt;If you already use Homebrew
+&lt;/h3&gt;&lt;p&gt;Check the &lt;a class="link" href="https://docs.brew.sh/Installation" target="_blank" rel="noopener"
+&gt;current Homebrew requirements&lt;/a&gt;, including supported macOS, hardware, and Xcode Command Line Tools. They should not be summarized as a requirement to install system Python first.&lt;/p&gt;
+&lt;p&gt;In a terminal where Homebrew is configured:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;brew --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;brew install python
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;command&lt;/span&gt; -v python3
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;If Homebrew is absent, follow its official installation guidance, downloading and reviewing the installer before execution. Diagnose terminal configuration before forcing link replacements.&lt;/p&gt;
+&lt;h2 id="linux-use-distribution-packages"&gt;Linux: use distribution packages
+&lt;/h2&gt;&lt;h3 id="debian--ubuntu"&gt;Debian / Ubuntu
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt update
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install python3 python3-pip python3-venv
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Installing Python does not require upgrading the entire machine, recursively changing ownership of &lt;code&gt;~/.local&lt;/code&gt;, or deleting APT lock files. If a lock is held, identify the active package-management task, wait for it to finish, or follow the distribution&amp;rsquo;s recovery guidance.&lt;/p&gt;
+&lt;h3 id="fedora"&gt;Fedora
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf install python3 python3-pip
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;RHEL and other distributions have their own package versions and repository policies. Follow their documentation, preserve the system Python, and do not default to &lt;code&gt;sudo pip&lt;/code&gt; for project dependencies.&lt;/p&gt;
+&lt;h2 id="create-a-virtual-environment-per-project"&gt;Create a virtual environment per project
+&lt;/h2&gt;&lt;p&gt;Run these commands from the project directory. The Windows example explicitly selects an installed 3.14 runtime:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="mf"&gt;-3.14&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;venv&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;venv&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;macOS / Linux:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 -m venv .venv
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;.venv/bin/python --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;.venv/bin/python -m pip --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Calling the environment&amp;rsquo;s interpreter directly avoids changing PowerShell execution policy just to use the example. Use that same interpreter with &lt;code&gt;-m pip&lt;/code&gt; when installing dependencies.&lt;/p&gt;
+&lt;h2 id="verification-and-common-problems"&gt;Verification and common problems
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Record the OS, &lt;code&gt;--version&lt;/code&gt;, &lt;code&gt;sys.executable&lt;/code&gt;, and &lt;code&gt;pip --version&lt;/code&gt;; confirm that they identify the intended environment.&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;python&lt;/code&gt; opens the Store or selects the wrong version, check application execution aliases, &lt;code&gt;py list&lt;/code&gt;, and PATH.&lt;/li&gt;
+&lt;li&gt;For &lt;code&gt;externally-managed-environment&lt;/code&gt;, create a project virtual environment instead of bypassing distribution protections.&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;venv&lt;/code&gt; or &lt;code&gt;ensurepip&lt;/code&gt; is missing, install the distribution&amp;rsquo;s matching virtual-environment component and recreate the environment.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="official-references"&gt;Official references
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/using/windows.html" target="_blank" rel="noopener"
+&gt;Python on Windows&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/using/mac.html" target="_blank" rel="noopener"
+&gt;Python on macOS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/library/venv.html" target="_blank" rel="noopener"
+&gt;Virtual environments with venv&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.brew.sh/Installation" target="_blank" rel="noopener"
+&gt;Homebrew installation requirements&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

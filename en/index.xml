@@ -1,0 +1,961 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Personal Blogs for Fernweh</title><link>https://blog.codeglimpse.top/en/</link><description>My digital garden 🌱 - A blog website built with GitHub Pages. Thoughts welcome!</description><language>en</language><atom:link href="https://blog.codeglimpse.top/en/index.xml" rel="self" type="application/rss+xml"/><item><title>Why a reaction test can add extra milliseconds: press, release, and rendering</title><link>https://blog.codeglimpse.top/en/p/reaction-timing/</link><guid isPermaLink="true">https://blog.codeglimpse.top/en/p/reaction-timing/</guid><pubDate>Wed, 09 Sep 2026 00:02:00 +0800</pubDate><description>&lt;p&gt;The &lt;a class="link" href="https://blog.codeglimpse.top/en/games/reaction/" &gt;reaction test&lt;/a&gt; on this site once reported over 300 milliseconds for a person who typically measured about 220–250 milliseconds elsewhere. The old implementation included the time between pressing and releasing the mouse button.&lt;/p&gt;
+&lt;h2 id="a-click-usually-arrives-after-the-press"&gt;A click usually arrives after the press
+&lt;/h2&gt;&lt;p&gt;A typical mouse click includes a press, a release, and then a &lt;code&gt;click&lt;/code&gt; event. If the intended measurement is how quickly someone presses after seeing green, handling &lt;code&gt;click&lt;/code&gt; can select a later endpoint.&lt;/p&gt;
+&lt;p&gt;In a controlled browser-input comparison, the mouse was pressed 230 milliseconds after green, held for 80 milliseconds, and released. The old implementation recorded &lt;strong&gt;310 milliseconds&lt;/strong&gt; on release. The corrected implementation records &lt;strong&gt;230 milliseconds&lt;/strong&gt; on press and ignores the later release for scoring.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://blog.codeglimpse.top/en/p/reaction-timing/timing.svg"
+loading="lazy"
+alt="Press at 230 milliseconds, release at 310; click includes the extra hold time"
+&gt;&lt;/p&gt;
+&lt;p&gt;Those numbers are specified test timings, not average human reaction times or a fixed correction to subtract from every score.&lt;/p&gt;
+&lt;h2 id="define-the-input-endpoint"&gt;Define the input endpoint
+&lt;/h2&gt;&lt;p&gt;The game now records these events:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Input&lt;/th&gt;
+&lt;th&gt;Measurement endpoint&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Mouse&lt;/td&gt;
+&lt;td&gt;Primary-button &lt;code&gt;pointerdown&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Touch&lt;/td&gt;
+&lt;td&gt;The primary pointer contacting the panel&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Keyboard&lt;/td&gt;
+&lt;td&gt;The initial Space or Enter &lt;code&gt;keydown&lt;/code&gt;, excluding auto-repeat&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Virtual activation from assistive technology&lt;/td&gt;
+&lt;td&gt;A supported &lt;code&gt;click&lt;/code&gt; path without duplicate scoring&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;A compatibility &lt;code&gt;click&lt;/code&gt; following an already-recorded mouse or touch press must not start another round. Additional pointers, non-primary buttons, and modifier combinations should not count as ordinary reactions.&lt;/p&gt;
+&lt;h2 id="measure-when-the-event-happened"&gt;Measure when the event happened
+&lt;/h2&gt;&lt;p&gt;An event may occur before the main thread can process it. If a press occurs at 230 milliseconds but its handler runs at 310, reading &lt;code&gt;performance.now()&lt;/code&gt; inside that handler includes 80 milliseconds of queue delay.&lt;/p&gt;
+&lt;p&gt;The input path therefore prefers the event&amp;rsquo;s &lt;code&gt;timeStamp&lt;/code&gt;, normalized to the same clock as the start time. The core call is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;pressedAt&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;inputTime&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;timeStamp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;performance&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;now&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;performance&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;timeOrigin&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nx"&gt;state&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;respond&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;state&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;pressedAt&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Normalization handles invalid values and older timestamps based on Unix time rather than the page&amp;rsquo;s time origin. Subtracting unrelated clocks is not meaningful.&lt;/p&gt;
+&lt;p&gt;It also affects false starts: a press that occurred before green remains early even if it is processed after the signal appears.&lt;/p&gt;
+&lt;h2 id="align-the-visual-update-and-start-time"&gt;Align the visual update and start time
+&lt;/h2&gt;&lt;p&gt;A timeout expiring means its callback can run; it does not prove that the display is already green. Starting a timer before updating the display can include extra presentation delay.&lt;/p&gt;
+&lt;p&gt;After the random wait, the game updates the panel and records its start in the same animation-frame callback. Omitting pause and state checks, the sequence is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nx"&gt;requestAnimationFrame&lt;/span&gt;&lt;span class="p"&gt;(()&lt;/span&gt; &lt;span class="p"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ready&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;state&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;arm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;state&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;performance&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;now&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;requestAnimationFrame&lt;/code&gt; runs before painting, narrowing the gap between the script update and the next paint. &lt;strong&gt;It is not a timestamp of the physical pixels lighting up.&lt;/strong&gt; Display refresh, input hardware, browser behavior, and operating-system scheduling still affect the result.&lt;/p&gt;
+&lt;h2 id="pauses-and-restarts-belong-to-the-timing-model"&gt;Pauses and restarts belong to the timing model
+&lt;/h2&gt;&lt;p&gt;Pausing or leaving the game cancels both the pending timeout and any scheduled signal frame. Resuming starts a new wait while keeping completed samples. Otherwise an old callback could turn a new round green unexpectedly.&lt;/p&gt;
+&lt;p&gt;Early presses do not count toward the five valid samples. After a result, another press begins the next wait. Restarting clears the current round and pending work.&lt;/p&gt;
+&lt;p&gt;Use the same device, input method, and similar foreground conditions when comparing sites. These changes remove identifiable event-endpoint and queue-delay errors; a browser game still does not replace dedicated measurement hardware.&lt;/p&gt;
+&lt;h2 id="further-reading"&gt;Further reading
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://blog.codeglimpse.top/en/games/reaction/" &gt;Play the reaction test&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/CodeGlimpse/CodeGlimpse.github.io/blob/master/assets/js/games/reaction.js" target="_blank" rel="noopener"
+&gt;Game controller source&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerdown_event" target="_blank" rel="noopener"
+&gt;MDN: pointerdown&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.mozilla.org/en-US/docs/Web/API/Event/timeStamp" target="_blank" rel="noopener"
+&gt;MDN: Event.timeStamp&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame" target="_blank" rel="noopener"
+&gt;MDN: requestAnimationFrame&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>OpenClaw is installed but unusable: trace the runtime and Gateway</title><link>https://blog.codeglimpse.top/en/p/openclaw-troubleshooting/</link><guid isPermaLink="true">https://blog.codeglimpse.top/en/p/openclaw-troubleshooting/</guid><pubDate>Wed, 09 Sep 2026 00:01:00 +0800</pubDate><description>&lt;p&gt;An installation finishing does not establish that a task can run. The runtime, Gateway, authentication, and browser connection are separate stages. Locate the failing stage before choosing the next action.&lt;/p&gt;
+&lt;h2 id="check-command-resolution-and-runtime-first"&gt;Check command resolution and runtime first
+&lt;/h2&gt;&lt;p&gt;In Windows PowerShell:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Get-Command&lt;/span&gt; &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;npm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;openclaw&lt;/span&gt; &lt;span class="n"&gt;-All&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;openclaw&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;If a command is missing, check its installation method, executable directory, and the current terminal&amp;rsquo;s PATH. Once the CLI can be found, confirm that the Node.js version running it meets that OpenClaw release&amp;rsquo;s requirements.&lt;/p&gt;
+&lt;p&gt;This machine runs Node.js &lt;code&gt;v22.13.1&lt;/code&gt;. Running the &lt;strong&gt;launcher from the OpenClaw 2026.9.2 release package&lt;/strong&gt; in an isolated directory rejected even &lt;code&gt;--version&lt;/code&gt;, with exit code 1:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw: Node.js &amp;gt;=22.22.3 &amp;lt;23, &amp;gt;=24.15.0 &amp;lt;25, or &amp;gt;=25.9.0 is required (current: v22.13.1).
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;This reproduction ran only the package launcher and runtime guard; it did not install OpenClaw globally or start a Gateway. &lt;strong&gt;Being on Node 22 is insufficient if the patch version is below the supported floor.&lt;/strong&gt; Execution has not reached model authentication or browser pairing, so changing those settings cannot fix this error.&lt;/p&gt;
+&lt;p&gt;Both the 2026.9.2 package metadata and launcher specify this range. Choose a supported Node runtime for the OpenClaw release you use, then recheck both version commands. See &lt;a class="link" href="https://blog.codeglimpse.top/en/p/openclaw-install/" &gt;installation and configuration&lt;/a&gt; for the installation options.&lt;/p&gt;
+&lt;h2 id="once-the-cli-runs-inspect-the-gateway"&gt;Once the CLI runs, inspect the Gateway
+&lt;/h2&gt;&lt;p&gt;These are next-step checks for a working CLI, not successful output from the isolated experiment above:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw gateway status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw logs --follow
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;logs --follow&lt;/code&gt; streams logs until Ctrl+C. The official troubleshooting guide identifies &lt;code&gt;Runtime: running&lt;/code&gt;, &lt;code&gt;Connectivity probe: ok&lt;/code&gt;, and &lt;code&gt;Capability: ...&lt;/code&gt; as useful Gateway signals. Fields can vary by release; read the complete error.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Symptom&lt;/th&gt;
+&lt;th&gt;First check&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Service is not running&lt;/td&gt;
+&lt;td&gt;Installation method, startup logs, and service account&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ECONNREFUSED&lt;/code&gt; / connection refused&lt;/td&gt;
+&lt;td&gt;Destination address, port, and whether the intended service is listening&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Process runs but its probe fails&lt;/td&gt;
+&lt;td&gt;Address, port, authentication, and the actual probe error&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Terminal CLI and background service differ&lt;/td&gt;
+&lt;td&gt;OpenClaw/Node executable paths, versions, and configuration sources&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;openclaw doctor&lt;/code&gt; provides diagnostics. Read repair, migration, or restart prompts before accepting them. &lt;code&gt;doctor --fix&lt;/code&gt; and &lt;code&gt;gateway restart&lt;/code&gt; change state and belong after the problem has been narrowed down.&lt;/p&gt;
+&lt;h2 id="verify-model-requests-and-browser-connections-separately"&gt;Verify model requests and browser connections separately
+&lt;/h2&gt;&lt;p&gt;A reachable Gateway does not prove that model requests work. Using your own model configuration, try a simple request without sensitive content. Interpret authentication, provider quota, model-name, and network errors using the corresponding log messages. Read provider-specific details for 401, 403, and 429 responses.&lt;/p&gt;
+&lt;p&gt;For the browser, select the intended profile and connection mode:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile openclaw status
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;This checks the managed browser. To reuse a signed-in session, follow the &lt;a class="link" href="https://blog.codeglimpse.top/en/p/openclaw-chrome/" &gt;browser modes guide&lt;/a&gt; for &lt;code&gt;user&lt;/code&gt; or &lt;code&gt;chrome&lt;/code&gt; and complete the appropriate authorization. Opening a page, installing an extension, and attaching to the correct tab are distinct checks.&lt;/p&gt;
+&lt;h2 id="capture-useful-reproduction-details"&gt;Capture useful reproduction details
+&lt;/h2&gt;&lt;p&gt;Record system and software versions, commands, non-sensitive destination details, error times, and relevant log excerpts. Remove tokens, keys, cookies, and personal session content.&lt;/p&gt;
+&lt;p&gt;Check ordinary JSON examples with the &lt;a class="link" href="https://blog.codeglimpse.top/en/tools/json/" &gt;JSON tool&lt;/a&gt; and compare sanitized examples with &lt;a class="link" href="https://blog.codeglimpse.top/en/tools/diff/" &gt;Text Diff&lt;/a&gt;. Full OpenClaw configuration can be JSON5; use OpenClaw&amp;rsquo;s diagnostics rather than rewriting it with an ordinary JSON formatter.&lt;/p&gt;
+&lt;h2 id="references"&gt;References
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/gateway/troubleshooting" target="_blank" rel="noopener"
+&gt;Official OpenClaw troubleshooting&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/install" target="_blank" rel="noopener"
+&gt;Installation and runtime requirements&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/tools/browser" target="_blank" rel="noopener"
+&gt;Browser modes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://www.npmjs.com/package/openclaw/v/2026.9.2" target="_blank" rel="noopener"
+&gt;OpenClaw 2026.9.2 package&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Installed a Python package but cannot import it? Check the interpreter</title><link>https://blog.codeglimpse.top/en/p/python-environment-mismatch/</link><guid isPermaLink="true">https://blog.codeglimpse.top/en/p/python-environment-mismatch/</guid><pubDate>Wed, 09 Sep 2026 00:00:00 +0800</pubDate><description>&lt;p&gt;When &lt;code&gt;pip install&lt;/code&gt; succeeds but a program raises &lt;code&gt;ModuleNotFoundError&lt;/code&gt;, first check whether &lt;strong&gt;installation and execution use the same Python interpreter&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;This example uses Windows, Python 3.13.2, and two isolated virtual environments. The useful evidence is the interpreter path; the same approach applies to other Python 3 versions.&lt;/p&gt;
+&lt;h2 id="identify-the-commands-you-are-running"&gt;Identify the commands you are running
+&lt;/h2&gt;&lt;p&gt;Run these commands in the same PowerShell window that launches the program:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Get-Command&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;py&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="n"&gt;-All&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import sys; print(sys.executable); print(sys.prefix); print(sys.base_prefix)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;Get-Command&lt;/code&gt; shows command resolution, &lt;code&gt;sys.executable&lt;/code&gt; identifies the running interpreter, and &lt;code&gt;python -m pip&lt;/code&gt; loads pip through that interpreter. Matching version numbers are insufficient: several directories can contain the same Python version.&lt;/p&gt;
+&lt;p&gt;On this machine, &lt;code&gt;python&lt;/code&gt; resolves to &lt;code&gt;D:\JDKs\Python3.13\python.exe&lt;/code&gt;. The legacy &lt;code&gt;py&lt;/code&gt; launcher lists regular 3.13, free-threaded 3.13t, and 2.7; its default entry is 3.13t. Thus &lt;code&gt;py&lt;/code&gt; and &lt;code&gt;python&lt;/code&gt; can choose different runtimes.&lt;/p&gt;
+&lt;p&gt;The legacy launcher supports &lt;code&gt;py --list-paths&lt;/code&gt;; the newer Python Install Manager uses &lt;code&gt;py list&lt;/code&gt;. Check the help output to identify your launcher, then select an explicit version such as &lt;code&gt;py -3.13&lt;/code&gt;. See the &lt;a class="link" href="https://blog.codeglimpse.top/en/p/python-install/" &gt;Python installation guide&lt;/a&gt; for installation options.&lt;/p&gt;
+&lt;h2 id="reproducing-an-environment-mismatch"&gt;Reproducing an environment mismatch
+&lt;/h2&gt;&lt;p&gt;I created &lt;code&gt;env-a&lt;/code&gt; and &lt;code&gt;env-b&lt;/code&gt; in an isolated directory and built a local demonstration package named &lt;code&gt;blog-env-demo&lt;/code&gt;. It exposes a string to identify a successful import. &lt;strong&gt;It is not a dependency you need to download from PyPI.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Both environments run Python 3.13 and report pip 24.3.1, but pip lives in different directories. The experiment directory is abbreviated below:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;env-a:
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip 24.3.1 from &amp;lt;experiment&amp;gt;\env-a\Lib\site-packages\pip (python 3.13)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;env-b:
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip 24.3.1 from &amp;lt;experiment&amp;gt;\env-b\Lib\site-packages\pip (python 3.13)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;After installing the local wheel only in A, the import succeeds in A and fails in B:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\&lt;/span&gt;&lt;span class="nb"&gt;env-a&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import blog_env_demo; print(blog_env_demo.MARKER)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# installed in this interpreter&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\&lt;/span&gt;&lt;span class="nb"&gt;env-b&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import blog_env_demo&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# ModuleNotFoundError: No module named &amp;#39;blog_env_demo&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Installing that same wheel through &lt;strong&gt;B&amp;rsquo;s interpreter with &lt;code&gt;-m pip&lt;/code&gt;&lt;/strong&gt; makes the import succeed in B too. No Python reinstallation or global PATH change was needed. The failure was an environment mismatch.&lt;/p&gt;
+&lt;h2 id="apply-the-fix-to-your-project"&gt;Apply the fix to your project
+&lt;/h2&gt;&lt;p&gt;If a project already has a &lt;code&gt;.venv&lt;/code&gt;, inspect it directly:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import sys; print(sys.executable)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;For a new project without an environment, create one with an installed target version:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="mf"&gt;-3.13&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;venv&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;venv&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;For a project that supplies &lt;code&gt;requirements.txt&lt;/code&gt;, use the same interpreter for installation and execution:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;-r&lt;/span&gt; &lt;span class="n"&gt;requirements&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;txt&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;py&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Substitute the project&amp;rsquo;s actual Python version, dependency file, and entry point. Configure the IDE, debugger, or scheduled task to use that interpreter too. Calling the executable directly does not require activation or a PowerShell execution-policy change.&lt;/p&gt;
+&lt;h2 id="if-the-paths-already-match"&gt;If the paths already match
+&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Symptom&lt;/th&gt;
+&lt;th&gt;Next check&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Distribution and import names differ&lt;/td&gt;
+&lt;td&gt;Consult the package documentation: &lt;code&gt;Pillow&lt;/code&gt;, for example, is imported as &lt;code&gt;PIL&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;The traceback points to a local file&lt;/td&gt;
+&lt;td&gt;Look for files such as &lt;code&gt;json.py&lt;/code&gt; or &lt;code&gt;requests.py&lt;/code&gt; that shadow another module&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;pip lists the package but the IDE fails&lt;/td&gt;
+&lt;td&gt;Inspect the interpreter in the actual run configuration&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Regular and free-threaded builds are mixed&lt;/td&gt;
+&lt;td&gt;Check runtime and binary-extension compatibility; do not copy another environment&amp;rsquo;s &lt;code&gt;site-packages&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;sys.prefix != sys.base_prefix&lt;/code&gt; normally indicates a virtual environment. Diagnose the interpreter that actually runs the program and retain the complete error message.&lt;/p&gt;
+&lt;h2 id="references"&gt;References
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/library/venv.html" target="_blank" rel="noopener"
+&gt;Python: venv&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/using/windows.html" target="_blank" rel="noopener"
+&gt;Using Python on Windows&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pip.pypa.io/en/stable/user_guide/" target="_blank" rel="noopener"
+&gt;pip user guide&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Protect Your Linux Server with Fail2ban</title><link>https://blog.codeglimpse.top/en/p/protect-your-linux-server-with-fail2ban/</link><guid isPermaLink="true">https://blog.codeglimpse.top/en/p/protect-your-linux-server-with-fail2ban/</guid><pubDate>Wed, 01 Apr 2026 15:00:00 +0800</pubDate><description>&lt;p&gt;Fail2ban reads failure events from logs and applies ban actions. It complements protection for services such as SSH, but needs the correct log source, filter, and firewall action. Installing the service alone does not protect every entry point.&lt;/p&gt;
+&lt;h2 id="scope-and-installation"&gt;Scope and installation
+&lt;/h2&gt;&lt;p&gt;These examples cover SSH with distribution packages on systemd-based Debian/Ubuntu. Check the distribution, actual SSH port, and installed Fail2ban version first. Fedora, RHEL, and other distributions have different repositories and logging defaults.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt update
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install fail2ban
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;fail2ban-client --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Prefer maintained distribution packages. If source installation is required, consult &lt;a class="link" href="https://github.com/fail2ban/fail2ban" target="_blank" rel="noopener"
+&gt;upstream guidance&lt;/a&gt; to select a release and confirm dependencies, service integration, and future updates.&lt;/p&gt;
+&lt;h2 id="identify-the-ssh-log-source"&gt;Identify the SSH log source
+&lt;/h2&gt;&lt;p&gt;Ubuntu/Debian commonly use the &lt;code&gt;ssh&lt;/code&gt; service unit; other environments may use &lt;code&gt;sshd&lt;/code&gt;. Inspect the actual unit and logs:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo systemctl status ssh --no-pager
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo journalctl -u ssh -n &lt;span class="m"&gt;30&lt;/span&gt; --no-pager
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;For file-based logging, confirm that a file such as &lt;code&gt;/var/log/auth.log&lt;/code&gt; exists and receives SSH authentication events. A path in a tutorial is not evidence that the machine writes to it.&lt;/p&gt;
+&lt;h2 id="configure-a-small-ssh-jail-override"&gt;Configure a small SSH jail override
+&lt;/h2&gt;&lt;p&gt;Keep the distribution&amp;rsquo;s &lt;code&gt;jail.conf&lt;/code&gt; and place only the overrides in &lt;code&gt;/etc/fail2ban/jail.d/sshd.local&lt;/code&gt;. Copying the entire default file makes later upstream changes harder to inherit.&lt;/p&gt;
+&lt;p&gt;Before enabling protection, retain a second management session or console and add a verified fixed administration address to &lt;code&gt;ignoreip&lt;/code&gt;. The example below contains loopback addresses only, not your remote management address.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[DEFAULT]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ignoreip&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;127.0.0.1/8 ::1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[sshd]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;enabled&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;ssh&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;backend&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;systemd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;maxretry&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;findtime&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;10m&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;bantime&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;1h&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;Set &lt;code&gt;port&lt;/code&gt; to the actual value if SSH uses a custom port.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;systemd&lt;/code&gt; backend reads the journal; &lt;strong&gt;do not combine it with a copied file-based &lt;code&gt;logpath&lt;/code&gt;&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;For file logs, choose a suitable backend and a verified path, for example &lt;code&gt;backend = polling&lt;/code&gt; with &lt;code&gt;logpath = /var/log/auth.log&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;maxretry&lt;/code&gt; and &lt;code&gt;findtime&lt;/code&gt; define the trigger; &lt;code&gt;bantime&lt;/code&gt; sets the ban duration. Adjust them for the service and recovery options.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="validate-before-enabling"&gt;Validate before enabling
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client -t
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;After configuration validation succeeds, enable or reload the service:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo systemctl &lt;span class="nb"&gt;enable&lt;/span&gt; --now fail2ban
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client reload
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client ping
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client status sshd
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Confirm that &lt;code&gt;sshd&lt;/code&gt; is enabled, the log source is correct, and the ban action works. Test from a controlled source while retaining a recovery path rather than repeatedly failing authentication on your only management connection.&lt;/p&gt;
+&lt;h2 id="bans-unbans-and-persistence"&gt;Bans, unbans, and persistence
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;192.0.2.10&lt;/code&gt; is a documentation example address. Replace it with a verified target before running these commands:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client &lt;span class="nb"&gt;set&lt;/span&gt; sshd banip 192.0.2.10
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client &lt;span class="nb"&gt;set&lt;/span&gt; sshd unbanip 192.0.2.10
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client unban 192.0.2.10
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Upstream defaults enable SQLite persistence, with &lt;code&gt;dbfile&lt;/code&gt; set to &lt;code&gt;/var/lib/fail2ban/fail2ban.sqlite3&lt;/code&gt;. It is therefore inaccurate to say that all bans disappear on restart. Restoration also depends on the database, remaining ban duration, purge policy, and distribution configuration. Check effective configuration and actual status after a restart.&lt;/p&gt;
+&lt;h2 id="before-protecting-other-services"&gt;Before protecting other services
+&lt;/h2&gt;&lt;p&gt;Do not enable a &lt;code&gt;nginx-404&lt;/code&gt; jail without its matching filter. Confirm the filter file, actual log format, and false-positive scope, then verify controlled samples with &lt;code&gt;fail2ban-regex&lt;/code&gt;. A JavaScript regex tool does not replace Fail2ban&amp;rsquo;s filter tests.&lt;/p&gt;
+&lt;p&gt;If no ban occurs, inspect the sequence: log production, backend ingestion, filter matching, and firewall action. Run &lt;code&gt;fail2ban-client -t&lt;/code&gt; after configuration changes instead of guessing through repeated restarts.&lt;/p&gt;
+&lt;h2 id="official-references"&gt;Official references
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/fail2ban/fail2ban" target="_blank" rel="noopener"
+&gt;Fail2ban project and installation guidance&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/fail2ban/fail2ban/blob/master/config/jail.conf" target="_blank" rel="noopener"
+&gt;Default jails and backend documentation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/fail2ban/fail2ban/blob/master/config/fail2ban.conf" target="_blank" rel="noopener"
+&gt;Default database and service configuration&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>OpenClaw Browser Modes: Managed, MCP, and Chrome Extension</title><link>https://blog.codeglimpse.top/en/p/openclaw-chrome/</link><guid isPermaLink="true">https://blog.codeglimpse.top/en/p/openclaw-chrome/</guid><pubDate>Tue, 24 Mar 2026 23:00:00 +0800</pubDate><description>&lt;p&gt;OpenClaw provides three browser modes: the isolated &lt;code&gt;openclaw&lt;/code&gt; browser, the Chrome DevTools MCP &lt;code&gt;user&lt;/code&gt; profile, and the Chrome extension &lt;code&gt;chrome&lt;/code&gt; profile. They differ mainly in whether they reuse personal login state and how the connection is authorized.&lt;/p&gt;
+&lt;h2 id="choose-a-connection-mode"&gt;Choose a connection mode
+&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Profile&lt;/th&gt;
+&lt;th&gt;Browser connection&lt;/th&gt;
+&lt;th&gt;Suitable use&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;openclaw&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Separate profile managed by OpenClaw&lt;/td&gt;
+&lt;td&gt;Practice and testing that do not need personal login state&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;user&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Chrome DevTools MCP attaches to a running browser&lt;/td&gt;
+&lt;td&gt;Existing login state is needed and someone can approve the connection&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;chrome&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;OpenClaw Chrome extension&lt;/td&gt;
+&lt;td&gt;Existing login state is needed and extension installation and pairing are complete&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The isolated browser is the default. Both modes that reuse a signed-in browser expose more content to automation; choose them according to the task and browser permissions.&lt;/p&gt;
+&lt;h2 id="use-the-managed-browser"&gt;Use the managed browser
+&lt;/h2&gt;&lt;p&gt;With a working Gateway:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile openclaw status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile openclaw start
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile openclaw open https://example.com
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile openclaw snapshot
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;These commands check status, start the browser, open a test page, and inspect a snapshot separately. Successful command exit alone does not replace checking the actual page and snapshot.&lt;/p&gt;
+&lt;h2 id="attach-to-chrome-with-user"&gt;Attach to Chrome with &lt;code&gt;user&lt;/code&gt;
+&lt;/h2&gt;&lt;p&gt;The &lt;code&gt;user&lt;/code&gt; profile requires Chromium &lt;strong&gt;144+&lt;/strong&gt; with remote debugging enabled.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Keep the target Chrome running and open &lt;code&gt;chrome://inspect/#remote-debugging&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Enable remote debugging there.&lt;/li&gt;
+&lt;li&gt;Run the connection commands and approve Chrome&amp;rsquo;s connection prompt in person:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile user start
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile user status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile user tabs
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile user snapshot --format ai
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;user&lt;/code&gt; is built in; the simplest case does not require writing a complete profile configuration. Successful status should include &lt;code&gt;driver: existing-session&lt;/code&gt;, &lt;code&gt;transport: chrome-mcp&lt;/code&gt;, and &lt;code&gt;running: true&lt;/code&gt;. Tab listings and snapshots should also match the real browser.&lt;/p&gt;
+&lt;p&gt;Brave, Edge, or a different profile directory may need an explicit &lt;code&gt;userDataDir&lt;/code&gt;. A browser already started with a debugging port may need &lt;code&gt;cdpUrl&lt;/code&gt;. Follow the matching conditions in the &lt;a class="link" href="https://docs.openclaw.ai/tools/browser#existing-session-via-chrome-devtools-mcp" target="_blank" rel="noopener"
+&gt;existing-session documentation&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="the-chrome-extension-remains-supported"&gt;The Chrome extension remains supported
+&lt;/h2&gt;&lt;p&gt;The current official setup entry point is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser extension install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Complete installation, consent, and pairing using the &lt;a class="link" href="https://docs.openclaw.ai/tools/chrome-extension" target="_blank" rel="noopener"
+&gt;extension documentation&lt;/a&gt;. Native bootstrap on macOS/Linux differs from manual pairing on Windows; follow the steps for your operating system.&lt;/p&gt;
+&lt;p&gt;After pairing, inspect the &lt;code&gt;chrome&lt;/code&gt; profile:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile chrome status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile chrome tabs
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="troubleshooting-order"&gt;Troubleshooting order
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;No &lt;code&gt;browser&lt;/code&gt; subcommand:&lt;/strong&gt; check the OpenClaw version and whether the browser plugin is enabled.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;user&lt;/code&gt; cannot attach:&lt;/strong&gt; check browser version, remote debugging, consent, and the target profile directory.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Status succeeds but the expected page is absent:&lt;/strong&gt; confirm the selected profile, then inspect &lt;code&gt;tabs&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The extension cannot connect:&lt;/strong&gt; follow installation and pairing for the current operating system. MCP remote debugging does not replace extension pairing.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="official-references"&gt;Official references
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/tools/browser" target="_blank" rel="noopener"
+&gt;Browser modes, CLI, and existing sessions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/tools/chrome-extension" target="_blank" rel="noopener"
+&gt;Chrome extension installation and pairing&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>OpenClaw Installation: Environment Checks and Verification</title><link>https://blog.codeglimpse.top/en/p/openclaw-install/</link><guid isPermaLink="true">https://blog.codeglimpse.top/en/p/openclaw-install/</guid><pubDate>Mon, 23 Mar 2026 22:00:00 +0800</pubDate><description>&lt;p&gt;OpenClaw runs a Gateway on your own device and connects it to messaging channels and model services. This guide follows the official CLI workflow: check the environment, choose an installation method, run onboarding, and verify the result.&lt;/p&gt;
+&lt;h2 id="check-the-environment-first"&gt;Check the environment first
+&lt;/h2&gt;&lt;p&gt;The official requirements list &lt;strong&gt;Node.js 22.22.3+, 24.15+, or 25.9+, with Node 26 recommended&lt;/strong&gt;. Windows options include the native Windows Hub, PowerShell CLI, and WSL2; this article focuses on the CLI.&lt;/p&gt;
+&lt;p&gt;Record your actual versions before choosing a command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;node --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Model authentication depends on the provider. Complete it locally through the onboarding flow and keep credentials out of screenshots, shared links, and issue reports. Installation, onboarding, and daemon setup change the local environment.&lt;/p&gt;
+&lt;h2 id="option-1-a-package-manager"&gt;Option 1: a package manager
+&lt;/h2&gt;&lt;p&gt;For &lt;strong&gt;npm 12 or npm 11.16+&lt;/strong&gt;, the current official command explicitly permits OpenClaw&amp;rsquo;s own lifecycle scripts:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm install -g openclaw@latest --allow-scripts&lt;span class="o"&gt;=&lt;/span&gt;openclaw
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;npm 11.15 and earlier&lt;/strong&gt; do not support that option:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm install -g openclaw@latest
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;For pnpm, the current global installation command is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm add -g --allow-build&lt;span class="o"&gt;=&lt;/span&gt;openclaw openclaw@latest
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;pnpm approve-builds -g&lt;/code&gt; is not the supported global installation flow. Because &lt;code&gt;latest&lt;/code&gt; changes, use a reviewed explicit release number when reproducibility matters, and record Node.js, package-manager, and operating-system versions.&lt;/p&gt;
+&lt;h2 id="option-2-the-official-installer"&gt;Option 2: the official installer
+&lt;/h2&gt;&lt;p&gt;The installer may install or select Node.js, install OpenClaw, and start onboarding. Download and inspect it before execution; verify any publisher-provided checksums or signatures as well.&lt;/p&gt;
+&lt;h3 id="macos--linux--wsl2"&gt;macOS / Linux / WSL2
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;installer_path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;mktemp&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -fL https://openclaw.ai/install.sh -o &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$installer_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;less &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$installer_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Run only after reviewing the script&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bash &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$installer_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="windows-powershell"&gt;Windows PowerShell
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;$installerPath&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;Join-Path&lt;/span&gt; &lt;span class="nv"&gt;$env:TEMP&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;openclaw-install.ps1&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Invoke-WebRequest&lt;/span&gt; &lt;span class="n"&gt;-Uri&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;https://openclaw.ai/install.ps1&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;-OutFile&lt;/span&gt; &lt;span class="nv"&gt;$installerPath&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Get-Content&lt;/span&gt; &lt;span class="n"&gt;-LiteralPath&lt;/span&gt; &lt;span class="nv"&gt;$installerPath&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# Run only after reviewing the script&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt; &lt;span class="nv"&gt;$installerPath&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;This guide uses the official OpenClaw distribution. Third-party forks and mirrors can differ in package names, configuration, and versions; follow their own installation documentation. For source builds, follow the matching pnpm requirements on the &lt;a class="link" href="https://docs.openclaw.ai/install" target="_blank" rel="noopener"
+&gt;official installation page&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="onboarding-and-verification"&gt;Onboarding and verification
+&lt;/h2&gt;&lt;p&gt;If the installer has not already completed onboarding:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw onboard --install-daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;This configures model access, the Gateway, and background startup. Check the CLI and service separately:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw doctor
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw gateway status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw dashboard
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;doctor&lt;/code&gt; is a diagnostic entry point; some releases may offer configuration migrations or repairs. Read the output before accepting changes. A version number does not prove that the Gateway is running, and opening the Dashboard does not prove a successful model request.&lt;/p&gt;
+&lt;h2 id="common-failures-and-next-steps"&gt;Common failures and next steps
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;openclaw&lt;/code&gt; is not found:&lt;/strong&gt; reopen the terminal, inspect &lt;code&gt;npm prefix -g&lt;/code&gt; and command resolution, and confirm that you are using the Node environment that installed it.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Lifecycle scripts are blocked:&lt;/strong&gt; check the package-manager version and the matching approval option above instead of approving unrelated packages.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The Gateway is unavailable:&lt;/strong&gt; inspect service and connection details in &lt;code&gt;openclaw gateway status&lt;/code&gt; before following the official troubleshooting guidance.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The next article explains the three browser connection modes. Use the &lt;a class="link" href="https://blog.codeglimpse.top/en/tools/json/" &gt;JSON tool&lt;/a&gt; for ordinary JSON examples; full JSON5 configurations still require OpenClaw&amp;rsquo;s own diagnostics.&lt;/p&gt;
+&lt;h2 id="official-references"&gt;Official references
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/install" target="_blank" rel="noopener"
+&gt;Installation and system requirements&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/start/getting-started" target="_blank" rel="noopener"
+&gt;Getting started and onboarding&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/openclaw/openclaw/releases" target="_blank" rel="noopener"
+&gt;Release history&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>How to Completely Uninstall OpenClaw</title><link>https://blog.codeglimpse.top/en/p/how-to-completely-uninstall-openclaw/</link><guid isPermaLink="true">https://blog.codeglimpse.top/en/p/how-to-completely-uninstall-openclaw/</guid><pubDate>Wed, 18 Mar 2026 17:22:00 +0800</pubDate><description>&lt;p&gt;Removing OpenClaw involves separate scopes: the Gateway service, state, workspace, desktop app, and CLI package. Decide what to preserve before removal and confirm any backups first.&lt;/p&gt;
+&lt;h2 id="start-with-the-built-in-uninstaller"&gt;Start with the built-in uninstaller
+&lt;/h2&gt;&lt;p&gt;If the CLI is still available, inspect all removal scopes first:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw uninstall --dry-run --all
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Review the exact directories and services, then use the interactive flow:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw uninstall
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;The current official prompt initially selects only the Gateway service. State, workspace, and app are separate choices; &lt;code&gt;--all&lt;/code&gt; selects all four scopes. Removing state does not imply removing configured workspaces. Service-removal failure may preserve data scopes and produce a partial-cleanup error.&lt;/p&gt;
+&lt;p&gt;If the CLI is gone but its service remains, follow the operating-system-specific &lt;a class="link" href="https://docs.openclaw.ai/install/uninstall" target="_blank" rel="noopener"
+&gt;official manual removal instructions&lt;/a&gt;. Do not terminate every Node.js process.&lt;/p&gt;
+&lt;p&gt;The optional scripts below perform narrower package/process/Docker inventory and cleanup. They do not replace the built-in state, workspace, and service removal workflow.&lt;/p&gt;
+&lt;h2 id="automated-uninstallation-inspect-before-applying"&gt;Automated Uninstallation (Inspect Before Applying)
+&lt;/h2&gt;&lt;p&gt;The cleanup scripts default to a read-only &lt;strong&gt;dry run&lt;/strong&gt;. They list detected OpenClaw global packages, Node.js processes whose command line explicitly identifies OpenClaw, and resources in the current Docker context whose name or image explicitly matches OpenClaw. They do not stop every Node.js process or scan and remove user directories, configuration files, registry values, or arbitrary Docker resources.&lt;/p&gt;
+&lt;p&gt;Do not execute remote scripts through &lt;code&gt;curl | bash&lt;/code&gt; or &lt;code&gt;irm | iex&lt;/code&gt;. Download the file, verify its SHA-256 digest, inspect it, and run the dry-run first. After reviewing the plan, use &lt;code&gt;-Apply&lt;/code&gt;/&lt;code&gt;--apply&lt;/code&gt;; interactive mode also requires typing &lt;code&gt;REMOVE OPENCLAW&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id="windows-powershell"&gt;Windows (PowerShell)
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;$scriptUrl&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForWindows.ps1&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;$scriptPath&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;Join-Path&lt;/span&gt; &lt;span class="nv"&gt;$env:TEMP&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;CleanupOpenClawForWindows.ps1&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Invoke-WebRequest&lt;/span&gt; &lt;span class="n"&gt;-Uri&lt;/span&gt; &lt;span class="nv"&gt;$scriptUrl&lt;/span&gt; &lt;span class="n"&gt;-OutFile&lt;/span&gt; &lt;span class="nv"&gt;$scriptPath&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;$expectedSha256&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;eab731bd073f42fb75569be6c1dd3af37aca3214957057241ed13072fcc40daa&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="nb"&gt;Get-FileHash&lt;/span&gt; &lt;span class="n"&gt;-Algorithm&lt;/span&gt; &lt;span class="n"&gt;SHA256&lt;/span&gt; &lt;span class="n"&gt;-LiteralPath&lt;/span&gt; &lt;span class="nv"&gt;$scriptPath&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="py"&gt;Hash&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;ToLowerInvariant&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;-ne&lt;/span&gt; &lt;span class="nv"&gt;$expectedSha256&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;throw&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;SHA-256 verification failed. Do not run this file.&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Get-Content&lt;/span&gt; &lt;span class="n"&gt;-LiteralPath&lt;/span&gt; &lt;span class="nv"&gt;$scriptPath&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt; &lt;span class="nv"&gt;$scriptPath&lt;/span&gt; &lt;span class="c"&gt;# dry-run; inventory only&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt; &lt;span class="nv"&gt;$scriptPath&lt;/span&gt; &lt;span class="n"&gt;-Apply&lt;/span&gt; &lt;span class="c"&gt;# asks for explicit confirmation before changing anything&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Administrator privileges are normally unnecessary. Use an elevated terminal only if your installation location or Docker environment specifically requires it. &lt;code&gt;-Apply -Yes&lt;/code&gt; is reserved for controlled automation after the plan has been reviewed.&lt;/p&gt;
+&lt;h3 id="linux-bash"&gt;Linux (Bash)
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;script_path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;mktemp&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -fL &lt;span class="s1"&gt;&amp;#39;https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForLinux.sh&amp;#39;&lt;/span&gt; -o &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;printf&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;%s %s\n&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;0cfab4f8823a1644ef2e5b47275b144417c271372b7b11b795cf8c60a6689cb8&amp;#39;&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sha256sum -c -
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;less &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bash &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; &lt;span class="c1"&gt;# dry-run; inventory only&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bash &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; --apply &lt;span class="c1"&gt;# requires typing REMOVE OPENCLAW&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="macos-bash"&gt;macOS (Bash)
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;script_path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;mktemp&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -fL &lt;span class="s1"&gt;&amp;#39;https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForMacOS.sh&amp;#39;&lt;/span&gt; -o &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;printf&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;%s %s\n&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;a7e6048a20a933e4297edfe64847afc8f5a206add153502ff6ac260be9d7a801&amp;#39;&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; shasum -a &lt;span class="m"&gt;256&lt;/span&gt; -c -
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;less &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bash &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; &lt;span class="c1"&gt;# dry-run; inventory only&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bash &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; --apply &lt;span class="c1"&gt;# requires typing REMOVE OPENCLAW&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="remove-the-cli-package-and-verify"&gt;Remove the CLI package and verify
+&lt;/h2&gt;&lt;p&gt;After the requested service and data scopes are handled, uninstall the CLI with the package manager that installed it. Choose one:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# npm installation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm uninstall -g openclaw
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# pnpm installation&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm remove -g openclaw
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Treat third-party forks such as &lt;code&gt;openclaw-cn&lt;/code&gt; separately. Use the actual package prefix and reviewed inventory rather than deleting a guessed system-wide directory. Recheck the former service and command resolution; the absence of a CLI command alone does not prove removal of a background service.&lt;/p&gt;
+&lt;h2 id="common-problems"&gt;Common problems
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;For permission errors, identify the installation location or Docker permission requirement first. Do not elevate every cleanup action by default.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If a command cannot be found, check the PATH and package-manager environment used for that installation. The inventory is limited to what the script can actually detect.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;A dry run reports a plan. Successful cleanup requires checking the apply result and any remaining service or resource.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="official-reference"&gt;Official reference
+&lt;/h2&gt;&lt;p&gt;&lt;a class="link" href="https://docs.openclaw.ai/install/uninstall" target="_blank" rel="noopener"
+&gt;OpenClaw uninstall scopes, preview, and manual service removal&lt;/a&gt;&lt;/p&gt;</description></item><item><title>How to Download and Install Python</title><link>https://blog.codeglimpse.top/en/p/python-install/</link><guid isPermaLink="true">https://blog.codeglimpse.top/en/p/python-install/</guid><pubDate>Sun, 28 Sep 2025 16:20:00 +0800</pubDate><description>&lt;p&gt;Choose a Python version for your project, identify the interpreter actually being run, then create a virtual environment. The following steps cover &lt;strong&gt;Python 3.14&lt;/strong&gt;; screenshots of the standalone installer show the 3.12/3.13 interface.&lt;/p&gt;
+&lt;h2 id="windows-start-with-python-install-manager"&gt;Windows: start with Python Install Manager
+&lt;/h2&gt;&lt;p&gt;Official guidance now recommends obtaining &lt;strong&gt;Python Install Manager&lt;/strong&gt; from &lt;a class="link" href="https://www.python.org/downloads/windows/" target="_blank" rel="noopener"
+&gt;python.org&lt;/a&gt; or Microsoft Store. Distinguish it from the older standalone &lt;code&gt;.exe&lt;/code&gt; installer and legacy &lt;code&gt;py&lt;/code&gt; launcher; consult the Windows documentation if their commands conflict.&lt;/p&gt;
+&lt;p&gt;After installing the manager, check its commands and install the required version. These examples select 3.14; check your project&amp;rsquo;s dependency compatibility first:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;help&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="mf"&gt;3.14&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;list&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="mf"&gt;-3.14&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="mf"&gt;-3.14&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import sys; print(sys.executable)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;The manager downloads the runtime. Check the official Windows support requirements for Python 3.14 rather than assuming that historical platform support still applies.&lt;/p&gt;
+&lt;h3 id="existing-standalone-312313-installers"&gt;Existing standalone 3.12/3.13 installers
+&lt;/h3&gt;&lt;p&gt;You may still encounter the older interface. Start with a per-user installation for ordinary development; install for all users with elevated privileges only when that scope is needed. The &lt;code&gt;py&lt;/code&gt; launcher selects versions, but does not make &lt;code&gt;python&lt;/code&gt; resolve identically in every terminal.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://blog.codeglimpse.top/en/p/python-install/1.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/en/p/python-install/1_hu_75941b03da09acbf.png 480w, https://blog.codeglimpse.top/en/p/python-install/1_hu_5a66238aca6937f8.png 1024w"
+loading="lazy"
+alt="Historical Windows Python installer"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Keep pip available. Debug symbols, debug binaries, and the full standard-library test suite are optional components. Choose PATH changes and file associations according to the interpreters already installed rather than selecting every option.&lt;/p&gt;
+&lt;p&gt;For a silent installation, use the exact filename of an installer you have already downloaded and checked. These older-installer options demonstrate a per-user installation:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# Replace the filename with your verified installer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;./&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;3.13&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;7&lt;/span&gt;&lt;span class="n"&gt;-amd64&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="n"&gt;quiet&lt;/span&gt; &lt;span class="n"&gt;InstallAllUsers&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;0&lt;/span&gt; &lt;span class="n"&gt;PrependPath&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;1&lt;/span&gt; &lt;span class="n"&gt;Include_test&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;The filename demonstrates syntax; it does not recommend 3.13.7 as the latest patch release. The 3.14 documentation marks the full installer as deprecated, so evaluate the install manager first for new environments.&lt;/p&gt;
+&lt;h2 id="macos"&gt;macOS
+&lt;/h2&gt;&lt;h3 id="official-installer"&gt;Official installer
+&lt;/h3&gt;&lt;p&gt;Download a package compatible with your macOS version and processor from &lt;a class="link" href="https://www.python.org/downloads/macos/" target="_blank" rel="noopener"
+&gt;Python for macOS&lt;/a&gt;, then read its platform and license information.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://blog.codeglimpse.top/en/p/python-install/9.png"
+width="800"
+height="595"
+srcset="https://blog.codeglimpse.top/en/p/python-install/9_hu_bc40f6fa3bcf60a4.png 480w, https://blog.codeglimpse.top/en/p/python-install/9_hu_5c672be36a442214.png 1024w"
+loading="lazy"
+alt="Historical macOS Python installer"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="322px"
+&gt;&lt;/p&gt;
+&lt;p&gt;After installation, follow the current installer&amp;rsquo;s instructions for &lt;code&gt;Install Certificates.command&lt;/code&gt; in the matching version directory. It downloads certificate components for that Python installation. Do not copy an outdated version directory from a screenshot.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 -c &lt;span class="s2"&gt;&amp;#34;import sys; print(sys.executable)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Do not modify or remove Apple&amp;rsquo;s &lt;code&gt;/usr/bin/python3&lt;/code&gt;. An official Python installation can coexist with the interpreter used by Apple&amp;rsquo;s developer tools.&lt;/p&gt;
+&lt;h3 id="if-you-already-use-homebrew"&gt;If you already use Homebrew
+&lt;/h3&gt;&lt;p&gt;Check the &lt;a class="link" href="https://docs.brew.sh/Installation" target="_blank" rel="noopener"
+&gt;current Homebrew requirements&lt;/a&gt;, including supported macOS, hardware, and Xcode Command Line Tools. They should not be summarized as a requirement to install system Python first.&lt;/p&gt;
+&lt;p&gt;In a terminal where Homebrew is configured:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;brew --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;brew install python
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;command&lt;/span&gt; -v python3
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;If Homebrew is absent, follow its official installation guidance, downloading and reviewing the installer before execution. Diagnose terminal configuration before forcing link replacements.&lt;/p&gt;
+&lt;h2 id="linux-use-distribution-packages"&gt;Linux: use distribution packages
+&lt;/h2&gt;&lt;h3 id="debian--ubuntu"&gt;Debian / Ubuntu
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt update
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install python3 python3-pip python3-venv
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Installing Python does not require upgrading the entire machine, recursively changing ownership of &lt;code&gt;~/.local&lt;/code&gt;, or deleting APT lock files. If a lock is held, identify the active package-management task, wait for it to finish, or follow the distribution&amp;rsquo;s recovery guidance.&lt;/p&gt;
+&lt;h3 id="fedora"&gt;Fedora
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf install python3 python3-pip
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;RHEL and other distributions have their own package versions and repository policies. Follow their documentation, preserve the system Python, and do not default to &lt;code&gt;sudo pip&lt;/code&gt; for project dependencies.&lt;/p&gt;
+&lt;h2 id="create-a-virtual-environment-per-project"&gt;Create a virtual environment per project
+&lt;/h2&gt;&lt;p&gt;Run these commands from the project directory. The Windows example explicitly selects an installed 3.14 runtime:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="mf"&gt;-3.14&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;venv&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;venv&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;macOS / Linux:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 -m venv .venv
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;.venv/bin/python --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;.venv/bin/python -m pip --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Calling the environment&amp;rsquo;s interpreter directly avoids changing PowerShell execution policy just to use the example. Use that same interpreter with &lt;code&gt;-m pip&lt;/code&gt; when installing dependencies.&lt;/p&gt;
+&lt;h2 id="verification-and-common-problems"&gt;Verification and common problems
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Record the OS, &lt;code&gt;--version&lt;/code&gt;, &lt;code&gt;sys.executable&lt;/code&gt;, and &lt;code&gt;pip --version&lt;/code&gt;; confirm that they identify the intended environment.&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;python&lt;/code&gt; opens the Store or selects the wrong version, check application execution aliases, &lt;code&gt;py list&lt;/code&gt;, and PATH.&lt;/li&gt;
+&lt;li&gt;For &lt;code&gt;externally-managed-environment&lt;/code&gt;, create a project virtual environment instead of bypassing distribution protections.&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;venv&lt;/code&gt; or &lt;code&gt;ensurepip&lt;/code&gt; is missing, install the distribution&amp;rsquo;s matching virtual-environment component and recreate the environment.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="official-references"&gt;Official references
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/using/windows.html" target="_blank" rel="noopener"
+&gt;Python on Windows&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/using/mac.html" target="_blank" rel="noopener"
+&gt;Python on macOS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/library/venv.html" target="_blank" rel="noopener"
+&gt;Virtual environments with venv&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.brew.sh/Installation" target="_blank" rel="noopener"
+&gt;Homebrew installation requirements&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

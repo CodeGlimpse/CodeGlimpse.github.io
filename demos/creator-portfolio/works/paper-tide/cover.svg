@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" fill="none">
+  <defs>
+    <linearGradient id="paper" x1="116" y1="84" x2="1098" y2="773" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F1E5D1"/>
+      <stop offset="1" stop-color="#D7C3A6"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="305" y1="405" x2="1078" y2="741" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#526E78"/>
+      <stop offset="1" stop-color="#233F4D"/>
+    </linearGradient>
+    <linearGradient id="ochre" x1="805" y1="112" x2="986" y2="292" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D59150"/>
+      <stop offset="1" stop-color="#B96842"/>
+    </linearGradient>
+    <pattern id="contours" width="92" height="72" patternUnits="userSpaceOnUse">
+      <path d="M-14 38c18-23 43-28 70-15 21 10 38 10 51-3M-19 58c20-17 39-20 58-9 25 14 45 15 68 0" stroke="#F4E6CD" stroke-opacity=".27" stroke-width="2"/>
+    </pattern>
+    <pattern id="fiber" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="10" r=".8" fill="#705C48" fill-opacity=".16"/>
+      <circle cx="23" cy="26" r=".7" fill="#705C48" fill-opacity=".13"/>
+    </pattern>
+  </defs>
+  <path fill="url(#paper)" d="M0 0h1200v800H0z"/>
+  <path fill="#233C48" fill-opacity=".08" d="M0 0h1200v800H0z"/>
+  <circle cx="883" cy="207" r="121" fill="url(#ochre)"/>
+  <circle cx="883" cy="207" r="164" stroke="#A9714D" stroke-opacity=".38" stroke-width="2"/>
+  <circle cx="883" cy="207" r="197" stroke="#A9714D" stroke-opacity=".22" stroke-width="2" stroke-dasharray="2 13"/>
+  <path fill="#C58B61" d="M0 405c126-63 248-59 360 12 93 59 177 72 260 34 105-48 210-32 315 47 84 63 172 67 265 11v291H0z"/>
+  <path fill="#80918A" d="M0 488c142-52 275-45 401 23 95 51 176 57 246 19 96-52 191-44 285 22 101 72 190 86 268 43v205H0z"/>
+  <path fill="url(#sea)" d="M0 570c134-48 258-43 374 15 114 57 216 61 306 12 104-57 213-46 326 33 70 49 135 66 194 52v128H0z"/>
+  <path fill="url(#contours)" d="M0 405c126-63 248-59 360 12 93 59 177 72 260 34 105-48 210-32 315 47 84 63 172 67 265 11v291H0z"/>
+  <path stroke="#F4E8D5" stroke-opacity=".82" stroke-width="4" d="M0 486c143-54 277-46 403 22 94 50 175 56 244 18 96-52 192-44 286 22 101 72 190 86 267 43"/>
+  <path stroke="#D8B58E" stroke-opacity=".85" stroke-width="3" d="M0 540c126-43 242-36 348 19 119 62 226 67 321 16 99-53 204-40 315 39 80 57 152 75 216 54"/>
+  <path fill="#F2E6D1" fill-opacity=".65" d="M129 352c72-26 139-29 203-9M177 376c50-15 97-16 141-2M744 350c61 0 112 17 155 50" stroke="#F2E6D1" stroke-width="3" stroke-linecap="round"/>
+  <path fill="#24414D" d="m188 638 11-75 11 75h-22Zm39 2 15-101 15 101h-30Zm752-27 10-69 10 69h-20Z"/>
+  <path fill="url(#fiber)" d="M0 0h1200v800H0z"/>
+</svg>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on Personal Blogs for Fernweh</title><link>https://blog.codeglimpse.top/en/tags/linux/</link><description>Recent content in Linux on Personal Blogs for Fernweh</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Mon, 07 Sep 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/en/tags/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>Protect Your Linux Server with Fail2ban</title><link>https://blog.codeglimpse.top/en/p/protect-your-linux-server-with-fail2ban/</link><pubDate>Wed, 01 Apr 2026 15:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/en/p/protect-your-linux-server-with-fail2ban/</guid><description>&lt;p&gt;Fail2ban reads failure events from logs and applies ban actions. It complements protection for services such as SSH, but needs the correct log source, filter, and firewall action. Installing the service alone does not protect every entry point.&lt;/p&gt;
+&lt;h2 id="scope-and-installation"&gt;Scope and installation
+&lt;/h2&gt;&lt;p&gt;These examples cover SSH with distribution packages on systemd-based Debian/Ubuntu. Check the distribution, actual SSH port, and installed Fail2ban version first. Fedora, RHEL, and other distributions have different repositories and logging defaults.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt update
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install fail2ban
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;fail2ban-client --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Prefer maintained distribution packages. If source installation is required, consult &lt;a class="link" href="https://github.com/fail2ban/fail2ban" target="_blank" rel="noopener"
+&gt;upstream guidance&lt;/a&gt; to select a release and confirm dependencies, service integration, and future updates.&lt;/p&gt;
+&lt;h2 id="identify-the-ssh-log-source"&gt;Identify the SSH log source
+&lt;/h2&gt;&lt;p&gt;Ubuntu/Debian commonly use the &lt;code&gt;ssh&lt;/code&gt; service unit; other environments may use &lt;code&gt;sshd&lt;/code&gt;. Inspect the actual unit and logs:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo systemctl status ssh --no-pager
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo journalctl -u ssh -n &lt;span class="m"&gt;30&lt;/span&gt; --no-pager
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;For file-based logging, confirm that a file such as &lt;code&gt;/var/log/auth.log&lt;/code&gt; exists and receives SSH authentication events. A path in a tutorial is not evidence that the machine writes to it.&lt;/p&gt;
+&lt;h2 id="configure-a-small-ssh-jail-override"&gt;Configure a small SSH jail override
+&lt;/h2&gt;&lt;p&gt;Keep the distribution&amp;rsquo;s &lt;code&gt;jail.conf&lt;/code&gt; and place only the overrides in &lt;code&gt;/etc/fail2ban/jail.d/sshd.local&lt;/code&gt;. Copying the entire default file makes later upstream changes harder to inherit.&lt;/p&gt;
+&lt;p&gt;Before enabling protection, retain a second management session or console and add a verified fixed administration address to &lt;code&gt;ignoreip&lt;/code&gt;. The example below contains loopback addresses only, not your remote management address.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[DEFAULT]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ignoreip&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;127.0.0.1/8 ::1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[sshd]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;enabled&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;ssh&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;backend&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;systemd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;maxretry&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;findtime&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;10m&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;bantime&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;1h&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;Set &lt;code&gt;port&lt;/code&gt; to the actual value if SSH uses a custom port.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;systemd&lt;/code&gt; backend reads the journal; &lt;strong&gt;do not combine it with a copied file-based &lt;code&gt;logpath&lt;/code&gt;&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;For file logs, choose a suitable backend and a verified path, for example &lt;code&gt;backend = polling&lt;/code&gt; with &lt;code&gt;logpath = /var/log/auth.log&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;maxretry&lt;/code&gt; and &lt;code&gt;findtime&lt;/code&gt; define the trigger; &lt;code&gt;bantime&lt;/code&gt; sets the ban duration. Adjust them for the service and recovery options.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="validate-before-enabling"&gt;Validate before enabling
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client -t
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;After configuration validation succeeds, enable or reload the service:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo systemctl &lt;span class="nb"&gt;enable&lt;/span&gt; --now fail2ban
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client reload
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client ping
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client status sshd
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Confirm that &lt;code&gt;sshd&lt;/code&gt; is enabled, the log source is correct, and the ban action works. Test from a controlled source while retaining a recovery path rather than repeatedly failing authentication on your only management connection.&lt;/p&gt;
+&lt;h2 id="bans-unbans-and-persistence"&gt;Bans, unbans, and persistence
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;192.0.2.10&lt;/code&gt; is a documentation example address. Replace it with a verified target before running these commands:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client &lt;span class="nb"&gt;set&lt;/span&gt; sshd banip 192.0.2.10
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client &lt;span class="nb"&gt;set&lt;/span&gt; sshd unbanip 192.0.2.10
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client unban 192.0.2.10
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Upstream defaults enable SQLite persistence, with &lt;code&gt;dbfile&lt;/code&gt; set to &lt;code&gt;/var/lib/fail2ban/fail2ban.sqlite3&lt;/code&gt;. It is therefore inaccurate to say that all bans disappear on restart. Restoration also depends on the database, remaining ban duration, purge policy, and distribution configuration. Check effective configuration and actual status after a restart.&lt;/p&gt;
+&lt;h2 id="before-protecting-other-services"&gt;Before protecting other services
+&lt;/h2&gt;&lt;p&gt;Do not enable a &lt;code&gt;nginx-404&lt;/code&gt; jail without its matching filter. Confirm the filter file, actual log format, and false-positive scope, then verify controlled samples with &lt;code&gt;fail2ban-regex&lt;/code&gt;. A JavaScript regex tool does not replace Fail2ban&amp;rsquo;s filter tests.&lt;/p&gt;
+&lt;p&gt;If no ban occurs, inspect the sequence: log production, backend ingestion, filter matching, and firewall action. Run &lt;code&gt;fail2ban-client -t&lt;/code&gt; after configuration changes instead of guessing through repeated restarts.&lt;/p&gt;
+&lt;h2 id="official-references"&gt;Official references
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/fail2ban/fail2ban" target="_blank" rel="noopener"
+&gt;Fail2ban project and installation guidance&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/fail2ban/fail2ban/blob/master/config/jail.conf" target="_blank" rel="noopener"
+&gt;Default jails and backend documentation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/fail2ban/fail2ban/blob/master/config/fail2ban.conf" target="_blank" rel="noopener"
+&gt;Default database and service configuration&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

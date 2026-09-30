@@ -16,8 +16,10 @@ hugo server
 
 ```powershell
 hugo --destination "$env:TEMP\photo-portfolio-build" --baseURL 'https://example.github.io/my-portfolio/' --minify --panicOnWarning
-python -B -X utf8 scripts/check_build.py "$env:TEMP\photo-portfolio-build" --base-url 'https://example.github.io/my-portfolio/'
+python -B -X utf8 scripts/check_build.py "$env:TEMP\photo-portfolio-build" --base-url 'https://example.github.io/my-portfolio/' --check-demo-pages
 ```
+
+`--check-demo-pages` 会额外检查本演示首页的“虚构演示”“AI 生成”说明，以及博客集成所需的 `works/rain-street/cover.png`。客户站替换演示内容后应省略此参数；通用模式仍检查必需页面、作品详情、站内链接、`srcset` 图片、替代文字和生成缩略图。博客主 CI 启用演示模式，独立仓库的 Pages 工作流使用通用模式。
 
 `example.github.io` 只是命令示例，不代表已部署。构建输出中的 `previews/rain-street.jpg` 是稳定路径的轻量缩略图；原始 `works/rain-street/cover.png` 仍发布供需要原图的页面使用。页面展示同时生成多个尺寸的 JPEG，浏览器按屏幕宽度选择。源码中的 PNG 不会被改写。本机 Hugo 0.157.0 Windows 对 WebP 处理触发 panic，因此本实验采用同一版本的 Hugo JPEG 处理；具体经过见 [实验记录](docs/EXPERIMENT_LOG.md)。
 

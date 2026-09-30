@@ -1,5 +1,16 @@
 const { test, expect } = require('@playwright/test');
 
+async function expectImageAspectRatio(image, aspectRatio) {
+    await image.scrollIntoViewIfNeeded();
+    await expect(image).toHaveJSProperty('complete', true);
+    await expect.poll(() => image.evaluate((element) => element.naturalWidth)).toBeGreaterThan(0);
+    const box = await image.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box.width).toBeGreaterThan(0);
+    expect(box.height).toBeGreaterThan(0);
+    expect(box.width / box.height).toBeCloseTo(aspectRatio, 2);
+}
+
 test('bilingual demo catalog opens both independent portfolio sites', async ({ page }) => {
     for (const prefix of ['', '/en']) {
         await page.goto(`${prefix}/demos/`);
@@ -76,3 +87,26 @@ test('demo cards and photography portfolio fit desktop and mobile viewports', as
         expect(documentWidth).toBeLessThanOrEqual(width + 1);
     }
 });
+
+for (const [width, heroAspectRatio] of [[390, 1], [800, 1.24], [1280, 1.24]]) {
+    test(`photography portfolio images keep their aspect ratios at ${width}px`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 844 });
+        await page.goto('/demos/photo-portfolio/');
+        const heroImage = page.locator('.hero-picture img');
+        await expect(heroImage).toHaveCount(1);
+        await expectImageAspectRatio(heroImage, heroAspectRatio);
+
+        const homeImages = page.locator('.selected .work-card-media img');
+        await expect(homeImages).toHaveCount(2);
+        for (const image of await homeImages.all()) {
+            await expectImageAspectRatio(image, 1.45);
+        }
+
+        await page.goto('/demos/photo-portfolio/works/');
+        const workImages = page.locator('.works-grid .work-card-media img');
+        await expect(workImages).toHaveCount(3);
+        for (const image of await workImages.all()) {
+            await expectImageAspectRatio(image, 1.17);
+        }
+    });
+}

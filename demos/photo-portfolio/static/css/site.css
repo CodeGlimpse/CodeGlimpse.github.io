@@ -48,7 +48,7 @@ h1, h2, h3 { font-family: "Songti SC", "STSong", "SimSun", Georgia, serif; font-
 .hero-intro { max-width: 24em; margin-bottom: 36px; color: var(--muted); line-height: 1.95; font-size: .95rem; }
 .hero-media { min-width: 0; }
 .hero-picture, .detail-picture { display: block; overflow: hidden; background: var(--paper-deep); }
-.hero-picture img { width: 100%; aspect-ratio: 1.24; object-fit: cover; transition: transform .5s ease; }
+.hero-picture img { width: 100%; height: auto; aspect-ratio: 1.24; object-fit: cover; transition: transform .5s ease; }
 .hero-media:hover img { transform: scale(1.025); }
 .hero-media-caption { display: flex; justify-content: space-between; gap: 20px; padding-top: 14px; color: var(--muted); font-size: .76rem; letter-spacing: .05em; }
 
@@ -59,7 +59,7 @@ h1, h2, h3 { font-family: "Songti SC", "STSong", "SimSun", Georgia, serif; font-
 .card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(26px, 4vw, 58px); padding-top: 34px; }
 .work-card { min-width: 0; }
 .work-card-media { position: relative; overflow: hidden; background: var(--paper-deep); }
-.work-card-media img { width: 100%; aspect-ratio: 1.45; object-fit: cover; transition: transform .4s ease; }
+.work-card-media img { width: 100%; height: auto; aspect-ratio: 1.45; object-fit: cover; transition: transform .4s ease; }
 .work-card-link:hover img { transform: scale(1.025); }
 .card-arrow { position: absolute; bottom: 18px; right: 18px; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: rgba(245, 242, 235, .9); font-size: 1.12rem; }
 .work-card-caption { display: flex; align-items: end; justify-content: space-between; gap: 16px; padding-top: 19px; }

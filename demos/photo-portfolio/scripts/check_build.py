@@ -51,6 +51,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("output", type=Path)
     parser.add_argument("--base-url", required=True)
+    parser.add_argument("--check-demo-pages", action="store_true", help="Also require the demo disclosures and blog integration image")
     args = parser.parse_args()
     output = args.output.resolve()
     base_path = urlsplit(args.base_url).path.strip("/")
@@ -65,7 +66,7 @@ def main() -> int:
         errors.append("no work detail pages")
 
     home = output / "index.html"
-    if home.is_file():
+    if args.check_demo_pages and home.is_file():
         home_text = home.read_text(encoding="utf-8")
         for notice in ("虚构演示", "AI 生成"):
             if notice not in home_text:
@@ -83,7 +84,7 @@ def main() -> int:
     for preview in preview_files:
         if preview.stat().st_size <= 0:
             errors.append(f"empty preview: {preview}")
-    if not (output / "works/rain-street/cover.png").is_file():
+    if args.check_demo_pages and not (output / "works/rain-street/cover.png").is_file():
         errors.append("missing original rain-street cover for blog integration")
 
     if errors:

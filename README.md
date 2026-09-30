@@ -8,6 +8,7 @@
 
 ```text
 content/                 博客、页面和中英文在线工具内容
+demos/                   独立演示站、模板、素材与更新指南
 assets/js/tools/         在线工具页面脚本和可测试核心逻辑
 layouts/                 Hugo 模板和 shortcode
 config/_default/         Hugo 配置、菜单和主题参数
@@ -24,6 +25,7 @@ scripts/                 本地维护检查脚本
 - Go 1.23.6
 - Hugo Extended 0.157.0
 - Node.js 22.13.1
+- Python 3.10 或更高版本（演示站构建检查及相关测试）
 
 也可以使用 `.devcontainer/` 创建开发容器。容器配置固定了 Hugo 和 Go 版本，Node 使用 22 系列开发镜像。
 
@@ -55,6 +57,8 @@ npm run check:output  # 检查发布目录、JSON、robots、sitemap 和工具�
 npm run check         # 依次执行版本、语法、内容、测试、构建和输出检查
 npm run test:e2e      # 针对 public/ 运行浏览器端到端测试
 ```
+
+演示站集成与自定义输出目录说明见 [`demos/README.md`](demos/README.md)。相关 Node.js 测试会调用 Python 3；解释器不在 PATH 时可用 `PYTHON` 环境变量指定可执行文件。
 
 直接运行等价命令：
 

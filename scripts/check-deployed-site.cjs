@@ -123,17 +123,42 @@ function findTag(body, tagName, predicate) {
     return extractTags(body, tagName).map(extractAttributes).find(predicate) ?? null;
 }
 
+function srcsetUrls(value) {
+    const urls = [];
+    let position = 0;
+    while (position < value.length) {
+        while (position < value.length && /[\s,]/.test(value[position])) position += 1;
+        const start = position;
+        while (position < value.length && !/\s/.test(value[position])) position += 1;
+        const token = value.slice(start, position);
+        if (!token) break;
+        // URL tokens may contain commas (including data URLs). Only trailing
+        // commas separate a URL without descriptors from the next candidate.
+        urls.push(token.replace(/,+$/, ''));
+        if (token.endsWith(',')) continue;
+        while (position < value.length && value[position] !== ',') position += 1;
+        position += 1;
+    }
+    return urls;
+}
+
 function collectLocalAssetUrls(pageUrl, body) {
     const assets = new Set();
-    for (const tag of [...extractTags(body, 'script'), ...extractTags(body, 'link'), ...extractTags(body, 'img'), ...extractTags(body, 'section'), ...extractTags(body, 'div')]) {
-        const attributes = extractAttributes(tag);
-        const raw = attributes['data-game-module'] ?? attributes['data-tool-worker'] ?? attributes.src ?? attributes.href;
-        if (!raw || /^(?:data|blob|mailto|javascript):/i.test(raw)) continue;
+    const origin = new URL(pageUrl).origin;
+    function add(raw) {
+        if (!raw || /^(?:data|blob|mailto|javascript):/i.test(raw)) return;
         try {
             const url = new URL(raw, pageUrl);
-            if (url.origin === new URL(pageUrl).origin) assets.add(url.toString());
+            if (url.origin === origin) assets.add(url.toString());
         } catch {
             // Invalid URLs are reported by the page-specific metadata checks.
+        }
+    }
+    for (const name of ['script', 'link', 'img', 'source', 'section', 'div']) {
+        for (const tag of extractTags(body, name)) {
+            const attributes = extractAttributes(tag);
+            add(attributes['data-game-module'] ?? attributes['data-tool-worker'] ?? attributes.src ?? attributes.href);
+            for (const raw of srcsetUrls(attributes.srcset || '')) add(raw);
         }
     }
     return [...assets];

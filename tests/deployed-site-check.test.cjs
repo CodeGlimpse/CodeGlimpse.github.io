@@ -123,6 +123,35 @@ test('accepts the intentional homepage JSON 404', () => {
     assert.deepEqual(errors, []);
 });
 
+test('discovers every local responsive candidate in source and img srcsets', () => {
+    const pageUrl = 'https://example.test/review/demos/photo-portfolio/';
+    const body = `<picture>
+        <source srcset="images/small.jpg 640w,images/large.jpg 1440w, https://external.test/photo.jpg 2x">
+        <img src="images/original.png" srcset="images/small.jpg 1x, images/retina.jpg 2x">
+        </picture><img srcset="data:image/png;base64,AAAA 1x, images/retina.jpg 2x">
+        <img src="data:image/svg+xml,a"><source srcset="//external.test/other.jpg 800w">`;
+    assert.deepEqual(checker.collectLocalAssetUrls(pageUrl, body).sort(), [
+        'images/small.jpg', 'images/large.jpg', 'images/original.png', 'images/retina.jpg',
+    ].map(asset => new URL(asset, pageUrl).toString()).sort());
+});
+
+test('validates photography landmarks, navigation and demo disclosures', () => {
+    const check = { status: 200, demoHtml: true, demoNavigation: true, requiredText: ['虚构演示', 'AI 生成'] };
+    const pageUrl = 'https://example.test/demos/photo-portfolio/';
+    const body = '<html><head><title>Demo</title><link rel="stylesheet" href="/demos/photo-portfolio/css/site.css"></head><body><main>虚构演示 · AI 生成<a href="works/">Works</a><a href="about/">About</a></main></body></html>';
+    assert.deepEqual(checker.validateResponse(check, 200, body, pageUrl), []);
+    assert.ok(checker.validateResponse(check, 200, body.replace('href="about/"', 'href="missing/"'), pageUrl).includes('missing about navigation link'));
+    assert.ok(checker.validateResponse(check, 200, body.replace('AI 生成', ''), pageUrl).some(error => error.includes('AI 生成')));
+    assert.ok(checker.validateResponse(check, 200, body.replace('site.css', 'missing.css'), pageUrl).includes('missing demo stylesheet'));
+});
+
+test('preserves commas inside srcset URLs and skips embedded data URLs', () => {
+    const body = '<source srcset="/images/a,b.jpg 640w, /images/large.jpg 1440w"><img srcset="data:image/png;base64,AAAA, /images/fallback.jpg"><img srcset="/images/one.jpg, /images/two.jpg 2x">';
+    assert.deepEqual(checker.collectLocalAssetUrls('https://example.test/', body).sort(), [
+        '/images/a,b.jpg', '/images/large.jpg', '/images/fallback.jpg', '/images/one.jpg', '/images/two.jpg',
+    ].map(asset => `https://example.test${asset}`).sort());
+});
+
 test('requires the portfolio demo marker in the deployed HTML', () => {
     const check = { path: '/demos/creator-portfolio/', status: 200, containsText: '虚构演示' };
     assert.deepEqual(checker.validateResponse(check, 200, '<html>虚构演示</html>'), []);

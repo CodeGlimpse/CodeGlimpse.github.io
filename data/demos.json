@@ -1,0 +1,60 @@
+[
+  {
+    "id": "creator-portfolio",
+    "source": "demos/creator-portfolio",
+    "path": "demos/creator-portfolio/",
+    "preview": { "image": "img/demos/creator-portfolio.jpg", "width": 1280, "height": 960 },
+    "brand": "弧光 / PORTFOLIO",
+    "copy": {
+      "zh-cn": {
+        "title": "创作者作品集",
+        "label": "原创虚构示例",
+        "description": "浏览图片作品与项目案例，查看电脑和手机上的作品展示。",
+        "previewAlt": "创作者作品集首页的真实页面截图，包含标题、导航和原创虚构作品",
+        "features": ["图片画廊", "项目案例", "作品详情"]
+      },
+      "en": {
+        "title": "Creator portfolio",
+        "label": "Fictional · Chinese",
+        "description": "Explore a gallery and project stories with original fictional content. Demo pages are in Chinese.",
+        "previewAlt": "Screenshot of the creator portfolio homepage, showing its heading, navigation, and original fictional artwork",
+        "features": ["Image gallery", "Project stories", "Work details"]
+      }
+    },
+    "checks": {
+      "pages": ["", "works/", "projects/", "works/window-light/", "works/paper-tide/", "projects/rain-notes/", "projects/leaf-atlas/"],
+      "assets": ["css/site.css", "projects/leaf-atlas/cover.svg"],
+      "requiredText": ["虚构演示"],
+      "navigation": ["works/", "projects/"]
+    }
+  },
+  {
+    "id": "photo-portfolio",
+    "source": "demos/photo-portfolio",
+    "path": "demos/photo-portfolio/",
+    "preview": { "image": "img/demos/photo-portfolio.jpg", "width": 1280, "height": 960 },
+    "brand": "留光 / LIGHT · STILL",
+    "copy": {
+      "zh-cn": {
+        "title": "摄影作品集",
+        "label": "虚构摄影 · AI 生成图片",
+        "description": "浏览虚构摄影故事、作品详情与个人介绍，体验手机和电脑上的图片展示。",
+        "previewAlt": "摄影作品集首页的真实页面截图，包含个人介绍和 AI 生成的虚构雨街影像",
+        "features": ["摄影故事", "响应式图片", "关于与联系"]
+      },
+      "en": {
+        "title": "Photography portfolio",
+        "label": "Fictional photography · AI imagery",
+        "description": "Browse fictional photo stories, work details, and a personal profile. Demo pages are in Chinese.",
+        "previewAlt": "Screenshot of the photography portfolio homepage, showing its introduction and AI-generated fictional rainy street imagery",
+        "features": ["Photo stories", "Responsive images", "About & contact"]
+      }
+    },
+    "checks": {
+      "pages": ["", "works/", "works/rain-street/", "works/window-light/", "works/low-tide/", "about/"],
+      "assets": ["css/site.css", "previews/rain-street.jpg"],
+      "requiredText": ["虚构演示", "AI 生成"],
+      "navigation": ["works/", "about/"]
+    }
+  }
+]

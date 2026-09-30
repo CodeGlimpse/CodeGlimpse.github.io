@@ -6,6 +6,48 @@ builds first; `scripts/build-site.cjs` then builds each site into its matching
 `public/demos/` subdirectory with the published subpath as its base URL. GitHub
 Pages deploys the combined `public/` artifact.
 
+`data/demos.json` is the shared registry for the bilingual catalog, build,
+published-output checks, deployment monitoring, and browser tests. Each entry
+defines its ID, source directory, published path, preview dimensions/image,
+bilingual copy and feature labels, expected pages, assets, and navigation.
+`scripts/demo-registry.cjs` validates the registry before Node.js consumers use it.
+When adding a demo, keep its `source`, `path`, and `preview.image` unique and use
+relative paths. The standalone Python checkers stay inside each demo so copied
+repositories do not depend on the blog registry.
+CI iterates the same registry and runs `<source>/scripts/check_build.py` for
+each demo. New checkers should support `--base-url`, `--check-demo-pages`, and
+`--catalog-url` in addition to the output-directory argument.
+
+The integrated build injects a root-relative `demoCatalogURL` into each demo.
+Its header then displays a keyboard-accessible return link to the blog's demo
+catalog, including any deployment prefix. Standalone Hugo builds do not set
+this parameter and do not display the blog link. To check an integrated demo's
+links, pass `--catalog-url /demos/` (or the actual prefixed catalog path) to its
+Python checker; the exception applies only to that exact anchor destination.
+
+## Refresh real page previews
+
+Catalog previews are JPEG screenshots of the actual demo homepages, captured
+at the dimensions in the registry. They are checked in under `static/img/demos/`
+and are not regenerated during CI. Update them when the visible demo design
+changes:
+
+1. Build the site with `npm.cmd run build` (a custom destination is also supported).
+2. In another terminal, serve that build with `node scripts/serve-public.cjs`.
+   Set `SITE_ROOT` when using a custom build directory and `PORT` when needed.
+3. Run `npm.cmd run demos:previews -- --base-url http://127.0.0.1:4173/`.
+   The tool uses installed Playwright Chromium, waits for visible images and
+   fonts, and captures the page without adding invented UI or replacing artwork.
+   It accepts only a locally served build and blocks external requests.
+4. Review both JPEGs, run the demo registry tests, then rebuild to copy the new
+   previews into the published artifact. Stop the local server when finished.
+
+Screenshots may differ slightly across operating systems because the demos use
+system fonts. The browser tests verify valid images, dimensions, links and page
+layout rather than requiring identical screenshot bytes.
+
+## Build configuration
+
 The build reads Hugo's effective configuration, including `--destination` /
 `-d`, `--baseURL` / `-b`, configuration files, and `HUGO_*` environment overrides.
 Both demos follow the resulting output directory and URL prefix. For example:

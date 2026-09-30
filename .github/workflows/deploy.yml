@@ -88,11 +88,28 @@ jobs:
                   SOURCE_COMMIT: ${{ github.sha }}
               run: npm run check:output
 
-            - name: Check portfolio demo links
-              run: python3 demos/creator-portfolio/scripts/check_build.py public/demos/creator-portfolio --base-url https://blog.codeglimpse.top/demos/creator-portfolio/ --check-demo-pages
+            - name: Check registered demo links and images
+              run: |
+                  python3 - <<'PY'
+                  import json
+                  import os
+                  from pathlib import Path
+                  import subprocess
+                  import sys
+                  from urllib.parse import urljoin, urlsplit
 
-            - name: Check photography demo links and image descriptions
-              run: python3 demos/photo-portfolio/scripts/check_build.py public/demos/photo-portfolio --base-url https://blog.codeglimpse.top/demos/photo-portfolio/ --check-demo-pages
+                  output = Path(os.environ.get("SITE_ROOT", "public"))
+                  base_url = os.environ.get("SITE_URL", "https://blog.codeglimpse.top/").rstrip("/") + "/"
+                  catalog_url = urlsplit(urljoin(base_url, "demos/")).path
+                  for demo in json.loads(Path("data/demos.json").read_text(encoding="utf-8")):
+                      subprocess.run([
+                          sys.executable, "-B", "-X", "utf8",
+                          str(Path(demo["source"]) / "scripts/check_build.py"),
+                          str(output / demo["path"]),
+                          "--base-url", urljoin(base_url, demo["path"]),
+                          "--check-demo-pages", "--catalog-url", catalog_url,
+                      ], check=True)
+                  PY
 
             - name: Write build summary
               if: always()

@@ -1,8 +1,8 @@
 const { spawnSync } = require('node:child_process');
 const path = require('node:path');
+const { DEMO_REGISTRY } = require('./demo-registry.cjs');
 
 const projectRoot = path.resolve(__dirname, '..');
-const demoIds = ['creator-portfolio', 'photo-portfolio'];
 const configurationFlags = new Set([
     '--baseURL', '-b', '--destination', '-d', '--environment', '-e',
     '--config', '--configDir', '--source', '-s', '--theme', '-t', '--themesDir',
@@ -80,20 +80,26 @@ function buildSite(args = process.argv.slice(2), environment = process.env, run 
     if (result.status !== 0) return result.status ?? 1;
 
     // Each demo keeps its own layouts and CSS, but belongs to the same artifact.
-    for (const id of demoIds) {
-        const baseURL = new URL(`demos/${id}/`, options.baseURL).toString();
-        const destination = path.join(options.outputRoot, 'demos', id);
+    for (const demoInfo of DEMO_REGISTRY) {
+        const baseURL = new URL(demoInfo.path, options.baseURL).toString();
+        const destination = path.join(options.outputRoot, demoInfo.path);
+        const catalogURL = new URL('demos/', options.baseURL).pathname;
         // Hugo environment settings override CLI flags. Scope these values to
         // the child site, including differently cased keys on Windows.
         const demoEnvironment = Object.fromEntries(Object.entries(environment)
-            .filter(([key]) => !['HUGO_BASEURL', 'HUGO_PUBLISHDIR'].includes(key.toUpperCase())));
+            .filter(([key]) => !['HUGO_BASEURL', 'HUGO_PUBLISHDIR', 'HUGO_PARAMS_DEMOCATALOGURL'].includes(key.toUpperCase())));
         const demo = run('hugo', [
             '--cleanDestinationDir', '--minify', '--gc', '--panicOnWarning',
             '--baseURL', baseURL,
             '--destination', destination,
         ], {
-            cwd: path.join(options.sourceRoot, 'demos', id),
-            env: { ...demoEnvironment, HUGO_BASEURL: baseURL, HUGO_PUBLISHDIR: destination },
+            cwd: path.join(options.sourceRoot, demoInfo.source),
+            env: {
+                ...demoEnvironment,
+                HUGO_BASEURL: baseURL,
+                HUGO_PUBLISHDIR: destination,
+                HUGO_PARAMS_DEMOCATALOGURL: catalogURL,
+            },
             stdio: 'inherit',
             windowsHide: true,
         });

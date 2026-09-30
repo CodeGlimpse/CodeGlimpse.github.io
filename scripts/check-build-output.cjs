@@ -1,6 +1,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const games = require('../data/games.json');
+const { DEMO_REGISTRY } = require('./demo-registry.cjs');
+const { createDemoChecks, findTag, normalizeBaseUrl, validateDemoCatalog, validateResponse } = require('./check-deployed-site.cjs');
 
 const projectRoot = path.resolve(__dirname, '..');
 const contentRoot = path.join(projectRoot, 'content');
@@ -368,62 +370,30 @@ if (!fs.existsSync(outputRoot)) {
         checkAnalytics(relativeFile, html);
         checkPrivacyMarkup(relativeFile, html);
     }
-    for (const catalog of ['demos/index.html', 'en/demos/index.html']) {
-        requirePattern(catalog, readOutput(catalog), /href=["']?\/demos\/creator-portfolio\//i,
-            'missing creator portfolio link');
-        requirePattern(catalog, readOutput(catalog), /href=["']?\/demos\/photo-portfolio\//i,
-            'missing photography portfolio link');
-        requirePattern(catalog, readOutput(catalog), /src=["']?\/demos\/photo-portfolio\/previews\/rain-street\.jpg/i,
-            'missing photography portfolio cover');
+    let demoBaseURL = normalizeBaseUrl('https://demo.invalid/');
+    try {
+        const canonical = findTag(chineseHome, 'link', (link) => link.rel?.toLowerCase() === 'canonical')?.href;
+        demoBaseURL = normalizeBaseUrl(canonical);
+    } catch {
+        errors.push('index.html: missing or invalid canonical URL for demo checks');
     }
-    for (const page of [
-        'index.html',
-        'works/index.html',
-        'projects/index.html',
-        'works/window-light/index.html',
-        'works/paper-tide/index.html',
-        'projects/rain-notes/index.html',
-        'projects/leaf-atlas/index.html',
-    ]) {
-        requireFile(`demos/creator-portfolio/${page}`);
+    // A demo's return link must resolve to a page in this combined artifact.
+    requireFile('demos/index.html');
+    for (const [language, catalog] of [['zh-cn', 'demos/index.html'], ['en', 'en/demos/index.html']]) {
+        const pageUrl = new URL(catalog.replace(/index\.html$/, ''), demoBaseURL).toString();
+        errors.push(...validateDemoCatalog(readOutput(catalog), pageUrl, language, demoBaseURL, DEMO_REGISTRY)
+            .map((error) => `${catalog}: ${error}`));
     }
-    requireFile('demos/creator-portfolio/css/site.css');
-    requireFile('demos/creator-portfolio/projects/leaf-atlas/cover.svg');
-    const portfolioHome = readOutput('demos/creator-portfolio/index.html');
-    requirePattern('demos/creator-portfolio/index.html', portfolioHome, /虚构演示/,
-        'portfolio must disclose that its content is fictional');
-    forbidPattern('demos/creator-portfolio/index.html', portfolioHome, /livereload/i,
-        'development livereload script must not appear in published demo');
-
-    const photoPages = [
-        'index.html',
-        'works/index.html',
-        'works/rain-street/index.html',
-        'works/window-light/index.html',
-        'works/low-tide/index.html',
-        'about/index.html',
-    ];
-    for (const page of photoPages) {
-        const file = `demos/photo-portfolio/${page}`;
+    for (const check of createDemoChecks(DEMO_REGISTRY)) {
+        const file = check.path.replace(/^\/+/, '') + (check.path.endsWith('/') ? 'index.html' : '');
+        if (!check.demoHtml) {
+            requireFile(file);
+            continue;
+        }
         const html = readOutput(file);
-        if (!html) continue;
         checkImagesHaveAlt(file, html);
-        requirePattern(file, html, /\/demos\/photo-portfolio\/css\/site\.css/i,
-            'missing photography portfolio stylesheet');
-        forbidPattern(file, html, /livereload/i,
-            'development livereload script must not appear in published demo');
-    }
-    requireFile('demos/photo-portfolio/css/site.css');
-    requireFile('demos/photo-portfolio/previews/rain-street.jpg');
-    const photoHome = readOutput('demos/photo-portfolio/index.html');
-    requirePattern('demos/photo-portfolio/index.html', photoHome, /虚构演示/,
-        'photography portfolio must disclose that its content is fictional');
-    requirePattern('demos/photo-portfolio/index.html', photoHome, /AI 生成/,
-        'photography portfolio must disclose AI-generated imagery');
-    for (const section of ['works', 'about']) {
-        requirePattern('demos/photo-portfolio/index.html', photoHome,
-            new RegExp(`href=["']?\\/demos\\/photo-portfolio\\/${section}\\/`, 'i'),
-            `photography portfolio is missing its ${section} navigation link`);
+        errors.push(...validateResponse(check, 200, html, new URL(check.path.replace(/^\/+/, ''), demoBaseURL).toString(), { baseUrl: demoBaseURL })
+            .map((error) => `${file}: ${error}`));
     }
     checkInternalReviewText(outputRoot);
 }

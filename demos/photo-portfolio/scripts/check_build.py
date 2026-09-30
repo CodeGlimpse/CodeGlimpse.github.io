@@ -9,11 +9,12 @@ from urllib.parse import unquote, urlsplit
 
 
 class PageChecker(HTMLParser):
-    def __init__(self, page: Path, output: Path, prefix: str) -> None:
+    def __init__(self, page: Path, output: Path, prefix: str, catalog_url: str | None = None) -> None:
         super().__init__()
         self.page = page
         self.output = output
         self.prefix = prefix
+        self.catalog_url = catalog_url
         self.errors: list[str] = []
 
     def check_url(self, raw: str) -> None:
@@ -32,6 +33,10 @@ class PageChecker(HTMLParser):
             target = self.page.parent / path
         if path.endswith("/") or target.is_dir():
             target /= "index.html"
+        target = target.resolve()
+        if not target.is_relative_to(self.output):
+            self.errors.append(f"{self.page}: local target escapes site output: {raw}")
+            return
         if not target.is_file():
             self.errors.append(f"{self.page}: missing local target: {raw}")
 
@@ -41,6 +46,10 @@ class PageChecker(HTMLParser):
             self.errors.append(f"{self.page}: image lacks meaningful alt text")
         for attribute in ("href", "src"):
             if values.get(attribute):
+                if tag == "a" and attribute == "href" and "data-demo-catalog" in values and self.catalog_url is not None:
+                    if values[attribute] != self.catalog_url:
+                        self.errors.append(f"{self.page}: catalog link must point to {self.catalog_url}: {values[attribute]}")
+                    continue
                 self.check_url(values[attribute] or "")
         if values.get("srcset"):
             for entry in (values["srcset"] or "").split(","):
@@ -52,7 +61,15 @@ def main() -> int:
     parser.add_argument("output", type=Path)
     parser.add_argument("--base-url", required=True)
     parser.add_argument("--check-demo-pages", action="store_true", help="Also require the demo disclosures and blog integration image")
+    parser.add_argument("--catalog-url", help="Allow only a marked catalog link to this exact root-relative directory path")
     args = parser.parse_args()
+    if args.catalog_url is not None:
+        catalog = urlsplit(args.catalog_url)
+        if (catalog.scheme or catalog.netloc or catalog.path != args.catalog_url
+                or not args.catalog_url.startswith("/") or not args.catalog_url.endswith("/")
+                or "\\" in unquote(catalog.path)
+                or any(part in (".", "..") for part in unquote(catalog.path).split("/"))):
+            parser.error("--catalog-url must be an exact root-relative directory path")
     output = args.output.resolve()
     base_path = urlsplit(args.base_url).path.strip("/")
     prefix = f"/{base_path}/" if base_path else "/"
@@ -74,7 +91,7 @@ def main() -> int:
 
     pages = sorted(output.rglob("*.html"))
     for page in pages:
-        checker = PageChecker(page, output, prefix)
+        checker = PageChecker(page, output, prefix, args.catalog_url)
         checker.feed(page.read_text(encoding="utf-8"))
         errors.extend(checker.errors)
 

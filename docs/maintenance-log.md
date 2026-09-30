@@ -229,3 +229,12 @@
 - 发布后资源巡检枚举 `img` 与 `source` 的 `srcset`，保留 URL 内部逗号，忽略外部及内嵌数据地址，并新增对应回归。
 - 验证：29 项定向 Node.js 测试、6 项 demo Chromium 测试通过；工作流检查、默认基础地址的整站产物检查及两个 demo 的链接检查通过。命令行与环境变量两种自定义子路径各完成真实组合构建，每组验证主博客保留、目录链接及 13 个 demo HTML 页面引用的 37 个同源资源。
 - 构建与浏览器日志保存在 `F:/agents/code/temp/demo-fixes-20260930-01/`。本批仅在本地验收，远程 CI 与线上发布未执行。
+
+## 2026-09-30 - Demo 目录预览与统一注册
+
+- 目录卡片改用两个演示站的真实首页截图，补充双语功能标签；截图为 1280×960 JPEG，创作者作品集 86,636 B、摄影作品集 127,967 B。新增 `npm.cmd run demos:previews`，从本地服务更新截图并等待字体、可见图片加载。
+- 两个演示站的所有页面新增“返回演示目录”入口，支持键盘操作及部署子路径；组合构建注入目录参数，独立构建不显示博客返回入口。Python 检查器只放行精确匹配且带标记的目录链接，其余图片、链接及目录越界检查保持有效。
+- `data/demos.json` 统一维护双语目录、预览、构建路径与验收要求；主构建、产物检查、发布后巡检、浏览器测试及 CI 的独立 demo 检查均读取注册表。新增 demo 的接入和截图更新步骤同步至 `demos/README.md`，没有新增依赖。
+- 验证：52 项定向 Node.js 测试、8 项 demo Chromium E2E 通过；截图脚本语法、工作流配置、整站产物和两个 demo 的链接图片检查通过。默认生产基础地址、环境变量配置的 `/review/` 子路径组合构建，以及两个 `https://example.test/portfolio/` 独立构建均实际验收；前缀页面返回地址正确，独立页面不含博客返回入口。更新后的 CI Python 检查正文已对本地产物执行通过。
+- 验证命令：`node --test tests/build-site.test.cjs tests/demo-registry.test.cjs tests/deployed-site-check.test.cjs tests/photo-demo-check.test.cjs tests/demo-catalog-links.test.cjs`；浏览器仅运行 `e2e/demos.spec.cjs`；组合构建使用 `node scripts/build-site.cjs --destination <隔离目录>`，产物由 `scripts/check-build-output.cjs` 与两个 demo 的 `scripts/check_build.py` 检查。
+- 构建、浏览器日志及桌面/手机目录截图保存在 `F:/agents/code/temp/demo-catalog-20260930-01/`，包括 `build-final.log`、`build-prefix.log`、`standalone-*.log` 和 `e2e.log`。回退检查点为 `5517a38d7d6150d6c8060b7f98c8b7c8774152e6`；本批仅完成本地验收，未推送、未运行远程 CI、未部署。

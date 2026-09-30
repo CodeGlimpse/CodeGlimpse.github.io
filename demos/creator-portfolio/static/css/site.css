@@ -17,6 +17,9 @@ a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
 .shell { width: min(100% - 3rem, 1160px); margin-inline: auto; }
 .skip-link { position: absolute; left: 1rem; top: -5rem; z-index: 10; background: white; padding: .5rem 1rem; }
 .skip-link:focus { top: 1rem; }
+.demo-catalog-bar { border-bottom: 1px solid var(--line); }
+.demo-catalog-link { display: inline-flex; padding-block: .65rem; color: var(--muted); font-size: .85rem; text-decoration: none; }
+.demo-catalog-link:hover { color: var(--ink); text-decoration: underline; }
 .site-header { border-bottom: 1px solid var(--line); }
 .header-inner { min-height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
 .brand { display: inline-flex; align-items: center; gap: .75rem; font-size: .92rem; font-weight: 700; letter-spacing: .08em; text-decoration: none; }

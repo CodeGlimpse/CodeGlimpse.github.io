@@ -1,24 +1,15 @@
 const { TOOL_IDS, TOOL_REGISTRY } = require('./tool-registry.cjs');
 const games = require('../data/games.json');
+const { DEMO_REGISTRY } = require('./demo-registry.cjs');
 
 const checks = [
     { path: '/', status: 200, html: true, language: 'zh-cn' },
     { path: '/en/', status: 200, html: true, language: 'en' },
     { path: '/archives/', status: 200, html: true, language: 'zh-cn' },
     { path: '/en/archives/', status: 200, html: true, language: 'en' },
-    { path: '/demos/', status: 200, html: true, language: 'zh-cn' },
-    { path: '/en/demos/', status: 200, html: true, language: 'en' },
-    { path: '/demos/creator-portfolio/', status: 200, containsText: '虚构演示' },
-    { path: '/demos/creator-portfolio/css/site.css', status: 200 },
-    { path: '/demos/creator-portfolio/projects/leaf-atlas/cover.svg', status: 200 },
-    { path: '/demos/photo-portfolio/', status: 200, demoHtml: true, demoNavigation: true, requiredText: ['虚构演示', 'AI 生成'] },
-    { path: '/demos/photo-portfolio/works/', status: 200, demoHtml: true },
-    { path: '/demos/photo-portfolio/works/rain-street/', status: 200, demoHtml: true },
-    { path: '/demos/photo-portfolio/works/window-light/', status: 200, demoHtml: true },
-    { path: '/demos/photo-portfolio/works/low-tide/', status: 200, demoHtml: true },
-    { path: '/demos/photo-portfolio/about/', status: 200, demoHtml: true },
-    { path: '/demos/photo-portfolio/css/site.css', status: 200 },
-    { path: '/demos/photo-portfolio/previews/rain-street.jpg', status: 200 },
+    { path: '/demos/', status: 200, html: true, language: 'zh-cn', demoCatalog: true },
+    { path: '/en/demos/', status: 200, html: true, language: 'en', demoCatalog: true },
+    ...createDemoChecks(),
     { path: '/search/', status: 404 },
     { path: '/en/search/', status: 404 },
     { path: '/search/index.json', status: 404 },
@@ -113,7 +104,7 @@ function extractTags(body, tagName) {
 
 function extractAttributes(tag) {
     const attributes = {};
-    for (const match of tag.matchAll(/([A-Za-z_:][-A-Za-z0-9_:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g)) {
+    for (const match of tag.matchAll(/([A-Za-z_:][-A-Za-z0-9_:.]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/g)) {
         attributes[match[1].toLowerCase()] = match[2] ?? match[3] ?? match[4] ?? '';
     }
     return attributes;
@@ -121,6 +112,51 @@ function extractAttributes(tag) {
 
 function findTag(body, tagName, predicate) {
     return extractTags(body, tagName).map(extractAttributes).find(predicate) ?? null;
+}
+
+function createDemoChecks(registry = DEMO_REGISTRY) {
+    return registry.flatMap((demo) => [
+        ...demo.checks.pages.map((page) => ({
+            path: `/${demo.path}${page}`,
+            status: 200,
+            demoHtml: true,
+            demo,
+            demoNavigation: page === '' ? demo.checks.navigation : [],
+            requiredText: page === '' ? demo.checks.requiredText : [],
+        })),
+        ...demo.checks.assets.map((asset) => ({ path: `/${demo.path}${asset}`, status: 200, resource: true })),
+        { path: `/${demo.preview.image}`, status: 200, resource: true },
+    ]);
+}
+
+function resolveSiteBase(check, pageUrl, options = {}) {
+    if (options.baseUrl) return normalizeBaseUrl(options.baseUrl);
+    if (!pageUrl) return normalizeBaseUrl('https://demo.invalid/');
+    const url = new URL(pageUrl);
+    const route = check.path?.replace(/^\/+/, '');
+    url.pathname = route && url.pathname.endsWith(route)
+        ? url.pathname.slice(0, -route.length) : '/';
+    return normalizeBaseUrl(url.toString());
+}
+
+function validateDemoCatalog(body, pageUrl, language, baseUrl = null, registry = DEMO_REGISTRY) {
+    const errors = [];
+    const siteBase = resolveSiteBase({ path: language === 'en' ? '/en/demos/' : '/demos/' }, pageUrl, { baseUrl });
+    const links = collectLocalLinkUrls(pageUrl, body);
+    const images = extractTags(body, 'img').map(extractAttributes);
+    for (const demo of registry) {
+        const target = new URL(demo.path, siteBase);
+        if (!links.some((link) => new URL(link).pathname === target.pathname)) errors.push(`missing demo link: ${demo.id}`);
+        const title = demo.copy[language].title;
+        const escapedTitle = title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&#34;').replace(/'/g, '&#39;');
+        if (!body.includes(title) && !body.includes(escapedTitle)) errors.push(`missing demo title: ${demo.id}`);
+        const preview = new URL(demo.preview.image, siteBase).toString();
+        if (!images.some((image) => {
+            try { return image.src && new URL(image.src, pageUrl).toString() === preview; }
+            catch { return false; }
+        })) errors.push(`missing demo preview: ${demo.id}`);
+    }
+    return errors;
 }
 
 function srcsetUrls(value) {
@@ -216,16 +252,38 @@ function validateResponse(check, status, body, pageUrl = null, options = {}) {
         if (!/<html\b/i.test(body)) errors.push('expected an HTML document');
         if (!/<main\b/i.test(body)) errors.push('missing main landmark');
         if (!/<title\b[^>]*>[^<]+<\/title>/i.test(body)) errors.push('missing page title');
-        if (!/\/demos\/photo-portfolio\/css\/site\.css/i.test(body)) errors.push('missing demo stylesheet');
         if (/livereload/i.test(body)) errors.push('development livereload script is present');
-        if (check.demoNavigation) {
-            const links = pageUrl ? collectLocalLinkUrls(pageUrl, body) : [];
-            for (const section of ['works', 'about']) {
-                if (!links.some((link) => new URL(link).pathname === `/demos/photo-portfolio/${section}/`)) {
-                    errors.push(`missing ${section} navigation link`);
+        if (!check.demo) {
+            errors.push('missing demo configuration');
+        } else {
+            const siteBase = resolveSiteBase(check, pageUrl, options);
+            const url = pageUrl || endpointUrl(siteBase, check.path);
+            const stylesheets = extractTags(body, 'link').map(extractAttributes)
+                .filter((link) => link.rel?.toLowerCase().split(/\s+/).includes('stylesheet'));
+            for (const asset of check.demo.checks.assets.filter((asset) => asset.endsWith('.css'))) {
+                const expected = new URL(`${check.demo.path}${asset}`, siteBase).toString();
+                if (!stylesheets.some((link) => {
+                    try { return link.href && new URL(link.href, url).toString() === expected; }
+                    catch { return false; }
+                })) errors.push(`missing demo stylesheet: ${asset}`);
+            }
+            const links = collectLocalLinkUrls(url, body);
+            for (const section of check.demoNavigation ?? []) {
+                const expected = new URL(`${check.demo.path}${section}`, siteBase).pathname;
+                if (!links.some((link) => new URL(link).pathname === expected)) {
+                    errors.push(`missing ${section.replace(/\/$/, '')} navigation link`);
                 }
             }
+            const catalogPath = new URL('demos/', siteBase).pathname;
+            const catalogLinks = extractTags(body, 'a').map(extractAttributes)
+                .filter((link) => Object.hasOwn(link, 'data-demo-catalog'));
+            if (!catalogLinks.length) errors.push('missing demo catalog return link');
+            else if (catalogLinks.some((link) => link.href !== catalogPath)) errors.push(`demo catalog link must point to ${catalogPath}`);
         }
+    }
+
+    if (check.demoCatalog && status === check.status) {
+        errors.push(...validateDemoCatalog(body, pageUrl, check.language, options.baseUrl));
     }
 
     if (check.html && status === check.status) {
@@ -337,6 +395,7 @@ async function checkEndpoint(baseUrl, check) {
             });
             const body = await response.text();
             const options = {
+                baseUrl: baseUrl.toString(),
                 expectClarity: process.env.SITE_EXPECT_CLARITY === 'true',
                 sourceCommit: process.env.SITE_SOURCE_COMMIT?.trim() || '',
                 canonicalOrigin: process.env.SITE_CANONICAL_ORIGIN?.trim() || '',
@@ -400,8 +459,11 @@ module.exports = {
     checks,
     collectLocalAssetUrls,
     collectLocalLinkUrls,
+    createDemoChecks,
     endpointUrl,
     extractAttributes,
+    findTag,
     normalizeBaseUrl,
+    validateDemoCatalog,
     validateResponse,
 };

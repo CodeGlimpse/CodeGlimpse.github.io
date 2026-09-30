@@ -33,7 +33,7 @@ function createSiteFixture(t, options = {}) {
     const slug = options.demo ? 'rain-street' : 'morning-room';
     const homeText = options.homeText ?? (options.demo ? '虚构演示 · AI 生成' : '晨间摄影作品集');
     writeFixture(root, 'css/site.css', '.portfolio { display: block; }');
-    writeFixture(root, 'index.html', html(`<h1>${homeText}</h1><a href="${prefix}works/">作品</a><a href="${prefix}about/">关于</a>`));
+    writeFixture(root, 'index.html', html(`<h1>${homeText}</h1><a href="${prefix}works/">作品</a><a href="${prefix}about/">关于</a>${options.extraMarkup || ''}`));
     writeFixture(root, 'works/index.html', html(`<a href="${prefix}works/${slug}/"><img src="${prefix}previews/${slug}.jpg" alt="作品预览"></a>`));
     writeFixture(root, 'about/index.html', html(`<p>摄影师介绍</p><a href="${prefix}">首页</a>`));
     writeFixture(root, `works/${slug}/index.html`, html(`<picture><source type="image/jpeg" srcset="${prefix}images/small.jpg 640w, ${prefix}images/large.jpg 1440w"><img src="${prefix}works/${slug}/photo.jpg" alt="晨光中的房间"></picture>`));
@@ -96,4 +96,16 @@ test('accepts the demo with its disclosures, original image, and srcset targets'
     const root = createSiteFixture(t, { demo: true });
     const result = runChecker(root, ['--check-demo-pages']);
     assert.equal(result.status, 0, result.stdout + result.stderr);
+});
+
+test('a configured catalog return link does not bypass responsive image checks', (t) => {
+    const root = createSiteFixture(t, {
+        demo: true,
+        includeLargeImage: false,
+        extraMarkup: '<a data-demo-catalog href="/demos/">返回目录</a>',
+    });
+    const result = runChecker(root, ['--check-demo-pages', '--catalog-url', '/demos/']);
+    assert.equal(result.status, 1, result.stdout + result.stderr);
+    assert.match(result.stdout, /missing local target: \/client-portfolio\/images\/large\.jpg/);
+    assert.doesNotMatch(result.stdout, /URL misses base path/);
 });

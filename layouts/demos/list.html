@@ -6,40 +6,29 @@
     <p>{{ .Description }}</p>
 </header>
 <section class="demos-grid" aria-label="{{ .Title }}">
-    <a class="demo-card" href="{{ "demos/creator-portfolio/" | relURL }}">
+    {{ $language := .Language.Lang }}
+    {{ range .Site.Data.demos }}
+    {{ $copy := index .copy $language }}
+    <a class="demo-card" href="{{ .path | relURL }}">
         <div class="demo-card-preview">
             <div class="demo-preview-header" aria-hidden="true">
                 <span class="demo-preview-mark"></span>
-                <span>弧光 / PORTFOLIO</span>
+                <span>{{ .brand }}</span>
             </div>
-            <img src="{{ "demos/creator-portfolio/projects/leaf-atlas/cover.svg" | relURL }}"
-                alt="{{ if eq .Language.Lang "en" }}Abstract leaf illustration from the fictional portfolio{{ else }}虚构作品集中的抽象叶片插画{{ end }}"
-                loading="lazy" decoding="async" width="800" height="600">
+            <img src="{{ .preview.image | relURL }}" alt="{{ $copy.previewAlt }}"
+                loading="lazy" decoding="async" width="{{ .preview.width }}" height="{{ .preview.height }}">
         </div>
         <div class="demo-card-copy">
-            <span class="demo-card-label">{{ if eq .Language.Lang "en" }}Fictional · Chinese{{ else }}原创虚构示例{{ end }}</span>
-            <h2>{{ if eq .Language.Lang "en" }}Creator portfolio{{ else }}创作者作品集{{ end }}</h2>
-            <p>{{ if eq .Language.Lang "en" }}Gallery and project pages with original fictional content. In Chinese.{{ else }}浏览图片画廊与项目案例，查看电脑和手机上的作品展示。{{ end }}</p>
-            <span class="demo-card-action">{{ if eq .Language.Lang "en" }}Open demo{{ else }}打开演示站{{ end }} <span aria-hidden="true">→</span></span>
+            <span class="demo-card-label">{{ $copy.label }}</span>
+            <h2>{{ $copy.title }}</h2>
+            <p>{{ $copy.description }}</p>
+            <ul class="demo-card-features">
+                {{ range $copy.features }}<li>{{ . }}</li>{{ end }}
+            </ul>
+            <span class="demo-card-action">{{ if eq $language "en" }}Open demo{{ else }}打开演示站{{ end }} <span aria-hidden="true">→</span></span>
         </div>
     </a>
-    <a class="demo-card" href="{{ "demos/photo-portfolio/" | relURL }}">
-        <div class="demo-card-preview">
-            <div class="demo-preview-header" aria-hidden="true">
-                <span class="demo-preview-mark"></span>
-                <span>PHOTO / PORTFOLIO</span>
-            </div>
-            <img src="{{ "demos/photo-portfolio/previews/rain-street.jpg" | relURL }}"
-                alt="{{ if eq .Language.Lang "en" }}AI-generated fictional rainy street photograph from the portfolio demo{{ else }}摄影作品集演示中的虚构雨后街景，图片由 AI 生成{{ end }}"
-                loading="lazy" decoding="async" width="800" height="600">
-        </div>
-        <div class="demo-card-copy">
-            <span class="demo-card-label">{{ if eq .Language.Lang "en" }}Fictional photography · AI imagery{{ else }}虚构摄影 · AI 生成图片{{ end }}</span>
-            <h2>{{ if eq .Language.Lang "en" }}Photography portfolio{{ else }}摄影作品集{{ end }}</h2>
-            <p>{{ if eq .Language.Lang "en" }}Browse fictional photo stories, project pages, and a personal profile. In Chinese.{{ else }}浏览虚构摄影故事、作品详情与个人介绍，体验手机和电脑上的图片展示。{{ end }}</p>
-            <span class="demo-card-action">{{ if eq .Language.Lang "en" }}Open demo{{ else }}打开演示站{{ end }} <span aria-hidden="true">→</span></span>
-        </div>
-    </a>
+    {{ end }}
 </section>
 <div class="demos-note">{{ .Content }}</div>
 {{ end }}

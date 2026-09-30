@@ -9,6 +9,7 @@
 ```text
 content/                 博客、页面和中英文在线工具内容
 demos/                   独立演示站、模板、素材与更新指南
+data/demos.json          演示栏目、构建和检查共用的注册表
 assets/js/tools/         在线工具页面脚本和可测试核心逻辑
 layouts/                 Hugo 模板和 shortcode
 config/_default/         Hugo 配置、菜单和主题参数
@@ -56,6 +57,7 @@ npm run build         # 执行 Hugo 生产构建
 npm run check:output  # 检查发布目录、JSON、robots、sitemap 和工具页面
 npm run check         # 依次执行版本、语法、内容、测试、构建和输出检查
 npm run test:e2e      # 针对 public/ 运行浏览器端到端测试
+npm run demos:previews # 从本地预览服务更新真实 demo 页面截图
 ```
 
 演示站集成与自定义输出目录说明见 [`demos/README.md`](demos/README.md)。相关 Node.js 测试会调用 Python 3；解释器不在 PATH 时可用 `PYTHON` 环境变量指定可执行文件。

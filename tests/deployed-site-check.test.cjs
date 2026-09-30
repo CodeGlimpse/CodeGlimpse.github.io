@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const checker = require('../scripts/check-deployed-site.cjs');
+const { DEMO_REGISTRY } = require('../scripts/demo-registry.cjs');
 
 test('normalizes site URLs and resolves endpoint paths', () => {
     const baseUrl = checker.normalizeBaseUrl('https://example.com/site///');
@@ -136,13 +137,72 @@ test('discovers every local responsive candidate in source and img srcsets', () 
 });
 
 test('validates photography landmarks, navigation and demo disclosures', () => {
-    const check = { status: 200, demoHtml: true, demoNavigation: true, requiredText: ['虚构演示', 'AI 生成'] };
+    const check = checker.checks.find((check) => check.path === '/demos/photo-portfolio/' && check.demoHtml);
     const pageUrl = 'https://example.test/demos/photo-portfolio/';
-    const body = '<html><head><title>Demo</title><link rel="stylesheet" href="/demos/photo-portfolio/css/site.css"></head><body><main>虚构演示 · AI 生成<a href="works/">Works</a><a href="about/">About</a></main></body></html>';
+    const body = '<html><head><title>Demo</title><link rel="stylesheet" href="/demos/photo-portfolio/css/site.css"></head><body><main>虚构演示 · AI 生成<a href="works/">Works</a><a href="about/">About</a><a data-demo-catalog href="/demos/">All demos</a></main></body></html>';
     assert.deepEqual(checker.validateResponse(check, 200, body, pageUrl), []);
     assert.ok(checker.validateResponse(check, 200, body.replace('href="about/"', 'href="missing/"'), pageUrl).includes('missing about navigation link'));
     assert.ok(checker.validateResponse(check, 200, body.replace('AI 生成', ''), pageUrl).some(error => error.includes('AI 生成')));
-    assert.ok(checker.validateResponse(check, 200, body.replace('site.css', 'missing.css'), pageUrl).includes('missing demo stylesheet'));
+    assert.ok(checker.validateResponse(check, 200, body.replace('site.css', 'missing.css'), pageUrl).includes('missing demo stylesheet: css/site.css'));
+});
+
+test('registers every demo page, preview and asset with its homepage contract', () => {
+    for (const demo of DEMO_REGISTRY) {
+        for (const page of demo.checks.pages) {
+            assert.ok(checker.checks.some((check) => check.demoHtml && check.demo.id === demo.id && check.path === `/${demo.path}${page}`));
+        }
+        for (const asset of [...demo.checks.assets.map((asset) => `${demo.path}${asset}`), demo.preview.image]) {
+            assert.ok(checker.checks.some((check) => check.path === `/${asset}` && check.status === 200 && check.resource));
+        }
+        const home = checker.checks.find((check) => check.demoHtml && check.path === `/${demo.path}`);
+        assert.deepEqual(home.requiredText, demo.checks.requiredText);
+        assert.deepEqual(home.demoNavigation, demo.checks.navigation);
+    }
+});
+
+test('uses the registered stylesheet and navigation for an additional demo and URL prefix', () => {
+    const demo = {
+        ...DEMO_REGISTRY[0],
+        id: 'drawing-portfolio',
+        path: 'demos/drawing-portfolio/',
+        checks: {
+            pages: ['', 'collection/'],
+            assets: ['assets/layout.css'],
+            requiredText: ['独立示例'],
+            navigation: ['collection/'],
+        },
+    };
+    const check = checker.createDemoChecks([demo]).find((check) => check.demoHtml && check.path === `/${demo.path}`);
+    const pageUrl = 'https://example.test/review/demos/drawing-portfolio/';
+    const catalogLink = '<a data-demo-catalog href="/review/demos/">返回目录</a>';
+    const body = `<html><head><title>Drawing</title><link rel="stylesheet" href="/review/demos/drawing-portfolio/assets/layout.css"></head><body><main>独立示例<a href="collection/">Collection</a>${catalogLink}</main></body></html>`;
+    assert.deepEqual(checker.validateResponse(check, 200, body, pageUrl), []);
+    assert.ok(checker.validateResponse(check, 200, '', pageUrl).includes('expected an HTML document'));
+    assert.deepEqual(checker.validateResponse(check, 200, body.replace('href="/review/demos/"', 'href=/review/demos/'), pageUrl), []);
+    assert.ok(checker.validateResponse(check, 200, body.replace('assets/layout.css', 'css/site.css'), pageUrl).includes('missing demo stylesheet: assets/layout.css'));
+    assert.ok(checker.validateResponse(check, 200, body.replace('href="collection/"', 'href="works/"'), pageUrl).includes('missing collection navigation link'));
+    for (const replacement of [
+        '<a data-demo-catalog href="/demos/">返回目录</a>',
+        '<a data-demo-catalog href="../">返回目录</a>',
+        '<a data-demo-catalog href="/review/demos/?preview=1">返回目录</a>',
+        '<a href="/review/demos/">返回目录</a>',
+        '<img data-demo-catalog src="/review/demos/" alt="目录">',
+        '',
+    ]) {
+        assert.ok(checker.validateResponse(check, 200, body.replace(catalogLink, replacement), pageUrl).some((error) => error.includes('catalog')));
+    }
+});
+
+test('checks bilingual catalog links, titles and previews from the registry', () => {
+    for (const language of ['zh-cn', 'en']) {
+        const pageUrl = `https://example.test/review/${language === 'en' ? 'en/' : ''}demos/`;
+        const body = DEMO_REGISTRY.map((demo) => `<a href="/review/${demo.path}"><h2>${demo.copy[language].title}</h2><img src="/review/${demo.preview.image}" alt="Preview"></a>`).join('');
+        assert.deepEqual(checker.validateDemoCatalog(body, pageUrl, language), []);
+        const demo = DEMO_REGISTRY[0];
+        assert.ok(checker.validateDemoCatalog(body.replace(`href="/review/${demo.path}"`, 'href="/review/demos/missing/"'), pageUrl, language).includes(`missing demo link: ${demo.id}`));
+        assert.ok(checker.validateDemoCatalog(body.replace(demo.copy[language].title, 'Missing title'), pageUrl, language).includes(`missing demo title: ${demo.id}`));
+        assert.ok(checker.validateDemoCatalog(body.replace(`src="/review/${demo.preview.image}"`, 'src="/review/img/missing.jpg"'), pageUrl, language).includes(`missing demo preview: ${demo.id}`));
+    }
 });
 
 test('preserves commas inside srcset URLs and skips embedded data URLs', () => {

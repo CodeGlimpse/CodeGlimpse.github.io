@@ -14,6 +14,7 @@
     "check:site": "node scripts/check-deployed-site.cjs",
     "check:versions": "node scripts/check-versions.cjs",
     "build": "node scripts/build-site.cjs",
+    "demos:previews": "node scripts/capture-demo-previews.cjs",
     "check": "npm run check:versions && npm run check:workflow && npm run check:js && npm run check:content && npm run check:scripts && npm run check:contrast && npm test && npm run build && npm run check:output"
   },
   "devDependencies": {

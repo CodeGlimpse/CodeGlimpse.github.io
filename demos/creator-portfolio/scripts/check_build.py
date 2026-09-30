@@ -20,11 +20,12 @@ REQUIRED_PAGES = (
 
 
 class PageChecker(HTMLParser):
-    def __init__(self, page: Path, output: Path, prefix: str) -> None:
+    def __init__(self, page: Path, output: Path, prefix: str, catalog_url: str | None = None) -> None:
         super().__init__()
         self.page = page
         self.output = output
         self.prefix = prefix
+        self.catalog_url = catalog_url
         self.errors: list[str] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
@@ -33,7 +34,13 @@ class PageChecker(HTMLParser):
             self.errors.append(f"{self.page}: image has no alt text")
         for attr in ("href", "src"):
             raw = values.get(attr)
-            if not raw or raw.startswith(("#", "mailto:", "data:")):
+            if not raw:
+                continue
+            if tag == "a" and attr == "href" and "data-demo-catalog" in values and self.catalog_url is not None:
+                if raw != self.catalog_url:
+                    self.errors.append(f"{self.page}: catalog link must point to {self.catalog_url}: {raw}")
+                continue
+            if raw.startswith(("#", "mailto:", "data:")):
                 continue
             parsed = urlsplit(raw)
             if parsed.scheme or parsed.netloc:
@@ -48,6 +55,10 @@ class PageChecker(HTMLParser):
                 target = self.page.parent / pathname
             if raw.endswith("/") or target.is_dir():
                 target /= "index.html"
+            target = target.resolve()
+            if not target.is_relative_to(self.output):
+                self.errors.append(f"{self.page}: local target escapes site output: {raw}")
+                continue
             if not target.is_file():
                 self.errors.append(f"{self.page}: missing local target: {raw}")
 
@@ -57,7 +68,15 @@ def main() -> int:
     parser.add_argument("output", type=Path, help="Hugo output directory")
     parser.add_argument("--base-url", required=True, help="Base URL used for this Hugo build")
     parser.add_argument("--check-demo-pages", action="store_true", help="Also require the original demo pages")
+    parser.add_argument("--catalog-url", help="Allow only a marked catalog link to this exact root-relative directory path")
     args = parser.parse_args()
+    if args.catalog_url is not None:
+        catalog = urlsplit(args.catalog_url)
+        if (catalog.scheme or catalog.netloc or catalog.path != args.catalog_url
+                or not args.catalog_url.startswith("/") or not args.catalog_url.endswith("/")
+                or "\\" in unquote(catalog.path)
+                or any(part in (".", "..") for part in unquote(catalog.path).split("/"))):
+            parser.error("--catalog-url must be an exact root-relative directory path")
     output = args.output.resolve()
     base_path = urlsplit(args.base_url).path.strip("/")
     prefix = f"/{base_path}/" if base_path else "/"
@@ -68,7 +87,7 @@ def main() -> int:
             if not (output / relative).is_file():
                 errors.append(f"missing page: {relative}")
     for page in output.rglob("*.html"):
-        checker = PageChecker(page, output, prefix)
+        checker = PageChecker(page, output, prefix, args.catalog_url)
         checker.feed(page.read_text(encoding="utf-8"))
         errors.extend(checker.errors)
 

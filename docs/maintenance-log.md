@@ -249,3 +249,14 @@
 - 构建与产物：默认基础地址的整站构建和产物检查、三个 demo 的独立链接检查通过；环境变量指定 `/review/` 的组合构建验证了全部 15 个 demo 页面、资源、双语目录及返回地址。新看板另以 `https://example.test/portfolio/` 独立构建并检查通过。首次构建因新 Hugo 缓存目录的沙箱权限被阻止，获准重跑同一离线构建后成功；未更改系统配置。
 - 主要命令：`node --test tests/build-site.test.cjs tests/demo-registry.test.cjs tests/deployed-site-check.test.cjs tests/photo-demo-check.test.cjs tests/demo-catalog-links.test.cjs tests/content-dashboard.test.cjs`；`node scripts/run-e2e.cjs e2e/demos.spec.cjs e2e/content-dashboard.spec.cjs --workers 2`；无脚本复验使用 `--grep 'without JavaScript'`。同时通过新增脚本语法、内容结构及 `git diff --check` 检查。
 - 本地证据位于 `F:/agents/code/temp/content-dashboard-20261001-01/`：`unit-tests.log`、`e2e.log`、`e2e-noscript.log`、`build-final.log`、`build-prefix.log`、`build-standalone.log`、`scope-checks.log` 及桌面/手机截图。回退检查点为 `c5528ee`；本批未推送、未执行远程 CI、未部署。
+
+## 2026-10-01 - 书店、工坊与旅行交互演示
+
+- 新增“纸间书店”“拾光工坊”“远山周末”，演示目录扩至六个独立 Hugo 站点，双语介绍、构建、巡检和返回目录入口均接入统一注册表。
+- 书店包含十二本原创虚构图书，支持分类、多关键词搜索、输入法组合输入、购物袋增减、库存限制和整数分合计；工坊包含六门课程与十二个固定场次，支持分类、日期、参与人数、余位判断及预约单预览，变更选择立即清空旧预览；旅行包含八个虚构地点，支持最多六站的添加、排序、移除、地图同步、交通时间与预算汇总，以及超过八小时提示。
+- 使用本地 CSS 书封与原创 SVG 手作插画、地形示意，没有新增依赖、远程图片、地图服务、账户、后台或浏览器存储。购物袋与预约预览不会产生真实订单或预约；行程不提供真实导航。三站均保留完整无脚本只读内容，并覆盖键盘焦点与窄屏布局。
+- 真实首页预览图为 1280×960 JPEG：书店 95,289 B、工坊 98,667 B、旅行 114,371 B；原有三张预览保持不变。六卡片目录、三款手机交互状态与旅行桌面路线已人工查看。
+- 验证：96 项定向 Node.js 测试通过（18 项业务核心、49 项目录检查器、29 项共享构建/注册/巡检）；27 项相关 Chromium E2E 全部通过。初次目录回归 45/48 通过，工坊通用检查误要求固定文案，且错误提示与公共断言不一致；获授权后将文案约束限制到演示模式、统一提示并新增演示模式回归，49/49 复验通过。旅行检查器在首次回归前同步通用/演示模式边界。
+- 默认基础地址的组合构建、整站产物、全部六个 demo 独立检查器、内容结构及十二个新增 JS/测试文件语法检查通过。环境变量指定 `/review/` 的真实组合构建验证了双语目录、21 个 demo HTML 页面、22 个声明资源与主站保留；三款新站以 `https://example.test/portfolio/` 独立构建并验收，独立页面无博客返回入口。Hugo 缓存和资源仅通过进程环境变量写入工作区临时目录，未改变系统配置。
+- 主要命令：`node --test tests/bookstore.test.cjs tests/workshop-booking.test.cjs`；`node --test tests/trip-planner.test.cjs`；`node --test tests/demo-catalog-links.test.cjs`；`node --test tests/build-site.test.cjs tests/demo-registry.test.cjs tests/deployed-site-check.test.cjs`；`node scripts/run-e2e.cjs e2e/demos.spec.cjs e2e/bookstore.spec.cjs e2e/workshop-booking.spec.cjs e2e/trip-planner.spec.cjs --workers 2 --max-failures 1`。构建、截图与 Python 检查方式见 `demos/README.md` 和各站 README。
+- 证据位于 `F:/agents/code/temp/demo-expansion-20261001-01/`，包含单元测试日志、`checker-tests-fixed.log`、`e2e.log`、`output-check.log`、`prefix-check.log`、`build-final.log`、`build-prefix.log`、`standalone-*.log` 及桌面/手机截图。回退检查点为 `1e61c3e`；本批仅本地验收与提交，未推送、未运行远程 CI、未部署。

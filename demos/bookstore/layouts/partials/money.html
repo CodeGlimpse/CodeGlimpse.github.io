@@ -1,0 +1,2 @@
+{{- $cents := int . -}}
+{{- printf "¥%d.%02d" (int (div $cents 100)) (mod $cents 100) -}}

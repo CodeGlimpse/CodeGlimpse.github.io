@@ -85,5 +85,92 @@
       "requiredText": ["虚构演示", "示例数据"],
       "navigation": ["about/"]
     }
+  },
+  {
+    "id": "bookstore",
+    "source": "demos/bookstore",
+    "path": "demos/bookstore/",
+    "preview": { "image": "img/demos/bookstore.jpg", "width": 1280, "height": 960 },
+    "brand": "纸间 / ZHIJIAN BOOKS",
+    "copy": {
+      "zh-cn": {
+        "title": "纸间书店",
+        "label": "虚构图书 · 模拟购物袋",
+        "description": "翻看原创虚构书目，按分类和书名寻找图书，体验数量调整与购物袋合计。",
+        "previewAlt": "纸间书店的真实页面截图，包含原创书籍封面、书目筛选与模拟购物袋",
+        "features": ["书目搜索", "购物袋", "库存约束"]
+      },
+      "en": {
+        "title": "Zhijian bookstore",
+        "label": "Fictional books · Sample bag",
+        "description": "Explore fictional books, filter the shelves, and adjust quantities in a sample book bag. In Chinese.",
+        "previewAlt": "Screenshot of Zhijian bookstore with original book covers, catalog filters, and a sample book bag",
+        "features": ["Book search", "Book bag", "Stock limits"]
+      }
+    },
+    "checks": {
+      "pages": ["", "about/"],
+      "assets": ["css/site.css", "js/store-core.js", "js/store.js"],
+      "requiredText": ["虚构演示", "模拟购物袋"],
+      "navigation": ["about/"]
+    }
+  },
+  {
+    "id": "workshop-booking",
+    "source": "demos/workshop-booking",
+    "path": "demos/workshop-booking/",
+    "preview": { "image": "img/demos/workshop-booking.jpg", "width": 1280, "height": 960 },
+    "brand": "拾光 / HANDCRAFT STUDIO",
+    "copy": {
+      "zh-cn": {
+        "title": "拾光工坊",
+        "label": "虚构排期 · 预约预览",
+        "description": "挑选手作课程、日期和参与人数，查看场次名额与预约单预览。",
+        "previewAlt": "拾光工坊的真实页面截图，包含手作课程插画、示例排期与预约预览区域",
+        "features": ["课程排期", "名额校验", "预约预览"]
+      },
+      "en": {
+        "title": "Shiguang workshop",
+        "label": "Fictional schedule · Preview",
+        "description": "Choose a craft course, session, and group size to preview a reservation with sample capacity limits. In Chinese.",
+        "previewAlt": "Screenshot of Shiguang workshop with craft illustrations, sample sessions, and a reservation preview",
+        "features": ["Course schedule", "Capacity checks", "Reservation preview"]
+      }
+    },
+    "checks": {
+      "pages": ["", "about/"],
+      "assets": ["css/site.css", "js/booking-core.js", "js/booking.js"],
+      "requiredText": ["虚构演示", "预约预览"],
+      "navigation": ["about/"]
+    }
+  },
+  {
+    "id": "trip-planner",
+    "source": "demos/trip-planner",
+    "path": "demos/trip-planner/",
+    "preview": { "image": "img/demos/trip-planner.jpg", "width": 1280, "height": 960 },
+    "brand": "远山周末 / FARWEEK",
+    "copy": {
+      "zh-cn": {
+        "title": "远山周末",
+        "label": "虚构地点 · 行程规划",
+        "description": "挑选周末想去的地点，调整游览顺序，查看示意路线、时间与预算。",
+        "previewAlt": "远山周末的真实页面截图，包含虚构地点、示意地图和可编排的行程清单",
+        "features": ["行程编排", "路线示意", "时间预算"]
+      },
+      "en": {
+        "title": "Farweek trip planner",
+        "label": "Fictional places · Trip planning",
+        "description": "Arrange a day among fictional places and explore the illustrated route, estimated time, and budget. In Chinese.",
+        "previewAlt": "Screenshot of Farweek trip planner with fictional destinations, an illustrated map, and an editable itinerary",
+        "features": ["Itinerary order", "Route illustration", "Time & budget"]
+      }
+    },
+    "checks": {
+      "pages": ["", "about/"],
+      "assets": ["css/site.css", "js/planner-core.js", "js/planner.js"],
+      "requiredText": ["虚构演示", "行程规划"],
+      "navigation": ["about/"]
+    }
   }
 ]

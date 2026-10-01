@@ -1,0 +1,164 @@
+(function () {
+    'use strict';
+
+    const root = document.querySelector('[data-workshop]');
+    if (!root) return;
+    const core = window.WorkshopBooking;
+    const dataNode = document.getElementById('booking-data');
+    const category = root.querySelector('#category-filter');
+    const date = root.querySelector('#date-filter');
+    const quantity = root.querySelector('#booking-quantity');
+    const reset = root.querySelector('#reset-booking');
+    const previewButton = root.querySelector('#preview-booking');
+    const preview = root.querySelector('#booking-preview');
+    const status = root.querySelector('#booking-status');
+    const courseCount = root.querySelector('#course-count');
+    const sessionCount = root.querySelector('#schedule-count');
+    const empty = root.querySelector('#empty-sessions');
+    const unitPrice = root.querySelector('[data-unit-price]');
+    const estimate = root.querySelector('[data-estimate]');
+    const courseButtons = Array.from(root.querySelectorAll('[data-course-id]'));
+    const sessionRows = Array.from(root.querySelectorAll('[data-session-id]'));
+    const controls = [category, date, quantity, reset];
+    const summaryKeys = ['course', 'date', 'time'];
+    const summary = Object.fromEntries(summaryKeys.map(key => [key, root.querySelector('[data-selection="' + key + '"]')]));
+    const previewKeys = ['course', 'date', 'time', 'quantity', 'unit', 'total'];
+    const previewFields = Object.fromEntries(previewKeys.map(key => [key, root.querySelector('[data-preview="' + key + '"]')]));
+
+    function showDataError() {
+        if (status) status.textContent = '本地示例数据暂时无法读取。当前可只读浏览课程与排期，请刷新页面重试。';
+    }
+
+    if (!core || !dataNode || controls.some(control => !control)
+        || !previewButton || !preview || !status || !courseCount || !sessionCount || !empty || !unitPrice || !estimate
+        || Object.values(summary).some(element => !element) || Object.values(previewFields).some(element => !element)) {
+        showDataError();
+        return;
+    }
+
+    let schedule;
+    try {
+        schedule = JSON.parse(dataNode.textContent);
+        if (!core.validateSchedule(schedule) || courseButtons.length !== schedule.courses.length || sessionRows.length !== schedule.sessions.length
+            || courseButtons.some(button => !schedule.courses.some(course => course.id === button.dataset.courseId))
+            || sessionRows.some(row => !schedule.sessions.some(session => session.id === row.dataset.sessionId) || !row.querySelector('[data-session-choice]'))) {
+            throw new Error('Invalid workshop schedule');
+        }
+    } catch (error) {
+        showDataError();
+        return;
+    }
+
+    let state = core.createState();
+
+    function clearPreview() {
+        preview.hidden = true;
+        previewKeys.forEach(key => { previewFields[key].textContent = '—'; });
+    }
+
+    function update() {
+        const focused = document.activeElement;
+        const visibleCourses = core.visibleCourses(schedule, state.category);
+        const visibleCourseIds = new Set(visibleCourses.map(course => course.id));
+        courseButtons.forEach((button) => {
+            button.hidden = !visibleCourseIds.has(button.dataset.courseId);
+            const selected = button.dataset.courseId === state.courseId;
+            button.setAttribute('aria-pressed', String(selected));
+            button.querySelector('[data-course-state-text]').textContent = selected ? '已选这门课' : '选择这门课';
+        });
+        courseCount.textContent = '共 ' + visibleCourses.length + ' 门课程';
+
+        const sessions = core.visibleSessions(schedule, state);
+        const visibleSessionIds = new Set(sessions.map(session => session.id));
+        sessionRows.forEach((row) => {
+            const session = schedule.sessions.find(item => item.id === row.dataset.sessionId);
+            const selected = session.id === state.sessionId;
+            const button = row.querySelector('[data-session-choice]');
+            row.hidden = !visibleSessionIds.has(session.id);
+            row.classList.toggle('is-selected', selected);
+            button.disabled = session.remaining === 0;
+            button.setAttribute('aria-pressed', String(selected));
+            button.textContent = session.remaining === 0 ? '已满额' : selected ? '已选此场' : '选择此场';
+        });
+        empty.hidden = sessions.length !== 0;
+
+        const course = schedule.courses.find(item => item.id === state.courseId);
+        const session = schedule.sessions.find(item => item.id === state.sessionId);
+        sessionCount.textContent = (course ? course.title + ' · ' : '') + sessions.length + ' 个示例场次 · 按日期排列';
+        summary.course.textContent = course ? course.title : '尚未选课';
+        summary.date.textContent = session ? core.dateLabel(session.date) : '尚未选场';
+        summary.time.textContent = session ? session.start + ' — ' + session.end : '—';
+        unitPrice.textContent = course ? core.formatMoney(course.priceCents) + ' / 人 × ' + state.quantity + ' 人' : '选定课程后显示单价';
+        estimate.textContent = course ? core.formatMoney(course.priceCents * state.quantity) : '—';
+
+        const result = core.selectionResult(schedule, state);
+        previewButton.disabled = !result.ok;
+        status.dataset.tone = ['capacity', 'quantity', 'sold-out', 'mismatch', 'data'].includes(result.code) ? 'warning' : 'normal';
+        status.textContent = result.ok ? '课程、场次和 ' + state.quantity + ' 人已选好，可查看预约单预览。' : result.message;
+        if (focused && root.contains(focused) && (focused.closest('[hidden]') || focused.disabled)) category.focus();
+    }
+
+    courseButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            state = core.selectCourse(schedule, state, button.dataset.courseId);
+            clearPreview();
+            update();
+        });
+    });
+    sessionRows.forEach((row) => {
+        const button = row.querySelector('[data-session-choice]');
+        button.addEventListener('click', () => {
+            const session = schedule.sessions.find(item => item.id === button.dataset.sessionChoice);
+            if (!session || session.remaining === 0) return;
+            if (!state.courseId) state = core.selectCourse(schedule, state, session.courseId);
+            state = core.selectSession(schedule, state, session.id);
+            clearPreview();
+            update();
+        });
+    });
+    category.addEventListener('change', () => {
+        state = core.reconcileSelection(schedule, { ...state, category: category.value });
+        clearPreview();
+        update();
+    });
+    date.addEventListener('change', () => {
+        state = core.reconcileSelection(schedule, { ...state, date: date.value });
+        clearPreview();
+        update();
+    });
+    quantity.addEventListener('change', () => {
+        state = { ...state, quantity: Number(quantity.value) };
+        clearPreview();
+        update();
+    });
+    reset.addEventListener('click', () => {
+        state = core.createState();
+        category.value = 'all';
+        date.value = 'all';
+        quantity.value = '1';
+        clearPreview();
+        update();
+    });
+    previewButton.addEventListener('click', () => {
+        const plan = core.createPreview(schedule, state);
+        if (!plan) {
+            clearPreview();
+            update();
+            return;
+        }
+        previewFields.course.textContent = plan.courseTitle;
+        previewFields.date.textContent = core.dateLabel(plan.date);
+        previewFields.time.textContent = plan.start + ' — ' + plan.end;
+        previewFields.quantity.textContent = plan.quantity + ' 人';
+        previewFields.unit.textContent = core.formatMoney(plan.unitCents) + ' / 人';
+        previewFields.total.textContent = core.formatMoney(plan.totalCents);
+        preview.hidden = false;
+        status.dataset.tone = 'normal';
+        status.textContent = '预约单预览已生成，仅在本页展示，没有提交任何信息。';
+    });
+
+    controls.forEach(control => { control.disabled = false; });
+    courseButtons.forEach(button => { button.disabled = false; });
+    update();
+    root.dataset.ready = 'true';
+}());

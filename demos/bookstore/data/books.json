@@ -1,0 +1,122 @@
+[
+  {
+    "id": "wind-alley",
+    "title": "风从旧巷来",
+    "author": "岑页",
+    "category": "文学",
+    "description": "一条总在搬家的小巷，和十二个把往事晾在窗边的人。关于离开，也关于重新相遇。",
+    "priceCents": 3980,
+    "stock": 5,
+    "cover": "wind"
+  },
+  {
+    "id": "seventh-letter",
+    "title": "黄昏的第七封信",
+    "author": "许岸",
+    "category": "文学",
+    "description": "没有地址的信在河边小镇流转。六位收信人之后，第七封信终于找到自己的黄昏。",
+    "priceCents": 4670,
+    "stock": 3,
+    "cover": "letter"
+  },
+  {
+    "id": "rain-period",
+    "title": "停在雨里的句号",
+    "author": "叶温",
+    "category": "文学",
+    "description": "把没有说完的话写成短诗。雨声、站台与一盏晚灯，替日常留住微小的停顿。",
+    "priceCents": 3250,
+    "stock": 4,
+    "cover": "rain"
+  },
+  {
+    "id": "distant-city",
+    "title": "远处有一座慢城",
+    "author": "程白",
+    "category": "文学",
+    "description": "一位绘图员走进地图之外的城。那里没有时钟，只有人们对季节各不相同的记忆。",
+    "priceCents": 5120,
+    "stock": 0,
+    "cover": "city"
+  },
+  {
+    "id": "space-workbook",
+    "title": "留白练习册",
+    "author": "林墨",
+    "category": "设计",
+    "description": "从一张空纸开始，练习距离、重心与节奏。用二十四个小实验，观察画面里的呼吸。",
+    "priceCents": 6800,
+    "stock": 7,
+    "cover": "space"
+  },
+  {
+    "id": "between-lines",
+    "title": "字与行之间",
+    "author": "方序",
+    "category": "设计",
+    "description": "文字落在纸上之前，还有许多细小的选择。一本关于字号、行距和阅读节奏的观察笔记。",
+    "priceCents": 7290,
+    "stock": 2,
+    "cover": "type"
+  },
+  {
+    "id": "fold-order",
+    "title": "折纸里的秩序",
+    "author": "何几",
+    "category": "设计",
+    "description": "对折、展开、再转一个角度。沿着纸的折痕，探索平面与空间之间安静的几何关系。",
+    "priceCents": 5630,
+    "stock": 6,
+    "cover": "fold"
+  },
+  {
+    "id": "color-map",
+    "title": "颜色的散步地图",
+    "author": "唐青",
+    "category": "设计",
+    "description": "在虚构街区收集屋檐、招牌与石阶的颜色。把一次散步，画成一份可以慢读的配色地图。",
+    "priceCents": 6180,
+    "stock": 4,
+    "cover": "map"
+  },
+  {
+    "id": "solo-weekend",
+    "title": "一人份的周末",
+    "author": "沈团",
+    "category": "生活",
+    "description": "给一个人的周末留一点余地。从市场散步到整理抽屉，记录不需要赶路的二十八种日常。",
+    "priceCents": 3680,
+    "stock": 9,
+    "cover": "weekend"
+  },
+  {
+    "id": "window-plants",
+    "title": "窗边植物日记",
+    "author": "黎芽",
+    "category": "生活",
+    "description": "一扇虚构的南窗，几盆慢慢生长的绿意。以四季手记，记录植物和照顾它的人。",
+    "priceCents": 4250,
+    "stock": 3,
+    "cover": "plant"
+  },
+  {
+    "id": "breakfast-poem",
+    "title": "把早餐写成诗",
+    "author": "陶早",
+    "category": "生活",
+    "description": "锅里的一声轻响，也是一天的开场白。十二个早晨故事，把餐桌上的小事写成短短的诗。",
+    "priceCents": 2890,
+    "stock": 8,
+    "cover": "breakfast"
+  },
+  {
+    "id": "small-repair",
+    "title": "慢慢修好一件小事",
+    "author": "何禾",
+    "category": "生活",
+    "description": "一枚松动的纽扣、一张卷边的纸、一把旧椅子。用修补日记，重新认识身边的物件。",
+    "priceCents": 4795,
+    "stock": 1,
+    "cover": "repair"
+  }
+]

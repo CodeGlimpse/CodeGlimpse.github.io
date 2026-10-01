@@ -1,0 +1,70 @@
+{{ define "main" }}
+<main id="main" class="shell planner-page" tabindex="-1">
+  <header class="planner-intro">
+    <div><p class="eyebrow">{{ site.Params.demoNotice }}</p><h1>{{ .Title }}</h1><p class="intro-copy">挑几处想停下来的地方，把先后顺序留给自己。时间和预算一起算，山路只在这张虚构地图上展开。</p></div>
+    <div class="weekend-stamp" aria-hidden="true"><span>WEEKEND</span><strong>慢一点<br>也很好</strong><span>FARWEEK / 01</span></div>
+  </header>
+  <div data-trip-planner data-ready="false">
+    <noscript><p class="noscript-note">JavaScript 未开启时，可以只读浏览八个虚构地点和基础地图；行程编排控件保持禁用，启用 JavaScript 后可添加与重排地点。</p></noscript>
+    <div class="planner-layout">
+      <section class="panel places-panel" aria-labelledby="places-heading">
+        <header class="panel-heading"><div><p class="panel-kicker">PICK YOUR STOPS</p><h2 id="places-heading">选择停靠点</h2></div><span class="place-count" data-visible-count>{{ len site.Data.places }} 处</span></header>
+        <div class="place-filter"><label for="place-category">筛选地点类型</label><select id="place-category" disabled><option value="all">全部地点</option><option value="自然">自然</option><option value="人文">人文</option><option value="休憩">休憩</option></select></div>
+        <div class="place-list" id="place-list">
+          {{ range site.Data.places }}
+          <article class="place-card" data-place-card data-place-id="{{ .id }}">
+            <div class="place-title"><h3>{{ .name }}</h3><span class="category-tag">{{ .category }}</span></div>
+            <p>{{ .description }}</p>
+            <div class="place-meta"><span>停留 {{ .durationMinutes }} 分钟</span><span>示例 ¥{{ printf "%.2f" (div (float .costCents) 100) }}</span></div>
+            <button type="button" class="add-button" data-action="add" data-id="{{ .id }}" aria-label="加入{{ .name }}" disabled><span aria-hidden="true">＋</span> 加入行程</button>
+          </article>
+          {{ end }}
+        </div>
+      </section>
+      <section class="panel map-panel" aria-labelledby="terrain-heading">
+        <header class="panel-heading"><div><p class="panel-kicker">A MAP OF POSSIBILITIES</p><h2 id="terrain-heading">周末地形手记</h2></div><span class="map-scale" aria-hidden="true">01 / 08</span></header>
+        <svg class="terrain-map" viewBox="0 0 800 560" width="800" height="560" role="img" aria-labelledby="map-title map-description">
+          <title id="map-title">远山周末原创地形示意图</title>
+          <desc id="map-description">八个虚构地点的示意位置。加入行程后，橙色连线和数字按行程顺序更新。非真实地理导航。</desc>
+          <defs><pattern id="terrain-grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M80 0H0V80" fill="none" stroke="#507361" stroke-opacity=".3"/></pattern><linearGradient id="valley-wash" x2="0" y2="1"><stop stop-color="#3f654d"/><stop offset="1" stop-color="#1a4438"/></linearGradient></defs>
+          <rect width="800" height="560" fill="#183f34"/><rect width="800" height="560" fill="url(#terrain-grid)"/>
+          <path d="M-30 65C90-30 240 10 310 105s153 81 234 20 182-54 286 39v185c-119-105-227-106-313-45S318 344 225 257 61 243-30 301Z" fill="url(#valley-wash)"/>
+          <g fill="none" stroke="#6c8b68" stroke-width="2" opacity=".48"><path d="M-20 110C94-3 202 57 272 134s168 97 255 32 211-52 301 24"/><path d="M-30 153C93 57 178 95 246 167s167 109 266 47 210-75 321 30"/><path d="M-25 199C83 114 155 130 218 197s168 119 270 77 218-89 349 26"/><path d="M-22 450C129 354 250 399 343 458s162 53 234-8 168-61 267-5"/><path d="M-28 492C129 399 242 438 326 499s168 56 249-5 171-70 266-11"/></g>
+          <path d="M352-24c-68 116 73 149 16 234s-7 90 59 149 33 118-10 221" fill="none" stroke="#88afa2" stroke-width="17" opacity=".44"/><path d="M352-24c-68 116 73 149 16 234s-7 90 59 149 33 118-10 221" fill="none" stroke="#c4d8c5" stroke-width="2" opacity=".5"/>
+          <path d="M556 178c37-26 94-9 100 28s-47 61-77 43-57-46-23-71Z" fill="#729d93" opacity=".65"/>
+          <g fill="#a2b38a" opacity=".34" aria-hidden="true">{{ range slice "75 50" "100 75" "145 60" "200 95" "535 90" "574 80" "620 110" "70 340" "101 325" }}<path transform="translate({{ . }})" d="m0 0-11 22h7l-10 17h28L4 22h7Z"/>{{ end }}</g>
+          <g transform="translate(738 48)" fill="#f4eccf" aria-hidden="true"><path d="m0-19-9 31 9-6 9 6Z"/><text y="38" text-anchor="middle" font-size="17">N</text></g>
+          <polyline id="itinerary-route" class="map-route" points="" hidden/>
+          {{ range site.Data.places }}
+          <g class="map-place" data-map-id="{{ .id }}" transform="translate({{ mul .x 8 }}, {{ mul .y 5.6 }})">
+            <circle class="map-place-ring" r="13"/><circle class="map-place-dot" r="5"/>
+            <text class="map-place-name" x="22" y="6">{{ .name }}</text>
+            <circle class="route-disc" data-route-disc r="17" hidden aria-hidden="true"/>
+            <text class="route-number" data-route-number text-anchor="middle" y="6" hidden aria-hidden="true"></text>
+          </g>
+          {{ end }}
+        </svg>
+        <div class="map-caption"><p><span class="route-swatch" aria-hidden="true"></span>橙线与数字按行程顺序连接</p><p>原创地形示意 · 非真实地理导航</p></div>
+        <div class="map-note"><span aria-hidden="true">↟</span><p>这里的山、水与地点都是虚构创作。相邻地点统一估算 20 分钟交通，和画面距离无关。</p></div>
+      </section>
+      <section class="panel itinerary-panel" aria-labelledby="itinerary-heading">
+        <header class="panel-heading"><div><p class="panel-kicker">YOUR WEEKEND NOTES</p><h2 id="itinerary-heading">我的行程</h2></div><span class="itinerary-count" data-selection-count>0 / 6</span></header>
+        <dl class="trip-totals">
+          <div><dt>地点数</dt><dd><span data-total="count">0</span><small>处</small></dd></div>
+          <div><dt>停留时间</dt><dd><span data-total="stayMinutes">0</span><small>分钟</small></dd></div>
+          <div><dt>含交通总时间</dt><dd><span data-total="totalMinutes">0</span><small>分钟</small></dd></div>
+          <div><dt>示例预算</dt><dd><span data-total="costCents">¥0.00</span></dd></div>
+        </dl>
+        <p class="transfer-note">交通合计 <span data-total="transferMinutes">0</span> 分钟 · 每段 20 分钟</p>
+        <p class="day-warning" id="day-warning" role="note" hidden></p>
+        <p class="itinerary-empty" id="itinerary-empty"><span aria-hidden="true">⋯</span>行程还空着。<br>从地点列表挑一处喜欢的停靠点。</p>
+        <ol class="itinerary-list" id="itinerary-list" aria-label="行程地点"></ol>
+        <div class="itinerary-tools"><p>最多 6 处 · 每处只加入一次</p><button type="button" class="clear-button" data-action="clear" disabled>清空行程</button></div>
+        <p class="planner-status" id="planner-status" role="status" aria-live="polite" aria-atomic="true">选择地点，开始编排。</p>
+        <p class="estimate-note">费用和时间仅为虚构估算；预算未包含清单之外的交通、住宿与个人消费。当前行程刷新即重置。</p>
+      </section>
+    </div>
+    <script id="planner-data" type="application/json">{{ site.Data.places | jsonify | safeJS }}</script>
+  </div>
+</main>
+{{ end }}

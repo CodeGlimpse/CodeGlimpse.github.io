@@ -1,0 +1,10 @@
+[
+  { "id": "pine-ridge", "name": "松风脊", "category": "自然", "description": "沿着松针铺成的山脊慢走，在一座虚构的观景台听风。", "durationMinutes": 90, "costCents": 0, "x": 20, "y": 28 },
+  { "id": "cloud-bridge", "name": "雾桥溪", "category": "自然", "description": "跨过低矮木桥，顺着溪声寻找石头上的苔色。", "durationMinutes": 75, "costCents": 0, "x": 44, "y": 20 },
+  { "id": "terrace-lake", "name": "阶影湖", "category": "自然", "description": "绕过层层草阶，在湖边留一段看云的时间。", "durationMinutes": 110, "costCents": 1200, "x": 72, "y": 34 },
+  { "id": "stone-lane", "name": "石灯巷", "category": "人文", "description": "走进一条原创设定的旧巷，读门楣与石阶留下的故事。", "durationMinutes": 80, "costCents": 0, "x": 25, "y": 62 },
+  { "id": "paper-house", "name": "纸谷书屋", "category": "人文", "description": "在山谷小屋翻一本虚构地方志，写下一页手记。", "durationMinutes": 65, "costCents": 1800, "x": 48, "y": 56 },
+  { "id": "hill-studio", "name": "山麓手作所", "category": "人文", "description": "把枝叶纹理压进纸里，体验一段慢节奏的手作练习。", "durationMinutes": 100, "costCents": 4800, "x": 70, "y": 70 },
+  { "id": "warm-cup", "name": "山口茶亭", "category": "休憩", "description": "找一个面向山口的位置，喝一杯热茶再出发。", "durationMinutes": 45, "costCents": 2600, "x": 12, "y": 82 },
+  { "id": "meadow-rest", "name": "草坡野餐点", "category": "休憩", "description": "把午后的空白留给草坡与野餐，收拾好随身物品。", "durationMinutes": 70, "costCents": 2200, "x": 82, "y": 84 }
+]

@@ -1,7 +1,7 @@
 # Demo integration
 
-The creator portfolio, photography portfolio, and content dashboard are
-standalone Hugo 0.157.0 sites under their respective `demos/` directories. The blog
+The six registered demos are standalone Hugo 0.157.0 sites under their
+respective `demos/` directories. The blog
 builds first; `scripts/build-site.cjs` then builds each site into its matching
 `public/demos/` subdirectory with the published subpath as its base URL. GitHub
 Pages deploys the combined `public/` artifact.
@@ -94,3 +94,20 @@ same dataset without network requests or browser storage. Details and data
 constraints are in `content-dashboard/README.md`; tests are in
 `tests/content-dashboard.test.cjs` and `e2e/content-dashboard.spec.cjs` at the
 blog root. Keep the real preview screenshot in sync with visible design changes.
+
+## Bookstore, workshop, and trip planner
+
+- `bookstore/`: twelve original fictional books, category/title search, and a
+  sample book bag with stock limits and integer-cent totals. No checkout.
+- `workshop-booking/`: six fictional craft courses and twelve October sessions;
+  category/date filtering, group sizes, capacity checks, and a reservation
+  preview that never sends a booking.
+- `trip-planner/`: eight fictional destinations; add up to six, reorder or remove
+  stops, and compare an illustrated route with time and budget estimates. The
+  map is a schematic, not real navigation.
+
+Each keeps interaction state in memory and resets on reload. Source JSON,
+standalone build commands, and data constraints are documented in each demo's
+README. Original covers and illustrations use local CSS or SVG. Core tests and
+browser cases use the matching demo ID under `tests/` and `e2e/`. The shared
+catalog-link checker tests now iterate all registered demos.

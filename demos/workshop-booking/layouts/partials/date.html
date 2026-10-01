@@ -1,0 +1,3 @@
+{{- $date := time.AsTime (printf "%sT00:00:00Z" .) -}}
+{{- $weekdays := dict "Sunday" "周日" "Monday" "周一" "Tuesday" "周二" "Wednesday" "周三" "Thursday" "周四" "Friday" "周五" "Saturday" "周六" -}}
+{{- printf "%s %s" ($date.Format "2006年1月2日") (index $weekdays (printf "%s" $date.Weekday)) -}}

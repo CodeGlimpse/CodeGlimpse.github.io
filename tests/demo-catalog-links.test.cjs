@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
+const { DEMO_REGISTRY } = require('../scripts/demo-registry.cjs');
 
 const fixtureParent = process.env.TEST_TMP_ROOT
     ? path.resolve(process.env.TEST_TMP_ROOT)
@@ -57,7 +58,16 @@ function runChecker(demoId, output, args = []) {
     throw new Error('Python 3 is required to run the demo catalog checker tests');
 }
 
-for (const demoId of ['creator-portfolio', 'photo-portfolio', 'content-dashboard']) {
+test('workshop demo mode still requires the original catalog label', (t) => {
+    const output = createFixture(t, catalogLink);
+    const generic = runChecker('workshop-booking', output, ['--catalog-url', catalogUrl]);
+    assert.equal(generic.status, 0, generic.stdout + generic.stderr);
+    const demo = runChecker('workshop-booking', output, ['--catalog-url', catalogUrl, '--check-demo-pages']);
+    assert.equal(demo.status, 1, demo.stdout + demo.stderr);
+    assert.match(demo.stdout, /catalog anchor must say ← 返回演示目录/);
+});
+
+for (const { id: demoId } of DEMO_REGISTRY) {
     test(`${demoId} rejects a marked parent catalog link without an explicit allowance`, (t) => {
         const output = createFixture(t, catalogLink);
         const result = runChecker(demoId, output);

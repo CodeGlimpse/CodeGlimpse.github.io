@@ -1,0 +1,13 @@
+baseURL = 'https://blog.codeglimpse.top/demos/workshop-booking/'
+languageCode = 'zh-CN'
+defaultContentLanguage = 'zh'
+title = '拾光工坊｜手作课程预约预览'
+disableKinds = ['taxonomy', 'term', 'RSS']
+
+[params]
+description = '拾光工坊虚构手作课程演示：浏览陶艺、印刷与花艺排期，选择人数，在本地查看预约单预览。'
+demoNotice = '虚构演示 · 预约预览'
+monthLabel = '2026 年 10 月'
+
+[markup.goldmark.renderer]
+unsafe = false

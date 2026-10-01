@@ -4,4 +4,4 @@ description: Explore working website examples.
 outputs: [HTML]
 ---
 
-These examples show how the sites work. The creator portfolio uses original fictional content. The photography portfolio shows fictional photo projects with AI-generated imagery. The content dashboard uses fictional data to demonstrate filters, charts, and sorting. All demos are in Chinese and contain no real client information.
+Explore working portfolios, a content dashboard, a bookstore, workshop schedules, and a trip planner. All demos are in Chinese and use fictional content without real client information. Photography images are AI-generated. The sample book bag and reservation preview create no real orders or bookings.

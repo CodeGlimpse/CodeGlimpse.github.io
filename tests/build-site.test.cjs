@@ -42,7 +42,7 @@ test('passes configuration overrides to Hugo without build-only flags', () => {
     assert.throws(() => configurationArgs(['--destination']), /Missing value/);
 });
 
-test('builds both demos inside the merged output directory and URL prefix', () => {
+test('builds every registered demo inside the merged output directory and URL prefix', () => {
     const output = path.join(projectRoot, 'temp', 'review output');
     const fake = fakeHugo({ publishdir: output, baseurl: 'https://preview.example.test/review' });
     const args = ['--destination', output, '--baseURL', 'https://preview.example.test/review'];

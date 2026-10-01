@@ -238,3 +238,14 @@
 - 验证：52 项定向 Node.js 测试、8 项 demo Chromium E2E 通过；截图脚本语法、工作流配置、整站产物和两个 demo 的链接图片检查通过。默认生产基础地址、环境变量配置的 `/review/` 子路径组合构建，以及两个 `https://example.test/portfolio/` 独立构建均实际验收；前缀页面返回地址正确，独立页面不含博客返回入口。更新后的 CI Python 检查正文已对本地产物执行通过。
 - 验证命令：`node --test tests/build-site.test.cjs tests/demo-registry.test.cjs tests/deployed-site-check.test.cjs tests/photo-demo-check.test.cjs tests/demo-catalog-links.test.cjs`；浏览器仅运行 `e2e/demos.spec.cjs`；组合构建使用 `node scripts/build-site.cjs --destination <隔离目录>`，产物由 `scripts/check-build-output.cjs` 与两个 demo 的 `scripts/check_build.py` 检查。
 - 构建、浏览器日志及桌面/手机目录截图保存在 `F:/agents/code/temp/demo-catalog-20260930-01/`，包括 `build-final.log`、`build-prefix.log`、`standalone-*.log` 和 `e2e.log`。回退检查点为 `5517a38d7d6150d6c8060b7f98c8b7c8774152e6`；本批仅完成本地验收，未推送、未运行远程 CI、未部署。
+
+## 2026-10-01 - 内容运营看板演示
+
+- 新增“观数 / FIELDNOTES”内容运营看板与数据说明页，演示栏目达到三个站点。24 条原创虚构记录覆盖 2026 年第三季度，支持月份、渠道、标题关键词组合筛选，以及阅读次数、互动次数、互动率和日期的双向排序。
+- 汇总指标、渠道条形图和表格使用同一筛选结果；互动率按总互动除以总阅读计算，零阅读显示零。排序保留相同数值的原顺序，搜索支持多关键词、全角规范化和输入法组合输入。没有新增依赖、后台、外部数据请求或浏览器存储。
+- Hugo 直接输出完整指标、图表和明细，JavaScript 只增强交互；关闭脚本时仍可阅读全部内容。手机端把数据行显示为带字段标签的卡片，动态生成的元素沿用静态模板样式。集成构建保留返回目录入口，独立构建不带博客返回链接。
+- 接入统一注册表、双语目录、构建与现有巡检；新增独立 Python 检查器与目录链接边界回归。真实预览图为 1280×960 JPEG，96,135 B；桌面目录和 390px 手机筛选画面已人工查看。
+- 验证：66 项定向 Node.js 测试通过；15 项相关 Chromium 场景通过，其中首次运行 14 项通过，无脚本提示用例因直接读取 `noscript` 得到空文本而失败。页面快照确认提示存在，获用户授权后改为检查实际可见的 `.noscript-note` 段落，定向复验通过。覆盖组合筛选、图表数值、升降序、空结果、零阅读、无存储、离线筛选、无脚本以及 320/390/800/1280 像素布局。
+- 构建与产物：默认基础地址的整站构建和产物检查、三个 demo 的独立链接检查通过；环境变量指定 `/review/` 的组合构建验证了全部 15 个 demo 页面、资源、双语目录及返回地址。新看板另以 `https://example.test/portfolio/` 独立构建并检查通过。首次构建因新 Hugo 缓存目录的沙箱权限被阻止，获准重跑同一离线构建后成功；未更改系统配置。
+- 主要命令：`node --test tests/build-site.test.cjs tests/demo-registry.test.cjs tests/deployed-site-check.test.cjs tests/photo-demo-check.test.cjs tests/demo-catalog-links.test.cjs tests/content-dashboard.test.cjs`；`node scripts/run-e2e.cjs e2e/demos.spec.cjs e2e/content-dashboard.spec.cjs --workers 2`；无脚本复验使用 `--grep 'without JavaScript'`。同时通过新增脚本语法、内容结构及 `git diff --check` 检查。
+- 本地证据位于 `F:/agents/code/temp/content-dashboard-20261001-01/`：`unit-tests.log`、`e2e.log`、`e2e-noscript.log`、`build-final.log`、`build-prefix.log`、`build-standalone.log`、`scope-checks.log` 及桌面/手机截图。回退检查点为 `c5528ee`；本批未推送、未执行远程 CI、未部署。

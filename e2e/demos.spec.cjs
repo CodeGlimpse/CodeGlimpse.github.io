@@ -20,7 +20,7 @@ async function expectImageAspectRatio(image, aspectRatio) {
     expect(box.width / box.height).toBeCloseTo(aspectRatio, 2);
 }
 
-test('bilingual demo catalog presents registry copy and opens every portfolio', async ({ page }) => {
+test('bilingual demo catalog presents registry copy and opens every demo', async ({ page }) => {
     for (const [prefix, language] of [['', 'zh-cn'], ['/en', 'en']]) {
         for (const demo of DEMO_REGISTRY) {
             await page.goto(`${prefix}/demos/`);
@@ -51,7 +51,8 @@ test('bilingual demo catalog presents registry copy and opens every portfolio', 
             for (const text of demo.checks.requiredText) {
                 await expect(page.locator('body')).toContainText(text);
             }
-            await expectImageLoaded(page.locator('main img').first());
+            const contentImage = page.locator('main img').first();
+            if (await contentImage.count()) await expectImageLoaded(contentImage);
         }
     }
 });

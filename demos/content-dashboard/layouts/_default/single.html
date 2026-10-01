@@ -1,0 +1,19 @@
+{{ define "main" }}
+<main id="main" class="shell about-page" tabindex="-1">
+  <header class="about-heading">
+    <p class="eyebrow">ABOUT THE DATA <span aria-hidden="true">/</span> {{ site.Params.demoNotice }}</p>
+    <h1>{{ .Title }}</h1>
+    <p>看懂数字之前，先了解它们从哪里来、如何计算。</p>
+  </header>
+  <div class="about-grid">
+    <aside class="about-summary" aria-label="演示数据范围">
+      <span class="about-monogram" aria-hidden="true">观数</span>
+      <p class="eyebrow">FIELDNOTES / 2026 Q3</p>
+      <h2>一份静态的<br>内容观察样本。</h2>
+      <dl><div><dt>数据性质</dt><dd>全部虚构</dd></div><div><dt>观察区间</dt><dd>2026 年 7—9 月</dd></div><div><dt>示例渠道</dt><dd>博客 / 视频 / 社区</dd></div></dl>
+      <a class="text-link" href="{{ site.Home.RelPermalink }}">返回内容概览 <span aria-hidden="true">↗</span></a>
+    </aside>
+    <article class="prose">{{ .Content }}</article>
+  </div>
+</main>
+{{ end }}

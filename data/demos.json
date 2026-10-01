@@ -56,5 +56,34 @@
       "requiredText": ["虚构演示", "AI 生成"],
       "navigation": ["works/", "about/"]
     }
+  },
+  {
+    "id": "content-dashboard",
+    "source": "demos/content-dashboard",
+    "path": "demos/content-dashboard/",
+    "preview": { "image": "img/demos/content-dashboard.jpg", "width": 1280, "height": 960 },
+    "brand": "观数 / FIELDNOTES",
+    "copy": {
+      "zh-cn": {
+        "title": "内容运营看板",
+        "label": "交互演示 · 虚构数据",
+        "description": "按月份、渠道与关键词筛选内容，查看同步更新的指标、图表和排序明细。",
+        "previewAlt": "内容运营看板的真实页面截图，包含筛选、汇总指标、渠道条形图和虚构内容明细",
+        "features": ["组合筛选", "图表联动", "明细排序"]
+      },
+      "en": {
+        "title": "Content dashboard",
+        "label": "Interactive · Fictional data",
+        "description": "Filter by month, channel, and keyword to explore linked metrics, charts, and sortable records. In Chinese.",
+        "previewAlt": "Screenshot of the content dashboard with filters, summary metrics, channel bars, and fictional content records",
+        "features": ["Combined filters", "Linked charts", "Sortable records"]
+      }
+    },
+    "checks": {
+      "pages": ["", "about/"],
+      "assets": ["css/site.css", "js/dashboard-core.js", "js/dashboard.js"],
+      "requiredText": ["虚构演示", "示例数据"],
+      "navigation": ["about/"]
+    }
   }
 ]

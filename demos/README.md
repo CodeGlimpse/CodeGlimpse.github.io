@@ -1,7 +1,7 @@
 # Demo integration
 
-The creator portfolio and photography portfolio are standalone Hugo 0.157.0
-sites under `demos/creator-portfolio/` and `demos/photo-portfolio/`. The blog
+The creator portfolio, photography portfolio, and content dashboard are
+standalone Hugo 0.157.0 sites under their respective `demos/` directories. The blog
 builds first; `scripts/build-site.cjs` then builds each site into its matching
 `public/demos/` subdirectory with the published subpath as its base URL. GitHub
 Pages deploys the combined `public/` artifact.
@@ -39,7 +39,7 @@ changes:
    The tool uses installed Playwright Chromium, waits for visible images and
    fonts, and captures the page without adding invented UI or replacing artwork.
    It accepts only a locally served build and blocks external requests.
-4. Review both JPEGs, run the demo registry tests, then rebuild to copy the new
+4. Review the JPEGs, run the demo registry tests, then rebuild to copy the new
    previews into the published artifact. Stop the local server when finished.
 
 Screenshots may differ slightly across operating systems because the demos use
@@ -50,7 +50,7 @@ layout rather than requiring identical screenshot bytes.
 
 The build reads Hugo's effective configuration, including `--destination` /
 `-d`, `--baseURL` / `-b`, configuration files, and `HUGO_*` environment overrides.
-Both demos follow the resulting output directory and URL prefix. For example:
+All demos follow the resulting output directory and URL prefix. For example:
 
 ```powershell
 npm.cmd run build -- --destination F:/agents/code/temp/demo-preview/public --baseURL https://example.test/review/
@@ -83,3 +83,14 @@ The creator portfolio uses original fictional content. The photography
 portfolio is also fictional, and its images are AI-generated. Do not replace
 either with client work or personal data. A client delivery should be copied
 to a client-owned repository with its own domain and publication settings.
+
+## Content dashboard
+
+`content-dashboard/` demonstrates month/channel/keyword filters, linked summary
+metrics and channel bars, and numerical/date sorting over 24 fictional content
+records. Its source is `data/entries.json` inside the demo. Hugo renders the
+complete dataset for browsers without JavaScript, and the scripts enhance that
+same dataset without network requests or browser storage. Details and data
+constraints are in `content-dashboard/README.md`; tests are in
+`tests/content-dashboard.test.cjs` and `e2e/content-dashboard.spec.cjs` at the
+blog root. Keep the real preview screenshot in sync with visible design changes.

@@ -1,0 +1,14 @@
+baseURL = 'https://blog.codeglimpse.top/demos/content-dashboard/'
+languageCode = 'zh-CN'
+defaultContentLanguage = 'zh'
+title = '观数｜内容运营看板演示'
+disableKinds = ['taxonomy', 'term', 'RSS']
+
+[params]
+description = '观数 FIELDNOTES 内容运营看板：以虚构的 2026 年第三季度数据演示内容筛选、阅读分布与互动率。'
+demoNotice = '虚构演示 · 示例数据'
+periodLabel = '2026 年第三季度'
+periodRange = '2026.07 — 2026.09'
+
+[markup.goldmark.renderer]
+unsafe = false

@@ -57,7 +57,7 @@ function runChecker(demoId, output, args = []) {
     throw new Error('Python 3 is required to run the demo catalog checker tests');
 }
 
-for (const demoId of ['creator-portfolio', 'photo-portfolio']) {
+for (const demoId of ['creator-portfolio', 'photo-portfolio', 'content-dashboard']) {
     test(`${demoId} rejects a marked parent catalog link without an explicit allowance`, (t) => {
         const output = createFixture(t, catalogLink);
         const result = runChecker(demoId, output);

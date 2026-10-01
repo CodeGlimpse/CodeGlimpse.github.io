@@ -260,3 +260,15 @@
 - 默认基础地址的组合构建、整站产物、全部六个 demo 独立检查器、内容结构及十二个新增 JS/测试文件语法检查通过。环境变量指定 `/review/` 的真实组合构建验证了双语目录、21 个 demo HTML 页面、22 个声明资源与主站保留；三款新站以 `https://example.test/portfolio/` 独立构建并验收，独立页面无博客返回入口。Hugo 缓存和资源仅通过进程环境变量写入工作区临时目录，未改变系统配置。
 - 主要命令：`node --test tests/bookstore.test.cjs tests/workshop-booking.test.cjs`；`node --test tests/trip-planner.test.cjs`；`node --test tests/demo-catalog-links.test.cjs`；`node --test tests/build-site.test.cjs tests/demo-registry.test.cjs tests/deployed-site-check.test.cjs`；`node scripts/run-e2e.cjs e2e/demos.spec.cjs e2e/bookstore.spec.cjs e2e/workshop-booking.spec.cjs e2e/trip-planner.spec.cjs --workers 2 --max-failures 1`。构建、截图与 Python 检查方式见 `demos/README.md` 和各站 README。
 - 证据位于 `F:/agents/code/temp/demo-expansion-20261001-01/`，包含单元测试日志、`checker-tests-fixed.log`、`e2e.log`、`output-check.log`、`prefix-check.log`、`build-final.log`、`build-prefix.log`、`standalone-*.log` 及桌面/手机截图。回退检查点为 `1e61c3e`；本批仅本地验收与提交，未推送、未运行远程 CI、未部署。
+
+## 2026-10-01 - 同内容多模板展示
+
+- 六个现有案例各新增一套表现模板，共十二个版本：创作者杂志编排、摄影暗色画廊、内容工作台、书目目录、工坊日历排期与旅行行程手记。作品、图片原件、Markdown、JSON 数据和业务核心共用原始来源；数据与内容源文件未修改。
+- 注册表按案例组织 `templates`，构建、截图和巡检消费统一展开后的实例。经典模板保留原有地址，新模板使用 `demos/variants/<case>/<template>/`，校验拒绝重复或互为父子的输出目录。构建显式隔离模板及切换链接环境变量，避免父进程参数污染子站。
+- 双语目录按案例成组展示两套真实预览；各页新增同内容模板切换，保留当前详情路由和部署前缀，并提示切换会重置临时操作。独立构建默认 `classic`，可通过 `HUGO_PARAMS_DEMOTEMPLATE` 选择新版，未配置集成参数时不出现博客返回或切换入口。
+- 工坊日历使用原有场次与日期筛选状态，支持键盘选日、当天课程、全月查看与预览清理；行程手记按排序显示累计停留和交通分钟。各模板保留无脚本内容和原有业务能力，没有新增依赖、外部素材、存储或后台。
+- 六个独立 Python 检查器增加可重复的精确 `--template-url` 白名单，只允许标记的模板锚链接，不放行图片、未标记链接、源属性或路径穿越。CI 改为调用 `scripts/check-demo-builds.cjs`，运行前确认所有模板切换目标实际存在。
+- 验证：167 项定向 Node.js 测试、133 项相关 Chromium E2E 通过；另有 14 项 `/review/` 前缀下的真实浏览器双向切换通过。覆盖四个交互案例完整 JSON 一致、两组作品详情及原图内容一致、经典功能、日历、时间线、320/390/1280 像素布局、无脚本、首两次 Tab 顺序及详情路由保留。
+- 默认和 `/review/` 两组组合构建、各组全部十二个模板的 42 个 HTML 页面链接检查、十二次独立模板构建均通过。整站产物、双语分组目录、内容结构、工作流权限检查和 17 个变更/新增 JS 脚本语法检查通过。最后的临时前缀目录计数曾因 `demo-card` 正则同时匹配子元素而误报 66，获授权后限定实际卡片锚链接，复验双语目录均为六组十二卡；页面代码未因此改变。
+- 十二张 1280×960 JPEG 预览重新实拍，均在 1–300 KiB 范围；六套新版桌面、手机画面及分组目录已人工查看。测试命令：`node --test tests/build-site.test.cjs tests/deployed-site-check.test.cjs tests/demo-catalog-links.test.cjs tests/demo-template-links.test.cjs tests/photo-demo-check.test.cjs`，另跑 `tests/demo-registry.test.cjs`；浏览器运行 `demos`、`demo-templates`、`content-dashboard`、`bookstore`、`workshop-booking`、`trip-planner` 六份 spec，前缀复验仅筛选 `templates switch`。
+- 证据保存在 `F:/agents/code/temp/demo-templates-20261001-01/`，包括 `unit-boundaries.log`、`unit-registry.log`、`e2e.log`、`e2e-prefix.log`、`output-check.log`、`prefix-check.log`、`prefix-catalog-fixed.log`、组合/独立构建日志、`catalog-desktop.png` 和六套手机截图。回退检查点 `49048d4`；本批仅完成本地验收与提交，未推送、未运行远程 CI、未部署。

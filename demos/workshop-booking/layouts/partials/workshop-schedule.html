@@ -1,0 +1,21 @@
+{{ $sessions := .schedule.sessions }}
+{{ $courses := .schedule.courses }}
+{{ $template := .template }}
+<section class="schedule-section" aria-labelledby="schedule-heading">
+        <div class="section-heading"><div><p class="eyebrow">{{ if eq $template "calendar" }}03{{ else }}02{{ end }} / FIND YOUR TIME</p><h2 id="schedule-heading">把时间留出来</h2></div><span class="month-label">{{ site.Params.monthLabel }}</span></div>
+        {{ if ne $template "calendar" }}{{ partial "workshop-date-filter.html" . }}{{ end }}
+        <p class="schedule-help">先选课程，或直接从下方选一场。余位为固定示例，已满额的场次不可选。</p>
+        <ul id="session-list" class="session-list" aria-label="手作课程示例排期">
+          {{ range sort $sessions "date" "asc" }}
+          {{ $course := index (where $courses "id" .courseId) 0 }}
+          {{ $date := time.AsTime (printf "%sT00:00:00Z" .date) }}
+          <li class="session-row{{ if eq .remaining 0 }} sold-out{{ end }}" data-session-id="{{ .id }}">
+            <div class="session-date"><span>{{ $date.Format "01" }} /</span><strong>{{ $date.Format "02" }}</strong><span>{{ index (dict "Sunday" "周日" "Monday" "周一" "Tuesday" "周二" "Wednesday" "周三" "Thursday" "周四" "Friday" "周五" "Saturday" "周六") (printf "%s" $date.Weekday) }}</span></div>
+            <div class="session-info"><strong>{{ $course.title }}</strong><span>{{ $course.category }} · <time datetime="{{ .date }}T{{ .start }}:00">{{ .start }}</time> — <time datetime="{{ .date }}T{{ .end }}:00">{{ .end }}</time></span><span class="session-capacity">{{ if eq .remaining 0 }}已满额 · 示例余位 0 人{{ else }}示例余位 {{ .remaining }} 人{{ end }}</span></div>
+            <button class="session-button" type="button" data-session-choice="{{ .id }}" aria-pressed="false" aria-label="{{ $course.title }}，{{ partial "date.html" .date }}，{{ .start }} 至 {{ .end }}，{{ if eq .remaining 0 }}已满额{{ else }}选择此场{{ end }}" disabled>{{ if eq .remaining 0 }}已满额{{ else }}选择此场{{ end }}</button>
+          </li>
+          {{ end }}
+        </ul>
+        <p id="empty-sessions" class="empty-sessions" hidden>这个日期没有符合筛选条件的场次。试试其他日期，或重置选择。</p>
+        <noscript><p class="noscript-note">JavaScript 已关闭：当前可只读浏览全部六门课程和十二个示例场次，选课、筛选与预约单预览不可用。</p></noscript>
+      </section>

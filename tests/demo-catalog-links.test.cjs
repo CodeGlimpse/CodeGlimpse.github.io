@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
-const { DEMO_REGISTRY } = require('../scripts/demo-registry.cjs');
+const { DEMO_CASES } = require('../scripts/demo-registry.cjs');
 
 const fixtureParent = process.env.TEST_TMP_ROOT
     ? path.resolve(process.env.TEST_TMP_ROOT)
@@ -67,7 +67,7 @@ test('workshop demo mode still requires the original catalog label', (t) => {
     assert.match(demo.stdout, /catalog anchor must say ← 返回演示目录/);
 });
 
-for (const { id: demoId } of DEMO_REGISTRY) {
+for (const { id: demoId } of DEMO_CASES) {
     test(`${demoId} rejects a marked parent catalog link without an explicit allowance`, (t) => {
         const output = createFixture(t, catalogLink);
         const result = runChecker(demoId, output);

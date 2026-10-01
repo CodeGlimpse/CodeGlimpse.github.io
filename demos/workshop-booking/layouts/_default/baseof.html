@@ -1,4 +1,6 @@
 <!doctype html>
+{{ $template := site.Params.demoTemplate | default "classic" }}
+{{ if not (in (slice "classic" "calendar") $template) }}{{ errorf "workshop-booking: unsupported demoTemplate %q; use classic or calendar" $template }}{{ end }}
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8">
@@ -11,16 +13,19 @@
     <link rel="canonical" href="{{ .Permalink }}">
     <link rel="icon" type="image/svg+xml" href="{{ "favicon.svg" | relURL }}">
     <link rel="stylesheet" href="{{ "css/site.css" | relURL }}">
+    <link rel="stylesheet" href="{{ "css/demo-templates.css" | relURL }}">
+    {{ if eq $template "calendar" }}<link rel="stylesheet" href="{{ "css/calendar.css" | relURL }}">{{ end }}
     {{ if .IsHome }}
     <script src="{{ "js/booking-core.js" | relURL }}" defer></script>
     <script src="{{ "js/booking.js" | relURL }}" defer></script>
     {{ end }}
   </head>
-  <body>
+  <body data-template="{{ $template }}">
     <a class="skip-link" href="#main">跳到正文</a>
     {{ with site.Params.demoCatalogURL }}
     <div class="demo-catalog-bar"><div class="shell"><a href="{{ . }}" data-demo-catalog>← 返回演示目录</a></div></div>
     {{ end }}
+    {{ partial "demo-templates.html" . }}
     <header class="site-header">
       <div class="shell header-inner">
         <a class="brand" href="{{ "" | relURL }}" aria-label="拾光工坊，返回课程首页">

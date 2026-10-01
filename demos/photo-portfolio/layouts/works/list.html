@@ -1,12 +1,16 @@
 {{ define "main" }}
-<main id="main" class="shell listing-page" tabindex="-1">
+<main id="main" class="shell listing-page{{ if eq site.Params.demoTemplate "gallery" }} gallery-listing{{ end }}" tabindex="-1">
   <header class="page-heading">
     <p class="eyebrow">ARCHIVE / 01—03</p>
     <h1>{{ .Title }}</h1>
     <p>{{ .Params.summary }}</p>
   </header>
-  <div class="card-grid works-grid">
-    {{ range .Pages.ByWeight }}{{ partial "work-card.html" . }}{{ end }}
-  </div>
+  {{ if eq site.Params.demoTemplate "gallery" }}
+    {{ partial "gallery/contact-sheet.html" .Pages.ByWeight }}
+  {{ else }}
+    <div class="card-grid works-grid">
+      {{ range .Pages.ByWeight }}{{ partial "work-card.html" . }}{{ end }}
+    </div>
+  {{ end }}
 </main>
 {{ end }}

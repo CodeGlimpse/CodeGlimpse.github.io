@@ -1,0 +1,30 @@
+{{ $entries := . }}
+{{ $channels := slice "博客" "视频" "社区" }}
+{{ $channelTotals := dict }}
+{{ $maxChannelViews := 0 }}
+{{ range $channels }}
+  {{ $channel := . }}
+  {{ $views := 0 }}
+  {{ range where $entries "channel" $channel }}{{ $views = add $views .views }}{{ end }}
+  {{ $channelTotals = merge $channelTotals (dict $channel $views) }}
+  {{ if gt $views $maxChannelViews }}{{ $maxChannelViews = $views }}{{ end }}
+{{ end }}
+<div class="panel channel-panel">
+      <div class="section-heading">
+        <div><p class="eyebrow">CHANNEL MIX</p><h2 id="channel-heading">阅读，来自哪里？</h2></div>
+        <span class="section-tag">渠道分布</span>
+      </div>
+      <div id="channel-chart" class="channel-chart" aria-labelledby="channel-heading" aria-describedby="channel-note">
+        {{ range $index, $channel := $channels }}
+        {{ $views := index $channelTotals $channel }}
+        {{ $width := 0.0 }}
+        {{ if gt $maxChannelViews 0 }}{{ $width = div (mul (float $views) 100.0) (float $maxChannelViews) }}{{ end }}
+        <div class="channel-row channel-{{ $index }}" data-channel="{{ $channel }}">
+          <span class="channel-name"><span class="channel-dot" aria-hidden="true"></span>{{ $channel }}</span>
+          <div class="bar-track" aria-hidden="true"><div class="bar" style="width: {{ printf "%.2f" $width }}%;"></div></div>
+          <span class="channel-total">{{ partial "number.html" $views }}</span>
+        </div>
+        {{ end }}
+      </div>
+      <p id="channel-note" class="panel-note">数值为阅读次数；条形长度相对当前最多的渠道计算。</p>
+    </div>

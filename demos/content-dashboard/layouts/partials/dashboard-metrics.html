@@ -1,0 +1,31 @@
+{{ $entries := . }}
+{{ $totalViews := 0 }}
+{{ $totalInteractions := 0 }}
+{{ range $entries }}
+  {{ $totalViews = add $totalViews .views }}
+  {{ $totalInteractions = add $totalInteractions .interactions }}
+{{ end }}
+{{ $totalRate := 0.0 }}
+{{ if gt $totalViews 0 }}{{ $totalRate = div (mul (float $totalInteractions) 100.0) (float $totalViews) }}{{ end }}
+<section class="metrics-grid" aria-label="内容总览指标">
+    <article class="metric-card">
+      <p class="metric-label"><span class="metric-icon icon-content" aria-hidden="true"></span>内容数量</p>
+      <p class="metric-value"><strong data-metric="count">{{ partial "number.html" (len $entries) }}</strong><span>条</span></p>
+      <p class="metric-note">当前范围内的发布记录</p>
+    </article>
+    <article class="metric-card">
+      <p class="metric-label"><span class="metric-icon icon-views" aria-hidden="true"></span>阅读次数</p>
+      <p class="metric-value"><strong data-metric="views">{{ partial "number.html" $totalViews }}</strong><span>次</span></p>
+      <p class="metric-note">含重复阅读，非独立人数</p>
+    </article>
+    <article class="metric-card">
+      <p class="metric-label"><span class="metric-icon icon-interactions" aria-hidden="true"></span>互动次数</p>
+      <p class="metric-value"><strong data-metric="interactions">{{ partial "number.html" $totalInteractions }}</strong><span>次</span></p>
+      <p class="metric-note">当前范围内的内容反馈</p>
+    </article>
+    <article class="metric-card metric-accent">
+      <p class="metric-label"><span class="metric-icon icon-rate" aria-hidden="true"></span>互动率</p>
+      <p class="metric-value"><strong data-metric="rate">{{ printf "%.2f%%" $totalRate }}</strong></p>
+      <p class="metric-note">总互动 ÷ 总阅读 × 100%</p>
+    </article>
+  </section>

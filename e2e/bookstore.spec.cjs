@@ -1,6 +1,9 @@
 const { test, expect } = require('@playwright/test');
 const books = require('../demos/bookstore/data/books.json');
-const demoPath = '/demos/bookstore/';
+const { DEMO_REGISTRY } = require('../scripts/demo-registry.cjs');
+for (const demo of DEMO_REGISTRY.filter(item => item.caseId === 'bookstore')) {
+test.describe(demo.templateId, () => {
+const demoPath = '/' + demo.path;
 const money = cents => `¥${Math.floor(cents / 100)}.${String(cents % 100).padStart(2, '0')}`;
 const addName = book => `加入《${book.title}》到模拟购物袋`;
 const quantityName = book => `《${book.title}》的数量`;
@@ -172,3 +175,6 @@ test.describe('bookstore without JavaScript', () => {
         expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(321);
     });
 });
+
+});
+}

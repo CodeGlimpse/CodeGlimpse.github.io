@@ -149,7 +149,8 @@ function validateDemoCatalog(body, pageUrl, language, baseUrl = null, registry =
         if (!links.some((link) => new URL(link).pathname === target.pathname)) errors.push(`missing demo link: ${demo.id}`);
         const title = demo.copy[language].title;
         const escapedTitle = title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&#34;').replace(/'/g, '&#39;');
-        if (!body.includes(title) && !body.includes(escapedTitle)) errors.push(`missing demo title: ${demo.id}`);
+        const text = body.replace(/<[^>]*>/g, '');
+        if (!text.includes(title) && !text.includes(escapedTitle)) errors.push(`missing demo title: ${demo.id}`);
         const preview = new URL(demo.preview.image, siteBase).toString();
         if (!images.some((image) => {
             try { return image.src && new URL(image.src, pageUrl).toString() === preview; }

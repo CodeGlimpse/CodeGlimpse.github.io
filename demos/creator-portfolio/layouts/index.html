@@ -1,4 +1,7 @@
 {{ define "main" }}
+{{ if eq site.Params.demoTemplate "editorial" }}
+  {{ partial "editorial/home.html" . }}
+{{ else }}
 <main id="main">
   <section class="intro shell" aria-labelledby="intro-title">
     <div>
@@ -40,4 +43,5 @@
     </div>
   </section>
 </main>
+{{ end }}
 {{ end }}

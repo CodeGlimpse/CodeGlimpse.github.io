@@ -4,6 +4,29 @@
 
 首页和说明页都明确标注“虚构演示 · 模拟购物袋”。购物袋只保存在当前页面内存中，刷新或离开页面即重置；没有结算、下单、支付或个人信息收集。关闭 JavaScript 后仍可阅读完整书目、单价和库存，交互控件保持禁用。
 
+## 页面模板
+
+`params.demoTemplate` 支持 `classic` 和 `catalog`，未设置时使用 `classic`；其他值会通过 Hugo `errorf` 中止构建，避免输出不完整的模板。
+
+| 模板 | 版式 |
+| --- | --- |
+| `classic` | 原纸上书架：大封面图书网格与可见购物袋侧栏 |
+| `catalog` | 编号书目：横向排列索引、封面、简介及价格操作区，搭配紧凑购物袋；手机仍保留编号与横向书目关系 |
+
+两套模板共用 `data/books.json`、`content/` 和同一组购物袋脚本。新增的 `.book-copy`、`.book-order` 只是书目分组容器，筛选、库存、金额、按钮名称及焦点逻辑保持一致；说明页同时应用当前模板样式。模板选择只改变页面呈现，不复制内容或保存购物袋。
+
+所有页面先加载 `css/site.css` 与共用的 `css/demo-templates.css`，`catalog` 再加载 `css/catalog.css`。`body[data-template]` 标记当前模板。`layouts/partials/demo-templates.html` 提供模板入口，位于返回演示目录与主导航之间；主站集成通过 `demoTemplates` 提供链接，选择模板时保留当前详情路由。集成构建的编号书目地址为 `/demos/variants/bookstore/catalog/`，主站有前缀时会加上该前缀。
+
+独立预览可在 `hugo.toml` 的 `[params]` 中设置 `demoTemplate = 'catalog'`，或使用当前 PowerShell 会话的参数：
+
+```powershell
+$env:HUGO_PARAMS_DEMOTEMPLATE = 'catalog'
+hugo server
+Remove-Item Env:HUGO_PARAMS_DEMOTEMPLATE
+```
+
+最后一条命令在停止预览后执行，用于恢复默认模板。独立构建仍使用下文的构建和检查器，无需新增数据、主题或依赖；默认没有主站注入的模板链接。
+
 ## 独立预览与构建
 
 需要 Hugo 0.157.0 与 Python 3.10 或更新版本。在此目录运行 `hugo server`，或构建到临时目录：
@@ -24,7 +47,7 @@ python -B -X utf8 scripts/check_build.py "$env:TEMP\bookstore-build" --base-url 
 - `content/_index.md`：首页标题和简介。
 - `content/about/index.md`：操作说明、虚构范围、库存和金额口径。
 - `data/books.json`：唯一书目来源；Hugo 静态书目与脚本读取同一份数据。
-- `layouts/` 与 `static/css/site.css`：页面布局和原创 CSS 封面。
+- `layouts/` 与 `static/css/site.css`：共用页面结构、默认布局和原创 CSS 封面；`static/css/catalog.css`：横向编号书目与紧凑购物袋。
 - `static/js/store-core.js`：可由 Node 或浏览器使用的筛选和购物袋核心。
 - `static/js/store.js`：页面控件、稳定的购物袋条目及状态提示。
 
@@ -39,3 +62,5 @@ python -B -X utf8 scripts/check_build.py "$env:TEMP\bookstore-build" --base-url 
 购物袋以整数分累计：逐本的 `priceCents × quantity` 相加后再格式化展示，没有浮点货币累计。减至零或点击移除都会删除该条目。数量达到库存上限时，增加按钮保留键盘焦点并标记 `aria-disabled`，操作只提示上限。售罄的加入按钮保持原生禁用。购物袋数量更新保留原来的 DOM 节点；移除当前条目后移到相邻同类按钮，移除最后一本时移到购物袋标题。状态播报只包含简明消息。
 
 本仓库中的 `tests/bookstore.test.cjs` 覆盖核心数据、搜索、金额和库存边界；`e2e/bookstore.spec.cjs` 覆盖真实交互、键盘、窄屏、无存储和无 JavaScript。这些集成测试位于父仓库，单独复制此 demo 时不需要它们即可构建。
+
+调整模板后，应分别在两种布局检查多词/中文输入搜索、售罄、库存上限、增减和清空购物袋，以及金额与焦点的一致性；同时检查首页和说明页在 320/390 像素下的布局，以及关闭 JavaScript 后的完整静态书目。

@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-const { DEMO_REGISTRY } = require('../scripts/demo-registry.cjs');
+const { DEMO_CASES, DEMO_REGISTRY } = require('../scripts/demo-registry.cjs');
 
 const photoDemo = DEMO_REGISTRY.find((demo) => demo.id === 'photo-portfolio');
 const photoPath = `/${photoDemo.path}`;
@@ -26,12 +26,13 @@ test('bilingual demo catalog presents registry copy and opens every demo', async
             await page.goto(`${prefix}/demos/`);
             await expect(page.locator('main h1')).toHaveCount(1);
             await expect(page.locator('.demo-card')).toHaveCount(DEMO_REGISTRY.length);
+            await expect(page.locator('.demo-case')).toHaveCount(DEMO_CASES.length);
 
             const demoPath = `/${demo.path}`;
             const copy = demo.copy[language];
             const card = page.locator(`.demo-card[href="${demoPath}"]`);
-            await expect(card.locator('h2')).toHaveText(copy.title);
-            await expect(card.locator('.demo-card-label')).toHaveText(copy.label);
+            await expect(card.locator('h3')).toHaveText(copy.title);
+            await expect(page.locator(`[data-demo-case="${demo.caseId}"] .demo-card-label`)).toHaveText(copy.label);
             await expect(card.locator('.demo-card-copy > p')).toHaveText(copy.description);
             await expect(card.locator('.demo-card-features li')).toHaveText(copy.features);
 
@@ -109,7 +110,7 @@ test('photography portfolio navigation opens the work and about pages', async ({
 });
 
 test('demo cards and photography portfolio fit desktop and mobile viewports', async ({ page }) => {
-    for (const [width, maxCardShare] of [[1280, .4], [800, .55], [390, 1]]) {
+    for (const [width, maxCardShare] of [[1280, .55], [800, .55], [390, 1]]) {
         await page.setViewportSize({ width, height: 844 });
         await page.goto('/demos/');
         await expect(page.locator('.demo-card')).toHaveCount(DEMO_REGISTRY.length);

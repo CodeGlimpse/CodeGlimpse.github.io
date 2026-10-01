@@ -1,5 +1,6 @@
 {{ define "main" }}
 {{ $books := site.Data.books | default (slice) }}
+{{ $template := site.Params.demoTemplate | default "classic" }}
 <main id="main" class="main shell bookstore-page" data-bookstore tabindex="-1">
   <section class="hero" aria-labelledby="page-heading">
     <div class="hero-copy">
@@ -28,9 +29,11 @@
         <button id="reset-filters" class="text-button" type="button" disabled>重置筛选</button>
       </div>
       <noscript><p class="noscript-note">JavaScript 已关闭：保留全部静态书目，分类、搜索和模拟购物袋控件不可用。</p></noscript>
+      {{ if eq $template "catalog" }}<div class="catalog-column-labels" aria-hidden="true"><span>索引</span><span>书目 / READING LIST</span><span>单价与购物袋</span></div>{{ end }}
       <div id="book-grid" class="book-grid">
         {{ range $index, $book := $books }}
         <article class="book-card" data-book-id="{{ .id }}" aria-labelledby="title-{{ .id }}">
+          {{ if eq $template "catalog" }}<span class="book-index" aria-hidden="true">{{ printf "%02d" (add $index 1) }}</span>{{ end }}
           <div class="cover-stage">
             <div class="book-cover cover--{{ .cover }}" aria-hidden="true">
               <span class="cover-series">纸间原创 · {{ .category }}</span>
@@ -40,11 +43,15 @@
               <span class="cover-edition">ZHIJIAN <span>{{ printf "%02d" (add $index 1) }}</span></span>
             </div>
           </div>
-          <div class="book-meta"><span class="category-tag">{{ .category }}</span><span class="book-author">{{ .author }} 著</span></div>
-          <h3 id="title-{{ .id }}">{{ .title }}</h3>
-          <p class="book-description">{{ .description }}</p>
-          <div class="book-purchase"><span class="book-price">{{ partial "money.html" .priceCents }}</span><span class="book-stock{{ if eq .stock 0 }} is-sold-out{{ end }}">{{ if eq .stock 0 }}售罄{{ else }}示例库存 {{ .stock }} 本{{ end }}</span></div>
-          <button class="add-button" type="button" data-add-book="{{ .id }}" aria-label="加入《{{ .title }}》到模拟购物袋" disabled>{{ if eq .stock 0 }}暂时售罄{{ else }}加入购物袋 <span aria-hidden="true">＋</span>{{ end }}</button>
+          <div class="book-copy">
+            <div class="book-meta"><span class="category-tag">{{ .category }}</span><span class="book-author">{{ .author }} 著</span></div>
+            <h3 id="title-{{ .id }}">{{ .title }}</h3>
+            <p class="book-description">{{ .description }}</p>
+          </div>
+          <div class="book-order">
+            <div class="book-purchase"><span class="book-price">{{ partial "money.html" .priceCents }}</span><span class="book-stock{{ if eq .stock 0 }} is-sold-out{{ end }}">{{ if eq .stock 0 }}售罄{{ else }}示例库存 {{ .stock }} 本{{ end }}</span></div>
+            <button class="add-button" type="button" data-add-book="{{ .id }}" aria-label="加入《{{ .title }}》到模拟购物袋" disabled>{{ if eq .stock 0 }}暂时售罄{{ else }}加入购物袋 <span aria-hidden="true">＋</span>{{ end }}</button>
+          </div>
         </article>
         {{ end }}
       </div>

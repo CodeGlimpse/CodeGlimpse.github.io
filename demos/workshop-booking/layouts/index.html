@@ -1,88 +1,31 @@
 {{ define "main" }}
 {{ $schedule := site.Data.schedule }}
-{{ $courses := $schedule.courses }}
-{{ $sessions := $schedule.sessions }}
-{{ $dates := slice }}
-{{ range $sessions }}{{ $dates = $dates | append .date }}{{ end }}
-{{ $dates = sort (uniq $dates) }}
+{{ $template := site.Params.demoTemplate | default "classic" }}
+{{ $context := dict "schedule" $schedule "template" $template }}
 <main id="main" class="shell booking-page" data-workshop tabindex="-1">
-  <header class="intro">
-    <div class="intro-copy">
-      <p class="eyebrow"><span class="small-sun" aria-hidden="true">✳</span> MAKE SOMETHING / 留一点慢时间</p>
-      <h1>{{ .Params.heading }}</h1>
-      <p class="intro-text">{{ .Params.intro }}</p>
-      <p class="demo-notice">{{ site.Params.demoNotice }}<span>全部课程与余位均为本地固定示例</span></p>
+  {{ partial "workshop-intro.html" . }}
+  {{ if eq $template "calendar" }}
+  {{ partial "workshop-calendar.html" $context }}
+  <p class="calendar-prompt" data-calendar-prompt hidden>先在日历中挑选日期，再展开当天的课程与场次。</p>
+  <div class="calendar-details" id="calendar-details" data-calendar-details>
+    <div class="calendar-details-heading"><p class="eyebrow">YOUR DAY / 把一个日子留给手作</p><h2 data-calendar-summary>十月完整课程与排期</h2></div>
+    <div class="booking-layout">
+      <div class="selection-column">
+        {{ partial "workshop-courses.html" $context }}
+        {{ partial "workshop-schedule.html" $context }}
+      </div>
+      {{ partial "workshop-booking-panel.html" $context }}
     </div>
-    <div class="month-stamp" aria-label="2026 年 10 月，六门课程，十二个示例场次">
-      <span class="stamp-year">2026 / OCTOBER</span>
-      <strong>十月<br>手作记</strong>
-      <span class="stamp-line"></span>
-      <span>{{ len $courses }} 门课程 · {{ len $sessions }} 个示例场次</span>
-    </div>
-  </header>
-
+  </div>
+  {{ else }}
   <div class="booking-layout">
     <div class="selection-column">
-      <section class="course-section" aria-labelledby="course-heading">
-        <div class="section-heading"><div><p class="eyebrow">01 / PICK A CRAFT</p><h2 id="course-heading">从喜欢的手作开始</h2></div><p id="course-count">共 {{ len $courses }} 门课程</p></div>
-        <div class="filter-strip">
-          <div class="filter-field"><label for="category-filter">手作分类</label><select id="category-filter" disabled><option value="all">全部手作</option><option value="陶艺">陶艺</option><option value="印刷">印刷</option><option value="花艺">花艺</option></select></div>
-          <p>不需要经验，带上好奇心就好。<br><span>课程与材料说明均为虚构示例。</span></p>
-        </div>
-        <div class="course-grid" id="course-list">
-          {{ range $courses }}
-          <button class="course-button" type="button" data-course-id="{{ .id }}" aria-pressed="false" disabled>
-            <span class="course-cover cover-{{ .category }}">{{ partial "course-art.html" .art }}<span class="course-category">{{ .category }}</span></span>
-            <span class="course-body">
-              <span class="course-title-row"><strong class="course-title">{{ .title }}</strong><span class="course-price">¥{{ printf "%.2f" (div (float .priceCents) 100.0) }}<span> / 人</span></span></span>
-              <span class="course-description">{{ .description }}</span>
-              <span class="course-meta">{{ .materials }}<span>{{ .durationMinutes }} 分钟 · {{ .level }}</span></span>
-              <span class="course-state" data-course-state><span class="selection-dot" aria-hidden="true"></span><span data-course-state-text>选择这门课</span></span>
-            </span>
-          </button>
-          {{ end }}
-        </div>
-      </section>
-
-      <section class="schedule-section" aria-labelledby="schedule-heading">
-        <div class="section-heading"><div><p class="eyebrow">02 / FIND YOUR TIME</p><h2 id="schedule-heading">把时间留出来</h2></div><span class="month-label">{{ site.Params.monthLabel }}</span></div>
-        <div class="date-filter-row"><div class="filter-field"><label for="date-filter">排期日期</label><select id="date-filter" disabled><option value="all">全部示例日期</option>{{ range $dates }}<option value="{{ . }}">{{ partial "date.html" . }}</option>{{ end }}</select></div><p id="schedule-count">{{ len $sessions }} 个示例场次 · 按日期排列</p></div>
-        <p class="schedule-help">先选课程，或直接从下方选一场。余位为固定示例，已满额的场次不可选。</p>
-        <ul id="session-list" class="session-list" aria-label="手作课程示例排期">
-          {{ range sort $sessions "date" "asc" }}
-          {{ $course := index (where $courses "id" .courseId) 0 }}
-          {{ $date := time.AsTime (printf "%sT00:00:00Z" .date) }}
-          <li class="session-row{{ if eq .remaining 0 }} sold-out{{ end }}" data-session-id="{{ .id }}">
-            <div class="session-date"><span>{{ $date.Format "01" }} /</span><strong>{{ $date.Format "02" }}</strong><span>{{ index (dict "Sunday" "周日" "Monday" "周一" "Tuesday" "周二" "Wednesday" "周三" "Thursday" "周四" "Friday" "周五" "Saturday" "周六") (printf "%s" $date.Weekday) }}</span></div>
-            <div class="session-info"><strong>{{ $course.title }}</strong><span>{{ $course.category }} · <time datetime="{{ .date }}T{{ .start }}:00">{{ .start }}</time> — <time datetime="{{ .date }}T{{ .end }}:00">{{ .end }}</time></span><span class="session-capacity">{{ if eq .remaining 0 }}已满额 · 示例余位 0 人{{ else }}示例余位 {{ .remaining }} 人{{ end }}</span></div>
-            <button class="session-button" type="button" data-session-choice="{{ .id }}" aria-pressed="false" aria-label="{{ $course.title }}，{{ partial "date.html" .date }}，{{ .start }} 至 {{ .end }}，{{ if eq .remaining 0 }}已满额{{ else }}选择此场{{ end }}" disabled>{{ if eq .remaining 0 }}已满额{{ else }}选择此场{{ end }}</button>
-          </li>
-          {{ end }}
-        </ul>
-        <p id="empty-sessions" class="empty-sessions" hidden>这个日期没有符合筛选条件的场次。试试其他日期，或重置选择。</p>
-        <noscript><p class="noscript-note">JavaScript 已关闭：当前可只读浏览全部六门课程和十二个示例场次，选课、筛选与预约单预览不可用。</p></noscript>
-      </section>
+      {{ partial "workshop-courses.html" $context }}
+      {{ partial "workshop-schedule.html" $context }}
     </div>
-
-    <aside class="booking-panel" aria-labelledby="booking-heading">
-      <p class="eyebrow">03 / YOUR LITTLE PLAN</p>
-      <h2 id="booking-heading">这一场，<br>留给自己。</h2>
-      <p class="panel-intro">选好课程与时间，再看看人数和费用。</p>
-      <dl class="selection-summary"><div><dt>课程</dt><dd data-selection="course">尚未选课</dd></div><div><dt>日期</dt><dd data-selection="date">尚未选场</dd></div><div><dt>时段</dt><dd data-selection="time">—</dd></div></dl>
-      <div class="quantity-field"><label for="booking-quantity">参与人数</label><select id="booking-quantity" aria-describedby="quantity-note booking-status" disabled><option value="1">1 人</option><option value="2">2 人</option><option value="3">3 人</option><option value="4">4 人</option><option value="5">5 人</option><option value="6">6 人</option></select><p id="quantity-note">每次预览 1–6 人，不超过所选场次的示例余位。</p></div>
-      <div class="estimate"><span>预览合计<small data-unit-price>选定课程后显示单价</small></span><strong data-estimate>—</strong></div>
-      <p id="booking-status" class="booking-status" role="status" aria-live="polite" aria-atomic="true">请选择课程与场次，查看一份预约单预览。</p>
-      <button id="preview-booking" class="preview-button" type="button" aria-describedby="booking-status" disabled>查看预约单预览 <span aria-hidden="true">↗</span></button>
-      <button id="reset-booking" class="reset-button" type="button" disabled>重置选择</button>
-      <p class="preview-boundary">仅生成页面内预览，不会提交信息、锁定名额或完成真实预约。</p>
-      <section id="booking-preview" class="booking-preview" aria-labelledby="preview-heading" hidden>
-        <p class="eyebrow">PREVIEW / 仅供演示</p>
-        <h3 id="preview-heading">预约单预览</h3>
-        <dl><div><dt>课程</dt><dd data-preview="course">—</dd></div><div><dt>日期</dt><dd data-preview="date">—</dd></div><div><dt>时段</dt><dd data-preview="time">—</dd></div><div><dt>人数</dt><dd data-preview="quantity">—</dd></div><div><dt>单价</dt><dd data-preview="unit">—</dd></div><div class="preview-total"><dt>合计</dt><dd data-preview="total">—</dd></div></dl>
-        <p>这是一份预约单预览。刷新页面会清空选择；没有任何信息被提交。</p>
-      </section>
-    </aside>
+    {{ partial "workshop-booking-panel.html" $context }}
   </div>
+  {{ end }}
   <script id="booking-data" type="application/json">{{ $schedule | jsonify | safeJS }}</script>
 </main>
 {{ end }}

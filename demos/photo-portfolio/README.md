@@ -23,6 +23,21 @@ python -B -X utf8 scripts/check_build.py "$env:TEMP\photo-portfolio-build" --bas
 
 `example.github.io` 只是命令示例，不代表已部署。构建输出中的 `previews/rain-street.jpg` 是稳定路径的轻量缩略图；原始 `works/rain-street/cover.png` 仍发布供需要原图的页面使用。页面展示同时生成多个尺寸的 JPEG，浏览器按屏幕宽度选择。源码中的 PNG 不会被改写。本机 Hugo 0.157.0 Windows 对 WebP 处理触发 panic，因此本实验采用同一版本的 Hugo JPEG 处理；具体经过见 [实验记录](docs/EXPERIMENT_LOG.md)。
 
+## 同一作品的两种模板
+
+`classic` 保留原来的浅色作品集和图片比例；`gallery` 使用暗色画廊、照片优先的首页和缩略图联系表，作品详情与关于页沿用同一套画廊版式。这里的“联系表”是照片缩略图索引，不是联系表单。三个系列、正文、四张原图及 AI 演示声明来自同一份内容与页面资源。
+
+默认独立构建使用 `classic`。在本站目录设置参数即可预览暗色画廊：
+
+```powershell
+$env:HUGO_PARAMS_DEMOTEMPLATE = 'gallery'
+hugo server
+```
+
+构建时同样设置这个参数，并为每个模板使用独立的 `--destination` 与 `--baseURL`。结束后执行 `Remove-Item Env:\HUGO_PARAMS_DEMOTEMPLATE` 恢复默认，或显式选择 `classic`；其他模板名会使构建报错。版式在构建时确定，不保存浏览器状态。
+
+所有页面先加载 `static/css/site.css`；画廊版额外加载 `static/css/gallery.css`。首页介绍、图片、作品说明与个人介绍由共用 partial 生成，画廊组织在 `layouts/partials/gallery/`。照片处理继续使用现有 JPEG 响应式图片与预览资源；没有新增图片、外部字体、外部请求或 JavaScript。博客集成的模板入口由父站注入，复制本站独立构建时不依赖博客注册表。
+
 ## 修改内容
 
 - `content/works/<英文短名>/index.md`：每组作品的标题、简介、正文及图片说明。

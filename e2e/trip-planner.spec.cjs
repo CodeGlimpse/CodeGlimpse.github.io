@@ -1,5 +1,8 @@
 const { test, expect } = require('@playwright/test');
-const demoPath = '/demos/trip-planner/';
+const { DEMO_REGISTRY } = require('../scripts/demo-registry.cjs');
+for (const demo of DEMO_REGISTRY.filter(item => item.caseId === 'trip-planner')) {
+test.describe(demo.templateId, () => {
+const demoPath = '/' + demo.path;
 
 async function openPlanner(page) {
     await page.goto(demoPath);
@@ -149,3 +152,6 @@ test.describe('trip planner without JavaScript', () => {
         await expect(page.locator('.prose')).toContainText('非真实地理导航');
     });
 });
+
+});
+}

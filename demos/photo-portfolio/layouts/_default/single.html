@@ -1,14 +1,20 @@
 {{ define "main" }}
-<main id="main" class="shell about-page" tabindex="-1">
+<main id="main" class="shell about-page{{ if eq site.Params.demoTemplate "gallery" }} gallery-about{{ end }}" tabindex="-1">
   <header class="page-heading">
     <p class="eyebrow">ABOUT / CONTACT</p>
     <h1>{{ .Title }}</h1>
     <p>一个小型作品集所需的自我介绍与联系入口，都放在这里。</p>
   </header>
   <div class="about-grid">
+    {{ if eq site.Params.demoTemplate "gallery" }}
+    <aside class="gallery-about-sheet" aria-label="{{ (site.GetPage "/works").Title }}">
+      {{ partial "gallery/contact-sheet.html" (site.GetPage "/works").Pages.ByWeight }}
+    </aside>
+    {{ else }}
     <div class="about-monogram" aria-hidden="true"><span>留<br>光</span><small>LIGHT / STILL</small></div>
+    {{ end }}
     <div>
-      <p class="eyebrow">林予安 / 虚构摄影师</p>
+      <p class="eyebrow">{{ site.Params.creatorName }} / 虚构摄影师</p>
       <div class="prose">{{ .Content }}</div>
       <section id="contact" class="contact-panel" aria-labelledby="contact-title">
         <p class="eyebrow">CONTACT</p>

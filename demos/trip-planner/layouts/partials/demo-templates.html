@@ -1,0 +1,15 @@
+{{ with site.Params.demoTemplates }}
+{{ $templates := . }}
+{{ if not (reflect.IsSlice $templates) }}{{ $templates = transform.Unmarshal $templates }}{{ end }}
+{{ $current := site.Params.demoTemplate | default "classic" }}
+{{ $route := strings.TrimPrefix site.Home.RelPermalink $.RelPermalink }}
+<nav class="demo-template-switcher" aria-label="同内容模板" data-demo-templates>
+  <div class="demo-template-inner">
+    <span class="demo-template-caption">同一内容 · 选择模板</span>
+    <div class="demo-template-options">
+      {{ range $templates }}<a href="{{ printf "%s%s" .url $route }}" data-demo-template="{{ .id }}"{{ if eq .id $current }} aria-current="page"{{ end }}>{{ .label }}</a>{{ end }}
+    </div>
+    <small>切换模板将重置当前页面的操作。</small>
+  </div>
+</nav>
+{{ end }}

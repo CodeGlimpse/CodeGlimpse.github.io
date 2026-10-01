@@ -19,6 +19,12 @@
     const estimate = root.querySelector('[data-estimate]');
     const courseButtons = Array.from(root.querySelectorAll('[data-course-id]'));
     const sessionRows = Array.from(root.querySelectorAll('[data-session-id]'));
+    const calendarMode = document.body.dataset.template === 'calendar';
+    const calendar = root.querySelector('[data-booking-calendar]');
+    const calendarDetails = root.querySelector('[data-calendar-details]');
+    const calendarPrompt = root.querySelector('[data-calendar-prompt]');
+    const calendarSummary = root.querySelector('[data-calendar-summary]');
+    const calendarButtons = Array.from(root.querySelectorAll('[data-calendar-date]'));
     const controls = [category, date, quantity, reset];
     const summaryKeys = ['course', 'date', 'time'];
     const summary = Object.fromEntries(summaryKeys.map(key => [key, root.querySelector('[data-selection="' + key + '"]')]));
@@ -31,6 +37,7 @@
 
     if (!core || !dataNode || controls.some(control => !control)
         || !previewButton || !preview || !status || !courseCount || !sessionCount || !empty || !unitPrice || !estimate
+        || (calendarMode && (!calendar || !calendarDetails || !calendarPrompt || !calendarSummary || !calendarButtons.length))
         || Object.values(summary).some(element => !element) || Object.values(previewFields).some(element => !element)) {
         showDataError();
         return;
@@ -58,7 +65,11 @@
 
     function update() {
         const focused = document.activeElement;
-        const visibleCourses = core.visibleCourses(schedule, state.category);
+        let visibleCourses = core.visibleCourses(schedule, state.category);
+        if (calendarMode && state.date !== 'all') {
+            const dayCourseIds = new Set(schedule.sessions.filter(session => session.date === state.date).map(session => session.courseId));
+            visibleCourses = visibleCourses.filter(course => dayCourseIds.has(course.id));
+        }
         const visibleCourseIds = new Set(visibleCourses.map(course => course.id));
         courseButtons.forEach((button) => {
             button.hidden = !visibleCourseIds.has(button.dataset.courseId);
@@ -82,6 +93,16 @@
         });
         empty.hidden = sessions.length !== 0;
 
+        const calendarExpanded = calendarMode && date.value !== '';
+        if (calendarMode) {
+            calendarDetails.hidden = !calendarExpanded;
+            calendarPrompt.hidden = calendarExpanded;
+            calendarSummary.textContent = state.date === 'all' ? '十月完整课程与排期' : core.dateLabel(state.date) + ' · 当日手作';
+            calendarButtons.forEach(button => {
+                button.setAttribute('aria-pressed', String(date.value === button.dataset.calendarDate));
+            });
+        }
+
         const course = schedule.courses.find(item => item.id === state.courseId);
         const session = schedule.sessions.find(item => item.id === state.sessionId);
         sessionCount.textContent = (course ? course.title + ' · ' : '') + sessions.length + ' 个示例场次 · 按日期排列';
@@ -94,8 +115,12 @@
         const result = core.selectionResult(schedule, state);
         previewButton.disabled = !result.ok;
         status.dataset.tone = ['capacity', 'quantity', 'sold-out', 'mismatch', 'data'].includes(result.code) ? 'warning' : 'normal';
-        status.textContent = result.ok ? '课程、场次和 ' + state.quantity + ' 人已选好，可查看预约单预览。' : result.message;
-        if (focused && root.contains(focused) && (focused.closest('[hidden]') || focused.disabled)) category.focus();
+        status.textContent = calendarMode && !calendarExpanded
+            ? '请先在日历中选择日期，再选择当天课程与场次。'
+            : result.ok ? '课程、场次和 ' + state.quantity + ' 人已选好，可查看预约单预览。' : result.message;
+        if (focused && root.contains(focused) && (focused.closest('[hidden]') || focused.disabled)) {
+            (calendarMode && !calendarExpanded ? date : category).focus();
+        }
     }
 
     courseButtons.forEach((button) => {
@@ -122,10 +147,44 @@
         update();
     });
     date.addEventListener('change', () => {
-        state = core.reconcileSelection(schedule, { ...state, date: date.value });
+        const nextDate = date.value || 'all';
+        const next = calendarMode && (state.date !== nextDate || date.value === '')
+            ? { ...state, courseId: '', sessionId: '', date: nextDate }
+            : { ...state, date: nextDate };
+        state = core.reconcileSelection(schedule, next);
         clearPreview();
         update();
     });
+    if (calendarMode) {
+        const dayButtons = calendarButtons.filter(button => button.dataset.calendarDate !== 'all');
+        calendarButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                date.value = button.dataset.calendarDate;
+                date.dispatchEvent(new Event('change', { bubbles: true }));
+            });
+            button.addEventListener('keydown', (event) => {
+                if (button.dataset.calendarDate === 'all' || event.altKey || event.ctrlKey || event.metaKey) return;
+                const index = dayButtons.indexOf(button);
+                let target = null;
+                if (event.key === 'ArrowLeft') target = dayButtons[Math.max(0, index - 1)];
+                if (event.key === 'ArrowRight') target = dayButtons[Math.min(dayButtons.length - 1, index + 1)];
+                if (event.key === 'Home') target = dayButtons[0];
+                if (event.key === 'End') target = dayButtons[dayButtons.length - 1];
+                if (event.key === 'ArrowUp') {
+                    const day = Number(button.dataset.calendarDay) - 7;
+                    target = dayButtons.filter(candidate => Number(candidate.dataset.calendarDay) <= day).pop() || dayButtons[0];
+                }
+                if (event.key === 'ArrowDown') {
+                    const day = Number(button.dataset.calendarDay) + 7;
+                    target = dayButtons.find(candidate => Number(candidate.dataset.calendarDay) >= day) || dayButtons[dayButtons.length - 1];
+                }
+                if (target) {
+                    event.preventDefault();
+                    target.focus();
+                }
+            });
+        });
+    }
     quantity.addEventListener('change', () => {
         state = { ...state, quantity: Number(quantity.value) };
         clearPreview();
@@ -134,7 +193,7 @@
     reset.addEventListener('click', () => {
         state = core.createState();
         category.value = 'all';
-        date.value = 'all';
+        date.value = calendarMode ? '' : 'all';
         quantity.value = '1';
         clearPreview();
         update();
@@ -159,6 +218,7 @@
 
     controls.forEach(control => { control.disabled = false; });
     courseButtons.forEach(button => { button.disabled = false; });
+    calendarButtons.forEach(button => { button.disabled = false; });
     update();
     root.dataset.ready = 'true';
 }());

@@ -1,0 +1,5 @@
+{{ $dates := slice }}
+{{ range .schedule.sessions }}{{ $dates = $dates | append .date }}{{ end }}
+{{ $dates = sort (uniq $dates) }}
+{{ $sessions := .schedule.sessions }}
+<div class="date-filter-row"><div class="filter-field"><label for="date-filter">排期日期</label><select id="date-filter" disabled>{{ if eq .template "calendar" }}<option value="" selected>先选择一个日期</option>{{ end }}<option value="all">全部示例日期</option>{{ range $dates }}<option value="{{ . }}">{{ partial "date.html" . }}</option>{{ end }}</select></div><p id="schedule-count">{{ len $sessions }} 个示例场次 · 按日期排列</p></div>

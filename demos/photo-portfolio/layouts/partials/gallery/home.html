@@ -1,0 +1,14 @@
+<main id="main" class="gallery-home" tabindex="-1">
+  {{ $works := site.GetPage "/works" }}
+  {{ range first 1 $works.Pages.ByWeight }}
+  <section class="gallery-stage shell" aria-labelledby="hero-title">
+    {{ partial "hero-media.html" (dict "page" . "sizes" "(max-width: 1400px) 100vw, 1320px") }}
+    {{ partial "home-intro.html" . }}
+  </section>
+  {{ end }}
+  <section class="selected gallery-selection shell" aria-labelledby="selected-title">
+    {{ partial "selected-heading.html" . }}
+    {{ partial "gallery/contact-sheet.html" (after 1 $works.Pages.ByWeight) }}
+  </section>
+  {{ partial "home-about.html" . }}
+</main>

@@ -1,0 +1,16 @@
+{{ $courses := site.Data.schedule.courses }}
+{{ $sessions := site.Data.schedule.sessions }}
+<header class="intro">
+    <div class="intro-copy">
+      <p class="eyebrow"><span class="small-sun" aria-hidden="true">✳</span> MAKE SOMETHING / 留一点慢时间</p>
+      <h1>{{ .Params.heading }}</h1>
+      <p class="intro-text">{{ .Params.intro }}</p>
+      <p class="demo-notice">{{ site.Params.demoNotice }}<span>全部课程与余位均为本地固定示例</span></p>
+    </div>
+    <div class="month-stamp" aria-label="2026 年 10 月，六门课程，十二个示例场次">
+      <span class="stamp-year">2026 / OCTOBER</span>
+      <strong>十月<br>手作记</strong>
+      <span class="stamp-line"></span>
+      <span>{{ len $courses }} 门课程 · {{ len $sessions }} 个示例场次</span>
+    </div>
+  </header>

@@ -1,3 +1,7 @@
+{{ $template := site.Params.demoTemplate | default "classic" }}
+{{ if not (in (slice "classic" "gallery") $template) }}
+  {{ errorf "Unknown photo-portfolio demo template: %q" $template }}
+{{ end }}
 <!doctype html>
 <html lang="zh-CN">
   <head>
@@ -10,14 +14,17 @@
     <link rel="canonical" href="{{ .Permalink }}">
     <link rel="icon" type="image/svg+xml" href="{{ "favicon.svg" | relURL }}">
     <link rel="stylesheet" href="{{ "css/site.css" | relURL }}">
+    <link rel="stylesheet" href="{{ "css/demo-templates.css" | relURL }}">
+    {{ if eq $template "gallery" }}<link rel="stylesheet" href="{{ "css/gallery.css" | relURL }}">{{ end }}
   </head>
-  <body id="top">
+  <body id="top" data-template="{{ $template }}">
     <a class="skip-link" href="#main">跳到正文</a>
     {{ with site.Params.demoCatalogURL }}
     <div class="demo-catalog-bar">
       <div class="shell"><a class="demo-catalog-link" href="{{ . }}" data-demo-catalog>← 返回演示目录</a></div>
     </div>
     {{ end }}
+    {{ partial "demo-templates.html" . }}
     <div class="demo-banner" role="note">{{ site.Params.demoNotice }}</div>
     <header class="site-header">
       <div class="shell header-inner">

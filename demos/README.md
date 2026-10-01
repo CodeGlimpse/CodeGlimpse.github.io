@@ -1,29 +1,62 @@
 # Demo integration
 
-The six registered demos are standalone Hugo 0.157.0 sites under their
-respective `demos/` directories. The blog
-builds first; `scripts/build-site.cjs` then builds each site into its matching
-`public/demos/` subdirectory with the published subpath as its base URL. GitHub
+The six registered content cases are standalone Hugo 0.157.0 sites under their
+respective `demos/` directories. Each has two templates sharing the same
+content, images, JSON data, and business core. The blog builds first;
+`scripts/build-site.cjs` then builds all twelve template instances with their
+published subpaths as base URLs. GitHub
 Pages deploys the combined `public/` artifact.
 
 `data/demos.json` is the shared registry for the bilingual catalog, build,
 published-output checks, deployment monitoring, and browser tests. Each entry
 defines its ID, source directory, published path, preview dimensions/image,
 bilingual copy and feature labels, expected pages, assets, and navigation.
-`scripts/demo-registry.cjs` validates the registry before Node.js consumers use it.
-When adding a demo, keep its `source`, `path`, and `preview.image` unique and use
-relative paths. The standalone Python checkers stay inside each demo so copied
+`scripts/demo-registry.cjs` validates the cases (`DEMO_CASES`) and expands their
+`templates` arrays into build instances (`DEMO_REGISTRY`). A case owns its unique
+`source`, content description, expected pages and shared assets. Each template
+owns its ID, path, preview, layout description, and additional assets. Keep
+template paths and preview images globally unique; no destination may be a
+parent of another destination. The standalone Python checkers stay inside each demo so copied
 repositories do not depend on the blog registry.
-CI iterates the same registry and runs `<source>/scripts/check_build.py` for
-each demo. New checkers should support `--base-url`, `--check-demo-pages`, and
-`--catalog-url` in addition to the output-directory argument.
+CI calls `node scripts/check-demo-builds.cjs`, which expands the same registry,
+checks every template-switch destination exists, and runs each source's Python
+checker for each template. Checkers support `--base-url`, `--check-demo-pages`,
+`--catalog-url`, and repeatable `--template-url` flags.
 
 The integrated build injects a root-relative `demoCatalogURL` into each demo.
 Its header then displays a keyboard-accessible return link to the blog's demo
 catalog, including any deployment prefix. Standalone Hugo builds do not set
 this parameter and do not display the blog link. To check an integrated demo's
-links, pass `--catalog-url /demos/` (or the actual prefixed catalog path) to its
-Python checker; the exception applies only to that exact anchor destination.
+links, prefer the combined checker above. `--catalog-url /demos/` permits only
+the exact marked catalog anchor; each `--template-url` permits only an exact
+marked template anchor, never an image, unmarked link, or source attribute.
+
+## Choose a presentation template
+
+| Content case | Existing template | Additional template |
+| --- | --- | --- |
+| creator-portfolio | classic: gallery | editorial: image chapters and project index |
+| photo-portfolio | classic: photo stories | gallery: dark walls and contact sheets |
+| content-dashboard | classic: overview | workspace: filter sidebar and record cards |
+| bookstore | classic: bookshelf | catalog: indexed horizontal book entries |
+| workshop-booking | classic: course selection | calendar: date-first sessions |
+| trip-planner | classic: map planner | journal: itinerary timeline with supporting map |
+
+Existing URLs remain `demos/<case>/`; new templates live at
+`demos/variants/<case>/<template>/`. The catalog groups both previews under one
+case. Integrated pages offer same-content template links that preserve the
+current detail-page route and deployment prefix. Switching loads another page,
+so transient filters, bags, bookings, and itineraries reset.
+
+The build explicitly scopes `HUGO_PARAMS_DEMOTEMPLATE` and the JSON string
+`HUGO_PARAMS_DEMOTEMPLATES` to each child. Standalone builds default to `classic`.
+For example, from `demos/bookstore`, set the process environment variable
+`$env:HUGO_PARAMS_DEMOTEMPLATE = 'catalog'`, then run Hugo as usual. Leave
+`HUGO_PARAMS_DEMOTEMPLATES` and `HUGO_PARAMS_DEMOCATALOGURL` unset for standalone
+delivery; there will be no blog-only switching or return links. Unknown template
+IDs fail the build. Both versions reuse the same Markdown, JSON, originals,
+business core, and shared content partials; never duplicate source content to
+create a template.
 
 ## Refresh real page previews
 

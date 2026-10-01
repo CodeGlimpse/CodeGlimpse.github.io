@@ -1,0 +1,18 @@
+<aside class="booking-panel" aria-labelledby="booking-heading">
+      <p class="eyebrow">{{ if eq .template "calendar" }}04{{ else }}03{{ end }} / YOUR LITTLE PLAN</p>
+      <h2 id="booking-heading">这一场，<br>留给自己。</h2>
+      <p class="panel-intro">选好课程与时间，再看看人数和费用。</p>
+      <dl class="selection-summary"><div><dt>课程</dt><dd data-selection="course">尚未选课</dd></div><div><dt>日期</dt><dd data-selection="date">尚未选场</dd></div><div><dt>时段</dt><dd data-selection="time">—</dd></div></dl>
+      <div class="quantity-field"><label for="booking-quantity">参与人数</label><select id="booking-quantity" aria-describedby="quantity-note booking-status" disabled><option value="1">1 人</option><option value="2">2 人</option><option value="3">3 人</option><option value="4">4 人</option><option value="5">5 人</option><option value="6">6 人</option></select><p id="quantity-note">每次预览 1–6 人，不超过所选场次的示例余位。</p></div>
+      <div class="estimate"><span>预览合计<small data-unit-price>选定课程后显示单价</small></span><strong data-estimate>—</strong></div>
+      <p id="booking-status" class="booking-status" role="status" aria-live="polite" aria-atomic="true">请选择课程与场次，查看一份预约单预览。</p>
+      <button id="preview-booking" class="preview-button" type="button" aria-describedby="booking-status" disabled>查看预约单预览 <span aria-hidden="true">↗</span></button>
+      <button id="reset-booking" class="reset-button" type="button" disabled>重置选择</button>
+      <p class="preview-boundary">仅生成页面内预览，不会提交信息、锁定名额或完成真实预约。</p>
+      <section id="booking-preview" class="booking-preview" aria-labelledby="preview-heading" hidden>
+        <p class="eyebrow">PREVIEW / 仅供演示</p>
+        <h3 id="preview-heading">预约单预览</h3>
+        <dl><div><dt>课程</dt><dd data-preview="course">—</dd></div><div><dt>日期</dt><dd data-preview="date">—</dd></div><div><dt>时段</dt><dd data-preview="time">—</dd></div><div><dt>人数</dt><dd data-preview="quantity">—</dd></div><div><dt>单价</dt><dd data-preview="unit">—</dd></div><div class="preview-total"><dt>合计</dt><dd data-preview="total">—</dd></div></dl>
+        <p>这是一份预约单预览。刷新页面会清空选择；没有任何信息被提交。</p>
+      </section>
+    </aside>

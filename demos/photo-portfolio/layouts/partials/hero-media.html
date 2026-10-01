@@ -1,0 +1,5 @@
+{{ $page := .page }}
+<a class="hero-media" href="{{ $page.RelPermalink }}" aria-label="查看《{{ $page.Title }}》作品详情">
+  {{ partial "responsive-image.html" (dict "page" $page "name" $page.Params.cover "alt" $page.Params.cover_alt "sizes" .sizes "loading" "eager" "class" "hero-picture") }}
+  <span class="hero-media-caption"><span>01 / {{ $page.Title }}</span><span>查看系列 ↗</span></span>
+</a>

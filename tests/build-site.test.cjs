@@ -56,6 +56,9 @@ test('builds every registered demo inside the merged output directory and URL pr
         assert.equal(call.args[call.args.indexOf('--baseURL') + 1], `https://preview.example.test/review/${demo.path}`);
         assert.equal(call.options.cwd, path.join(projectRoot, demo.source));
         assert.equal(call.options.env.HUGO_PARAMS_DEMOCATALOGURL, '/review/demos/');
+        assert.equal(call.options.env.HUGO_PARAMS_DEMOTEMPLATE, demo.templateId);
+        const templates = JSON.parse(call.options.env.HUGO_PARAMS_DEMOTEMPLATES);
+        assert.deepEqual(templates.map(item => item.url), demo.siblings.map(item => `/review/${item.path}`));
     }
 });
 
@@ -77,12 +80,14 @@ test('uses Hugo-resolved environment and config values without CLI overrides', (
 
 test('does not pass differently cased parent output overrides into demos', () => {
     const fake = fakeHugo();
-    const env = { ...environment, hugo_baseurl: 'https://parent.test/', hugo_publishdir: 'parent-output', hugo_params_democatalogurl: '/stale/' };
+    const env = { ...environment, hugo_baseurl: 'https://parent.test/', hugo_publishdir: 'parent-output', hugo_params_democatalogurl: '/stale/', hugo_params_demotemplate: 'stale', hugo_params_demotemplates: 'stale' };
     assert.equal(buildSite([], env, fake.run), 0);
     const child = fake.calls[2].options.env;
     assert.equal(child.hugo_baseurl, undefined);
     assert.equal(child.hugo_publishdir, undefined);
     assert.equal(child.hugo_params_democatalogurl, undefined);
+    assert.equal(child.hugo_params_demotemplate, undefined);
+    assert.equal(child.hugo_params_demotemplates, undefined);
     assert.equal(child.HUGO_BASEURL, `https://example.test/${DEMO_REGISTRY[0].path}`);
     assert.equal(child.HUGO_PUBLISHDIR, path.join(projectRoot, 'public', DEMO_REGISTRY[0].path));
     assert.equal(child.HUGO_PARAMS_DEMOCATALOGURL, '/demos/');

@@ -1,7 +1,7 @@
 ---
 title: Demos
-description: Explore working website examples.
+description: Compare layouts and interactions using the same content.
 outputs: [HTML]
 ---
 
-Explore working portfolios, a content dashboard, a bookstore, workshop schedules, and a trip planner. All demos are in Chinese and use fictional content without real client information. Photography images are AI-generated. The sample book bag and reservation preview create no real orders or bookings.
+Each of six cases has two templates using the same works, books, courses, or records. Compare their layouts and interactions, then switch templates on any page; switching resets current actions. All demos are in Chinese and use fictional content without real client information. Photography images are AI-generated. The sample book bag and reservation preview create no real orders or bookings.

@@ -1,0 +1,15 @@
+<section class="panel places-panel" aria-labelledby="places-heading">
+  <header class="panel-heading"><div><p class="panel-kicker">PICK YOUR STOPS</p><h2 id="places-heading" tabindex="-1">选择停靠点</h2></div><span class="place-count" data-visible-count>{{ len site.Data.places }} 处</span></header>
+  {{ if eq (site.Params.demoTemplate | default "classic") "journal" }}<p class="journal-panel-nav"><a href="#itinerary-heading">查看已选顺序 <span aria-hidden="true">↖</span></a></p>{{ end }}
+  <div class="place-filter"><label for="place-category">筛选地点类型</label><select id="place-category" disabled><option value="all">全部地点</option><option value="自然">自然</option><option value="人文">人文</option><option value="休憩">休憩</option></select></div>
+  <div class="place-list" id="place-list">
+    {{ range site.Data.places }}
+    <article class="place-card" data-place-card data-place-id="{{ .id }}">
+      <div class="place-title"><h3>{{ .name }}</h3><span class="category-tag">{{ .category }}</span></div>
+      <p>{{ .description }}</p>
+      <div class="place-meta"><span>停留 {{ .durationMinutes }} 分钟</span><span>示例 ¥{{ printf "%.2f" (div (float .costCents) 100) }}</span></div>
+      <button type="button" class="add-button" data-action="add" data-id="{{ .id }}" aria-label="加入{{ .name }}" disabled><span aria-hidden="true">＋</span> 加入行程</button>
+    </article>
+    {{ end }}
+  </div>
+</section>

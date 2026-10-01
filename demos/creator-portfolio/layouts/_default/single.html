@@ -1,5 +1,5 @@
 {{ define "main" }}
-<main id="main" class="shell detail-page">
+<main id="main" class="shell detail-page{{ if eq site.Params.demoTemplate "editorial" }} editorial-detail{{ end }}">
   <a class="back-link" href="{{ .CurrentSection.RelPermalink }}"><span aria-hidden="true">←</span> 返回{{ .CurrentSection.Title }}</a>
   <header class="detail-heading">
     <p class="eyebrow">{{ if eq .Section "works" }}图片作品{{ else }}项目案例{{ end }} / {{ .Params.category }}</p>

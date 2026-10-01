@@ -8,26 +8,37 @@
 <section class="demos-grid" aria-label="{{ .Title }}">
     {{ $language := .Language.Lang }}
     {{ range .Site.Data.demos }}
+    {{ $case := . }}
     {{ $copy := index .copy $language }}
-    <a class="demo-card" href="{{ .path | relURL }}">
+    <article class="demo-case" data-demo-case="{{ .id }}" aria-labelledby="case-{{ .id }}">
+      <header class="demo-case-heading">
+        <div><span class="demo-card-label">{{ $copy.label }}</span><h2 id="case-{{ .id }}">{{ $copy.title }}</h2><p>{{ $copy.description }}</p></div>
+        <span class="demo-case-count">{{ len .templates }} {{ if eq $language "en" }}templates · same content{{ else }}套模板 · 同一内容{{ end }}</span>
+      </header>
+      <div class="demo-template-grid">
+      {{ range .templates }}
+      {{ $templateCopy := index .copy $language }}
+      <a class="demo-card" href="{{ .path | relURL }}" data-template-id="{{ .id }}">
         <div class="demo-card-preview">
             <div class="demo-preview-header" aria-hidden="true">
                 <span class="demo-preview-mark"></span>
-                <span>{{ .brand }}</span>
+                <span>{{ $case.brand }}</span>
             </div>
-            <img src="{{ .preview.image | relURL }}" alt="{{ $copy.previewAlt }}"
+            <img src="{{ .preview.image | relURL }}" alt="{{ $templateCopy.previewAlt }}"
                 loading="lazy" decoding="async" width="{{ .preview.width }}" height="{{ .preview.height }}">
         </div>
         <div class="demo-card-copy">
-            <span class="demo-card-label">{{ $copy.label }}</span>
-            <h2>{{ $copy.title }}</h2>
-            <p>{{ $copy.description }}</p>
+            <h3><span class="sr-only">{{ $copy.title }} · </span>{{ $templateCopy.name }}</h3>
+            <p>{{ $templateCopy.description }}</p>
             <ul class="demo-card-features">
-                {{ range $copy.features }}<li>{{ . }}</li>{{ end }}
+                {{ range $templateCopy.features }}<li>{{ . }}</li>{{ end }}
             </ul>
-            <span class="demo-card-action">{{ if eq $language "en" }}Open demo{{ else }}打开演示站{{ end }} <span aria-hidden="true">→</span></span>
+            <span class="demo-card-action">{{ if eq $language "en" }}Open template{{ else }}打开此模板{{ end }} <span aria-hidden="true">→</span></span>
         </div>
-    </a>
+      </a>
+      {{ end }}
+      </div>
+    </article>
     {{ end }}
 </section>
 <div class="demos-note">{{ .Content }}</div>

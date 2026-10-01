@@ -1,130 +1,30 @@
 {{ define "main" }}
 {{ $entries := site.Data.entries | default (slice) }}
-{{ $totalViews := 0 }}
-{{ $totalInteractions := 0 }}
-{{ range $entries }}
-  {{ $totalViews = add $totalViews .views }}
-  {{ $totalInteractions = add $totalInteractions .interactions }}
-{{ end }}
-{{ $totalRate := 0.0 }}
-{{ if gt $totalViews 0 }}{{ $totalRate = div (mul (float $totalInteractions) 100.0) (float $totalViews) }}{{ end }}
-{{ $channels := slice "博客" "视频" "社区" }}
-{{ $channelTotals := dict }}
-{{ $maxChannelViews := 0 }}
-{{ range $channels }}
-  {{ $channel := . }}
-  {{ $views := 0 }}
-  {{ range where $entries "channel" $channel }}{{ $views = add $views .views }}{{ end }}
-  {{ $channelTotals = merge $channelTotals (dict $channel $views) }}
-  {{ if gt $views $maxChannelViews }}{{ $maxChannelViews = $views }}{{ end }}
-{{ end }}
+{{ $template := site.Params.demoTemplate | default "classic" }}
 <main id="main" class="shell dashboard-page" data-dashboard tabindex="-1">
-  <header class="dashboard-heading">
-    <div>
-      <p class="eyebrow">CONTENT OVERVIEW <span aria-hidden="true">/</span> 内容运营看板</p>
-      <h1>{{ .Params.heading }}</h1>
-      <p class="heading-intro">{{ .Params.intro }}</p>
-    </div>
-    <div class="period-card">
-      <p>{{ site.Params.demoNotice }}</p>
-      <strong>{{ site.Params.periodLabel }}</strong>
-      <span>{{ site.Params.periodRange }}</span>
-    </div>
-  </header>
-
-  <section class="metrics-grid" aria-label="内容总览指标">
-    <article class="metric-card">
-      <p class="metric-label"><span class="metric-icon icon-content" aria-hidden="true"></span>内容数量</p>
-      <p class="metric-value"><strong data-metric="count">{{ partial "number.html" (len $entries) }}</strong><span>条</span></p>
-      <p class="metric-note">当前范围内的发布记录</p>
-    </article>
-    <article class="metric-card">
-      <p class="metric-label"><span class="metric-icon icon-views" aria-hidden="true"></span>阅读次数</p>
-      <p class="metric-value"><strong data-metric="views">{{ partial "number.html" $totalViews }}</strong><span>次</span></p>
-      <p class="metric-note">含重复阅读，非独立人数</p>
-    </article>
-    <article class="metric-card">
-      <p class="metric-label"><span class="metric-icon icon-interactions" aria-hidden="true"></span>互动次数</p>
-      <p class="metric-value"><strong data-metric="interactions">{{ partial "number.html" $totalInteractions }}</strong><span>次</span></p>
-      <p class="metric-note">当前范围内的内容反馈</p>
-    </article>
-    <article class="metric-card metric-accent">
-      <p class="metric-label"><span class="metric-icon icon-rate" aria-hidden="true"></span>互动率</p>
-      <p class="metric-value"><strong data-metric="rate">{{ printf "%.2f%%" $totalRate }}</strong></p>
-      <p class="metric-note">总互动 ÷ 总阅读 × 100%</p>
-    </article>
-  </section>
-
-  <section class="analysis-grid" aria-label="渠道分布与指标说明">
-    <div class="panel channel-panel">
-      <div class="section-heading">
-        <div><p class="eyebrow">CHANNEL MIX</p><h2 id="channel-heading">阅读，来自哪里？</h2></div>
-        <span class="section-tag">渠道分布</span>
-      </div>
-      <div id="channel-chart" class="channel-chart" aria-labelledby="channel-heading" aria-describedby="channel-note">
-        {{ range $index, $channel := $channels }}
-        {{ $views := index $channelTotals $channel }}
-        {{ $width := 0.0 }}
-        {{ if gt $maxChannelViews 0 }}{{ $width = div (mul (float $views) 100.0) (float $maxChannelViews) }}{{ end }}
-        <div class="channel-row channel-{{ $index }}" data-channel="{{ $channel }}">
-          <span class="channel-name"><span class="channel-dot" aria-hidden="true"></span>{{ $channel }}</span>
-          <div class="bar-track" aria-hidden="true"><div class="bar" style="width: {{ printf "%.2f" $width }}%;"></div></div>
-          <span class="channel-total">{{ partial "number.html" $views }}</span>
-        </div>
-        {{ end }}
-      </div>
-      <p id="channel-note" class="panel-note">数值为阅读次数；条形长度相对当前最多的渠道计算。</p>
-    </div>
-    <aside class="reading-note" aria-labelledby="reading-note-title">
-      <p class="eyebrow">READ THE SIGNALS</p>
-      <h2 id="reading-note-title">先看规模，<br>再看反馈。</h2>
-      <p>阅读数描述内容被看见的次数，互动率帮助比较每次阅读收到的反馈。</p>
-      <a class="text-link" href="{{ (site.GetPage "/about").RelPermalink }}">查看统计口径 <span aria-hidden="true">↗</span></a>
-      <span class="note-decoration" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+  {{ partial "dashboard-heading.html" . }}
+  {{ if eq $template "workspace" }}
+  <div class="workspace-layout" data-workspace>
+    <aside class="workspace-sidebar" aria-label="内容工作区筛选">
+      <p class="workspace-label">FIELDNOTES / 工作区</p>
+      {{ partial "dashboard-filters.html" . }}
+      {{ partial "dashboard-reading-note.html" . }}
     </aside>
-  </section>
-
-  <section class="panel filter-panel" aria-labelledby="filters-heading">
-    <div class="filter-heading"><h2 id="filters-heading">筛选与排序</h2><p>找到你想观察的那一组内容。</p></div>
-    <div class="filter-controls">
-      <div class="filter-field"><label for="month-filter">发布月份</label><select id="month-filter" disabled><option value="all">全部月份</option><option value="2026-07">2026 年 7 月</option><option value="2026-08">2026 年 8 月</option><option value="2026-09">2026 年 9 月</option></select></div>
-      <div class="filter-field"><label for="channel-filter">内容渠道</label><select id="channel-filter" disabled><option value="all">全部渠道</option><option value="博客">博客</option><option value="视频">视频</option><option value="社区">社区</option></select></div>
-      <div class="filter-field filter-search"><label for="search-filter">标题关键词</label><input id="search-filter" type="search" placeholder="搜索内容标题" autocomplete="off" disabled></div>
-      <div class="filter-field"><label for="sort-field">排序依据</label><select id="sort-field" disabled><option value="published">发布日期</option><option value="views" selected>阅读次数</option><option value="interactions">互动次数</option><option value="rate">互动率</option></select></div>
-      <div class="filter-field"><label for="sort-direction">排序方向</label><select id="sort-direction" disabled><option value="desc" selected>降序</option><option value="asc">升序</option></select></div>
-      <button id="reset-filters" class="reset-button" type="button" disabled>重置</button>
+    <div class="workspace-main">
+      {{ partial "dashboard-metrics.html" $entries }}
+      {{ partial "dashboard-channel.html" $entries }}
+      {{ partial "dashboard-content.html" $entries }}
     </div>
-    <noscript><p class="noscript-note">JavaScript 已关闭：当前展示全部示例数据，筛选和排序控件不可用。</p></noscript>
+  </div>
+  {{ else }}
+  {{ partial "dashboard-metrics.html" $entries }}
+  <section class="analysis-grid" aria-label="渠道分布与指标说明">
+    {{ partial "dashboard-channel.html" $entries }}
+    {{ partial "dashboard-reading-note.html" . }}
   </section>
-
-  <section class="panel content-panel" aria-labelledby="content-heading">
-    <div class="table-heading">
-      <div><p class="eyebrow">CONTENT LIBRARY</p><h2 id="content-heading">内容表现</h2></div>
-      <p id="result-summary" role="status" aria-live="polite" aria-atomic="true">共 {{ len $entries }} 条内容</p>
-    </div>
-    <div class="table-wrap">
-      <table class="content-table">
-        <caption class="sr-only">内容表现：标题、发布日期、渠道、阅读次数、互动次数和互动率；默认按阅读次数降序。</caption>
-        <thead><tr><th scope="col">内容标题</th><th scope="col">发布日期</th><th scope="col">渠道</th><th scope="col" class="numeric">阅读次数</th><th scope="col" class="numeric">互动次数</th><th scope="col" class="numeric">互动率</th></tr></thead>
-        <tbody id="content-rows">
-          {{ range sort $entries "views" "desc" }}
-          {{ $rate := 0.0 }}
-          {{ if gt .views 0 }}{{ $rate = div (mul (float .interactions) 100.0) (float .views) }}{{ end }}
-          <tr data-entry-id="{{ .id }}">
-            <td class="content-title" data-cell="title" data-label="内容">{{ .title }}</td>
-            <td class="date-cell" data-cell="published" data-label="发布日期"><time datetime="{{ .published }}">{{ .published }}</time></td>
-            <td data-cell="channel" data-label="渠道"><span class="channel-badge{{ if eq .channel "博客" }} badge-blog{{ else if eq .channel "视频" }} badge-video{{ else }} badge-community{{ end }}">{{ .channel }}</span></td>
-            <td class="numeric" data-cell="views" data-label="阅读量">{{ partial "number.html" .views }}</td>
-            <td class="numeric" data-cell="interactions" data-label="互动次数">{{ partial "number.html" .interactions }}</td>
-            <td class="numeric rate-cell" data-cell="rate" data-label="互动率">{{ printf "%.2f%%" $rate }}</td>
-          </tr>
-          {{ end }}
-        </tbody>
-      </table>
-    </div>
-    <div id="empty-state" class="empty-state" hidden><span class="empty-mark" aria-hidden="true">∅</span><h3>没有符合条件的内容</h3><p>试试更换月份、渠道或关键词，也可以重置筛选。</p></div>
-    <p class="table-note">互动率 = 互动次数 ÷ 阅读次数 × 100%；阅读次数为零时显示 0.00%。</p>
-  </section>
+  {{ partial "dashboard-filters.html" . }}
+  {{ partial "dashboard-content.html" $entries }}
+  {{ end }}
   <script id="dashboard-data" type="application/json">{{ $entries | jsonify | safeJS }}</script>
 </main>
 {{ end }}

@@ -1,0 +1,26 @@
+<section class="panel map-panel" aria-labelledby="terrain-heading">
+  <header class="panel-heading"><div><p class="panel-kicker">A MAP OF POSSIBILITIES</p><h2 id="terrain-heading" tabindex="-1">周末地形手记</h2></div><span class="map-scale" aria-hidden="true">01 / 08</span></header>
+  <svg class="terrain-map" viewBox="0 0 800 560" width="800" height="560" role="img" aria-labelledby="map-title map-description">
+    <title id="map-title">远山周末原创地形示意图</title>
+    <desc id="map-description">八个虚构地点的示意位置。加入行程后，橙色连线和数字按行程顺序更新。非真实地理导航。</desc>
+    <defs><pattern id="terrain-grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M80 0H0V80" fill="none" stroke="#507361" stroke-opacity=".3"/></pattern><linearGradient id="valley-wash" x2="0" y2="1"><stop stop-color="#3f654d"/><stop offset="1" stop-color="#1a4438"/></linearGradient></defs>
+    <rect width="800" height="560" fill="#183f34"/><rect width="800" height="560" fill="url(#terrain-grid)"/>
+    <path d="M-30 65C90-30 240 10 310 105s153 81 234 20 182-54 286 39v185c-119-105-227-106-313-45S318 344 225 257 61 243-30 301Z" fill="url(#valley-wash)"/>
+    <g fill="none" stroke="#6c8b68" stroke-width="2" opacity=".48"><path d="M-20 110C94-3 202 57 272 134s168 97 255 32 211-52 301 24"/><path d="M-30 153C93 57 178 95 246 167s167 109 266 47 210-75 321 30"/><path d="M-25 199C83 114 155 130 218 197s168 119 270 77 218-89 349 26"/><path d="M-22 450C129 354 250 399 343 458s162 53 234-8 168-61 267-5"/><path d="M-28 492C129 399 242 438 326 499s168 56 249-5 171-70 266-11"/></g>
+    <path d="M352-24c-68 116 73 149 16 234s-7 90 59 149 33 118-10 221" fill="none" stroke="#88afa2" stroke-width="17" opacity=".44"/><path d="M352-24c-68 116 73 149 16 234s-7 90 59 149 33 118-10 221" fill="none" stroke="#c4d8c5" stroke-width="2" opacity=".5"/>
+    <path d="M556 178c37-26 94-9 100 28s-47 61-77 43-57-46-23-71Z" fill="#729d93" opacity=".65"/>
+    <g fill="#a2b38a" opacity=".34" aria-hidden="true">{{ range slice "75 50" "100 75" "145 60" "200 95" "535 90" "574 80" "620 110" "70 340" "101 325" }}<path transform="translate({{ . }})" d="m0 0-11 22h7l-10 17h28L4 22h7Z"/>{{ end }}</g>
+    <g transform="translate(738 48)" fill="#f4eccf" aria-hidden="true"><path d="m0-19-9 31 9-6 9 6Z"/><text y="38" text-anchor="middle" font-size="17">N</text></g>
+    <polyline id="itinerary-route" class="map-route" points="" hidden/>
+    {{ range site.Data.places }}
+    <g class="map-place" data-map-id="{{ .id }}" transform="translate({{ mul .x 8 }}, {{ mul .y 5.6 }})">
+      <circle class="map-place-ring" r="13"/><circle class="map-place-dot" r="5"/>
+      <text class="map-place-name" x="22" y="6">{{ .name }}</text>
+      <circle class="route-disc" data-route-disc r="17" hidden aria-hidden="true"/>
+      <text class="route-number" data-route-number text-anchor="middle" y="6" hidden aria-hidden="true"></text>
+    </g>
+    {{ end }}
+  </svg>
+  <div class="map-caption"><p><span class="route-swatch" aria-hidden="true"></span>橙线与数字按行程顺序连接</p><p>原创地形示意 · 非真实地理导航</p></div>
+  <div class="map-note"><span aria-hidden="true">↟</span><p>这里的山、水与地点都是虚构创作。相邻地点统一估算 20 分钟交通，和画面距离无关。</p></div>
+</section>

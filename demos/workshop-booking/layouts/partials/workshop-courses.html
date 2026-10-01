@@ -1,0 +1,21 @@
+{{ $courses := .schedule.courses }}
+<section class="course-section" aria-labelledby="course-heading">
+        <div class="section-heading"><div><p class="eyebrow">{{ if eq .template "calendar" }}02{{ else }}01{{ end }} / PICK A CRAFT</p><h2 id="course-heading">{{ if eq .template "calendar" }}这一天，做点喜欢的事{{ else }}从喜欢的手作开始{{ end }}</h2></div><p id="course-count">共 {{ len $courses }} 门课程</p></div>
+        <div class="filter-strip">
+          <div class="filter-field"><label for="category-filter">手作分类</label><select id="category-filter" disabled><option value="all">全部手作</option><option value="陶艺">陶艺</option><option value="印刷">印刷</option><option value="花艺">花艺</option></select></div>
+          <p>不需要经验，带上好奇心就好。<br><span>课程与材料说明均为虚构示例。</span></p>
+        </div>
+        <div class="course-grid" id="course-list">
+          {{ range $courses }}
+          <button class="course-button" type="button" data-course-id="{{ .id }}" aria-pressed="false" disabled>
+            <span class="course-cover cover-{{ .category }}">{{ partial "course-art.html" .art }}<span class="course-category">{{ .category }}</span></span>
+            <span class="course-body">
+              <span class="course-title-row"><strong class="course-title">{{ .title }}</strong><span class="course-price">¥{{ printf "%.2f" (div (float .priceCents) 100.0) }}<span> / 人</span></span></span>
+              <span class="course-description">{{ .description }}</span>
+              <span class="course-meta">{{ .materials }}<span>{{ .durationMinutes }} 分钟 · {{ .level }}</span></span>
+              <span class="course-state" data-course-state><span class="selection-dot" aria-hidden="true"></span><span data-course-state-text>选择这门课</span></span>
+            </span>
+          </button>
+          {{ end }}
+        </div>
+      </section>

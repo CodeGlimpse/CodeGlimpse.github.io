@@ -1,0 +1,17 @@
+{{ $page := .page }}
+{{ $cover := $page.Resources.GetMatch $page.Params.cover }}
+{{ if not $cover }}{{ errorf "Missing cover image for %s: %v" $page.File.Path $page.Params.cover }}{{ end }}
+<article class="editorial-chapter">
+  <a class="editorial-chapter-link" href="{{ $page.RelPermalink }}" aria-label="查看{{ $page.Title }}">
+    <div class="editorial-image">
+      {{ with $cover }}<img src="{{ .RelPermalink }}" alt="{{ $page.Params.cover_alt }}" width="1200" height="800" loading="{{ $.loading | default "lazy" }}" decoding="async">{{ end }}
+    </div>
+    <div class="editorial-chapter-copy">
+      <span class="editorial-number" aria-hidden="true">{{ printf "%02d" .index }}</span>
+      <p class="card-category">{{ $page.Params.category }}</p>
+      <h3>{{ $page.Title }}</h3>
+      <p>{{ $page.Params.summary }}</p>
+      <span class="editorial-chapter-action" aria-hidden="true">阅读作品 <span>↗</span></span>
+    </div>
+  </a>
+</article>

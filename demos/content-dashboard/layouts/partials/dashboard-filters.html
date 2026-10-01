@@ -1,0 +1,12 @@
+<section class="panel filter-panel" aria-labelledby="filters-heading">
+    <div class="filter-heading"><h2 id="filters-heading">筛选与排序</h2><p>找到你想观察的那一组内容。</p></div>
+    <div class="filter-controls">
+      <div class="filter-field"><label for="month-filter">发布月份</label><select id="month-filter" disabled><option value="all">全部月份</option><option value="2026-07">2026 年 7 月</option><option value="2026-08">2026 年 8 月</option><option value="2026-09">2026 年 9 月</option></select></div>
+      <div class="filter-field"><label for="channel-filter">内容渠道</label><select id="channel-filter" disabled><option value="all">全部渠道</option><option value="博客">博客</option><option value="视频">视频</option><option value="社区">社区</option></select></div>
+      <div class="filter-field filter-search"><label for="search-filter">标题关键词</label><input id="search-filter" type="search" placeholder="搜索内容标题" autocomplete="off" disabled></div>
+      <div class="filter-field"><label for="sort-field">排序依据</label><select id="sort-field" disabled><option value="published">发布日期</option><option value="views" selected>阅读次数</option><option value="interactions">互动次数</option><option value="rate">互动率</option></select></div>
+      <div class="filter-field"><label for="sort-direction">排序方向</label><select id="sort-direction" disabled><option value="desc" selected>降序</option><option value="asc">升序</option></select></div>
+      <button id="reset-filters" class="reset-button" type="button" disabled>重置</button>
+    </div>
+    <noscript><p class="noscript-note">JavaScript 已关闭：当前展示全部示例数据，筛选和排序控件不可用。</p></noscript>
+  </section>

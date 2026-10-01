@@ -89,27 +89,7 @@ jobs:
               run: npm run check:output
 
             - name: Check registered demo links and images
-              run: |
-                  python3 - <<'PY'
-                  import json
-                  import os
-                  from pathlib import Path
-                  import subprocess
-                  import sys
-                  from urllib.parse import urljoin, urlsplit
-
-                  output = Path(os.environ.get("SITE_ROOT", "public"))
-                  base_url = os.environ.get("SITE_URL", "https://blog.codeglimpse.top/").rstrip("/") + "/"
-                  catalog_url = urlsplit(urljoin(base_url, "demos/")).path
-                  for demo in json.loads(Path("data/demos.json").read_text(encoding="utf-8")):
-                      subprocess.run([
-                          sys.executable, "-B", "-X", "utf8",
-                          str(Path(demo["source"]) / "scripts/check_build.py"),
-                          str(output / demo["path"]),
-                          "--base-url", urljoin(base_url, demo["path"]),
-                          "--check-demo-pages", "--catalog-url", catalog_url,
-                      ], check=True)
-                  PY
+              run: node scripts/check-demo-builds.cjs
 
             - name: Write build summary
               if: always()

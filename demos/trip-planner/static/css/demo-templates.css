@@ -1,0 +1,10 @@
+.demo-template-switcher { border-bottom: 1px solid #cbd4da; background: #edf2f5; color: #243640; font-family: system-ui, "Microsoft YaHei", sans-serif; font-size: 13px; line-height: 1.5; }
+.demo-template-inner { width: min(calc(100% - 48px), 1400px); margin: auto; padding: 12px 0; display: flex; align-items: center; flex-wrap: wrap; gap: 10px 18px; }
+.demo-template-caption { font-weight: 650; }
+.demo-template-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.demo-template-options a { padding: 6px 12px; border: 1px solid #a9b9c3; border-radius: 5px; color: #243640; background: #fff; text-decoration: none; }
+.demo-template-options a[aria-current="page"] { color: #fff; background: #243640; border-color: #243640; }
+.demo-template-options a:hover { text-decoration: underline; }
+.demo-template-options a:focus-visible { outline: 3px solid #236a9b; outline-offset: 3px; }
+.demo-template-inner small { margin-left: auto; font-size: 11px; color: #475d69; }
+@media (max-width: 600px) { .demo-template-inner { width: calc(100% - 32px); gap: 8px 12px; } .demo-template-inner small { width: 100%; margin-left: 0; } }

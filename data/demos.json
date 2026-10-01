@@ -2,8 +2,6 @@
   {
     "id": "creator-portfolio",
     "source": "demos/creator-portfolio",
-    "path": "demos/creator-portfolio/",
-    "preview": { "image": "img/demos/creator-portfolio.jpg", "width": 1280, "height": 960 },
     "brand": "弧光 / PORTFOLIO",
     "copy": {
       "zh-cn": {
@@ -11,28 +9,118 @@
         "label": "原创虚构示例",
         "description": "浏览图片作品与项目案例，查看电脑和手机上的作品展示。",
         "previewAlt": "创作者作品集首页的真实页面截图，包含标题、导航和原创虚构作品",
-        "features": ["图片画廊", "项目案例", "作品详情"]
+        "features": [
+          "图片画廊",
+          "项目案例",
+          "作品详情"
+        ]
       },
       "en": {
         "title": "Creator portfolio",
         "label": "Fictional · Chinese",
         "description": "Explore a gallery and project stories with original fictional content. Demo pages are in Chinese.",
         "previewAlt": "Screenshot of the creator portfolio homepage, showing its heading, navigation, and original fictional artwork",
-        "features": ["Image gallery", "Project stories", "Work details"]
+        "features": [
+          "Image gallery",
+          "Project stories",
+          "Work details"
+        ]
       }
     },
     "checks": {
-      "pages": ["", "works/", "projects/", "works/window-light/", "works/paper-tide/", "projects/rain-notes/", "projects/leaf-atlas/"],
-      "assets": ["css/site.css", "projects/leaf-atlas/cover.svg"],
-      "requiredText": ["虚构演示"],
-      "navigation": ["works/", "projects/"]
-    }
+      "pages": [
+        "",
+        "works/",
+        "projects/",
+        "works/window-light/",
+        "works/paper-tide/",
+        "projects/rain-notes/",
+        "projects/leaf-atlas/"
+      ],
+      "assets": [
+        "css/site.css",
+        "projects/leaf-atlas/cover.svg",
+        "css/demo-templates.css"
+      ],
+      "requiredText": [
+        "虚构演示"
+      ],
+      "navigation": [
+        "works/",
+        "projects/"
+      ]
+    },
+    "defaultTemplate": "classic",
+    "templates": [
+      {
+        "id": "classic",
+        "path": "demos/creator-portfolio/",
+        "preview": {
+          "image": "img/demos/creator-portfolio.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "作品画廊",
+            "description": "浏览图片作品与项目案例，查看电脑和手机上的作品展示。",
+            "previewAlt": "创作者作品集首页的真实页面截图，包含标题、导航和原创虚构作品",
+            "features": [
+              "图片画廊",
+              "项目案例",
+              "作品详情"
+            ]
+          },
+          "en": {
+            "name": "Gallery",
+            "description": "Explore a gallery and project stories with original fictional content. Demo pages are in Chinese.",
+            "previewAlt": "Screenshot of the creator portfolio homepage, showing its heading, navigation, and original fictional artwork",
+            "features": [
+              "Image gallery",
+              "Project stories",
+              "Work details"
+            ]
+          }
+        },
+        "assets": []
+      },
+      {
+        "id": "editorial",
+        "path": "demos/variants/creator-portfolio/editorial/",
+        "preview": {
+          "image": "img/demos/creator-portfolio-editorial.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "杂志编排",
+            "description": "大图与交错章节串联同一组作品和项目。",
+            "previewAlt": "创作者作品集「杂志编排」模板的真实页面截图",
+            "features": [
+              "大图章节",
+              "项目索引"
+            ]
+          },
+          "en": {
+            "name": "Editorial",
+            "description": "Large images and alternating chapters present the same works and projects.",
+            "previewAlt": "Screenshot of the Editorial template for Creator portfolio",
+            "features": [
+              "Image chapters",
+              "Project index"
+            ]
+          }
+        },
+        "assets": [
+          "css/editorial.css"
+        ]
+      }
+    ]
   },
   {
     "id": "photo-portfolio",
     "source": "demos/photo-portfolio",
-    "path": "demos/photo-portfolio/",
-    "preview": { "image": "img/demos/photo-portfolio.jpg", "width": 1280, "height": 960 },
     "brand": "留光 / LIGHT · STILL",
     "copy": {
       "zh-cn": {
@@ -40,28 +128,118 @@
         "label": "虚构摄影 · AI 生成图片",
         "description": "浏览虚构摄影故事、作品详情与个人介绍，体验手机和电脑上的图片展示。",
         "previewAlt": "摄影作品集首页的真实页面截图，包含个人介绍和 AI 生成的虚构雨街影像",
-        "features": ["摄影故事", "响应式图片", "关于与联系"]
+        "features": [
+          "摄影故事",
+          "响应式图片",
+          "关于与联系"
+        ]
       },
       "en": {
         "title": "Photography portfolio",
         "label": "Fictional photography · AI imagery",
         "description": "Browse fictional photo stories, work details, and a personal profile. Demo pages are in Chinese.",
         "previewAlt": "Screenshot of the photography portfolio homepage, showing its introduction and AI-generated fictional rainy street imagery",
-        "features": ["Photo stories", "Responsive images", "About & contact"]
+        "features": [
+          "Photo stories",
+          "Responsive images",
+          "About & contact"
+        ]
       }
     },
     "checks": {
-      "pages": ["", "works/", "works/rain-street/", "works/window-light/", "works/low-tide/", "about/"],
-      "assets": ["css/site.css", "previews/rain-street.jpg"],
-      "requiredText": ["虚构演示", "AI 生成"],
-      "navigation": ["works/", "about/"]
-    }
+      "pages": [
+        "",
+        "works/",
+        "works/rain-street/",
+        "works/window-light/",
+        "works/low-tide/",
+        "about/"
+      ],
+      "assets": [
+        "css/site.css",
+        "previews/rain-street.jpg",
+        "css/demo-templates.css"
+      ],
+      "requiredText": [
+        "虚构演示",
+        "AI 生成"
+      ],
+      "navigation": [
+        "works/",
+        "about/"
+      ]
+    },
+    "defaultTemplate": "classic",
+    "templates": [
+      {
+        "id": "classic",
+        "path": "demos/photo-portfolio/",
+        "preview": {
+          "image": "img/demos/photo-portfolio.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "摄影叙事",
+            "description": "浏览虚构摄影故事、作品详情与个人介绍，体验手机和电脑上的图片展示。",
+            "previewAlt": "摄影作品集首页的真实页面截图，包含个人介绍和 AI 生成的虚构雨街影像",
+            "features": [
+              "摄影故事",
+              "响应式图片",
+              "关于与联系"
+            ]
+          },
+          "en": {
+            "name": "Photo stories",
+            "description": "Browse fictional photo stories, work details, and a personal profile. Demo pages are in Chinese.",
+            "previewAlt": "Screenshot of the photography portfolio homepage, showing its introduction and AI-generated fictional rainy street imagery",
+            "features": [
+              "Photo stories",
+              "Responsive images",
+              "About & contact"
+            ]
+          }
+        },
+        "assets": []
+      },
+      {
+        "id": "gallery",
+        "path": "demos/variants/photo-portfolio/gallery/",
+        "preview": {
+          "image": "img/demos/photo-portfolio-gallery.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "暗色画廊",
+            "description": "用暗色展墙与联系表浏览同一组影像。",
+            "previewAlt": "摄影作品集「暗色画廊」模板的真实页面截图",
+            "features": [
+              "暗色展墙",
+              "联系表"
+            ]
+          },
+          "en": {
+            "name": "Dark gallery",
+            "description": "Explore the same images on dark gallery walls and contact sheets.",
+            "previewAlt": "Screenshot of the Dark gallery template for Photography portfolio",
+            "features": [
+              "Dark gallery",
+              "Contact sheet"
+            ]
+          }
+        },
+        "assets": [
+          "css/gallery.css"
+        ]
+      }
+    ]
   },
   {
     "id": "content-dashboard",
     "source": "demos/content-dashboard",
-    "path": "demos/content-dashboard/",
-    "preview": { "image": "img/demos/content-dashboard.jpg", "width": 1280, "height": 960 },
     "brand": "观数 / FIELDNOTES",
     "copy": {
       "zh-cn": {
@@ -69,28 +247,114 @@
         "label": "交互演示 · 虚构数据",
         "description": "按月份、渠道与关键词筛选内容，查看同步更新的指标、图表和排序明细。",
         "previewAlt": "内容运营看板的真实页面截图，包含筛选、汇总指标、渠道条形图和虚构内容明细",
-        "features": ["组合筛选", "图表联动", "明细排序"]
+        "features": [
+          "组合筛选",
+          "图表联动",
+          "明细排序"
+        ]
       },
       "en": {
         "title": "Content dashboard",
         "label": "Interactive · Fictional data",
         "description": "Filter by month, channel, and keyword to explore linked metrics, charts, and sortable records. In Chinese.",
         "previewAlt": "Screenshot of the content dashboard with filters, summary metrics, channel bars, and fictional content records",
-        "features": ["Combined filters", "Linked charts", "Sortable records"]
+        "features": [
+          "Combined filters",
+          "Linked charts",
+          "Sortable records"
+        ]
       }
     },
     "checks": {
-      "pages": ["", "about/"],
-      "assets": ["css/site.css", "js/dashboard-core.js", "js/dashboard.js"],
-      "requiredText": ["虚构演示", "示例数据"],
-      "navigation": ["about/"]
-    }
+      "pages": [
+        "",
+        "about/"
+      ],
+      "assets": [
+        "css/site.css",
+        "js/dashboard-core.js",
+        "js/dashboard.js",
+        "css/demo-templates.css"
+      ],
+      "requiredText": [
+        "虚构演示",
+        "示例数据"
+      ],
+      "navigation": [
+        "about/"
+      ]
+    },
+    "defaultTemplate": "classic",
+    "templates": [
+      {
+        "id": "classic",
+        "path": "demos/content-dashboard/",
+        "preview": {
+          "image": "img/demos/content-dashboard.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "数据总览",
+            "description": "按月份、渠道与关键词筛选内容，查看同步更新的指标、图表和排序明细。",
+            "previewAlt": "内容运营看板的真实页面截图，包含筛选、汇总指标、渠道条形图和虚构内容明细",
+            "features": [
+              "组合筛选",
+              "图表联动",
+              "明细排序"
+            ]
+          },
+          "en": {
+            "name": "Overview",
+            "description": "Filter by month, channel, and keyword to explore linked metrics, charts, and sortable records. In Chinese.",
+            "previewAlt": "Screenshot of the content dashboard with filters, summary metrics, channel bars, and fictional content records",
+            "features": [
+              "Combined filters",
+              "Linked charts",
+              "Sortable records"
+            ]
+          }
+        },
+        "assets": []
+      },
+      {
+        "id": "workspace",
+        "path": "demos/variants/content-dashboard/workspace/",
+        "preview": {
+          "image": "img/demos/content-dashboard-workspace.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "内容工作台",
+            "description": "侧栏筛选、紧凑指标与卡片明细呈现相同记录。",
+            "previewAlt": "内容运营看板「内容工作台」模板的真实页面截图",
+            "features": [
+              "侧栏筛选",
+              "卡片明细"
+            ]
+          },
+          "en": {
+            "name": "Workspace",
+            "description": "Sidebar filters, compact metrics, and record cards use the same dataset.",
+            "previewAlt": "Screenshot of the Workspace template for Content dashboard",
+            "features": [
+              "Sidebar filters",
+              "Record cards"
+            ]
+          }
+        },
+        "assets": [
+          "css/workspace.css"
+        ]
+      }
+    ]
   },
   {
     "id": "bookstore",
     "source": "demos/bookstore",
-    "path": "demos/bookstore/",
-    "preview": { "image": "img/demos/bookstore.jpg", "width": 1280, "height": 960 },
     "brand": "纸间 / ZHIJIAN BOOKS",
     "copy": {
       "zh-cn": {
@@ -98,28 +362,114 @@
         "label": "虚构图书 · 模拟购物袋",
         "description": "翻看原创虚构书目，按分类和书名寻找图书，体验数量调整与购物袋合计。",
         "previewAlt": "纸间书店的真实页面截图，包含原创书籍封面、书目筛选与模拟购物袋",
-        "features": ["书目搜索", "购物袋", "库存约束"]
+        "features": [
+          "书目搜索",
+          "购物袋",
+          "库存约束"
+        ]
       },
       "en": {
         "title": "Zhijian bookstore",
         "label": "Fictional books · Sample bag",
         "description": "Explore fictional books, filter the shelves, and adjust quantities in a sample book bag. In Chinese.",
         "previewAlt": "Screenshot of Zhijian bookstore with original book covers, catalog filters, and a sample book bag",
-        "features": ["Book search", "Book bag", "Stock limits"]
+        "features": [
+          "Book search",
+          "Book bag",
+          "Stock limits"
+        ]
       }
     },
     "checks": {
-      "pages": ["", "about/"],
-      "assets": ["css/site.css", "js/store-core.js", "js/store.js"],
-      "requiredText": ["虚构演示", "模拟购物袋"],
-      "navigation": ["about/"]
-    }
+      "pages": [
+        "",
+        "about/"
+      ],
+      "assets": [
+        "css/site.css",
+        "js/store-core.js",
+        "js/store.js",
+        "css/demo-templates.css"
+      ],
+      "requiredText": [
+        "虚构演示",
+        "模拟购物袋"
+      ],
+      "navigation": [
+        "about/"
+      ]
+    },
+    "defaultTemplate": "classic",
+    "templates": [
+      {
+        "id": "classic",
+        "path": "demos/bookstore/",
+        "preview": {
+          "image": "img/demos/bookstore.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "纸上书架",
+            "description": "翻看原创虚构书目，按分类和书名寻找图书，体验数量调整与购物袋合计。",
+            "previewAlt": "纸间书店的真实页面截图，包含原创书籍封面、书目筛选与模拟购物袋",
+            "features": [
+              "书目搜索",
+              "购物袋",
+              "库存约束"
+            ]
+          },
+          "en": {
+            "name": "Bookshelf",
+            "description": "Explore fictional books, filter the shelves, and adjust quantities in a sample book bag. In Chinese.",
+            "previewAlt": "Screenshot of Zhijian bookstore with original book covers, catalog filters, and a sample book bag",
+            "features": [
+              "Book search",
+              "Book bag",
+              "Stock limits"
+            ]
+          }
+        },
+        "assets": []
+      },
+      {
+        "id": "catalog",
+        "path": "demos/variants/bookstore/catalog/",
+        "preview": {
+          "image": "img/demos/bookstore-catalog.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "书目目录",
+            "description": "横向书目与编号索引呈现同样的十二本书。",
+            "previewAlt": "纸间书店「书目目录」模板的真实页面截图",
+            "features": [
+              "编号书目",
+              "紧凑购物袋"
+            ]
+          },
+          "en": {
+            "name": "Catalog",
+            "description": "Browse the same twelve books in an indexed horizontal catalog.",
+            "previewAlt": "Screenshot of the Catalog template for Zhijian bookstore",
+            "features": [
+              "Indexed books",
+              "Compact bag"
+            ]
+          }
+        },
+        "assets": [
+          "css/catalog.css"
+        ]
+      }
+    ]
   },
   {
     "id": "workshop-booking",
     "source": "demos/workshop-booking",
-    "path": "demos/workshop-booking/",
-    "preview": { "image": "img/demos/workshop-booking.jpg", "width": 1280, "height": 960 },
     "brand": "拾光 / HANDCRAFT STUDIO",
     "copy": {
       "zh-cn": {
@@ -127,28 +477,114 @@
         "label": "虚构排期 · 预约预览",
         "description": "挑选手作课程、日期和参与人数，查看场次名额与预约单预览。",
         "previewAlt": "拾光工坊的真实页面截图，包含手作课程插画、示例排期与预约预览区域",
-        "features": ["课程排期", "名额校验", "预约预览"]
+        "features": [
+          "课程排期",
+          "名额校验",
+          "预约预览"
+        ]
       },
       "en": {
         "title": "Shiguang workshop",
         "label": "Fictional schedule · Preview",
         "description": "Choose a craft course, session, and group size to preview a reservation with sample capacity limits. In Chinese.",
         "previewAlt": "Screenshot of Shiguang workshop with craft illustrations, sample sessions, and a reservation preview",
-        "features": ["Course schedule", "Capacity checks", "Reservation preview"]
+        "features": [
+          "Course schedule",
+          "Capacity checks",
+          "Reservation preview"
+        ]
       }
     },
     "checks": {
-      "pages": ["", "about/"],
-      "assets": ["css/site.css", "js/booking-core.js", "js/booking.js"],
-      "requiredText": ["虚构演示", "预约预览"],
-      "navigation": ["about/"]
-    }
+      "pages": [
+        "",
+        "about/"
+      ],
+      "assets": [
+        "css/site.css",
+        "js/booking-core.js",
+        "js/booking.js",
+        "css/demo-templates.css"
+      ],
+      "requiredText": [
+        "虚构演示",
+        "预约预览"
+      ],
+      "navigation": [
+        "about/"
+      ]
+    },
+    "defaultTemplate": "classic",
+    "templates": [
+      {
+        "id": "classic",
+        "path": "demos/workshop-booking/",
+        "preview": {
+          "image": "img/demos/workshop-booking.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "课程展示",
+            "description": "挑选手作课程、日期和参与人数，查看场次名额与预约单预览。",
+            "previewAlt": "拾光工坊的真实页面截图，包含手作课程插画、示例排期与预约预览区域",
+            "features": [
+              "课程排期",
+              "名额校验",
+              "预约预览"
+            ]
+          },
+          "en": {
+            "name": "Courses",
+            "description": "Choose a craft course, session, and group size to preview a reservation with sample capacity limits. In Chinese.",
+            "previewAlt": "Screenshot of Shiguang workshop with craft illustrations, sample sessions, and a reservation preview",
+            "features": [
+              "Course schedule",
+              "Capacity checks",
+              "Reservation preview"
+            ]
+          }
+        },
+        "assets": []
+      },
+      {
+        "id": "calendar",
+        "path": "demos/variants/workshop-booking/calendar/",
+        "preview": {
+          "image": "img/demos/workshop-booking-calendar.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "日历排期",
+            "description": "从日历日期进入相同课程与场次，生成预约预览。",
+            "previewAlt": "拾光工坊「日历排期」模板的真实页面截图",
+            "features": [
+              "日期浏览",
+              "场次展开"
+            ]
+          },
+          "en": {
+            "name": "Calendar",
+            "description": "Choose dates on a calendar to explore the same courses and sessions.",
+            "previewAlt": "Screenshot of the Calendar template for Shiguang workshop",
+            "features": [
+              "Calendar dates",
+              "Session details"
+            ]
+          }
+        },
+        "assets": [
+          "css/calendar.css"
+        ]
+      }
+    ]
   },
   {
     "id": "trip-planner",
     "source": "demos/trip-planner",
-    "path": "demos/trip-planner/",
-    "preview": { "image": "img/demos/trip-planner.jpg", "width": 1280, "height": 960 },
     "brand": "远山周末 / FARWEEK",
     "copy": {
       "zh-cn": {
@@ -156,21 +592,109 @@
         "label": "虚构地点 · 行程规划",
         "description": "挑选周末想去的地点，调整游览顺序，查看示意路线、时间与预算。",
         "previewAlt": "远山周末的真实页面截图，包含虚构地点、示意地图和可编排的行程清单",
-        "features": ["行程编排", "路线示意", "时间预算"]
+        "features": [
+          "行程编排",
+          "路线示意",
+          "时间预算"
+        ]
       },
       "en": {
         "title": "Farweek trip planner",
         "label": "Fictional places · Trip planning",
         "description": "Arrange a day among fictional places and explore the illustrated route, estimated time, and budget. In Chinese.",
         "previewAlt": "Screenshot of Farweek trip planner with fictional destinations, an illustrated map, and an editable itinerary",
-        "features": ["Itinerary order", "Route illustration", "Time & budget"]
+        "features": [
+          "Itinerary order",
+          "Route illustration",
+          "Time & budget"
+        ]
       }
     },
     "checks": {
-      "pages": ["", "about/"],
-      "assets": ["css/site.css", "js/planner-core.js", "js/planner.js"],
-      "requiredText": ["虚构演示", "行程规划"],
-      "navigation": ["about/"]
-    }
+      "pages": [
+        "",
+        "about/"
+      ],
+      "assets": [
+        "css/site.css",
+        "js/planner-core.js",
+        "js/planner.js",
+        "css/demo-templates.css"
+      ],
+      "requiredText": [
+        "虚构演示",
+        "行程规划"
+      ],
+      "navigation": [
+        "about/"
+      ]
+    },
+    "defaultTemplate": "classic",
+    "templates": [
+      {
+        "id": "classic",
+        "path": "demos/trip-planner/",
+        "preview": {
+          "image": "img/demos/trip-planner.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "地图规划",
+            "description": "挑选周末想去的地点，调整游览顺序，查看示意路线、时间与预算。",
+            "previewAlt": "远山周末的真实页面截图，包含虚构地点、示意地图和可编排的行程清单",
+            "features": [
+              "行程编排",
+              "路线示意",
+              "时间预算"
+            ]
+          },
+          "en": {
+            "name": "Map planner",
+            "description": "Arrange a day among fictional places and explore the illustrated route, estimated time, and budget. In Chinese.",
+            "previewAlt": "Screenshot of Farweek trip planner with fictional destinations, an illustrated map, and an editable itinerary",
+            "features": [
+              "Itinerary order",
+              "Route illustration",
+              "Time & budget"
+            ]
+          }
+        },
+        "assets": []
+      },
+      {
+        "id": "journal",
+        "path": "demos/variants/trip-planner/journal/",
+        "preview": {
+          "image": "img/demos/trip-planner-journal.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "行程手记",
+            "description": "以时间线整理相同地点，结合地图查看行程。",
+            "previewAlt": "远山周末「行程手记」模板的真实页面截图",
+            "features": [
+              "行程时间线",
+              "辅助地图"
+            ]
+          },
+          "en": {
+            "name": "Journal",
+            "description": "Arrange the same places on a timeline with a supporting route map.",
+            "previewAlt": "Screenshot of the Journal template for Farweek trip planner",
+            "features": [
+              "Trip timeline",
+              "Supporting map"
+            ]
+          }
+        },
+        "assets": [
+          "css/journal.css"
+        ]
+      }
+    ]
   }
 ]

@@ -1,6 +1,6 @@
 const { spawnSync } = require('node:child_process');
 const path = require('node:path');
-const { DEMO_REGISTRY } = require('./demo-registry.cjs');
+const { DEMO_REGISTRY, templateLinks } = require('./demo-registry.cjs');
 
 const projectRoot = path.resolve(__dirname, '..');
 const configurationFlags = new Set([
@@ -87,7 +87,7 @@ function buildSite(args = process.argv.slice(2), environment = process.env, run 
         // Hugo environment settings override CLI flags. Scope these values to
         // the child site, including differently cased keys on Windows.
         const demoEnvironment = Object.fromEntries(Object.entries(environment)
-            .filter(([key]) => !['HUGO_BASEURL', 'HUGO_PUBLISHDIR', 'HUGO_PARAMS_DEMOCATALOGURL'].includes(key.toUpperCase())));
+            .filter(([key]) => !['HUGO_BASEURL', 'HUGO_PUBLISHDIR', 'HUGO_PARAMS_DEMOCATALOGURL', 'HUGO_PARAMS_DEMOTEMPLATE', 'HUGO_PARAMS_DEMOTEMPLATES'].includes(key.toUpperCase())));
         const demo = run('hugo', [
             '--cleanDestinationDir', '--minify', '--gc', '--panicOnWarning',
             '--baseURL', baseURL,
@@ -99,6 +99,8 @@ function buildSite(args = process.argv.slice(2), environment = process.env, run 
                 HUGO_BASEURL: baseURL,
                 HUGO_PUBLISHDIR: destination,
                 HUGO_PARAMS_DEMOCATALOGURL: catalogURL,
+                HUGO_PARAMS_DEMOTEMPLATE: demoInfo.templateId,
+                HUGO_PARAMS_DEMOTEMPLATES: JSON.stringify(templateLinks(demoInfo, options.baseURL)),
             },
             stdio: 'inherit',
             windowsHide: true,

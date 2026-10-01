@@ -21,6 +21,7 @@
         const clear = root.querySelector('[data-action="clear"]');
         const cards = [...root.querySelectorAll('[data-place-card]')];
         const markers = [...root.querySelectorAll('[data-map-id]')];
+        const isJournal = document.body.dataset.template === 'journal';
         if (cards.length !== places.length || markers.length !== places.length
             || [...cards, ...markers].some(element => !byId.has(element.dataset.placeId || element.dataset.mapId))) {
             throw new Error('Place markup does not match data');
@@ -69,6 +70,7 @@
             warning.textContent = totals.overDay ? `这条行程约需 ${totals.totalMinutes} 分钟，已超过 8 小时。可以减少地点或拆成两天。` : '';
 
             const fragment = document.createDocumentFragment();
+            let elapsedMinutes = 0;
             itinerary.forEach((id, index) => {
                 const place = byId.get(id);
                 const item = document.createElement('li');
@@ -79,6 +81,14 @@
                 number.textContent = String(index + 1);
                 number.setAttribute('aria-hidden', 'true');
                 const content = document.createElement('div');
+                if (isJournal) {
+                    const arrivalMinutes = elapsedMinutes + (index === 0 ? 0 : core.TRANSFER_MINUTES);
+                    elapsedMinutes = arrivalMinutes + place.durationMinutes;
+                    const timing = document.createElement('p');
+                    timing.className = 'stop-time';
+                    timing.textContent = `累计 ${arrivalMinutes} — ${elapsedMinutes} 分钟`;
+                    content.append(timing);
+                }
                 const title = document.createElement('h3');
                 title.textContent = `${index + 1}. ${place.name}`;
                 title.tabIndex = -1;

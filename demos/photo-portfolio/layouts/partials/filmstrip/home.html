@@ -1,0 +1,9 @@
+<main id="main" class="filmstrip-home shell" tabindex="-1">
+  {{ $works := site.GetPage "/works" }}
+  <header class="filmstrip-intro">{{ partial "home-intro.html" . }}</header>
+  <section aria-labelledby="selected-title">
+    <div class="section-heading"><div><p class="eyebrow">LIGHT / STILL</p><h2 id="selected-title">{{ $works.Title }}</h2></div><p>{{ $works.Params.summary }}</p></div>
+    {{ partial "filmstrip/frames.html" $works.Pages.ByWeight }}
+  </section>
+  {{ partial "home-about.html" . }}
+</main>

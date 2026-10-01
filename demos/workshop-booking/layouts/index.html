@@ -4,7 +4,14 @@
 {{ $context := dict "schedule" $schedule "template" $template }}
 <main id="main" class="shell booking-page" data-workshop tabindex="-1">
   {{ partial "workshop-intro.html" . }}
-  {{ if eq $template "calendar" }}
+  {{ if eq $template "agenda" }}
+  <nav class="agenda-nav" aria-label="排期总览导航"><a href="#schedule-heading">查看场次</a><a href="#course-heading">对照课程</a><a href="#booking-heading">预约单预览</a></nav>
+  <div class="agenda-layout" data-agenda>
+    {{ partial "workshop-schedule.html" $context }}
+    {{ partial "workshop-courses.html" $context }}
+    {{ partial "workshop-booking-panel.html" $context }}
+  </div>
+  {{ else if eq $template "calendar" }}
   {{ partial "workshop-calendar.html" $context }}
   <p class="calendar-prompt" data-calendar-prompt hidden>先在日历中挑选日期，再展开当天的课程与场次。</p>
   <div class="calendar-details" id="calendar-details" data-calendar-details>

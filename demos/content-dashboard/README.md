@@ -4,11 +4,13 @@
 
 页面以原生 CSS 绘制条形图，不依赖主题、外部字体或第三方图表库。关闭 JavaScript 后仍保留全部指标、渠道图与内容表；筛选排序控件不可用。
 
-## 两种展示模板
+## 三种展示模板
+
+`report`：数据简报先显示筛选范围，随后将指标与渠道分析并排组成报告，下面保留完整明细表与口径说明。它复用全部 `dashboard-*.html` partial，额外加载 `static/css/report.css`，不改变统计与排序逻辑。集成地址为 `/demos/variants/content-dashboard/report/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'report'`。
 
 `site.Params.demoTemplate` 未设置时使用 `classic`，保留原来的指标、渠道分析、横向筛选与明细表。设置为 `workspace` 后，筛选和统计口径放在桌面侧栏，指标更紧凑，明细以双列卡片呈现；手机上侧栏与卡片会转为单列。说明页使用相同的工作区配色和面板样式。其他模板 ID 会通过 `errorf` 使构建失败，避免误用名称后静默回退。
 
-两版共用 `data/entries.json`、六个 `dashboard-*.html` 内容 partial 和现有 `dashboard.js` 控制器。工作区卡片由同一份明细表加 `static/css/workspace.css` 呈现，筛选、排序、零阅读处理及汇总算法没有第二套实现；无 JavaScript 时也保留完整 24 条卡片明细和所有统计。`css/site.css` 始终加载，变体样式仅在 `workspace` 加载。
+三版共用 `data/entries.json`、六个 `dashboard-*.html` 内容 partial 和现有 `dashboard.js` 控制器。工作区卡片由同一份明细表加 `static/css/workspace.css` 呈现，筛选、排序、零阅读处理及汇总算法没有第二套实现；无 JavaScript 时也保留完整 24 条明细和所有统计。`css/site.css` 始终加载，`workspace.css` 与 `report.css` 分别只在对应模板加载。
 
 集成地址为原版 `/demos/content-dashboard/` 与工作区版 `/demos/variants/content-dashboard/workspace/`。模板切换入口由集成构建提供，切换说明页时保持 `about/` 路由；独立站可用 `[params] demoTemplate = 'workspace'` 或 `HUGO_PARAMS_DEMOTEMPLATE=workspace` 选择外观，不需要复制数据或修改核心逻辑。
 

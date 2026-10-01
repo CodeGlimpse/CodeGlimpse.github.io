@@ -38,7 +38,7 @@ test('rejects paths that escape the site or source tree', () => {
 
 test('expands templates with one content source and independent destinations', () => {
     assert.equal(DEMO_CASES.length, 6);
-    assert.equal(DEMO_REGISTRY.length, 12);
+    assert.equal(DEMO_REGISTRY.length, DEMO_CASES.reduce((count, item) => count + item.templates.length, 0));
     for (const item of DEMO_CASES) {
         const variants = DEMO_REGISTRY.filter(demo => demo.caseId === item.id);
         assert.equal(new Set(variants.map(demo => demo.source)).size, 1);
@@ -69,8 +69,9 @@ test('Python checks receive exact sibling page allowances with the deployment pr
     const args = checkerArgs(demo, projectRoot, 'https://example.test/review/');
     assert.equal(args[args.indexOf('--base-url') + 1], 'https://example.test/review/demos/variants/photo-portfolio/gallery/');
     const allowed = args.flatMap((value, index) => value === '--template-url' ? [args[index + 1]] : []);
-    assert.equal(allowed.length, demo.checks.pages.length * 2);
+    assert.equal(allowed.length, demo.checks.pages.length * demo.siblings.length);
     assert.ok(allowed.includes('/review/demos/photo-portfolio/works/rain-street/'));
     assert.ok(allowed.includes('/review/demos/variants/photo-portfolio/gallery/about/'));
+    assert.ok(allowed.includes('/review/demos/variants/photo-portfolio/filmstrip/works/rain-street/'));
     assert.ok(!allowed.includes('/review/'));
 });

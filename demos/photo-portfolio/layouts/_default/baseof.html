@@ -1,5 +1,5 @@
 {{ $template := site.Params.demoTemplate | default "classic" }}
-{{ if not (in (slice "classic" "gallery") $template) }}
+{{ if not (in (slice "classic" "gallery" "filmstrip") $template) }}
   {{ errorf "Unknown photo-portfolio demo template: %q" $template }}
 {{ end }}
 <!doctype html>
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{{ "css/site.css" | relURL }}">
     <link rel="stylesheet" href="{{ "css/demo-templates.css" | relURL }}">
     {{ if eq $template "gallery" }}<link rel="stylesheet" href="{{ "css/gallery.css" | relURL }}">{{ end }}
+    {{ if eq $template "filmstrip" }}<link rel="stylesheet" href="{{ "css/filmstrip.css" | relURL }}">{{ end }}
   </head>
   <body id="top" data-template="{{ $template }}">
     <a class="skip-link" href="#main">跳到正文</a>

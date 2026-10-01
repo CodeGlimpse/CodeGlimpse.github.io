@@ -1,9 +1,9 @@
 # Demo integration
 
 The six registered content cases are standalone Hugo 0.157.0 sites under their
-respective `demos/` directories. Each has two templates sharing the same
+respective `demos/` directories. Each has three templates sharing the same
 content, images, JSON data, and business core. The blog builds first;
-`scripts/build-site.cjs` then builds all twelve template instances with their
+`scripts/build-site.cjs` then builds all eighteen template instances with their
 published subpaths as base URLs. GitHub
 Pages deploys the combined `public/` artifact.
 
@@ -33,17 +33,17 @@ marked template anchor, never an image, unmarked link, or source attribute.
 
 ## Choose a presentation template
 
-| Content case | Existing template | Additional template |
-| --- | --- | --- |
-| creator-portfolio | classic: gallery | editorial: image chapters and project index |
-| photo-portfolio | classic: photo stories | gallery: dark walls and contact sheets |
-| content-dashboard | classic: overview | workspace: filter sidebar and record cards |
-| bookstore | classic: bookshelf | catalog: indexed horizontal book entries |
-| workshop-booking | classic: course selection | calendar: date-first sessions |
-| trip-planner | classic: map planner | journal: itinerary timeline with supporting map |
+| Content case | Existing template | Second template | Third template |
+| --- | --- | --- | --- |
+| creator-portfolio | classic: gallery | editorial: image chapters and project index | archive: numbered thumbnail entries |
+| photo-portfolio | classic: photo stories | gallery: dark walls and contact sheets | filmstrip: continuous photo sequence |
+| content-dashboard | classic: overview | workspace: filter sidebar and record cards | report: scope-first data report |
+| bookstore | classic: bookshelf | catalog: indexed horizontal book entries | checklist: compact list and bag summary |
+| workshop-booking | classic: course selection | calendar: date-first sessions | agenda: sessions beside course reference |
+| trip-planner | classic: map planner | journal: itinerary timeline with supporting map | workbench: places beside itinerary, map below |
 
 Existing URLs remain `demos/<case>/`; new templates live at
-`demos/variants/<case>/<template>/`. The catalog groups both previews under one
+`demos/variants/<case>/<template>/`. The catalog groups all three previews under one
 case. Integrated pages offer same-content template links that preserve the
 current detail-page route and deployment prefix. Switching loads another page,
 so transient filters, bags, bookings, and itineraries reset.
@@ -54,7 +54,7 @@ For example, from `demos/bookstore`, set the process environment variable
 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'catalog'`, then run Hugo as usual. Leave
 `HUGO_PARAMS_DEMOTEMPLATES` and `HUGO_PARAMS_DEMOCATALOGURL` unset for standalone
 delivery; there will be no blog-only switching or return links. Unknown template
-IDs fail the build. Both versions reuse the same Markdown, JSON, originals,
+IDs fail the build. All versions reuse the same Markdown, JSON, originals,
 business core, and shared content partials; never duplicate source content to
 create a template.
 

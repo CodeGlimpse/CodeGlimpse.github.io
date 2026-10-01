@@ -1,0 +1,24 @@
+body[data-template="workbench"] { --paper: #e9efed; --panel: #f8faf5; --pine: #214c48; --ink: #234440; --muted: #526c65; --line: #c2d0c9; }
+body[data-template="workbench"] .planner-page { max-width: 1200px; padding-top: 32px; }
+body[data-template="workbench"] .planner-intro { margin-bottom: 24px; }
+.workbench-nav { display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 24px; padding: 14px 0; border-block: 1px solid var(--line); font-size: .85rem; }
+.workbench-nav a { text-decoration: none; }
+body[data-template="workbench"] .planner-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+body[data-template="workbench"] .panel { border-radius: 4px; }
+body[data-template="workbench"] .places-panel, body[data-template="workbench"] .itinerary-panel { grid-column: auto; grid-row: auto; }
+body[data-template="workbench"] .place-list { max-height: none; overflow: visible; }
+body[data-template="workbench"] .itinerary-panel { background: #f8faf5; }
+body[data-template="workbench"] .trip-totals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+body[data-template="workbench"] .itinerary-stop { background: #e9efeb; border: 1px solid var(--line); padding: 14px; }
+body[data-template="workbench"] .itinerary-empty { padding-block: 48px; }
+body[data-template="workbench"] .map-panel { grid-column: 1 / -1; grid-row: auto; display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); padding: 22px; gap: 16px 28px; }
+body[data-template="workbench"] .map-panel .panel-heading { grid-column: 1 / -1; padding: 0; margin: 0; }
+body[data-template="workbench"] .terrain-map { grid-column: 1; grid-row: span 2; width: 100%; max-height: 520px; }
+body[data-template="workbench"] .map-caption, body[data-template="workbench"] .map-note { grid-column: 2; padding: 18px; margin: 0; align-self: start; }
+body[data-template="workbench"] .map-note { border-radius: 3px; }
+@media (max-width: 760px) {
+  body[data-template="workbench"] .planner-layout { grid-template-columns: minmax(0, 1fr); }
+  body[data-template="workbench"] .map-panel { display: block; padding: 18px; }
+  body[data-template="workbench"] .map-panel .panel-heading { margin-bottom: 20px; }
+  body[data-template="workbench"] .map-caption, body[data-template="workbench"] .map-note { margin-top: 16px; }
+}

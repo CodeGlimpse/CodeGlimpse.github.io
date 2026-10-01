@@ -1,0 +1,32 @@
+body[data-template="report"] { --paper: #eceae5; --surface: #fffcf6; --ink: #323a40; --muted: #626b70; --line: #d2d0c8; --accent: #465f7a; --accent-soft: #e7edf2; }
+body[data-template="report"] .dashboard-page { max-width: 1080px; padding-top: 40px; }
+body[data-template="report"] .dashboard-heading { align-items: end; border-bottom: 3px solid var(--ink); padding-bottom: 24px; }
+body[data-template="report"] .dashboard-heading h1 { font-family: Georgia, "Songti SC", "SimSun", serif; font-size: clamp(2rem, 3.2vw, 3rem); }
+.report-sheet { padding: 28px; border: 1px solid var(--line); background: var(--surface); box-shadow: 0 8px 24px #323a400a; }
+.report-sheet .panel, .report-sheet .metric-card { border-radius: 0; box-shadow: none; }
+.report-sheet .filter-panel { padding: 0 0 24px; border: 0; border-bottom: 1px solid var(--ink); }
+.report-sheet .filter-controls { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.report-sheet .filter-field label { font-size: .75rem; }
+.report-overview { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 28px; margin-bottom: 32px; align-items: center; }
+.report-overview .metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; margin: 0; }
+.report-overview .metric-card { padding: 20px 12px; border: 0; border-bottom: 1px solid var(--line); background: transparent; }
+.report-overview .metric-value strong { font-family: Georgia, serif; font-size: clamp(1.5rem, 2.5vw, 2.3rem); letter-spacing: -.04em; }
+.report-overview .channel-panel { padding: 0; border: 0; }
+.report-overview .channel-row { grid-template-columns: 52px minmax(0, 1fr) 60px; gap: 9px; }
+.report-overview .bar-track { height: 14px; border-radius: 0; }
+.report-sheet .content-panel { border: 0; border-top: 2px solid var(--ink); }
+.report-sheet .table-heading { padding-inline: 0; }
+.report-sheet .reading-note { margin-top: 32px; border-radius: 0; background: #edf0f2; border-color: var(--line); }
+.report-sheet .reading-note > p:not(.eyebrow) { max-width: 40rem; }
+@media (max-width: 760px) {
+  .report-sheet { padding: 18px; }
+  .report-overview { grid-template-columns: minmax(0, 1fr); }
+  .report-sheet .filter-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 420px) {
+  .report-sheet { padding: 12px; }
+  .report-sheet .filter-controls { grid-template-columns: minmax(0, 1fr); }
+  .report-overview .metrics-grid { grid-template-columns: minmax(0, 1fr); }
+  .report-overview .metric-card { padding-inline: 0; }
+  .report-sheet .section-tag { display: none; }
+}

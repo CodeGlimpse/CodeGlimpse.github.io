@@ -1,5 +1,7 @@
 {{ define "main" }}
-{{ if eq site.Params.demoTemplate "gallery" }}
+{{ if eq site.Params.demoTemplate "filmstrip" }}
+  {{ partial "filmstrip/home.html" . }}
+{{ else if eq site.Params.demoTemplate "gallery" }}
   {{ partial "gallery/home.html" . }}
 {{ else }}
 <main id="main" tabindex="-1">

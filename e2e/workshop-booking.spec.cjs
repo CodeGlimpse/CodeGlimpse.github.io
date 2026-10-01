@@ -42,7 +42,7 @@ for (const demo of demos) {
             await expect(page.locator('[data-course-id]:visible')).toHaveCount(schedule.courses.filter(item => item.category === course.category).length);
             if (demo.templateId === 'calendar') await page.getByLabel('排期日期', { exact: true }).selectOption(session.date);
             await courseButton(page, course.id).click();
-            if (demo.templateId === 'classic') await page.getByLabel('排期日期', { exact: true }).selectOption(session.date);
+            if (demo.templateId !== 'calendar') await page.getByLabel('排期日期', { exact: true }).selectOption(session.date);
             await expect(page.locator('[data-session-id]:visible')).toHaveCount(schedule.sessions.filter(item => item.courseId === course.id && item.date === session.date).length);
             await sessionButton(page, session.id).click();
             await page.getByLabel('参与人数', { exact: true }).selectOption('2');

@@ -23,7 +23,9 @@ python -B -X utf8 scripts/check_build.py "$env:TEMP\photo-portfolio-build" --bas
 
 `example.github.io` 只是命令示例，不代表已部署。构建输出中的 `previews/rain-street.jpg` 是稳定路径的轻量缩略图；原始 `works/rain-street/cover.png` 仍发布供需要原图的页面使用。页面展示同时生成多个尺寸的 JPEG，浏览器按屏幕宽度选择。源码中的 PNG 不会被改写。本机 Hugo 0.157.0 Windows 对 WebP 处理触发 panic，因此本实验采用同一版本的 Hugo JPEG 处理；具体经过见 [实验记录](docs/EXPERIMENT_LOG.md)。
 
-## 同一作品的两种模板
+## 同一作品的三种模板
+
+`filmstrip`：胶片长卷把同一组三个系列顺序排列，保留原照片比例与作品详情。页面 partial 位于 `layouts/partials/filmstrip/`，样式为 `static/css/filmstrip.css`；继续生成既有 JPEG 缩略图，没有新增照片。集成地址为 `/demos/variants/photo-portfolio/filmstrip/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'filmstrip'`。
 
 `classic` 保留原来的浅色作品集和图片比例；`gallery` 使用暗色画廊、照片优先的首页和缩略图联系表，作品详情与关于页沿用同一套画廊版式。这里的“联系表”是照片缩略图索引，不是联系表单。三个系列、正文、四张原图及 AI 演示声明来自同一份内容与页面资源。
 

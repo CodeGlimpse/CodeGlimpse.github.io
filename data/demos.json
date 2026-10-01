@@ -115,6 +115,40 @@
         "assets": [
           "css/editorial.css"
         ]
+      },
+      {
+        "id": "archive",
+        "path": "demos/variants/creator-portfolio/archive/",
+        "preview": {
+          "image": "img/demos/creator-portfolio-archive.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "档案索引",
+            "description": "编号、缩略图与信息行组织同一组作品和项目。",
+            "previewAlt": "创作者作品集「档案索引」模板的真实页面截图",
+            "features": [
+              "编号索引",
+              "分组目录",
+              "作品档案"
+            ]
+          },
+          "en": {
+            "name": "Archive index",
+            "description": "Browse the same works and projects as numbered archive entries.",
+            "previewAlt": "Screenshot of the Archive index template for Creator portfolio",
+            "features": [
+              "Numbered index",
+              "Grouped entries",
+              "Work archive"
+            ]
+          }
+        },
+        "assets": [
+          "css/archive.css"
+        ]
       }
     ]
   },
@@ -234,6 +268,40 @@
         "assets": [
           "css/gallery.css"
         ]
+      },
+      {
+        "id": "filmstrip",
+        "path": "demos/variants/photo-portfolio/filmstrip/",
+        "preview": {
+          "image": "img/demos/photo-portfolio-filmstrip.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "胶片长卷",
+            "description": "沿连续影像长卷浏览同一组照片与创作说明。",
+            "previewAlt": "摄影作品集「胶片长卷」模板的真实页面截图",
+            "features": [
+              "连续长卷",
+              "影像编号",
+              "系列详情"
+            ]
+          },
+          "en": {
+            "name": "Filmstrip",
+            "description": "Follow the same photographs and image notes in a continuous filmstrip.",
+            "previewAlt": "Screenshot of the Filmstrip template for Photography portfolio",
+            "features": [
+              "Continuous sequence",
+              "Frame numbers",
+              "Series details"
+            ]
+          }
+        },
+        "assets": [
+          "css/filmstrip.css"
+        ]
       }
     ]
   },
@@ -348,6 +416,40 @@
         },
         "assets": [
           "css/workspace.css"
+        ]
+      },
+      {
+        "id": "report",
+        "path": "demos/variants/content-dashboard/report/",
+        "preview": {
+          "image": "img/demos/content-dashboard-report.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "数据简报",
+            "description": "先限定数据范围，再阅读指标、渠道分析和明细。",
+            "previewAlt": "内容运营看板「数据简报」模板的真实页面截图",
+            "features": [
+              "范围置顶",
+              "报告编排",
+              "数据明细"
+            ]
+          },
+          "en": {
+            "name": "Data report",
+            "description": "Set a scope, then read metrics, channel analysis, and detailed records.",
+            "previewAlt": "Screenshot of the Data report template for Content dashboard",
+            "features": [
+              "Scope first",
+              "Report layout",
+              "Detailed records"
+            ]
+          }
+        },
+        "assets": [
+          "css/report.css"
         ]
       }
     ]
@@ -464,6 +566,40 @@
         "assets": [
           "css/catalog.css"
         ]
+      },
+      {
+        "id": "checklist",
+        "path": "demos/variants/bookstore/checklist/",
+        "preview": {
+          "image": "img/demos/bookstore-checklist.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "选书清单",
+            "description": "用紧凑书目比较同一批图书，在汇总区查看购物袋。",
+            "previewAlt": "纸间书店「选书清单」模板的真实页面截图",
+            "features": [
+              "紧凑书目",
+              "价格对照",
+              "购物袋汇总"
+            ]
+          },
+          "en": {
+            "name": "Reading checklist",
+            "description": "Compare the same books in a compact list and review the bag below.",
+            "previewAlt": "Screenshot of the Reading checklist template for Zhijian bookstore",
+            "features": [
+              "Compact list",
+              "Price comparison",
+              "Bag summary"
+            ]
+          }
+        },
+        "assets": [
+          "css/checklist.css"
+        ]
       }
     ]
   },
@@ -579,6 +715,40 @@
         "assets": [
           "css/calendar.css"
         ]
+      },
+      {
+        "id": "agenda",
+        "path": "demos/variants/workshop-booking/agenda/",
+        "preview": {
+          "image": "img/demos/workshop-booking-agenda.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "排期总览",
+            "description": "并排查看课程与场次，从排期直接选择预约预览。",
+            "previewAlt": "拾光工坊「排期总览」模板的真实页面截图",
+            "features": [
+              "场次优先",
+              "课程对照",
+              "预约预览"
+            ]
+          },
+          "en": {
+            "name": "Session agenda",
+            "description": "Compare courses and sessions side by side, then preview a reservation.",
+            "previewAlt": "Screenshot of the Session agenda template for Shiguang workshop",
+            "features": [
+              "Sessions first",
+              "Course reference",
+              "Booking preview"
+            ]
+          }
+        },
+        "assets": [
+          "css/agenda.css"
+        ]
       }
     ]
   },
@@ -693,6 +863,40 @@
         },
         "assets": [
           "css/journal.css"
+        ]
+      },
+      {
+        "id": "workbench",
+        "path": "demos/variants/trip-planner/workbench/",
+        "preview": {
+          "image": "img/demos/trip-planner-workbench.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        "copy": {
+          "zh-cn": {
+            "name": "行程工作台",
+            "description": "并排挑选地点与编排行程，在下方地图核对路线。",
+            "previewAlt": "远山周末「行程工作台」模板的真实页面截图",
+            "features": [
+              "并排编排",
+              "地点清单",
+              "路线核对"
+            ]
+          },
+          "en": {
+            "name": "Trip workbench",
+            "description": "Pick places beside the itinerary, then check the route on the map below.",
+            "previewAlt": "Screenshot of the Trip workbench template for Farweek trip planner",
+            "features": [
+              "Side-by-side planning",
+              "Place list",
+              "Route overview"
+            ]
+          }
+        },
+        "assets": [
+          "css/workbench.css"
         ]
       }
     ]

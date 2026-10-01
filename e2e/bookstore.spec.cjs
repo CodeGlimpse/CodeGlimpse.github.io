@@ -143,7 +143,8 @@ test('skip navigation, desktop bag and both pages fit 320px and 390px screens', 
         if (width === 1280) {
             const shelf = await page.locator('.catalog').boundingBox();
             const bag = await page.locator('.bag-panel').boundingBox();
-            expect(bag.x).toBeGreaterThan(shelf.x + shelf.width);
+            if (demo.templateId === 'checklist') expect(bag.y).toBeGreaterThan(shelf.y + shelf.height);
+            else expect(bag.x).toBeGreaterThan(shelf.x + shelf.width);
             await expect(page.getByRole('heading', { name: '模拟购物袋', exact: true })).toBeVisible();
         }
         await page.goto(`${demoPath}about/`);

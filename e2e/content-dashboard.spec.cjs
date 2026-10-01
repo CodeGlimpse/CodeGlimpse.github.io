@@ -110,7 +110,7 @@ for (const demo of demos) {
                         const box = await page.locator(`#content-rows [data-cell=${key}]`).first().boundingBox();
                         expect(box.width).toBeGreaterThan(50);
                     }
-                } else {
+                } else if (demo.templateId === 'workspace') {
                     const sidebar = page.getByRole('complementary', { name: '内容工作区筛选' });
                     await expect(sidebar).toBeVisible();
                     await expect(sidebar.getByLabel('标题关键词')).toBeVisible();

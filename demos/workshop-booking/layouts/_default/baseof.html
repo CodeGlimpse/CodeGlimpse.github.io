@@ -1,6 +1,6 @@
 <!doctype html>
 {{ $template := site.Params.demoTemplate | default "classic" }}
-{{ if not (in (slice "classic" "calendar") $template) }}{{ errorf "workshop-booking: unsupported demoTemplate %q; use classic or calendar" $template }}{{ end }}
+{{ if not (in (slice "classic" "calendar" "agenda") $template) }}{{ errorf "workshop-booking: unsupported demoTemplate %q; use classic or calendar" $template }}{{ end }}
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8">
@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ "css/site.css" | relURL }}">
     <link rel="stylesheet" href="{{ "css/demo-templates.css" | relURL }}">
     {{ if eq $template "calendar" }}<link rel="stylesheet" href="{{ "css/calendar.css" | relURL }}">{{ end }}
+    {{ if eq $template "agenda" }}<link rel="stylesheet" href="{{ "css/agenda.css" | relURL }}">{{ end }}
     {{ if .IsHome }}
     <script src="{{ "js/booking-core.js" | relURL }}" defer></script>
     <script src="{{ "js/booking.js" | relURL }}" defer></script>

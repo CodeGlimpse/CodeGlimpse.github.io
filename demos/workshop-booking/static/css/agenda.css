@@ -1,0 +1,35 @@
+body[data-template="agenda"] { --paper: #f1f0e9; --ink: #343d3a; --muted: #626d64; --line: #c8d0c5; }
+.agenda-nav { display: flex; flex-wrap: wrap; gap: 24px; padding: 18px 0; margin-bottom: 28px; border-block: 1px solid var(--line); font-size: 13px; }
+.agenda-nav a { color: inherit; text-decoration: underline; text-underline-offset: 5px; }
+.agenda-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.agenda-layout > section { min-width: 0; }
+.agenda-layout .schedule-section { margin-top: 0; }
+.agenda-layout .course-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.agenda-layout .course-button { display: grid; grid-template-columns: 76px minmax(0, 1fr); border-radius: 0; }
+.agenda-layout .course-cover { height: 100%; min-height: 120px; border-radius: 0; }
+.agenda-layout .course-cover svg { max-width: 90%; }
+.agenda-layout .course-category { position: static; display: block; margin: 8px; width: fit-content; }
+.agenda-layout .course-body { padding: 14px; min-width: 0; }
+.agenda-layout .course-title-row { display: block; }
+.agenda-layout .course-title { font-size: 18px; }
+.agenda-layout .course-price { display: block; margin-top: 5px; }
+.agenda-layout .session-row { border-radius: 0; padding: 16px 12px; }
+.agenda-layout .booking-panel { position: static; grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 36px; }
+.agenda-layout .booking-panel > .eyebrow, .agenda-layout .booking-panel > h2, .agenda-layout .panel-intro { grid-column: 1 / -1; }
+.agenda-layout .booking-panel h2 br { display: none; }
+.agenda-layout .booking-panel .selection-summary { margin: 0; }
+.agenda-layout .booking-preview { grid-column: 1 / -1; }
+.agenda-layout .preview-boundary { grid-column: 1 / -1; }
+@media (max-width: 900px) {
+  .agenda-layout { grid-template-columns: minmax(0, 1fr); }
+  .agenda-layout .course-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .agenda-layout .course-button { grid-template-columns: minmax(0, 1fr); }
+  .agenda-layout .course-cover { height: 110px; min-height: 0; }
+}
+@media (max-width: 600px) {
+  .agenda-layout .course-grid { grid-template-columns: minmax(0, 1fr); }
+  .agenda-layout .course-button { grid-template-columns: 68px minmax(0, 1fr); }
+  .agenda-layout .course-cover { height: 100%; min-height: 120px; }
+  .agenda-layout .booking-panel { display: block; }
+  .agenda-layout .booking-panel > * + * { margin-top: 16px; }
+}

@@ -272,3 +272,14 @@
 - 默认和 `/review/` 两组组合构建、各组全部十二个模板的 42 个 HTML 页面链接检查、十二次独立模板构建均通过。整站产物、双语分组目录、内容结构、工作流权限检查和 17 个变更/新增 JS 脚本语法检查通过。最后的临时前缀目录计数曾因 `demo-card` 正则同时匹配子元素而误报 66，获授权后限定实际卡片锚链接，复验双语目录均为六组十二卡；页面代码未因此改变。
 - 十二张 1280×960 JPEG 预览重新实拍，均在 1–300 KiB 范围；六套新版桌面、手机画面及分组目录已人工查看。测试命令：`node --test tests/build-site.test.cjs tests/deployed-site-check.test.cjs tests/demo-catalog-links.test.cjs tests/demo-template-links.test.cjs tests/photo-demo-check.test.cjs`，另跑 `tests/demo-registry.test.cjs`；浏览器运行 `demos`、`demo-templates`、`content-dashboard`、`bookstore`、`workshop-booking`、`trip-planner` 六份 spec，前缀复验仅筛选 `templates switch`。
 - 证据保存在 `F:/agents/code/temp/demo-templates-20261001-01/`，包括 `unit-boundaries.log`、`unit-registry.log`、`e2e.log`、`e2e-prefix.log`、`output-check.log`、`prefix-check.log`、`prefix-catalog-fixed.log`、组合/独立构建日志、`catalog-desktop.png` 和六套手机截图。回退检查点 `49048d4`；本批仅完成本地验收与提交，未推送、未运行远程 CI、未部署。
+
+## 2026-10-02 - 六案例第三套模板
+
+- 六个现有案例各增加第三套表现模板，共十八个版本：创作者 `archive` 档案索引、摄影 `filmstrip` 胶片长卷、看板 `report` 数据简报、书店 `checklist` 选书清单、工坊 `agenda` 排期总览、旅行 `workbench` 行程工作台。主要变化是编号信息行、连续影像、报告编排、紧凑清单与汇总、场次和课程对照、地点和行程并排操作。
+- 新版本复用原有内容、图片、JSON 与交互控制器，只增加模板编排和条件加载样式；`git diff --exit-code` 确认六个案例的 `content/`、`data/`、`static/js/` 和 `hugo.toml` 未改动。原有十二个版本和 URL 保留，六个新 URL 使用 `demos/variants/<case>/<template>/`。没有新增依赖、业务记录或远程素材。
+- 双语目录宽屏三列、中屏两列、手机单列；十八张 1280×960 JPEG 预览重新实拍，均符合 1–300 KiB 约束。各 demo README 与总入口同步三套模板的配置和差异。六套新版桌面、手机及购物袋、预约单、地图联动状态已查看，截图保存在本批临时目录。
+- 注册表测试与模板 E2E 不再写死两套版本。内容一致性逐版本对照源 JSON，作品详情逐版本对照标题和原图 SHA-256，切换覆盖所有有向模板组合与首页/代表详情页；无脚本检查遍历全部十八个版本。新增六项桌面和手机的阅读顺序验收，并使原有购物袋、排期、看板布局断言识别第三种编排。
+- 验证：191 项定向 Node 测试通过（`node --test` 运行 `demo-registry`、`demo-template-links`、`demo-catalog-links`、`build-site`、`photo-demo-check`、四个交互核心及 `deployed-site-check` 的 test 文件）；196 项相关 Chromium E2E 通过，另有 14 项 `/review/` 下的全部模板组合切换通过。浏览器命令使用 `node scripts/run-e2e.cjs`，六份相关 spec、`--workers 2 --max-failures 1`；前缀复验仅筛选 `templates switch`。
+- 默认与环境变量指定 `/review/` 的组合构建、两组十八个模板共各 63 页的 Python 链接检查、前缀双语六组十八卡目录、主站产物和内容结构检查均通过。十八次独立构建及其 63 页检查通过，独立模式不含博客返回或模板切换入口。Hugo 资源和缓存只通过进程环境变量写入临时目录。
+- 补拍全页截图时曾因与输出目录重建并行导致一次页面暂时不存在；获得继续授权后改为构建结束后串行截图，十二张桌面/手机全页与交互状态截图全部完成。页面与业务代码未为此修改。
+- 证据位于 `F:/agents/code/temp/demo-templates-20261002/`：`node-tests.log`、`deployed-check-tests.log`、`e2e.log`、`e2e-prefix.log`、`output-checks.log`、`demo-checks.log`、`prefix-checks.log`、`standalone-checks.log`、构建日志及 `visuals/`。预览总览为 `third-template-overview.jpg`。恢复基线为干净提交 `a2bd0d3`；本批仅本地验收与提交，未推送、未运行远程 CI、未部署。

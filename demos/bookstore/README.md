@@ -6,14 +6,17 @@
 
 ## 页面模板
 
-`params.demoTemplate` 支持 `classic` 和 `catalog`，未设置时使用 `classic`；其他值会通过 Hugo `errorf` 中止构建，避免输出不完整的模板。
+`checklist`：选书清单用小封面、简介与价格操作组成紧凑列表，购物袋作为下方汇总区，并提供页面内跳转。额外加载 `static/css/checklist.css`，复用原书目 DOM 和购物袋脚本。集成地址为 `/demos/variants/bookstore/checklist/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'checklist'`。
+
+`params.demoTemplate` 支持 `classic`、`catalog` 和 `checklist`，未设置时使用 `classic`；其他值会通过 Hugo `errorf` 中止构建，避免输出不完整的模板。
 
 | 模板 | 版式 |
 | --- | --- |
 | `classic` | 原纸上书架：大封面图书网格与可见购物袋侧栏 |
 | `catalog` | 编号书目：横向排列索引、封面、简介及价格操作区，搭配紧凑购物袋；手机仍保留编号与横向书目关系 |
+| `checklist` | 紧凑选书清单：小封面与价格操作逐行排列，购物袋在列表下方汇总 |
 
-两套模板共用 `data/books.json`、`content/` 和同一组购物袋脚本。新增的 `.book-copy`、`.book-order` 只是书目分组容器，筛选、库存、金额、按钮名称及焦点逻辑保持一致；说明页同时应用当前模板样式。模板选择只改变页面呈现，不复制内容或保存购物袋。
+三套模板共用 `data/books.json`、`content/` 和同一组购物袋脚本。新增的 `.book-copy`、`.book-order` 只是书目分组容器，筛选、库存、金额、按钮名称及焦点逻辑保持一致；说明页同时应用当前模板样式。模板选择只改变页面呈现，不复制内容或保存购物袋。
 
 所有页面先加载 `css/site.css` 与共用的 `css/demo-templates.css`，`catalog` 再加载 `css/catalog.css`。`body[data-template]` 标记当前模板。`layouts/partials/demo-templates.html` 提供模板入口，位于返回演示目录与主导航之间；主站集成通过 `demoTemplates` 提供链接，选择模板时保留当前详情路由。集成构建的编号书目地址为 `/demos/variants/bookstore/catalog/`，主站有前缀时会加上该前缀。
 

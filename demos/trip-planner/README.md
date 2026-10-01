@@ -6,14 +6,17 @@
 
 ## 页面模板
 
-`params.demoTemplate` 支持 `classic` 和 `journal`，未设置时使用 `classic`；其他值会通过 Hugo `errorf` 中止构建。
+`workbench`：行程工作台将地点和行程并排放置，下方展示完整路线图；手机按地点、行程、地图排列，并提供页面内跳转。额外加载 `static/css/workbench.css`，沿用原有三份面板、行程控制器和金额计算。集成地址为 `/demos/variants/trip-planner/workbench/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'workbench'`。
+
+`params.demoTemplate` 支持 `classic`、`journal` 和 `workbench`，未设置时使用 `classic`；其他值会通过 Hugo `errorf` 中止构建。
 
 | 模板 | 版式 |
 | --- | --- |
 | `classic` | 原地图编辑布局：地点列表、地图与行程面板并排，窄屏按原顺序排列 |
 | `journal` | 路线日志：主列为可重排的行程时间线，地点列表及地图为辅助列；手机依次呈现行程、地点与地图，并提供页面内跳转 |
+| `workbench` | 行程工作台：地点与行程并排操作，地图在下方核对路线；手机依次展示地点、行程、地图 |
 
-两套模板共用地点数据、内容、核心和控制器。三个共用面板分别位于 `layouts/partials/places-panel.html`、`map-panel.html`、`itinerary-panel.html`。布局选择仅改变面板排列和视觉结构，地点与地图点位仍由同一份 JSON 生成。
+三套模板共用地点数据、内容、核心和控制器。三个共用面板分别位于 `layouts/partials/places-panel.html`、`map-panel.html`、`itinerary-panel.html`。布局选择仅改变面板排列和视觉结构，地点与地图点位仍由同一份 JSON 生成。
 
 日志模板从 0 分钟起，按停留时间与每段交通 20 分钟计算各站的累计分钟范围；上移、下移和移除会重新计算。这些范围是虚构的相对时长，不是到达时刻，也不提供真实交通或地理导航。编排按钮、焦点恢复、地图连线与汇总继续使用已有逻辑。
 
@@ -27,7 +30,7 @@ hugo server
 Remove-Item Env:HUGO_PARAMS_DEMOTEMPLATE
 ```
 
-停止预览后执行最后一条命令，即恢复默认模板。两套模板使用同一个独立构建与检查器，没有新增依赖；默认不显示主站注入的模板链接。
+停止预览后执行最后一条命令，即恢复默认模板。三套模板使用同一个独立构建与检查器，没有新增依赖；默认不显示主站注入的模板链接。
 
 ## 演示口径
 

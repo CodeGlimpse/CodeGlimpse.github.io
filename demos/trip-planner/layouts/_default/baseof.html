@@ -1,5 +1,5 @@
 {{ $template := site.Params.demoTemplate | default "classic" }}
-{{ if not (in (slice "classic" "journal") $template) }}{{ errorf "trip-planner: unknown demoTemplate %q; allowed values are classic and journal" $template }}{{ end }}
+{{ if not (in (slice "classic" "journal" "workbench") $template) }}{{ errorf "trip-planner: unknown demoTemplate %q; allowed values are classic and journal" $template }}{{ end }}
 <!doctype html>
 <html lang="zh-CN">
   <head>
@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ "css/site.css" | relURL }}">
     <link rel="stylesheet" href="{{ "css/demo-templates.css" | relURL }}">
     {{ if eq $template "journal" }}<link rel="stylesheet" href="{{ "css/journal.css" | relURL }}">{{ end }}
+    {{ if eq $template "workbench" }}<link rel="stylesheet" href="{{ "css/workbench.css" | relURL }}">{{ end }}
     {{ if .IsHome }}
     <script src="{{ "js/planner-core.js" | relURL }}" defer></script>
     <script src="{{ "js/planner.js" | relURL }}" defer></script>

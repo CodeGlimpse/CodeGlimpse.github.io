@@ -110,7 +110,7 @@ test('photography portfolio navigation opens the work and about pages', async ({
 });
 
 test('demo cards and photography portfolio fit desktop and mobile viewports', async ({ page }) => {
-    for (const [width, maxCardShare] of [[1280, .55], [800, .55], [390, 1]]) {
+    for (const [width, maxCardShare] of [[1280, .35], [800, .55], [390, 1]]) {
         await page.setViewportSize({ width, height: 844 });
         await page.goto('/demos/');
         await expect(page.locator('.demo-card')).toHaveCount(DEMO_REGISTRY.length);

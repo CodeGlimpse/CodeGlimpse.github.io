@@ -17,6 +17,9 @@
     </div>
   </section>
 
+  {{ if eq $template "checklist" }}
+  <nav class="checklist-nav" aria-label="选书清单导航"><a href="#catalog-heading">01 / 选书清单</a><a href="#bag-heading">02 / 购物袋汇总</a></nav>
+  {{ end }}
   <div class="store-layout">
     <section class="catalog" aria-labelledby="catalog-heading">
       <div class="section-heading">

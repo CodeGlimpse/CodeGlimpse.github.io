@@ -1,0 +1,9 @@
+<ol class="filmstrip-frames">
+  {{ range $index, $page := . }}
+  {{/* Keep the shared card's preview resource for standalone delivery checks. */}}
+  <li class="filmstrip-frame">
+    <div class="filmstrip-edge" aria-hidden="true"><span>LIGHT / STILL</span><span>{{ printf "%02d" (add $index 1) }}</span></div>
+    {{ partial "work-card.html" $page }}
+  </li>
+  {{ end }}
+</ol>

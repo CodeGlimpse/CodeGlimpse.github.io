@@ -3,7 +3,17 @@
 {{ $template := site.Params.demoTemplate | default "classic" }}
 <main id="main" class="shell dashboard-page" data-dashboard tabindex="-1">
   {{ partial "dashboard-heading.html" . }}
-  {{ if eq $template "workspace" }}
+  {{ if eq $template "report" }}
+  <div class="report-sheet" data-report>
+    {{ partial "dashboard-filters.html" . }}
+    <div class="report-overview">
+      {{ partial "dashboard-metrics.html" $entries }}
+      {{ partial "dashboard-channel.html" $entries }}
+    </div>
+    {{ partial "dashboard-content.html" $entries }}
+    {{ partial "dashboard-reading-note.html" . }}
+  </div>
+  {{ else if eq $template "workspace" }}
   <div class="workspace-layout" data-workspace>
     <aside class="workspace-sidebar" aria-label="内容工作区筛选">
       <p class="workspace-label">FIELDNOTES / 工作区</p>

@@ -1,0 +1,42 @@
+body[data-template="checklist"] { --paper: #f4f2e8; --paper-deep: #e9e8dc; --wine: #405945; --line: #c8cdbf; }
+body[data-template="checklist"] .hero { gap: 32px; padding-block: 32px; }
+body[data-template="checklist"] .hero h1 { font-size: clamp(30px, 3vw, 43px); }
+body[data-template="checklist"] .hero-note { padding-left: 24px; }
+body[data-template="checklist"] .shelf-illustration { height: 38px; margin-top: 26px; }
+.checklist-nav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; padding-block: 16px; border-bottom: 1px solid var(--line); font-size: 13px; }
+.checklist-nav a { text-decoration: none; }
+body[data-template="checklist"] .store-layout { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+body[data-template="checklist"] .book-grid { grid-template-columns: minmax(0, 1fr); gap: 0; border-top: 2px solid var(--wine); }
+body[data-template="checklist"] .book-card { display: grid; grid-template-columns: 78px minmax(0, 1fr) 245px; gap: 24px; padding-block: 18px; border-bottom: 1px solid var(--line); align-items: center; }
+body[data-template="checklist"] .cover-stage { position: relative; height: 104px; padding: 0; border: 0; background: transparent; overflow: hidden; }
+body[data-template="checklist"] .book-cover { flex: 0 0 190px; width: 190px; transform: scale(.4); transform-origin: center; }
+body[data-template="checklist"] .book-copy { display: flex; flex-direction: column; min-width: 0; }
+body[data-template="checklist"] .book-meta { justify-content: start; margin-top: 0; }
+body[data-template="checklist"] .book-card h3 { margin-top: 4px; font-size: 21px; }
+body[data-template="checklist"] .book-description { margin: 6px 0 0; max-width: 45em; font-size: 12px; }
+body[data-template="checklist"] .book-order { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 16px; }
+body[data-template="checklist"] .book-purchase { display: grid; margin: 0; gap: 2px; }
+body[data-template="checklist"] .add-button { margin: 0; min-height: 44px; padding-inline: 10px; }
+body[data-template="checklist"] .bag-panel { position: static; display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr) minmax(0, .8fr); gap: 20px 32px; }
+body[data-template="checklist"] .bag-empty { padding-block: 12px; }
+body[data-template="checklist"] .bag-lines { margin: 0; max-height: none; }
+body[data-template="checklist"] .bag-summary { min-width: 0; }
+body[data-template="checklist"] .bag-message, body[data-template="checklist"] .bag-notice { grid-column: 1 / -1; margin: 0; }
+@media (max-width: 900px) {
+  body[data-template="checklist"] .book-card { grid-template-columns: 60px minmax(0, 1fr) 150px; gap: 16px; }
+  body[data-template="checklist"] .book-order { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  body[data-template="checklist"] .book-cover { transform: scale(.3); }
+  body[data-template="checklist"] .bag-panel { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  body[data-template="checklist"] .bag-heading { grid-column: 1 / -1; }
+}
+@media (max-width: 600px) {
+  body[data-template="checklist"] .hero { grid-template-columns: minmax(0, 1fr); }
+  body[data-template="checklist"] .hero-note { padding: 0; border: 0; }
+  body[data-template="checklist"] .book-card { grid-template-columns: 52px minmax(0, 1fr); gap: 12px; }
+  body[data-template="checklist"] .cover-stage { height: 88px; }
+  body[data-template="checklist"] .book-cover { transform: scale(.26); }
+  body[data-template="checklist"] .book-order { grid-column: 2; grid-template-columns: minmax(0, 1fr); }
+  body[data-template="checklist"] .book-purchase { display: flex; }
+  body[data-template="checklist"] .bag-panel { display: block; }
+  body[data-template="checklist"] .bag-lines, body[data-template="checklist"] .bag-summary, body[data-template="checklist"] .bag-message { margin-top: 20px; }
+}

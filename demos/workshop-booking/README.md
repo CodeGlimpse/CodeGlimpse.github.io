@@ -6,13 +6,15 @@
 
 这是**虚构演示 · 预约预览**，所有品牌、课程、材料、价格和余位均为虚构示例。余位不是实时库存。页面不收集姓名或电话，没有登录、支付、后台、真实预约、存储或数据请求；不提交信息、不锁定名额。刷新页面重置选择。关闭 JavaScript 后仍展示完整六门课程与十二场排期，控件保持禁用并说明只读状态。
 
-## 两种展示模板
+## 三种展示模板
+
+`agenda`：排期总览先展示日期和场次，桌面右侧提供课程对照，下方展示预约预览；手机按场次、课程、预览顺序排列。初始显示全部排期，选课后筛选对应场次，沿用已有分类、日期、余位与金额逻辑。额外加载 `static/css/agenda.css`。集成地址为 `/demos/variants/workshop-booking/agenda/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'agenda'`。
 
 `site.Params.demoTemplate` 未设置时使用 `classic`，保留课程卡片、日期列表与预约预览的原有顺序。设置为 `calendar` 后，页面先显示按周一至周日排列的完整十月日历：日期内列出固定示例课程与场次，先选日期再展开当天的课程和排期，也可选择“查看整月课程与排期”。满额日期仍能查看说明，满额场次继续禁用。说明页沿用日历版的深靛蓝导航与面板外观。其他模板 ID 会触发 `errorf` 构建错误。
 
 日历按钮增强现有 `#date-filter`，课程、场次、人数和金额仍由同一份 `booking.js` 状态与 `booking-core.js` 管理。切换日期会清除原先的课程、场次和预览；人数改变时仍保留所选场次并校验余位。日期按钮支持 Tab、Enter、空格，也支持方向键、Home 和 End 在有排期的日期间移动焦点。重置后回到日期入口，焦点落在仍可见的日期筛选。
 
-两版共用 `workshop-*.html` 内容 partial、六门课程与十二场排期，不复制数据。关闭 JavaScript 后，日历、全部课程、全部场次仍可阅读，日期与预约控件保持禁用。`css/site.css` 始终加载，`static/css/calendar.css` 仅在日历版加载；没有额外的 `calendar.js`、存储或请求。
+三版共用 `workshop-*.html` 内容 partial、六门课程与十二场排期，不复制数据。关闭 JavaScript 后，日历、全部课程、全部场次仍可阅读，日期与预约控件保持禁用。`css/site.css` 始终加载，`static/css/calendar.css` 仅在日历版加载；没有额外的 `calendar.js`、存储或请求。
 
 集成地址为原版 `/demos/workshop-booking/` 与日历版 `/demos/variants/workshop-booking/calendar/`。模板切换入口由集成构建提供，并保持说明页的 `about/` 路由；独立站可用 `[params] demoTemplate = 'calendar'` 或 `HUGO_PARAMS_DEMOTEMPLATE=calendar` 选择外观。
 

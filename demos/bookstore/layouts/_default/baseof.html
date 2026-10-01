@@ -1,5 +1,5 @@
 {{ $template := site.Params.demoTemplate | default "classic" }}
-{{ if not (in (slice "classic" "catalog") $template) }}{{ errorf "bookstore: unknown demoTemplate %q; allowed values are classic and catalog" $template }}{{ end }}
+{{ if not (in (slice "classic" "catalog" "checklist") $template) }}{{ errorf "bookstore: unknown demoTemplate %q; allowed values are classic and catalog" $template }}{{ end }}
 <!doctype html>
 <html lang="zh-CN">
   <head>
@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ "css/site.css" | relURL }}">
     <link rel="stylesheet" href="{{ "css/demo-templates.css" | relURL }}">
     {{ if eq $template "catalog" }}<link rel="stylesheet" href="{{ "css/catalog.css" | relURL }}">{{ end }}
+    {{ if eq $template "checklist" }}<link rel="stylesheet" href="{{ "css/checklist.css" | relURL }}">{{ end }}
     {{ if .IsHome }}
     <script src="{{ "js/store-core.js" | relURL }}" defer></script>
     <script src="{{ "js/store.js" | relURL }}" defer></script>

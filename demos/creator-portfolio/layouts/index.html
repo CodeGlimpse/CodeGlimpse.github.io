@@ -1,5 +1,7 @@
 {{ define "main" }}
-{{ if eq site.Params.demoTemplate "editorial" }}
+{{ if eq site.Params.demoTemplate "archive" }}
+  {{ partial "archive/home.html" . }}
+{{ else if eq site.Params.demoTemplate "editorial" }}
   {{ partial "editorial/home.html" . }}
 {{ else }}
 <main id="main">

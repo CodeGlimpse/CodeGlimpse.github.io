@@ -2,7 +2,7 @@
 {{ $courses := .schedule.courses }}
 {{ $template := .template }}
 <section class="schedule-section" aria-labelledby="schedule-heading">
-        <div class="section-heading"><div><p class="eyebrow">{{ if eq $template "calendar" }}03{{ else }}02{{ end }} / FIND YOUR TIME</p><h2 id="schedule-heading">把时间留出来</h2></div><span class="month-label">{{ site.Params.monthLabel }}</span></div>
+        <div class="section-heading"><div><p class="eyebrow">{{ if eq $template "calendar" }}03{{ else if eq $template "agenda" }}01{{ else }}02{{ end }} / FIND YOUR TIME</p><h2 id="schedule-heading">把时间留出来</h2></div><span class="month-label">{{ site.Params.monthLabel }}</span></div>
         {{ if ne $template "calendar" }}{{ partial "workshop-date-filter.html" . }}{{ end }}
         <p class="schedule-help">先选课程，或直接从下方选一场。余位为固定示例，已满额的场次不可选。</p>
         <ul id="session-list" class="session-list" aria-label="手作课程示例排期">

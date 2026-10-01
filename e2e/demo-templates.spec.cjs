@@ -111,7 +111,7 @@ async function originalImages(page, demo, route, baseURL) {
 for (const demoCase of DEMO_CASES.filter(demo => embeddedData[demo.id])) {
     test(`${demoCase.id} templates embed the same complete source data`, async ({ page, baseURL }) => {
         const versions = versionsFor(demoCase);
-        expect(versions).toHaveLength(2);
+        expect(versions).toHaveLength(demoCase.templates.length);
         const fixture = embeddedData[demoCase.id];
         const data = [];
         for (const demo of versions) {
@@ -119,7 +119,7 @@ for (const demoCase of DEMO_CASES.filter(demo => embeddedData[demo.id])) {
             data.push(await embeddedJSON(page, fixture.id));
         }
         expect(data[0]).toEqual(fixture.source);
-        expect(data[1]).toEqual(data[0]);
+        for (const versionData of data) expect(versionData).toEqual(fixture.source);
     });
 }
 
@@ -127,7 +127,7 @@ for (const demoCase of portfolioCases) {
     const detailRoutes = demoCase.checks.pages.filter(route => detailPattern.test(route));
     test(`${demoCase.id} templates retain the same homepage title and work links`, async ({ page, baseURL }) => {
         const versions = versionsFor(demoCase);
-        expect(versions).toHaveLength(2);
+        expect(versions).toHaveLength(demoCase.templates.length);
         expect(detailRoutes.length).toBeGreaterThan(0);
         const records = [];
         for (const demo of versions) {
@@ -136,11 +136,11 @@ for (const demoCase of portfolioCases) {
             expect(links).toEqual([...detailRoutes].sort());
             records.push({ title: await page.locator('main h1').innerText(), links });
         }
-        expect(records[1]).toEqual(records[0]);
+        for (const record of records) expect(record).toEqual(records[0]);
     });
 
     for (const route of detailRoutes) {
-        test(`${demoCase.id} ${route} retains its title and original image content in both templates`, async ({ page, baseURL }) => {
+        test(`${demoCase.id} ${route} retains its title and original image content in every template`, async ({ page, baseURL }) => {
             const records = [];
             for (const demo of versionsFor(demoCase)) {
                 await openDemo(page, demo, route, baseURL);
@@ -150,17 +150,17 @@ for (const demoCase of portfolioCases) {
                     images: await originalImages(page, demo, route, baseURL),
                 });
             }
-            expect(records).toHaveLength(2);
-            expect(records[1]).toEqual(records[0]);
+            expect(records).toHaveLength(demoCase.templates.length);
+            for (const record of records) expect(record).toEqual(records[0]);
         });
     }
 }
 
 for (const demoCase of DEMO_CASES) {
     for (const route of switchRoutes(demoCase)) {
-        test(`${demoCase.id} templates switch in both directions on ${route || 'home'} with skip and catalog first`, async ({ page, baseURL }) => {
+        test(`${demoCase.id} templates switch between every pair on ${route || 'home'} with skip and catalog first`, async ({ page, baseURL }) => {
             const versions = versionsFor(demoCase);
-            expect(versions).toHaveLength(2);
+            expect(versions).toHaveLength(demoCase.templates.length);
             for (const demo of versions) {
                 await openDemo(page, demo, route, baseURL);
                 await expectTemplateNavigation(page, demo, route, baseURL);
@@ -168,12 +168,14 @@ for (const demoCase of DEMO_CASES) {
                 await expect(page.locator('a.skip-link')).toBeFocused();
                 await page.keyboard.press('Tab');
                 await expect(page.locator('a[data-demo-catalog]')).toBeFocused();
-                const sibling = versions.find(candidate => candidate.templateId !== demo.templateId);
-                await page.locator(`nav[data-demo-templates] a[data-demo-template="${sibling.templateId}"]`).click();
-                await expect(page).toHaveURL(url => url.pathname === pagePath(sibling, route, baseURL));
-                await expect(page.locator('body')).toHaveAttribute('data-template', sibling.templateId);
-                await expectTemplateNavigation(page, sibling, route, baseURL);
-                await expect(page.locator('main h1')).toHaveCount(1);
+                for (const sibling of versions.filter(candidate => candidate.templateId !== demo.templateId)) {
+                    await openDemo(page, demo, route, baseURL);
+                    await page.locator(`nav[data-demo-templates] a[data-demo-template="${sibling.templateId}"]`).click();
+                    await expect(page).toHaveURL(url => url.pathname === pagePath(sibling, route, baseURL));
+                    await expect(page.locator('body')).toHaveAttribute('data-template', sibling.templateId);
+                    await expectTemplateNavigation(page, sibling, route, baseURL);
+                    await expect(page.locator('main h1')).toHaveCount(1);
+                }
             }
         });
     }
@@ -215,8 +217,8 @@ for (const demo of DEMO_REGISTRY) {
 
 test.describe('new templates without JavaScript', () => {
     test.use({ javaScriptEnabled: false });
-    for (const demoCase of DEMO_CASES) {
-        const demo = versionsFor(demoCase).find(candidate => candidate.templateId !== demoCase.defaultTemplate);
+    for (const demo of DEMO_REGISTRY) {
+        const demoCase = DEMO_CASES.find(candidate => candidate.id === demo.caseId);
         test(`${demoCase.id} ${demo.templateId} retains content and usable template navigation`, async ({ page, baseURL }) => {
             await page.setViewportSize({ width: 320, height: 960 });
             await openDemo(page, demo, '', baseURL);
@@ -255,6 +257,67 @@ test.describe('new templates without JavaScript', () => {
         });
     }
 });
+
+for (const [caseId, templateId] of [
+    ['creator-portfolio', 'archive'], ['photo-portfolio', 'filmstrip'],
+    ['content-dashboard', 'report'], ['bookstore', 'checklist'],
+    ['workshop-booking', 'agenda'], ['trip-planner', 'workbench'],
+]) {
+    test(`${caseId} ${templateId} preserves its distinct reading order on desktop and phone`, async ({ page, baseURL }) => {
+        const demo = DEMO_REGISTRY.find(item => item.caseId === caseId && item.templateId === templateId);
+        for (const width of [1280, 320]) {
+            await page.setViewportSize({ width, height: 960 });
+            await openDemo(page, demo, '', baseURL);
+            const box = selector => page.locator(selector).first().boundingBox();
+            if (templateId === 'archive') {
+                await expect(page.locator('.archive-entry')).toHaveCount(4);
+                const intro = await box('.archive-intro');
+                const entries = await box('.archive-sections');
+                if (width === 1280) expect(entries.x).toBeGreaterThan(intro.x + intro.width);
+                else expect(entries.y).toBeGreaterThan(intro.y + intro.height);
+            } else if (templateId === 'filmstrip') {
+                await expect(page.locator('.filmstrip-frame')).toHaveCount(3);
+                const frames = await page.locator('.filmstrip-frame').all();
+                for (let index = 1; index < frames.length; index++) {
+                    const previous = await frames[index - 1].boundingBox();
+                    const next = await frames[index].boundingBox();
+                    expect(next.y).toBeGreaterThanOrEqual(previous.y + previous.height - 1);
+                }
+            } else if (templateId === 'report') {
+                const filters = await box('.filter-panel');
+                const overview = await box('.report-overview');
+                const content = await box('.content-panel');
+                expect(overview.y).toBeGreaterThan(filters.y + filters.height);
+                expect(content.y).toBeGreaterThan(overview.y + overview.height);
+                const metrics = await box('.metrics-grid');
+                const channels = await box('.channel-panel');
+                if (width === 1280) expect(channels.x).toBeGreaterThan(metrics.x + metrics.width);
+                else expect(channels.y).toBeGreaterThan(metrics.y + metrics.height);
+            } else if (templateId === 'checklist') {
+                const catalog = await box('.catalog');
+                const bag = await box('.bag-panel');
+                expect(bag.y).toBeGreaterThan(catalog.y + catalog.height);
+                const cards = page.locator('.book-card');
+                expect((await cards.nth(1).boundingBox()).y).toBeGreaterThan((await cards.nth(0).boundingBox()).y);
+                await expect(page.getByRole('link', { name: '02 / 购物袋汇总' })).toHaveAttribute('href', '#bag-heading');
+            } else if (templateId === 'agenda') {
+                const schedule = await box('.schedule-section');
+                const courses = await box('.course-section');
+                const booking = await box('.booking-panel');
+                if (width === 1280) expect(courses.x).toBeGreaterThan(schedule.x + schedule.width);
+                else expect(courses.y).toBeGreaterThan(schedule.y + schedule.height);
+                expect(booking.y).toBeGreaterThan(Math.max(schedule.y + schedule.height, courses.y + courses.height));
+            } else {
+                const places = await box('.places-panel');
+                const itinerary = await box('.itinerary-panel');
+                const map = await box('.map-panel');
+                if (width === 1280) expect(itinerary.x).toBeGreaterThan(places.x + places.width);
+                else expect(itinerary.y).toBeGreaterThan(places.y + places.height);
+                expect(map.y).toBeGreaterThan(Math.max(places.y + places.height, itinerary.y + itinerary.height));
+            }
+        }
+    });
+}
 
 test('trip journal cumulative ranges follow reordering and end at the total minutes', async ({ page, baseURL }) => {
     const demo = DEMO_REGISTRY.find(candidate => candidate.caseId === 'trip-planner' && candidate.templateId === 'journal');

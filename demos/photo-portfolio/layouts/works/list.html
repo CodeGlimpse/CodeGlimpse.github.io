@@ -5,7 +5,9 @@
     <h1>{{ .Title }}</h1>
     <p>{{ .Params.summary }}</p>
   </header>
-  {{ if eq site.Params.demoTemplate "gallery" }}
+  {{ if eq site.Params.demoTemplate "filmstrip" }}
+    {{ partial "filmstrip/frames.html" .Pages.ByWeight }}
+  {{ else if eq site.Params.demoTemplate "gallery" }}
     {{ partial "gallery/contact-sheet.html" .Pages.ByWeight }}
   {{ else }}
     <div class="card-grid works-grid">

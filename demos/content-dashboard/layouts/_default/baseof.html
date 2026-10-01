@@ -1,6 +1,6 @@
 <!doctype html>
 {{ $template := site.Params.demoTemplate | default "classic" }}
-{{ if not (in (slice "classic" "workspace") $template) }}{{ errorf "content-dashboard: unsupported demoTemplate %q; use classic or workspace" $template }}{{ end }}
+{{ if not (in (slice "classic" "workspace" "report") $template) }}{{ errorf "content-dashboard: unsupported demoTemplate %q; use classic or workspace" $template }}{{ end }}
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8">
@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ "css/site.css" | relURL }}">
     <link rel="stylesheet" href="{{ "css/demo-templates.css" | relURL }}">
     {{ if eq $template "workspace" }}<link rel="stylesheet" href="{{ "css/workspace.css" | relURL }}">{{ end }}
+    {{ if eq $template "report" }}<link rel="stylesheet" href="{{ "css/report.css" | relURL }}">{{ end }}
     {{ if .IsHome }}
     <script src="{{ "js/dashboard-core.js" | relURL }}" defer></script>
     <script src="{{ "js/dashboard.js" | relURL }}" defer></script>

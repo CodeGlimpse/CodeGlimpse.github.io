@@ -20,11 +20,6 @@
   </head>
   <body id="top" data-template="{{ $template }}">
     <a class="skip-link" href="#main">跳到正文</a>
-    {{ with site.Params.demoCatalogURL }}
-    <div class="demo-catalog-bar">
-      <div class="shell"><a class="demo-catalog-link" href="{{ . }}" data-demo-catalog>← 返回演示目录</a></div>
-    </div>
-    {{ end }}
     {{ partial "demo-templates.html" . }}
     <div class="demo-banner" role="note">{{ site.Params.demoNotice }}</div>
     {{ if eq $template "gallery" }}

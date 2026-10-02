@@ -165,3 +165,18 @@
   html { scroll-behavior: auto; }
   [data-gallery-ready="true"] .gallery-slide[data-current="true"] { animation: none; }
 }
+
+.cinema-title-phrase { display: inline-block; max-width: 100%; }
+.cinema-series-note { display: grid; grid-template-columns: 1.4fr 1fr; gap: 2rem; padding-top: 1.4rem; color: var(--muted); font-size: .84rem; line-height: 1.9; }
+.cinema-series-note p { margin: 0; }
+.cinema-exhibition-heading > a { font-size: .76rem; color: var(--accent); }
+.gallery-home .cinema-about { grid-template-columns: 1fr 1fr; }
+@media (max-width: 720px) {
+  .cinema-opening { gap: .65rem; padding-block: 1.2rem; }
+  .cinema-opening h1 { margin-bottom: 0; text-wrap: balance; }
+  .cinema-exhibition-heading { display: flex; align-items: center; gap: 1rem; padding-block: .8rem; }
+  .cinema-exhibition-heading h2 { margin: 0; }
+  .gallery-projector-header > span { display: none; }
+  .gallery-controls button { min-height: 44px; }
+  .cinema-series-note, .gallery-home .cinema-about { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+}

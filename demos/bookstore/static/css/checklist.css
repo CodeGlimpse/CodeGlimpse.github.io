@@ -82,3 +82,10 @@ body[data-template="checklist"] .book-purchase { flex-direction:row; flex-wrap:w
 body[data-template="checklist"] .about-layout { grid-template-columns:minmax(0,1fr); }
 }
 @media(prefers-reduced-motion:reduce) { .selection-desk * { transition:none!important; } }
+
+body[data-template="checklist"] .reading-intro h1 { text-wrap: balance; }
+@media (max-width: 600px) {
+  body[data-template="checklist"] .reading-intro { display: block; }
+  body[data-template="checklist"] .reading-intro h1 { font-size: clamp(30px, 8.9vw, 35px); }
+  .desk-stamp { display: none; }
+}

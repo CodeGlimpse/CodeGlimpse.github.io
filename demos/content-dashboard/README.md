@@ -18,6 +18,8 @@
 
 集成地址为原版 `/demos/content-dashboard/` 与工作区版 `/demos/variants/content-dashboard/workspace/`。模板切换入口由集成构建提供，切换说明页时保持 `about/` 路由；独立站可用 `[params] demoTemplate = 'workspace'` 或 `HUGO_PARAMS_DEMOTEMPLATE=workspace` 选择外观，不需要复制数据或修改核心逻辑。
 
+工作台的标题与指标在文档顺序中先于筛选。手机首次加载时，“筛选与排序”默认收起；桌面默认展开，手动切换后旋转或调整窗口不改变展开状态，筛选值也会保留。关闭 JavaScript 时筛选区展开，控件禁用，完整指标与记录仍可阅读。
+
 ## 独立预览与构建
 
 需要 Hugo 0.157.0。在本目录运行 `hugo server`，或构建到临时目录：

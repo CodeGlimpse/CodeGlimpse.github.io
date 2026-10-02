@@ -119,7 +119,11 @@ test('demo cards and photography portfolio fit desktop and mobile viewports', as
             const box = await card.boundingBox();
             const preview = await card.locator('.demo-card-preview').boundingBox();
             expect(box.width / grid.width).toBeLessThanOrEqual(maxCardShare);
-            expect(preview.height).toBeLessThanOrEqual(220);
+            expect(preview.width / preview.height).toBeCloseTo(4 / 3, 1);
+            const image = await card.locator('.demo-card-preview img').boundingBox();
+            expect(image.width).toBeCloseTo(preview.width, 0);
+            const hiddenPrefix = await card.locator('h3 .sr-only').boundingBox();
+            expect(hiddenPrefix.width).toBeLessThanOrEqual(1);
         }
 
         await page.goto(photoPath);

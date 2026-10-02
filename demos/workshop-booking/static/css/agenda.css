@@ -155,3 +155,22 @@ body[data-template="agenda"] .site-footer { background: #eadbf7; border-color: #
   .agenda-progress-bar > p { font-size: 11px; padding-top: 10px; }
 }
 @media (prefers-reduced-motion: reduce) { .agenda-admission, body[data-template="agenda"] .course-button:not(:disabled):hover { transform: none; } }
+
+.agenda-intro { grid-template-columns: minmax(0, 1fr); }
+.agenda-course-title { margin-bottom: 12px; font: 700 24px/1.4 system-ui, "Microsoft YaHei", sans-serif; }
+.agenda-course-note { margin: 18px 0 0; color: var(--muted); font-size: 12px; }
+.agenda-step .agenda-admission { max-width: 320px; margin: 0 auto 28px; transform: none; }
+body[data-template="agenda"] .course-section > .section-heading > div { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+body[data-template="agenda"] .course-section > .section-heading { margin-bottom: 12px; }
+@media (max-width: 760px) {
+  .agenda-intro { padding-block: 22px; }
+  .agenda-steps { margin-bottom: 16px; }
+  .agenda-steps button { min-height: 56px; flex-direction: row; align-items: center; justify-content: start; gap: 6px; padding: 10px 8px; }
+  .agenda-steps button > span { align-self: center; font-size: 16px; }
+  .agenda-steps button small { display: none; }
+  .agenda-course-title { font-size: 21px; }
+  #agenda-course-step { position: relative; }
+  body[data-template="agenda"] .course-section > .section-heading { margin: 0; }
+  body[data-template="agenda"] #course-count { position: absolute; top: 25px; right: 15px; }
+  body[data-template="agenda"] .filter-strip { margin-bottom: 16px; padding: 12px; }
+}

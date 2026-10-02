@@ -1,25 +1,29 @@
 {{ $page := .page }}
 {{ $entries := .entries }}
 <div class="workspace-layout" data-workspace>
-  <aside class="workspace-sidebar" aria-label="内容工作区导航与筛选">
-    <div class="workspace-switchboard">
-      <p class="workspace-sidebar-label">WORKSPACE</p>
-      <nav aria-label="工作区视图">
-        <a href="#workspace-overview" data-workspace-view="overview" aria-controls="workspace-overview" aria-current="page"><span aria-hidden="true">◫</span> 总览</a>
-        <a href="#workspace-records" data-workspace-view="records" aria-controls="workspace-records"><span aria-hidden="true">☷</span> 内容记录 <span class="workspace-nav-count" data-workspace-count>{{ len $entries }}</span></a>
-      </nav>
-    </div>
-    {{ partial "dashboard-filters.html" $page }}
-    <div class="workspace-sidebar-note"><span class="workspace-status-dot" aria-hidden="true"></span><p>{{ site.Params.demoNotice }}<small>筛选结果即时联动 · 非实时数据</small></p></div>
-  </aside>
-  <div class="workspace-main">
+  <div class="workspace-summary">
     <header class="workspace-heading">
       <div><p class="eyebrow">CONTENT OPERATIONS <span aria-hidden="true">/</span> 总览工作区</p><h1>{{ $page.Params.heading }}</h1><p>{{ $page.Params.intro }}</p></div>
       <div class="workspace-period"><span>{{ site.Params.periodLabel }}</span><strong>{{ site.Params.periodRange }}</strong></div>
     </header>
     <div class="workspace-stat-strip">{{ partial "dashboard-metrics.html" $entries }}</div>
+  </div>
+  <aside class="workspace-sidebar" aria-label="内容工作区导航与筛选">
+    <div class="workspace-switchboard">
+      <nav aria-label="工作区视图">
+        <a href="#workspace-overview" data-workspace-view="overview" aria-controls="workspace-overview" aria-current="page"><span aria-hidden="true">◫</span> 总览</a>
+        <a href="#workspace-records" data-workspace-view="records" aria-controls="workspace-records"><span aria-hidden="true">☷</span> 内容记录 <span class="workspace-nav-count" data-workspace-count>{{ len $entries }}</span></a>
+      </nav>
+    </div>
+    <details class="workspace-filter-menu" data-workspace-filters open>
+      <summary>筛选与排序</summary>
+      {{ partial "dashboard-filters.html" $page }}
+    </details>
+    <div class="workspace-sidebar-note"><span class="workspace-status-dot" aria-hidden="true"></span><p>{{ site.Params.demoNotice }}<small>筛选结果即时联动 · 非实时数据</small></p></div>
+  </aside>
+  <div class="workspace-main">
     <section id="workspace-overview" class="workspace-view" data-workspace-panel="overview" aria-labelledby="workspace-overview-title">
-      <div class="workspace-view-heading"><div><p class="eyebrow">AT A GLANCE</p><h2 id="workspace-overview-title">内容总览</h2></div><p>指标基于左侧当前筛选</p></div>
+      <div class="workspace-view-heading"><div><h2 id="workspace-overview-title">内容总览</h2></div><p>指标随当前筛选更新</p></div>
       <div class="workspace-analysis">
         <section class="workspace-channel-card" aria-label="渠道阅读分布">{{ partial "dashboard-channel.html" $entries }}</section>
         <article class="workspace-spotlight" aria-labelledby="workspace-spotlight-title">
@@ -33,11 +37,11 @@
           {{ end }}
         </article>
       </div>
-      <section class="workspace-monthly-card" aria-labelledby="workspace-monthly-title"><div class="workspace-monthly-heading"><div><p class="eyebrow">PUBLISHING RHYTHM</p><h2 id="workspace-monthly-title">发布节奏</h2></div><p>按内容发布日期汇总阅读次数</p></div>{{ partial "dashboard-monthly.html" (dict "entries" $entries) }}</section>
+      <section class="workspace-monthly-card" aria-labelledby="workspace-monthly-title"><div class="workspace-monthly-heading"><div><h2 id="workspace-monthly-title">发布节奏</h2></div><p>按内容发布日期汇总阅读次数</p></div>{{ partial "dashboard-monthly.html" (dict "entries" $entries) }}</section>
       <div class="workspace-method-note"><span aria-hidden="true">ⓘ</span><p>先观察内容规模，再比较每次阅读收到的反馈。互动率使用总互动除以总阅读。</p><a href="{{ (site.GetPage "/about").RelPermalink }}">查看口径 ↗</a></div>
     </section>
     <section id="workspace-records" class="workspace-view workspace-records" data-workspace-panel="records" aria-labelledby="content-heading">
-      <div class="workspace-view-heading"><div><p class="eyebrow">CONTENT DATABASE</p><h2 id="content-heading">内容记录</h2></div><p id="result-summary" role="status" aria-live="polite" aria-atomic="true">共 {{ len $entries }} 条内容</p></div>
+      <div class="workspace-view-heading"><div><h2 id="content-heading">内容记录</h2></div><p id="result-summary" role="status" aria-live="polite" aria-atomic="true">共 {{ len $entries }} 条内容</p></div>
       <p class="workspace-record-hint">打开一条记录，查看阅读、互动与当前范围内的占比。</p>
       {{ partial "dashboard-record-table.html" $entries }}
       <div id="empty-state" class="empty-state" hidden><span class="empty-mark" aria-hidden="true">∅</span><h3>没有符合条件的内容</h3><p>试试更换月份、渠道或关键词，也可以重置筛选。</p></div>

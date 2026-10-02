@@ -379,6 +379,8 @@ for (const demo of demos) {
 
         if (demo.templateId === 'agenda') {
             test('purple ticket wizard gates each step and preserves selections on back while invalidating a changed course', async ({ page }) => {
+                const pageErrors = [];
+                page.on('pageerror', error => pageErrors.push(error.message));
                 await page.setViewportSize({ width: 1280, height: 1000 });
                 await page.emulateMedia({ reducedMotion: 'reduce' });
                 await openWorkshop(page, demo);
@@ -424,6 +426,7 @@ for (const demo of demos) {
                 await expect(root).toHaveAttribute('data-agenda-step', '0');
                 await expect(page.getByLabel('手作分类', { exact: true })).toBeFocused();
                 await expect(page.locator('[data-agenda-next="1"]')).toBeDisabled();
+                expect(pageErrors).toEqual([]);
             });
         }
 

@@ -295,3 +295,15 @@
 - Node 使用 `node --test` 运行 `bookstore`、`content-dashboard`、`workshop-booking`、`trip-planner`、`demo-registry`、`demo-template-links`、`demo-catalog-links`、`build-site`、`photo-demo-check`、`deployed-site-check` 对应的测试文件；浏览器使用 `node scripts/run-e2e.cjs` 运行 `bookstore`、`content-dashboard`、`demo-templates`、`demos`、`portfolio-presentation`、`trip-planner`、`workshop-booking` 七份 spec，`--workers 2 --max-failures 1`。构建及链接检查使用 `node scripts/build-site.cjs`、`node scripts/check-demo-builds.cjs` 和各案例的 Python 检查器。
 - 本批按新 DOM 修正了工作台导航、票券面板、无脚本／隐藏控件与键盘顺序的测试定位；目录的整批导航测试拆为按语言与模板独立计时的用例，原有内容、链接和预览断言保留。用户授权本批同类测试定位与格式问题直接定点修正。
 - 证据位于 `F:/agents/code/temp/demo-complete-redesign-20261002/`，包括 `node-tests-final.log`、`browser-coverage.json`、`e2e-*.log`、`build-final.log`、`build-prefix.log`、`demo-checks.log`、`prefix-checks.log`、`standalone-checks.log`、`output-check.log`、`comparison.png`、`mobile-comparison.png` 与 `mobile/`。恢复基线为干净提交 `e671dad`；本批仅本地验收与提交，未推送、未运行远程 CI、未部署。
+
+## 2026-10-02 - Demo 目录与手机首屏精修
+
+- 按项目级 `frontend-design` 技能审查后的建议精修展示层。保留六个案例、十八套模板的设计方向和原始内容；目录标题与卡片网格统一左对齐，移除预览的重复品牌框，图片按完整 4:3 比例铺满宽度。卡片标题只视觉显示模板名称，案例名称仍保留给辅助技术。
+- 六个独立源码中的公共工具栏合并返回入口与当前模板，采用默认关闭的原生 `details`；展开后显示重置提示和全部模板链接。手机工具栏由约 150px 缩为 48–49px，键盘顺序保持跳到正文、返回目录、展开模板。无脚本、详情路由与子路径切换仍可用。
+- 章节海报收紧手机开场，作品图改为通栏；放映室将介绍与系列说明移到影像之后；工作台在文档顺序中先呈现指标，再显示导航和可收起的筛选；入场券向导合并重复标题，将票券移到核对步骤。中文标题平衡断行，旅行与摄影标题按逗号分句，避免末行落单。选书台手机隐藏重复数量印章，数量仍在清单标题中显示。
+- 390×844 实测首个作品/指标/课程顶部：章节海报 722→429px，放映室 786→443px，工作台指标 910→293px，入场券课程 1135→550px。系统字体会影响其他系统上的具体像素位置。查看了六套重点模板的手机与桌面截图，并重新拍摄全部十八张 1280×960 JPEG 目录预览。
+- 精修中修正工坊步骤标题容器变化造成的焦点回归：展示控制器改用专用 `data-agenda-heading` 标记，前进与返回步骤保持聚焦，浏览器回归同时检查无页面脚本错误。筛选、购物袋、预约、行程的数据和业务核心保持原样。
+- 验证：191 项相关 Node 测试通过；八份 spec 的 254 个唯一 Chromium 用例全部获得通过记录，含新增 9 项精修检查。首轮剩余用例有一处上述焦点失败，修复后相关四份 spec 的 60 项全部通过。最终图片接入后另复验双语目录及响应式 37 项，通过；`/review/` 模板组合跳转与目录对齐 15 项通过，复验不重复计入 254 项。
+- 默认与 `/review/` 组合构建、十八套模板的 63 页链接/资源检查、双语六组十八卡目录与主站产物检查均通过。十八个独立构建的 63 页通过，独立模式无博客工具栏。JS 语法（106 文件）、内容结构和 `git diff --check` 通过。构建使用现有 Hugo 模块缓存并关闭 Go 网络代理，单独隔离资源输出与 getresource/misc 缓存；首次指定全新模块缓存的构建未成功，随后修正临时构建环境，未安装依赖。
+- 主要命令：`node --test` 运行既有十份 demo、业务核心和构建检查器测试；`node scripts/run-e2e.cjs` 运行 `demos`、`demo-templates`、`demo-polish`、`portfolio-presentation`、`content-dashboard`、`bookstore`、`workshop-booking`、`trip-planner`，使用 `--workers 2 --max-failures 1`。构建与检查使用 `scripts/build-site.cjs`、`scripts/check-demo-builds.cjs`、`scripts/check-build-output.cjs` 和各案例 Python 检查器。
+- 证据目录为 `F:/agents/code/temp/demo-polish-20261002/`：`browser-coverage.json` 将每个用例映射到通过日志，另有 `unit.log`、`catalog-unit.log`、`refined-e2e.log`、`prefix-e2e.log`、`previews-e2e.log`、`build-final.log`、`build-prefix.log`、`standalone-final.log`、`output-final.log`、`measurements.json` 与 `before-after.png`。恢复基线为 `046db3d`；本批仅完成本地精修、验收与提交，没有推送或部署。

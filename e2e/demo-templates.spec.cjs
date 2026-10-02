@@ -170,6 +170,7 @@ for (const demoCase of DEMO_CASES) {
                 await expect(page.locator('a[data-demo-catalog]')).toBeFocused();
                 for (const sibling of versions.filter(candidate => candidate.templateId !== demo.templateId)) {
                     await openDemo(page, demo, route, baseURL);
+                    await page.locator("[data-demo-template-menu] > summary").click();
                     await page.locator(`nav[data-demo-templates] a[data-demo-template="${sibling.templateId}"]`).click();
                     await expect(page).toHaveURL(url => url.pathname === pagePath(sibling, route, baseURL));
                     await expect(page.locator('body')).toHaveAttribute('data-template', sibling.templateId);
@@ -245,11 +246,13 @@ test.describe('new templates without JavaScript', () => {
                 await expect(page.locator('main img').first()).toBeVisible();
             }
             const classic = versionsFor(demoCase).find(candidate => candidate.templateId === demoCase.defaultTemplate);
+            await page.locator("[data-demo-template-menu] > summary").click();
             await page.locator(`nav[data-demo-templates] a[data-demo-template="${classic.templateId}"]`).click();
             await expect(page).toHaveURL(url => url.pathname === pagePath(classic, '', baseURL));
             await expect(page.locator('body')).toHaveAttribute('data-template', classic.templateId);
             const route = representativeRoute(demoCase);
             await openDemo(page, classic, route, baseURL);
+            await page.locator("[data-demo-template-menu] > summary").click();
             await page.locator(`nav[data-demo-templates] a[data-demo-template="${demo.templateId}"]`).click();
             await expect(page).toHaveURL(url => url.pathname === pagePath(demo, route, baseURL));
             await expect(page.locator('body')).toHaveAttribute('data-template', demo.templateId);

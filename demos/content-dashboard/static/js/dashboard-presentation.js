@@ -14,6 +14,11 @@
     const reportRecords = root.querySelector('[data-report-records]');
     let currentRows = [];
     let initialized = false;
+    const filterMenu = root.querySelector('[data-workspace-filters]');
+    if (filterMenu) {
+        // Collapse controls on small screens; keep their state when rotating or resizing.
+        filterMenu.open = !window.matchMedia('(max-width: 700px)').matches;
+    }
 
     function formatRate(value) {
         return percentage.format(value) + '%';

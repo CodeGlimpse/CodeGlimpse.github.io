@@ -8,7 +8,6 @@
 <section class="demos-grid" aria-label="{{ .Title }}">
     {{ $language := .Language.Lang }}
     {{ range .Site.Data.demos }}
-    {{ $case := . }}
     {{ $copy := index .copy $language }}
     <article class="demo-case" data-demo-case="{{ .id }}" aria-labelledby="case-{{ .id }}">
       <header class="demo-case-heading">
@@ -20,10 +19,6 @@
       {{ $templateCopy := index .copy $language }}
       <a class="demo-card" href="{{ .path | relURL }}" data-template-id="{{ .id }}">
         <div class="demo-card-preview">
-            <div class="demo-preview-header" aria-hidden="true">
-                <span class="demo-preview-mark"></span>
-                <span>{{ $case.brand }}</span>
-            </div>
             <img src="{{ .preview.image | relURL }}" alt="{{ $templateCopy.previewAlt }}"
                 loading="lazy" decoding="async" width="{{ .preview.width }}" height="{{ .preview.height }}">
         </div>

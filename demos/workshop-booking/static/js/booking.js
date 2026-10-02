@@ -92,7 +92,7 @@
         agendaStep = step;
         updateAgenda();
         const active = agendaSteps.find(panel => Number(panel.dataset.agendaStep) === agendaStep);
-        active.querySelector('.agenda-step-heading h2').focus();
+        active.querySelector('[data-agenda-heading]').focus();
     }
 
     function clearPreview() {
@@ -157,7 +157,7 @@
             : result.ok ? '课程、场次和 ' + state.quantity + ' 人已选好，可查看预约单预览。' : result.message;
         updateAgenda();
         if (focused && root.contains(focused) && (focused.closest('[hidden]') || focused.disabled)) {
-            if (agendaMode) agendaSteps[agendaStep].querySelector('.agenda-step-heading h2').focus();
+            if (agendaMode) agendaSteps[agendaStep].querySelector('[data-agenda-heading]').focus();
             else (calendarMode && !calendarExpanded ? date : category).focus();
         }
     }

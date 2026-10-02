@@ -151,6 +151,9 @@ for (const demo of demos) {
                     if (demo.templateId === 'workspace') {
                         const sidebar = page.getByRole('complementary', { name: '内容工作区导航与筛选' });
                         await expect(sidebar).toBeVisible();
+                        const filters = page.locator('[data-workspace-filters]');
+                        await expect(filters).toHaveJSProperty('open', width > 700);
+                        if (width <= 700) await filters.locator('summary').click();
                         await expect(sidebar.getByLabel('标题关键词')).toBeVisible();
                         await expect(page.locator('[data-workspace]')).toHaveCSS('display', 'grid');
                         await expect(page.locator('[data-workspace-panel="overview"]')).toBeVisible();
@@ -236,6 +239,8 @@ for (const demo of demos) {
                     await page.keyboard.press('Escape');
                     await expect(dialog).toBeHidden();
                     await expect(opener).toBeFocused();
+                    const filters = page.locator('[data-workspace-filters]');
+                    if (!await filters.evaluate(node => node.open)) await filters.locator('summary').click();
                     await page.getByLabel('标题关键词').fill('九月 复盘');
                     await expectTotals(page, 1, 0, 0);
                     await page.locator('#content-rows [data-record-open]').click();

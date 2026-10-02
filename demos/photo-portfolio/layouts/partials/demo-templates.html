@@ -1,15 +1,24 @@
-{{ with site.Params.demoTemplates }}
-{{ $templates := . }}
+{{ $templates := site.Params.demoTemplates | default (slice) }}
 {{ if not (reflect.IsSlice $templates) }}{{ $templates = transform.Unmarshal $templates }}{{ end }}
 {{ $current := site.Params.demoTemplate | default "classic" }}
-{{ $route := strings.TrimPrefix site.Home.RelPermalink $.RelPermalink }}
-<nav class="demo-template-switcher" aria-label="同内容模板" data-demo-templates>
+{{ $currentLabel := "" }}
+{{ range $templates }}{{ if eq .id $current }}{{ $currentLabel = .label }}{{ end }}{{ end }}
+{{ $route := strings.TrimPrefix site.Home.RelPermalink .RelPermalink }}
+{{ if or site.Params.demoCatalogURL $templates }}
+<nav class="demo-toolbar demo-template-switcher" aria-label="同内容模板"{{ if $templates }} data-demo-templates{{ end }}>
   <div class="demo-template-inner">
-    <span class="demo-template-caption">同一内容 · 选择模板</span>
-    <div class="demo-template-options">
-      {{ range $templates }}<a href="{{ printf "%s%s" .url $route }}" data-demo-template="{{ .id }}"{{ if eq .id $current }} aria-current="page"{{ end }}>{{ .label }}</a>{{ end }}
-    </div>
-    <small>切换模板将重置当前页面的操作。</small>
+    {{ with site.Params.demoCatalogURL }}<a class="demo-toolbar-return" href="{{ . }}" data-demo-catalog>← 返回演示目录</a>{{ end }}
+    {{ with $templates }}
+    <details class="demo-template-menu" data-demo-template-menu>
+      <summary>模板 · {{ $currentLabel }}</summary>
+      <div class="demo-template-panel">
+        <small>同一内容，不同呈现。切换模板将重置当前页面的操作。</small>
+        <div class="demo-template-options">
+          {{ range . }}<a href="{{ printf "%s%s" .url $route }}" data-demo-template="{{ .id }}"{{ if eq .id $current }} aria-current="page"{{ end }}>{{ .label }}</a>{{ end }}
+        </div>
+      </div>
+    </details>
+    {{ end }}
   </div>
 </nav>
 {{ end }}

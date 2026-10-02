@@ -23,9 +23,6 @@
   </head>
   <body data-template="{{ $template }}">
     <a class="skip-link" href="#main">跳到正文</a>
-    {{ with site.Params.demoCatalogURL }}
-    <div class="demo-catalog-bar"><div class="shell"><a href="{{ . }}" data-demo-catalog>← 返回演示目录</a></div></div>
-    {{ end }}
     {{ partial "demo-templates.html" . }}
     <header class="site-header">
       <div class="shell header-inner">

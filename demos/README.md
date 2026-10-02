@@ -48,6 +48,13 @@ case. Integrated pages offer same-content template links that preserve the
 current detail-page route and deployment prefix. Switching loads another page,
 so transient filters, bags, bookings, and itineraries reset.
 
+The return link and current template share one compact toolbar. Its native
+`details` menu starts closed, shows the reset notice when opened, and works
+with keyboard input or JavaScript disabled. Keep the shared toolbar partial
+and stylesheet identical in the six standalone sources. Catalog cards show
+full-width 4:3 screenshots; the case-name prefix in each card heading remains
+available to assistive technology without repeating it visually.
+
 The build explicitly scopes `HUGO_PARAMS_DEMOTEMPLATE` and the JSON string
 `HUGO_PARAMS_DEMOTEMPLATES` to each child. Standalone builds default to `classic`.
 For example, from `demos/bookstore`, set the process environment variable
@@ -64,6 +71,11 @@ Presentation effects must respect reduced motion. Without JavaScript, the
 source content remains readable and interactive business controls stay disabled.
 Native dialogs restore focus to their opener; live preview buttons do not
 replace real detail-page links.
+
+`e2e/demo-polish.spec.cjs` checks mobile content placement, Chinese headline
+wrapping, keyboard access to every template menu, catalog alignment, and
+workspace filter state. Mobile workspaces show metrics before collapsible
+filters; resizing preserves the user's open/closed choice.
 
 ## Refresh real page previews
 

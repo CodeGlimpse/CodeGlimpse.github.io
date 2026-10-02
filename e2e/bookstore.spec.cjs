@@ -11,6 +11,16 @@ const quantityName = book => `《${book.title}》的数量`;
 async function openBookstore(page) {
     await page.goto(demoPath);
     await expect(page.locator('[data-bookstore]')).toHaveAttribute('data-ready', 'true');
+    if (demo.templateId === 'catalog') await expect(page.locator('[data-bookstore]')).toHaveAttribute('data-presentation', 'ready');
+}
+async function revealBook(page, book) {
+    if (demo.templateId === 'catalog') await page.locator('[data-select-book="' + book.id + '"]').click();
+}
+async function openBag(page) {
+    if (demo.templateId === 'catalog') await page.locator('[data-open-bag]').click();
+}
+async function closeBag(page) {
+    if (demo.templateId === 'catalog') await page.locator('[data-close-bag]').click();
 }
 
 async function expectBag(page, count, cents) {
@@ -20,25 +30,25 @@ async function expectBag(page, count, cents) {
 
 test('bookstore combines category, multiple title terms, IME completion, empty state and reset', async ({ page }) => {
     await openBookstore(page);
-    await expect(page.locator('#book-grid .book-card:visible')).toHaveCount(12);
+    await expect(page.locator('#book-grid .book-card:not([hidden])')).toHaveCount(12);
     await page.getByLabel('图书分类', { exact: true }).selectOption('设计');
-    await expect(page.locator('#book-grid .book-card:visible')).toHaveCount(4);
+    await expect(page.locator('#book-grid .book-card:not([hidden])')).toHaveCount(4);
     const search = page.getByLabel('书名关键词', { exact: true });
     await search.fill('颜色　地图');
-    await expect(page.locator('#book-grid .book-card:visible')).toHaveCount(1);
+    await expect(page.locator('#book-grid .book-card:not([hidden])')).toHaveCount(1);
     await expect(page.getByRole('article', { name: '颜色的散步地图', exact: true })).toBeVisible();
     await search.focus();
     await search.dispatchEvent('compositionstart');
     await search.fill('不存在的书名');
-    await expect(page.locator('#book-grid .book-card:visible')).toHaveCount(1);
+    await expect(page.locator('#book-grid .book-card:not([hidden])')).toHaveCount(1);
     await search.dispatchEvent('compositionend');
-    await expect(page.locator('#book-grid .book-card:visible')).toHaveCount(0);
+    await expect(page.locator('#book-grid .book-card:not([hidden])')).toHaveCount(0);
     await expect(page.locator('#empty-state')).toBeVisible();
     await expect(search).toBeFocused();
     await page.getByRole('button', { name: '重置筛选', exact: true }).click();
     await expect(search).toHaveValue('');
     await expect(page.getByLabel('图书分类', { exact: true })).toHaveValue('all');
-    await expect(page.locator('#book-grid .book-card:visible')).toHaveCount(12);
+    await expect(page.locator('#book-grid .book-card:not([hidden])')).toHaveCount(12);
     await expect(page.locator('#result-summary')).toHaveText('共 12 本书');
 });
 
@@ -46,9 +56,13 @@ test('bag adds pieces, computes cents, preserves keyboard focus, removes and cle
     await openBookstore(page);
     const first = books[0];
     const second = books.find(book => book.id === 'small-repair');
+    await revealBook(page, first);
     await page.getByRole('button', { name: addName(first), exact: true }).click();
+    await revealBook(page, first);
     await page.getByRole('button', { name: addName(first), exact: true }).click();
+    await revealBook(page, second);
     await page.getByRole('button', { name: addName(second), exact: true }).click();
+    await openBag(page);
     await expectBag(page, 3, first.priceCents * 2 + second.priceCents);
     await expect(page.locator('#bag-lines > li')).toHaveCount(2);
     const increase = page.getByRole('button', { name: `增加《${first.title}》的数量`, exact: true });
@@ -62,7 +76,9 @@ test('bag adds pieces, computes cents, preserves keyboard focus, removes and cle
     await decrease.press('Enter');
     await expect(decrease).toBeFocused();
     await expectBag(page, 3, first.priceCents * 2 + second.priceCents);
+    await closeBag(page);
     await page.getByLabel('图书分类', { exact: true }).selectOption('设计');
+    await openBag(page);
     await expectBag(page, 3, first.priceCents * 2 + second.priceCents);
     const removeSecond = page.getByRole('button', { name: `移除《${second.title}》`, exact: true });
     await removeSecond.focus();
@@ -74,8 +90,11 @@ test('bag adds pieces, computes cents, preserves keyboard focus, removes and cle
     await expect(page.locator('#bag-heading')).toBeFocused();
     await expectBag(page, 0, 0);
     await expect(page.locator('#bag-empty')).toBeVisible();
+    await closeBag(page);
     await page.getByRole('button', { name: '重置筛选', exact: true }).click();
+    await revealBook(page, first);
     await page.getByRole('button', { name: addName(first), exact: true }).click();
+    await openBag(page);
     const clear = page.getByRole('button', { name: '清空购物袋', exact: true });
     await clear.click();
     await expect(clear).toBeFocused();
@@ -99,11 +118,22 @@ test('sold-out and stock limits work offline without storage, and reload resets 
     await openBookstore(page);
     const soldOut = books.find(book => book.stock === 0);
     const limited = books.find(book => book.stock === 1);
+    await revealBook(page, soldOut);
     await expect(page.getByRole('button', { name: addName(soldOut), exact: true })).toBeDisabled();
     await context.setOffline(true);
+    await revealBook(page, limited);
     const add = page.getByRole('button', { name: addName(limited), exact: true });
     await add.click();
     await expect(add).toHaveAttribute('aria-disabled', 'true');
+    if (demo.templateId === 'catalog') {
+        const liveMessage = page.locator('[data-bag-announcement]');
+        await expect(page.locator('#bag-drawer')).not.toBeVisible();
+        await expect(liveMessage).toBeVisible();
+        await expect(liveMessage).toContainText(limited.title);
+        await add.press('Enter');
+        await expect(liveMessage).toContainText('示例库存上限 1 本');
+    }
+    await openBag(page);
     const increase = page.getByRole('button', { name: `增加《${limited.title}》的数量`, exact: true });
     await expect(increase).toHaveAttribute('aria-disabled', 'true');
     await increase.focus();
@@ -116,6 +146,7 @@ test('sold-out and stock limits work offline without storage, and reload resets 
     await decrease.press('Enter');
     await expect(page.locator('#bag-heading')).toBeFocused();
     await expectBag(page, 0, 0);
+    await closeBag(page);
     await add.click();
     await context.setOffline(false);
     await page.reload();
@@ -142,8 +173,9 @@ test('skip navigation, desktop bag and both pages fit 320px and 390px screens', 
         expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width + 1);
         if (width === 1280) {
             const shelf = await page.locator('.catalog').boundingBox();
+            await openBag(page);
             const bag = await page.locator('.bag-panel').boundingBox();
-            if (demo.templateId === 'checklist') expect(bag.y).toBeGreaterThan(shelf.y + shelf.height);
+            if (demo.templateId === 'catalog') await expect(page.locator('#bag-drawer')).toHaveAttribute('open', '');
             else expect(bag.x).toBeGreaterThan(shelf.x + shelf.width);
             await expect(page.getByRole('heading', { name: '模拟购物袋', exact: true })).toBeVisible();
         }
@@ -151,6 +183,40 @@ test('skip navigation, desktop bag and both pages fit 320px and 390px screens', 
         await expect(page.locator('main h1')).toHaveText('关于这间纸上书店');
         await expect(page.locator('main h1')).toHaveCount(1);
         expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width + 1);
+    }
+});
+
+
+test('presentation controls expose the same catalog and quantities', async ({ page }) => {
+    await openBookstore(page);
+    if (demo.templateId === 'catalog') {
+        await expect(page.locator('#book-grid .book-card:visible')).toHaveCount(1);
+        const next = page.getByRole('button', { name: '下一本书', exact: true });
+        await next.focus();
+        await next.press('Enter');
+        await expect(next).toBeFocused();
+        await expect(page.getByRole('article', { name: books[1].title, exact: true })).toBeVisible();
+        await revealBook(page, books[books.length - 1]);
+        await expect(next).toHaveAttribute('aria-disabled', 'true');
+        const opener = page.locator('[data-open-bag]');
+        await opener.click();
+        await expect(page.locator('#bag-drawer')).toBeVisible();
+        await page.keyboard.press('Escape');
+        await expect(page.locator('#bag-drawer')).not.toBeVisible();
+        await expect(opener).toBeFocused();
+    } else if (demo.templateId === 'checklist') {
+        const book = books[0];
+        const card = page.locator('#book-grid [data-book-id="' + book.id + '"]');
+        await card.locator('summary').click();
+        await expect(card.locator('.book-description')).toBeVisible();
+        await card.locator('[data-add-book]').click();
+        await card.locator('[data-add-book]').click();
+        await expect(card.locator('[data-book-quantity]')).toHaveText('2');
+        await card.locator('[data-decrease-book]').click();
+        await expect(card.locator('[data-book-quantity]')).toHaveText('1');
+        await expectBag(page, 1, book.priceCents);
+    } else {
+        await expect(page.locator('#book-grid .book-card:visible')).toHaveCount(12);
     }
 });
 

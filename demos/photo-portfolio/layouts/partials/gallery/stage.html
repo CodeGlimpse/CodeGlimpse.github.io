@@ -1,0 +1,14 @@
+<div class="gallery-projector" data-gallery aria-label="影像放映台">
+  <div class="gallery-projector-header"><span>THE SCREEN / LIGHT · STILL</span>{{ partial "gallery/controls.html" . }}</div>
+  <div class="gallery-screen" data-gallery-screen>
+    {{ range $index, $page := .pages }}
+    <article id="gallery-{{ $.prefix }}-{{ add $index 1 }}" class="gallery-slide" data-gallery-slide data-gallery-title="{{ $page.Title }}"><figure class="gallery-film-figure"><a href="{{ $page.RelPermalink }}" aria-label="查看《{{ $page.Title }}》作品详情">{{ partial "responsive-image.html" (dict "page" $page "name" $page.Params.cover "alt" $page.Params.cover_alt "sizes" "(max-width: 800px) 100vw, 1100px" "loading" (cond (eq $index 0) "eager" "lazy") "class" "gallery-screen-picture") }}</a><figcaption><span>{{ printf "%02d" (add $index 1) }} / {{ $page.Params.series }}</span><a href="{{ $page.RelPermalink }}">查看系列 ↗</a></figcaption></figure><div class="gallery-film-copy"><h3><a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a></h3><p>{{ $page.Params.summary }}</p></div></article>
+    {{ end }}
+  </div>
+  <div class="gallery-thumbnail-bar" data-gallery-thumbnails hidden aria-label="选择放映影像">
+    {{ range $index, $page := .pages }}{{ $cover := $page.Resources.GetMatch $page.Params.cover }}{{ if not $cover }}{{ errorf "Missing cover for %s" $page.File.Path }}{{ end }}{{ $preview := $cover.Resize "760x jpg q76" }}{{ $preview = resources.Copy (printf "previews/%s.jpg" $page.Slug) $preview }}
+    <button type="button" class="gallery-thumbnail" data-gallery-select="{{ $index }}" aria-label="放映《{{ $page.Title }}》" aria-pressed="false" aria-controls="gallery-{{ $.prefix }}-{{ add $index 1 }}" disabled><img src="{{ $preview.RelPermalink }}" alt="{{ $page.Params.cover_alt }}" width="{{ $preview.Width }}" height="{{ $preview.Height }}" loading="lazy" decoding="async"><span>{{ printf "%02d" (add $index 1) }} / {{ $page.Title }}</span></button>
+    {{ end }}
+  </div>
+  <p class="gallery-keyboard-note" data-gallery-keyboard-note hidden>← / → 切换影像 · Home / End 首尾</p><p class="gallery-live-status" data-gallery-status role="status" aria-live="polite" aria-atomic="true" hidden></p>
+</div>

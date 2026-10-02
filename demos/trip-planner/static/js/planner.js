@@ -22,11 +22,51 @@
         const cards = [...root.querySelectorAll('[data-place-card]')];
         const markers = [...root.querySelectorAll('[data-map-id]')];
         const isJournal = document.body.dataset.template === 'journal';
+        const isWorkbench = document.body.dataset.template === 'workbench';
+        const mapInspector = root.querySelector('[data-map-inspector]');
+        const mapAdd = root.querySelector('[data-map-add]');
+        const panelButtons = [...root.querySelectorAll('[data-workbench-panel]')];
         if (cards.length !== places.length || markers.length !== places.length
-            || [...cards, ...markers].some(element => !byId.has(element.dataset.placeId || element.dataset.mapId))) {
+            || [...cards, ...markers].some(element => !byId.has(element.dataset.placeId || element.dataset.mapId))
+            || (isWorkbench && (!mapInspector || !mapAdd || panelButtons.length !== 2))) {
             throw new Error('Place markup does not match data');
         }
         let itinerary = [];
+        let mapSelectionId = '';
+        let mapFocusId = places[0].id;
+        const expandedNotes = new Set();
+
+        function updateMapInspector() {
+            if (!isWorkbench) return;
+            const place = byId.get(mapSelectionId);
+            mapInspector.querySelector('[data-map-inspector-title]').textContent = place ? place.name : '点亮一处停靠点';
+            mapInspector.querySelector('[data-map-inspector-copy]').textContent = place ? place.description : '点击地图上的地点，或用方向键移动焦点后按 Enter / 空格查看详情。';
+            mapInspector.querySelector('[data-map-inspector-meta]').textContent = place
+                ? `${place.category} · 停留 ${place.durationMinutes} 分钟 · 示例 ${money(place.costCents)}`
+                : '地点、停留和费用均为虚构示例。';
+            const selected = place && itinerary.includes(place.id);
+            const full = itinerary.length === core.MAX_STOPS;
+            mapAdd.dataset.id = place ? place.id : '';
+            mapAdd.disabled = !place || selected || full;
+            mapAdd.textContent = !place ? '选择地图地点后加入' : selected ? '已加入行程' : full ? '行程已满' : '＋ 加入这一站';
+            mapAdd.setAttribute('aria-label', !place ? '选择地图地点后加入' : selected ? `地图地点${place.name}已加入行程`
+                : full ? `行程已满，无法加入地图地点${place.name}` : `将${place.name}加入行程`);
+            mapInspector.dataset.mapSelection = mapSelectionId;
+            for (const marker of markers) {
+                marker.classList.toggle('is-active', marker.dataset.mapId === mapSelectionId);
+                marker.setAttribute('aria-pressed', String(marker.dataset.mapId === mapSelectionId));
+                marker.tabIndex = marker.dataset.mapId === mapFocusId ? 0 : -1;
+            }
+        }
+
+        function setWorkbenchPanel(name, visible) {
+            if (!isWorkbench) return;
+            const panel = root.querySelector(`#workbench-${name}`);
+            const button = panelButtons.find(control => control.dataset.workbenchPanel === name);
+            panel.hidden = !visible;
+            button.setAttribute('aria-expanded', String(visible));
+            button.textContent = `${visible ? '收起' : '展开'}${name === 'places' ? '地点' : '行程'}`;
+        }
 
         function refreshPlaces() {
             const visible = new Set(core.filterPlaces(places, filter.value).map(place => place.id));
@@ -42,7 +82,7 @@
                 button.setAttribute('aria-label', selected ? `${place.name}已加入行程` : full ? `行程已满，无法加入${place.name}` : `加入${place.name}`);
             }
             for (const marker of markers) {
-                marker.classList.toggle('is-muted', !visible.has(marker.dataset.mapId) && !itinerary.includes(marker.dataset.mapId));
+                marker.classList.toggle('is-muted', !visible.has(marker.dataset.mapId) && !itinerary.includes(marker.dataset.mapId) && (!isWorkbench || marker.dataset.mapId !== mapSelectionId));
             }
         }
 
@@ -104,6 +144,19 @@
                     actionButton('移除', `移除${place.name}`, 'remove', id),
                 );
                 content.append(title, meta, actions);
+                if (isJournal) {
+                    const note = document.createElement('details');
+                    note.className = 'stop-details';
+                    note.dataset.stopNote = id;
+                    note.open = expandedNotes.has(id);
+                    const toggle = document.createElement('summary');
+                    toggle.textContent = '这一站的旅途手记';
+                    toggle.setAttribute('aria-label', `查看${place.name}手记`);
+                    const description = document.createElement('p');
+                    description.textContent = place.description;
+                    note.append(toggle, description);
+                    content.insertBefore(note, actions);
+                }
                 item.append(number, content);
                 fragment.append(item);
             });
@@ -121,12 +174,14 @@
                 number.textContent = order ? String(order) : '';
             }
             root.querySelector('#map-description').textContent = itinerary.length
-                ? `原创地形示意，非真实地理导航。当前顺序：${itinerary.map(id => byId.get(id).name).join('，')}。橙线只表示清单顺序。`
+                ? `原创地形示意，非真实地理导航。当前顺序：${itinerary.map(id => byId.get(id).name).join('，')}。${isWorkbench ? '蓝线' : '橙线'}只表示清单顺序。`
                 : '八个虚构地点的示意位置，当前行程为空。非真实地理导航。';
             refreshPlaces();
+            updateMapInspector();
         }
 
         function focusStop(id, action = 'remove') {
+            setWorkbenchPanel('itinerary', true);
             const item = [...list.children].find(element => element.dataset.stopId === id);
             if (!item) return;
             const button = item.querySelector(`[data-action="${action}"]`);
@@ -140,8 +195,10 @@
             const { action, id } = button.dataset;
             if (action === 'clear') {
                 itinerary = [];
+                expandedNotes.clear();
                 render();
                 status.textContent = '已清空行程。';
+                setWorkbenchPanel('places', true);
                 filter.focus();
                 return;
             }
@@ -158,6 +215,7 @@
                 return;
             }
             itinerary = result.ids;
+            if (action === 'remove') expandedNotes.delete(id);
             render();
             if (action === 'add') {
                 status.textContent = `${place.name}已加入第 ${itinerary.length} 站。${itinerary.length === core.MAX_STOPS ? '行程已满，共 6 处。' : ''}`;
@@ -165,7 +223,7 @@
             } else if (action === 'remove') {
                 status.textContent = `已移除${place.name}。`;
                 if (itinerary.length) focusStop(itinerary[Math.min(previousIndex, itinerary.length - 1)]);
-                else filter.focus();
+                else { setWorkbenchPanel('places', true); filter.focus(); }
             } else {
                 status.textContent = `${place.name}已移到第 ${itinerary.indexOf(id) + 1} 站。`;
                 focusStop(id, action);
@@ -175,12 +233,63 @@
             refreshPlaces();
             status.textContent = `显示${filter.value === 'all' ? '全部' : filter.value}地点；已选行程保留。`;
         });
+        if (isJournal) {
+            root.addEventListener('toggle', event => {
+                const note = event.target;
+                if (!note.matches('[data-stop-note]') || !note.isConnected) return;
+                if (note.open) expandedNotes.add(note.dataset.stopNote);
+                else expandedNotes.delete(note.dataset.stopNote);
+            }, true);
+        }
+        if (isWorkbench) {
+            function inspectMarker(marker) {
+                mapSelectionId = marker.dataset.mapId;
+                mapFocusId = mapSelectionId;
+                updateMapInspector();
+                refreshPlaces();
+                status.textContent = `正在查看${byId.get(mapSelectionId).name}，可在地图详情中加入行程。`;
+                marker.focus();
+            }
+            root.querySelector('.terrain-map').setAttribute('role', 'group');
+            for (const marker of markers) {
+                marker.setAttribute('role', 'button');
+                marker.setAttribute('aria-label', `查看${byId.get(marker.dataset.mapId).name}`);
+                marker.addEventListener('click', () => inspectMarker(marker));
+                marker.addEventListener('focus', () => {
+                    mapFocusId = marker.dataset.mapId;
+                    markers.forEach(target => { target.tabIndex = target === marker ? 0 : -1; });
+                });
+                marker.addEventListener('keydown', event => {
+                    if (event.altKey || event.ctrlKey || event.metaKey) return;
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        inspectMarker(marker);
+                        return;
+                    }
+                    const index = markers.indexOf(marker);
+                    let target;
+                    if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') target = markers[(index + markers.length - 1) % markers.length];
+                    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') target = markers[(index + 1) % markers.length];
+                    if (event.key === 'Home') target = markers[0];
+                    if (event.key === 'End') target = markers[markers.length - 1];
+                    if (target) { event.preventDefault(); target.focus(); }
+                });
+            }
+            for (const button of panelButtons) {
+                button.disabled = false;
+                button.addEventListener('click', () => setWorkbenchPanel(button.dataset.workbenchPanel, button.getAttribute('aria-expanded') !== 'true'));
+            }
+        }
         render();
+        if (isJournal) root.querySelectorAll('.journal-place-details').forEach(note => { note.open = false; });
         filter.disabled = false;
         root.dataset.ready = 'true';
     } catch (error) {
         root.querySelectorAll('button, select').forEach(control => { control.disabled = true; });
         root.dataset.ready = 'error';
+        root.querySelectorAll('[data-map-choice]').forEach(marker => { marker.removeAttribute('role'); marker.removeAttribute('tabindex'); marker.removeAttribute('aria-pressed'); });
+        const map = root.querySelector('.terrain-map');
+        if (map) map.setAttribute('role', 'img');
         if (status) status.textContent = '暂时无法启用行程编排，可以继续只读浏览地点与地图。';
     }
 })();

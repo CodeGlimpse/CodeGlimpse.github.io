@@ -1,0 +1,16 @@
+<section class="panel places-panel journal-library" aria-labelledby="places-heading">
+  <header class="panel-heading"><div><p class="panel-kicker">COLLECT LITTLE MOMENTS</p><h2 id="places-heading" tabindex="-1">地点收藏夹</h2></div><span class="place-count" data-visible-count>{{ len site.Data.places }} 处</span></header>
+  <p class="journal-library-note">展开一张地点便签，读一段停留的理由。</p>
+  <div class="place-filter"><label for="place-category">筛选地点类型</label><select id="place-category" disabled><option value="all">全部地点</option><option value="自然">自然</option><option value="人文">人文</option><option value="休憩">休憩</option></select></div>
+  <div class="place-list" id="place-list">
+    {{ range $index, $place := site.Data.places }}
+    <article class="place-card" data-place-card data-place-id="{{ $place.id }}">
+      <details class="journal-place-details" open>
+        <summary><span class="field-note-number" aria-hidden="true">{{ printf "%02d" (add $index 1) }}</span><span class="place-title"><h3>{{ $place.name }}</h3><span class="category-tag">{{ $place.category }}</span></span><span class="field-note-toggle" aria-hidden="true">＋</span></summary>
+        <div class="field-note-copy"><p>{{ $place.description }}</p><div class="place-meta"><span>停留 {{ $place.durationMinutes }} 分钟</span><span>示例 ¥{{ printf "%.2f" (div (float $place.costCents) 100) }}</span></div></div>
+      </details>
+      <button type="button" class="add-button" data-action="add" data-id="{{ $place.id }}" aria-label="加入{{ $place.name }}" disabled><span aria-hidden="true">＋</span> 加入行程</button>
+    </article>
+    {{ end }}
+  </div>
+</section>

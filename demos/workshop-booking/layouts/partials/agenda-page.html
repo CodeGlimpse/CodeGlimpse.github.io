@@ -1,0 +1,31 @@
+{{ $page := .page }}
+{{ $context := .context }}
+<header class="agenda-intro">
+  <div><p class="eyebrow">SHIGUANG / CRAFT EXPERIENCE</p><h1>{{ $page.Params.heading }}</h1><p>{{ $page.Params.intro }}</p></div>
+  <div class="agenda-admission"><span>OCT / 2026</span><strong>给自己<br>一张慢时光入场券</strong><span>{{ site.Params.demoNotice }} · 固定示例</span></div>
+</header>
+<div class="agenda-layout" data-agenda>
+  <nav class="agenda-steps" aria-label="预约预览步骤">
+    <button type="button" data-agenda-goto="0" aria-controls="agenda-course-step" disabled><span>01</span><strong>选择课程</strong><small>找一点新灵感</small></button>
+    <button type="button" data-agenda-goto="1" aria-controls="agenda-session-step" disabled><span>02</span><strong>挑选场次</strong><small>圈出一个日子</small></button>
+    <button type="button" data-agenda-goto="2" aria-controls="agenda-preview-step" disabled><span>03</span><strong>人数与预览</strong><small>核对这张入场券</small></button>
+  </nav>
+  <div class="agenda-stage">
+    <section id="agenda-course-step" class="agenda-step" data-agenda-step="0" aria-labelledby="agenda-course-heading">
+      <div class="agenda-step-heading"><span>STEP 01 / 03</span><h2 id="agenda-course-heading" tabindex="-1">从一门喜欢的课程开始</h2><p>每张课程卡片都包含价格、材料和时长。</p></div>
+      {{ partial "workshop-courses.html" $context }}
+      <div class="agenda-step-actions"><p>选择一门课程后继续。</p><button type="button" data-agenda-next="1" disabled>下一步：挑选场次 <span aria-hidden="true">→</span></button></div>
+    </section>
+    <section id="agenda-session-step" class="agenda-step" data-agenda-step="1" aria-labelledby="agenda-session-heading">
+      <div class="agenda-step-heading"><span>STEP 02 / 03</span><h2 id="agenda-session-heading" tabindex="-1">把喜欢的事，排进日历</h2><p>对应课程的固定示例排期；满额场次保留展示。</p></div>
+      {{ partial "workshop-schedule.html" $context }}
+      <div class="agenda-step-actions"><button type="button" data-agenda-back="0" disabled>← 返回课程</button><button type="button" data-agenda-next="2" disabled>下一步：人数与预览 <span aria-hidden="true">→</span></button></div>
+    </section>
+    <section id="agenda-preview-step" class="agenda-step" data-agenda-step="2" aria-labelledby="agenda-preview-heading">
+      <div class="agenda-step-heading"><span>STEP 03 / 03</span><h2 id="agenda-preview-heading" tabindex="-1">核对你的手作入场券</h2><p>选好人数，再生成一份只保留在本页的预约单。</p></div>
+      {{ partial "workshop-booking-panel.html" $context }}
+      <div class="agenda-step-actions"><button type="button" data-agenda-back="1" disabled>← 返回场次</button><span>没有信息被提交，也不会锁定名额。</span></div>
+    </section>
+  </div>
+  <div class="agenda-progress-bar"><p data-agenda-note role="status" aria-live="polite">课程、排期和预约预览说明均可依次阅读。</p><button id="reset-booking" class="reset-button" type="button" disabled>重置选择</button></div>
+</div>

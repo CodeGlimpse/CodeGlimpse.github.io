@@ -1,9 +1,6 @@
 <ol class="filmstrip-frames">
   {{ range $index, $page := . }}
-  {{/* Keep the shared card's preview resource for standalone delivery checks. */}}
-  <li class="filmstrip-frame">
-    <div class="filmstrip-edge" aria-hidden="true"><span>LIGHT / STILL</span><span>{{ printf "%02d" (add $index 1) }}</span></div>
-    {{ partial "work-card.html" $page }}
-  </li>
+  {{ $cover := $page.Resources.GetMatch $page.Params.cover }}{{ if not $cover }}{{ errorf "Missing cover for %s" $page.File.Path }}{{ end }}{{ $preview := $cover.Resize "760x jpg q76" }}{{ $preview = resources.Copy (printf "previews/%s.jpg" $page.Slug) $preview }}
+  <li class="filmstrip-frame" data-magazine-section><span class="magazine-frame-number" aria-hidden="true">{{ printf "%02d" $page.Weight }}</span><a class="magazine-frame-image" href="{{ $page.RelPermalink }}" aria-label="查看《{{ $page.Title }}》作品详情"><img src="{{ $preview.RelPermalink }}" width="{{ $preview.Width }}" height="{{ $preview.Height }}" alt="{{ $page.Params.cover_alt }}" loading="lazy" decoding="async"></a><div class="magazine-frame-copy"><p class="magazine-kicker">{{ $page.Params.series }}</p><h3><a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a></h3><p>{{ $page.Params.summary }}</p><a class="magazine-text-link" href="{{ $page.RelPermalink }}">阅读作品 ↗</a></div></li>
   {{ end }}
 </ol>

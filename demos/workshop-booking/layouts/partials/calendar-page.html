@@ -1,0 +1,21 @@
+{{ $page := .page }}
+{{ $context := .context }}
+<header class="calendar-intro">
+  <div><p class="eyebrow">SHIGUANG STUDIO / OCTOBER 2026</p><h1>{{ $page.Params.heading }}</h1><p>{{ $page.Params.intro }}</p></div>
+  <div class="calendar-intro-note"><span class="calendar-live-dot" aria-hidden="true"></span><strong>{{ site.Params.demoNotice }}</strong><span>6 门课程 / 12 个固定示例场次</span></div>
+</header>
+<div class="calendar-workspace">
+  <div class="calendar-month-column">
+    {{ partial "workshop-calendar.html" $context }}
+    <div class="calendar-reading-note"><span aria-hidden="true">✦</span><p>为喜欢的事，圈出一天。<br>选一个有排期的日期，在右侧继续挑选课程、场次和人数。</p></div>
+  </div>
+  <div class="calendar-day-column">
+    <section class="calendar-prompt" data-calendar-prompt hidden aria-labelledby="calendar-prompt-heading"><span class="calendar-prompt-art" aria-hidden="true">01—31</span><p class="eyebrow">YOUR NEXT SLOW DAY</p><h2 id="calendar-prompt-heading">这一天，留一点空白。</h2><p>先在日历中挑选日期，再展开当天的课程与场次。</p><p>带排期的日期可以查看；满额课程也保留完整信息。</p></section>
+    <div class="calendar-details" id="calendar-details" data-calendar-details>
+      <div class="calendar-details-heading"><p class="eyebrow">DAY PLAN / 当日手作</p><h2 data-calendar-summary>十月完整课程与排期</h2><span>课程 → 场次 → 预约单预览</span></div>
+      {{ partial "workshop-courses.html" $context }}
+      {{ partial "workshop-schedule.html" $context }}
+      {{ partial "workshop-booking-panel.html" $context }}
+    </div>
+  </div>
+</div>

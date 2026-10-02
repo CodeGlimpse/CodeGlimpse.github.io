@@ -141,6 +141,9 @@
             fragment.appendChild(row);
         });
         contentRows.replaceChildren(fragment);
+        if (root.dataset.dashboardPresentation) {
+            root.dispatchEvent(new CustomEvent('dashboard:render', { detail: { rows: sortedRows } }));
+        }
     }
 
     function update() {

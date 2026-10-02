@@ -8,13 +8,13 @@
 
 ## 三种展示模板
 
-`agenda`：排期总览先展示日期和场次，桌面右侧提供课程对照，下方展示预约预览；手机按场次、课程、预览顺序排列。初始显示全部排期，选课后筛选对应场次，沿用已有分类、日期、余位与金额逻辑。额外加载 `static/css/agenda.css`。集成地址为 `/demos/variants/workshop-booking/agenda/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'agenda'`。
+`agenda`：紫色手作入场券，按“选择课程 → 挑选场次 → 人数与预览”分成三步。选课后才可进入场次页，选场后才可进入人数页；前进、返回和顶部步骤按钮会切换真实步骤，并把焦点送到该步标题。返回保留已选内容，更换课程或日期会清除不适用的场次和旧预览；人数仍受 1–6 人与示例余位约束。关闭 JavaScript 时三个步骤全部展开，课程和十二场排期均可只读浏览，导航与预约控件保持禁用。额外加载 `static/css/agenda.css`，步骤增强在已有 `booking.js` 中按模板启用。集成地址为 `/demos/variants/workshop-booking/agenda/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'agenda'`。
 
-`site.Params.demoTemplate` 未设置时使用 `classic`，保留课程卡片、日期列表与预约预览的原有顺序。设置为 `calendar` 后，页面先显示按周一至周日排列的完整十月日历：日期内列出固定示例课程与场次，先选日期再展开当天的课程和排期，也可选择“查看整月课程与排期”。满额日期仍能查看说明，满额场次继续禁用。说明页沿用日历版的深靛蓝导航与面板外观。其他模板 ID 会触发 `errorf` 构建错误。
+`site.Params.demoTemplate` 未设置时使用 `classic`，保留课程卡片、日期列表与预约预览的原有顺序。设置为 `calendar` 后，页面使用午夜蓝月视图：左侧为按周一至周日排列的完整十月日历，右侧为所选日期的课程、场次与预约单面板；窄屏按月视图、当天计划顺序排列。31 天完整保留，有排期的日期格在手机上也展示课程名和开始时间。先选日期再展开当天内容，也可选择“查看整月课程与排期”。满额日期仍能查看说明，满额场次继续禁用。说明页沿用深蓝导航与面板外观。其他模板 ID 会触发 `errorf` 构建错误。
 
 日历按钮增强现有 `#date-filter`，课程、场次、人数和金额仍由同一份 `booking.js` 状态与 `booking-core.js` 管理。切换日期会清除原先的课程、场次和预览；人数改变时仍保留所选场次并校验余位。日期按钮支持 Tab、Enter、空格，也支持方向键、Home 和 End 在有排期的日期间移动焦点。重置后回到日期入口，焦点落在仍可见的日期筛选。
 
-三版共用 `workshop-*.html` 内容 partial、六门课程与十二场排期，不复制数据。关闭 JavaScript 后，日历、全部课程、全部场次仍可阅读，日期与预约控件保持禁用。`css/site.css` 始终加载，`static/css/calendar.css` 仅在日历版加载；没有额外的 `calendar.js`、存储或请求。
+三版共用 `workshop-*.html` 业务内容 partial、六门课程与十二场排期，不复制数据。`calendar-page.html` 与 `agenda-page.html` 分别组织月视图和入场券向导。关闭 JavaScript 后，日历、全部课程、全部场次仍可阅读，日期与预约控件保持禁用。`css/site.css` 始终加载，两份模板 CSS 按版本加载；没有额外的 JavaScript 资产、存储或请求。
 
 集成地址为原版 `/demos/workshop-booking/` 与日历版 `/demos/variants/workshop-booking/calendar/`。模板切换入口由集成构建提供，并保持说明页的 `about/` 路由；独立站可用 `[params] demoTemplate = 'calendar'` 或 `HUGO_PARAMS_DEMOTEMPLATE=calendar` 选择外观。
 
@@ -38,7 +38,7 @@ python -B -X utf8 scripts/check_build.py "$env:TEMP\workshop-booking-build" --ba
 - `data/schedule.json`：唯一课程与场次来源；静态 HTML 和内嵌脚本数据由此共同生成。
 - `layouts/partials/course-art.html`：本地 SVG 手作图案；`layouts/` 和 `static/css/site.css`：结构与响应式样式。
 - `static/js/booking-core.js`：数据校验、筛选、选择协调和整数分金额计算，支持 CommonJS 与 `window.WorkshopBooking`。
-- `static/js/booking.js`：启用静态控件、保留可操作元素的焦点、更新选中状态与页面内预览。
+- `static/js/booking.js`：启用静态控件、保留可操作元素的焦点、更新选中状态与页面内预览；日历日期导航和入场券步骤仅在对应模板启用。
 
 数据结构为 `{ "month": "2026-10", "courses": [...], "sessions": [...] }`：
 
@@ -60,4 +60,4 @@ node --test tests/workshop-booking.test.cjs
 npx.cmd playwright test e2e/workshop-booking.spec.cjs --workers=1
 ```
 
-六个 Node 测试覆盖日期与数据、余位、课程归属、整数分金额、人数与非法 ID/筛选协调。五个浏览器测试仅访问 `/demos/workshop-booking/` 与其说明页，覆盖实际选课预览、离线和禁用存储、人数不足与旧摘要清除、键盘焦点、320/390 像素手机和无 JavaScript 的完整只读排期。
+Node 测试覆盖日期与数据、余位、课程归属、整数分金额、人数与非法 ID/筛选协调。浏览器套件通过 demo registry 覆盖三个模板及各自说明页，验证实际选课预览、离线和禁用存储、人数不足与旧摘要清除、键盘焦点、320/390 像素手机和无 JavaScript 的完整只读排期；日历另外检查周一开头的完整月格和手机格内课程时间，入场券另外检查步骤准入、前进返回、选择保留与换课失效。

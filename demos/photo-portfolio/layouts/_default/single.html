@@ -1,4 +1,9 @@
 {{ define "main" }}
+{{ if eq site.Params.demoTemplate "gallery" }}
+  {{ partial "gallery/about.html" . }}
+{{ else if eq site.Params.demoTemplate "filmstrip" }}
+  {{ partial "filmstrip/about.html" . }}
+{{ else }}
 <main id="main" class="shell about-page{{ if eq site.Params.demoTemplate "gallery" }} gallery-about{{ end }}" tabindex="-1">
   <header class="page-heading">
     <p class="eyebrow">ABOUT / CONTACT</p>
@@ -25,4 +30,5 @@
     </div>
   </div>
 </main>
+{{ end }}
 {{ end }}

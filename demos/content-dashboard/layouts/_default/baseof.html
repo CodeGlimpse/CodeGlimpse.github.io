@@ -1,6 +1,6 @@
 <!doctype html>
 {{ $template := site.Params.demoTemplate | default "classic" }}
-{{ if not (in (slice "classic" "workspace" "report") $template) }}{{ errorf "content-dashboard: unsupported demoTemplate %q; use classic or workspace" $template }}{{ end }}
+{{ if not (in (slice "classic" "workspace" "report") $template) }}{{ errorf "content-dashboard: unsupported demoTemplate %q; use classic, workspace or report" $template }}{{ end }}
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8">
@@ -8,7 +8,7 @@
     {{ $description := site.Params.description }}
     {{ with .Params.summary }}{{ $description = . }}{{ end }}
     <meta name="description" content="{{ $description }}">
-    <meta name="theme-color" content="#f5f8f7">
+    <meta name="theme-color" content="{{ if eq $template "workspace" }}#11151e{{ else if eq $template "report" }}#f4511e{{ else }}#f5f8f7{{ end }}">
     <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
     <link rel="canonical" href="{{ .Permalink }}">
     <link rel="icon" type="image/svg+xml" href="{{ "favicon.svg" | relURL }}">
@@ -18,6 +18,7 @@
     {{ if eq $template "report" }}<link rel="stylesheet" href="{{ "css/report.css" | relURL }}">{{ end }}
     {{ if .IsHome }}
     <script src="{{ "js/dashboard-core.js" | relURL }}" defer></script>
+    {{ if ne $template "classic" }}<script src="{{ "js/dashboard-presentation.js" | relURL }}" defer></script>{{ end }}
     <script src="{{ "js/dashboard.js" | relURL }}" defer></script>
     {{ end }}
   </head>
@@ -29,6 +30,22 @@
     </div>
     {{ end }}
     {{ partial "demo-templates.html" . }}
+    {{ if eq $template "workspace" }}
+    <header class="workspace-topbar">
+      <div class="shell workspace-topbar-inner">
+        <a class="workspace-wordmark" href="{{ site.Home.RelPermalink }}" aria-label="观数 FIELDNOTES，返回概览首页"><span class="workspace-brand-icon" aria-hidden="true">▥</span><span>观数 <small>FIELDNOTES</small></span></a>
+        <span class="workspace-topbar-label">内容工作台 <span aria-hidden="true">/</span> 2026 Q3</span>
+        <a class="workspace-help-link" href="{{ (site.GetPage "/about").RelPermalink }}"{{ if eq .Section "about" }} aria-current="page"{{ end }}>数据说明 <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+    {{ else if eq $template "report" }}
+    <header class="report-masthead">
+      <div class="shell report-masthead-inner">
+        <a class="report-wordmark" href="{{ site.Home.RelPermalink }}" aria-label="观数 FIELDNOTES，返回概览首页"><span aria-hidden="true">观</span><strong>观数 <small>FIELDNOTES / 季度观察</small></strong></a>
+        <nav aria-label="主导航"><a href="{{ site.Home.RelPermalink }}"{{ if .IsHome }} aria-current="page"{{ end }}>本期报告</a><a href="{{ (site.GetPage "/about").RelPermalink }}"{{ if eq .Section "about" }} aria-current="page"{{ end }}>数据说明</a></nav>
+      </div>
+    </header>
+    {{ else }}
     <header class="site-header">
       <div class="shell header-inner">
         <a class="brand" href="{{ site.Home.RelPermalink }}" aria-label="观数 FIELDNOTES，返回概览首页">
@@ -41,6 +58,7 @@
         </nav>
       </div>
     </header>
+    {{ end }}
     {{ block "main" . }}{{ end }}
     <footer class="site-footer">
       <div class="shell footer-inner">

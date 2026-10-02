@@ -1,31 +1,29 @@
-<main id="main" class="editorial-home" tabindex="-1">
-  <section class="editorial-intro shell" aria-labelledby="intro-title">
-    <div>
-      {{ with .Site.Params.demoNotice }}<p class="eyebrow">{{ . }}</p>{{ end }}
-      <h1 id="intro-title">{{ .Site.Params.homeHeading }}</h1>
+{{ $works := site.GetPage "/works" }}
+{{ $projects := site.GetPage "/projects" }}
+<main id="main" class="editorial-home" tabindex="-1" data-editorial>
+  <header class="editorial-poster shell" aria-labelledby="intro-title">
+    <div class="editorial-poster-meta"><p>{{ site.Params.demoNotice }}</p><span aria-hidden="true">DESIGN / IMAGE / PROCESS</span></div>
+    <h1 id="intro-title">{{ site.Params.homeHeading }}</h1>
+    <div class="editorial-poster-bottom"><span class="editorial-poster-arrow" aria-hidden="true">↓</span><p>{{ site.Params.homeIntro }}</p><span class="editorial-poster-stamp" aria-hidden="true">A<br>VISUAL<br>JOURNAL</span></div>
+  </header>
+  <nav class="editorial-chapter-nav shell" aria-label="作品章节" data-editorial-nav>
+    <span class="editorial-nav-label">CHAPTERS</span>
+    <div class="editorial-chapter-links">
+      {{ range $index, $page := $works.Pages.ByWeight }}<a href="#editorial-work-{{ add $index 1 }}" data-editorial-target="editorial-work-{{ add $index 1 }}"><span>{{ printf "%02d" (add $index 1) }}</span>{{ $page.Title }}</a>{{ end }}
+      {{ range $index, $page := $projects.Pages.ByWeight }}<a href="#editorial-project-{{ add $index 1 }}" data-editorial-target="editorial-project-{{ add $index 1 }}"><span>{{ printf "%02d" (add (len $works.Pages) (add $index 1)) }}</span>{{ $page.Title }}</a>{{ end }}
     </div>
-    <p>{{ .Site.Params.homeIntro }}</p>
-  </section>
-
-  {{ $works := .Site.GetPage "/works" }}
+    <output class="editorial-position" data-editorial-status hidden aria-label="当前章节"></output>
+  </nav>
   <section class="editorial-section shell" aria-labelledby="works-title">
-    <div class="section-heading">
-      <div><p class="eyebrow">01 / Gallery</p><h2 id="works-title">{{ $works.Title }}</h2></div>
-      <a class="text-link" href="{{ $works.RelPermalink }}">查看全部 <span aria-hidden="true">↗</span></a>
-    </div>
+    <div class="editorial-section-title"><p>01 / Gallery</p><h2 id="works-title">{{ $works.Title }}</h2><a href="{{ $works.RelPermalink }}">查看全部 ↗</a></div>
     <div class="editorial-chapters">
-      {{ range $index, $page := $works.Pages.ByWeight }}
-        {{ partial "editorial/chapter.html" (dict "page" $page "index" (add $index 1) "loading" (cond (eq $index 0) "eager" "lazy")) }}
-      {{ end }}
+      {{ range $index, $page := $works.Pages.ByWeight }}{{ partial "editorial/chapter.html" (dict "page" $page "index" (add $index 1) "id" (printf "editorial-work-%d" (add $index 1)) "loading" (cond (eq $index 0) "eager" "lazy")) }}{{ end }}
     </div>
   </section>
-
-  {{ $projects := .Site.GetPage "/projects" }}
   <section class="editorial-section editorial-projects shell" aria-labelledby="projects-title">
-    <div class="section-heading">
-      <div><p class="eyebrow">02 / Case studies</p><h2 id="projects-title">{{ $projects.Title }}</h2></div>
-      <a class="text-link" href="{{ $projects.RelPermalink }}">查看全部 <span aria-hidden="true">↗</span></a>
+    <div class="editorial-section-title"><p>02 / Case studies</p><h2 id="projects-title">{{ $projects.Title }}</h2><a href="{{ $projects.RelPermalink }}">查看全部 ↗</a></div>
+    <div class="editorial-chapters">
+      {{ range $index, $page := $projects.Pages.ByWeight }}{{ partial "editorial/chapter.html" (dict "page" $page "index" (add (len $works.Pages) (add $index 1)) "id" (printf "editorial-project-%d" (add $index 1))) }}{{ end }}
     </div>
-    {{ partial "editorial/project-index.html" $projects.Pages.ByWeight }}
   </section>
 </main>

@@ -6,11 +6,15 @@
 
 ## 三种展示模板
 
-`report`：数据简报先显示筛选范围，随后将指标与渠道分析并排组成报告，下面保留完整明细表与口径说明。它复用全部 `dashboard-*.html` partial，额外加载 `static/css/report.css`，不改变统计与排序逻辑。集成地址为 `/demos/variants/content-dashboard/report/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'report'`。
+`site.Params.demoTemplate` 未设置时使用 `classic`，保留原来的浅色指标面板、渠道分析、横向筛选与明细表。其他模板 ID 会通过 `errorf` 使构建失败，避免误用名称后静默回退。
 
-`site.Params.demoTemplate` 未设置时使用 `classic`，保留原来的指标、渠道分析、横向筛选与明细表。设置为 `workspace` 后，筛选和统计口径放在桌面侧栏，指标更紧凑，明细以双列卡片呈现；手机上侧栏与卡片会转为单列。说明页使用相同的工作区配色和面板样式。其他模板 ID 会通过 `errorf` 使构建失败，避免误用名称后静默回退。
+`workspace` 使用暗色应用布局。侧栏包含筛选与“总览 / 内容记录”导航；总览展示渠道阅读分布、月份发布节奏和当前阅读最多的内容，内容记录视图展示可打开的明细列表。记录详情使用原生 `dialog` 抽屉，显示该条的日期、渠道、阅读、互动、互动率，以及当前筛选范围内的阅读排名、阅读占比和整体互动率比较。切换视图保留当前筛选；关闭抽屉可使用关闭按钮或 Escape，焦点返回原记录。说明页延续侧栏应用结构。
 
-三版共用 `data/entries.json`、六个 `dashboard-*.html` 内容 partial 和现有 `dashboard.js` 控制器。工作区卡片由同一份明细表加 `static/css/workspace.css` 呈现，筛选、排序、零阅读处理及汇总算法没有第二套实现；无 JavaScript 时也保留完整 24 条明细和所有统计。`css/site.css` 始终加载，`workspace.css` 与 `report.css` 分别只在对应模板加载。
+`report` 使用橙白报告布局，包含季度封面、章节导航、总览摘要、渠道与月份图表、逐条记录和阅读口径四个章节。章节链接在当前页面内跳转；明细以原生 `details` 折叠区展示，开启 JavaScript 时默认收起，展开后可以筛选与排序，筛选不会重置展开状态。说明页将完整口径正文与样本说明分栏展示。集成地址为 `/demos/variants/content-dashboard/report/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'report'`。
+
+三版共用 `data/entries.json` 和 `dashboard-core.js` 中的筛选、排序、零阅读处理及汇总算法。经典版继续使用原内容 partial；两个新版分别使用 `dashboard-workspace.html` 和 `dashboard-report.html`，共用新版记录表与月份图表 partial。`dashboard.js` 仍更新指标、渠道图和记录表，并仅对新版发出当前结果的 `dashboard:render` 事件；`dashboard-presentation.js` 接收结果，处理视图、抽屉、折叠状态与月份图表，不使用网络或存储。`css/site.css` 始终加载，`workspace.css` 与 `report.css` 分别只在对应模板加载。
+
+关闭 JavaScript 后，工作台的总览与记录视图同时可见，报告明细默认展开；两版都保留全部 24 条明细、总览指标、渠道与月份图表，筛选排序及抽屉按钮不可用。两版支持 320px 屏幕与减少动态效果偏好。
 
 集成地址为原版 `/demos/content-dashboard/` 与工作区版 `/demos/variants/content-dashboard/workspace/`。模板切换入口由集成构建提供，切换说明页时保持 `about/` 路由；独立站可用 `[params] demoTemplate = 'workspace'` 或 `HUGO_PARAMS_DEMOTEMPLATE=workspace` 选择外观，不需要复制数据或修改核心逻辑。
 
@@ -31,7 +35,7 @@ python -B -X utf8 scripts/check_build.py "$env:TEMP\content-dashboard-build" --b
 - `content/about/index.md`：数据来源、统计口径与操作说明。
 - `data/entries.json`：内容记录数组，每条含唯一 `id`、`title`、`published`、`channel`、`views`、`interactions`。
 - `hugo.toml`：站名、页面描述和示例区间；`layouts/`、`static/css/site.css`：页面结构与样式。
-- `static/js/dashboard-core.js` 与 `static/js/dashboard.js`：筛选、排序和当前结果的页面更新。
+- `static/js/dashboard-core.js` 与 `static/js/dashboard.js`：筛选、排序和当前结果的页面更新；`static/js/dashboard-presentation.js`：两个新版的导航、记录抽屉与月份图表。
 
 `published` 使用 `YYYY-MM-DD` 日期；当前月份选项为 `2026-07`、`2026-08`、`2026-09`，渠道限定为博客、视频、社区。阅读和互动使用非负整数。扩展月份或渠道时，需要同步页面控件、汇总图和数据说明。替换数据后重新构建，静态页面与脚本会读取同一份 JSON；标题由模板转义，内嵌 JSON 使用 Hugo 的默认 HTML 转义。
 

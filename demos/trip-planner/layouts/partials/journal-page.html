@@ -1,0 +1,14 @@
+<header class="journal-cover">
+  <div class="journal-cover-copy"><p class="eyebrow">FARWEEK / A NOTEBOOK FOR WANDERING</p><h1>{{ .Title }}</h1><p>挑几处想停下来的地方，把先后顺序留给自己。时间和预算一起算，山路只在这张虚构地图上展开。</p><span class="journal-disclosure">{{ site.Params.demoNotice }} · 非真实地理导航</span></div>
+  <div class="journal-cover-art" aria-hidden="true"><svg viewBox="0 0 280 200"><circle cx="215" cy="48" r="23" fill="#ebb65d"/><path d="M0 161 89 61l51 70 38-48 102 90v27H0Z" fill="#bb613e"/><path d="m0 188 116-65 65 53 99-25v49H0Z" fill="#743e30"/><path d="M0 185c70-33 127 26 184-6s67-28 96-15" fill="none" stroke="#f4ddc2" stroke-width="3"/></svg><span>FIELD NOTES<br><strong>一个山野周末</strong></span></div>
+</header>
+<nav class="journal-section-nav" aria-label="编排行程导航"><a href="#itinerary-heading">01 / 我的旅途手记</a><a href="#places-heading">02 / 地点收藏夹</a><a href="#terrain-heading">03 / 手绘路线</a></nav>
+<div data-trip-planner data-ready="false">
+  <noscript><p class="noscript-note">JavaScript 未开启时，可以只读浏览八个虚构地点和基础地图；行程编排控件保持禁用，启用 JavaScript 后可添加与重排地点。</p></noscript>
+  <div class="planner-layout journal-desk">
+    {{ partial "itinerary-panel.html" . }}
+    {{ partial "journal-places.html" . }}
+    {{ partial "map-panel.html" . }}
+  </div>
+  <script id="planner-data" type="application/json">{{ site.Data.places | jsonify | safeJS }}</script>
+</div>

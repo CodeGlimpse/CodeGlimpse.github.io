@@ -1,0 +1,32 @@
+{{ $entries := .entries }}
+{{ $months := slice "2026-07" "2026-08" "2026-09" }}
+{{ $totals := dict }}
+{{ $counts := dict }}
+{{ $maximum := 0 }}
+{{ range $months }}
+  {{ $month := . }}
+  {{ $views := 0 }}
+  {{ $count := 0 }}
+  {{ range $entries }}
+    {{ if hasPrefix .published $month }}
+      {{ $views = add $views .views }}
+      {{ $count = add $count 1 }}
+    {{ end }}
+  {{ end }}
+  {{ $totals = merge $totals (dict $month $views) }}
+  {{ $counts = merge $counts (dict $month $count) }}
+  {{ if gt $views $maximum }}{{ $maximum = $views }}{{ end }}
+{{ end }}
+<div class="monthly-chart" data-monthly-chart aria-label="各发布月份的阅读次数与内容数量">
+  {{ range $index, $month := $months }}
+  {{ $views := index $totals $month }}
+  {{ $height := 0.0 }}
+  {{ if gt $maximum 0 }}{{ $height = div (mul (float $views) 100.0) (float $maximum) }}{{ end }}
+  <div class="monthly-column" data-month="{{ $month }}">
+    <strong data-monthly-views>{{ partial "number.html" $views }}</strong>
+    <div class="monthly-track" aria-hidden="true"><span style="height: {{ printf "%.2f" $height }}%;" data-monthly-bar></span></div>
+    <span class="monthly-label">{{ add $index 7 }} 月</span>
+    <small><span data-monthly-count>{{ index $counts $month }}</span> 条发布</small>
+  </div>
+  {{ end }}
+</div>

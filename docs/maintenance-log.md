@@ -283,3 +283,15 @@
 - 默认与环境变量指定 `/review/` 的组合构建、两组十八个模板共各 63 页的 Python 链接检查、前缀双语六组十八卡目录、主站产物和内容结构检查均通过。十八次独立构建及其 63 页检查通过，独立模式不含博客返回或模板切换入口。Hugo 资源和缓存只通过进程环境变量写入临时目录。
 - 补拍全页截图时曾因与输出目录重建并行导致一次页面暂时不存在；获得继续授权后改为构建结束后串行截图，十二张桌面/手机全页与交互状态截图全部完成。页面与业务代码未为此修改。
 - 证据位于 `F:/agents/code/temp/demo-templates-20261002/`：`node-tests.log`、`deployed-check-tests.log`、`e2e.log`、`e2e-prefix.log`、`output-checks.log`、`demo-checks.log`、`prefix-checks.log`、`standalone-checks.log`、构建日志及 `visuals/`。预览总览为 `third-template-overview.jpg`。恢复基线为干净提交 `a2bd0d3`；本批仅本地验收与提交，未推送、未运行远程 CI、未部署。
+
+## 2026-10-02 - 十二套衍生模板完整重设计
+
+- 六个案例保留经典模板，重做其余十二套的排版、配色、页面结构与交互效果，总数仍为十八个版本。创作者采用钴蓝章节海报／暗色索引预览，摄影采用黑金单图放映室／朱红影像杂志，看板采用暗色应用视图与详情抽屉／橙色分章报告，书店采用单书展台与购物袋抽屉／明黄选书台与蓝色收据，工坊采用午夜月历／紫色三步票券，旅行采用陶土手记／蓝色地图工作台。
+- 原始作品 Markdown、原图、四份 JSON 数据和四个 `*-core.js` 业务核心均未修改；交互控制器配合新的展示结构调整，看板说明页补充两行操作说明。所有模板仍共用各案例原始内容，不新增业务记录、依赖、外部素材、持久化或后台。
+- 双语注册表、六份案例 README 和总入口同步实际表现与脚本资产。十二张新版 1280×960 JPEG 预览已由真实页面重新拍摄，六张经典预览保留；已查看十八版桌面对照图及十二版 390×844 手机实拍，另保留手机全页截图。
+- 展示交互保留渐进增强、无脚本内容、键盘焦点与减少动画偏好。定点修正摄影缩略图的原图说明，以及书店关闭购物袋抽屉时仍可见的状态播报，并加入对应浏览器回归。
+- 验证：最终 191 项相关 Node 测试通过；七份 spec 经分批复验，245 个唯一 Chromium 用例均通过，逐条记录见 `browser-coverage.json`。另有 14 项 `/review/` 前缀模板组合切换通过；预览图接入后再次复验目录及响应式用例，37/37 通过（属于前述覆盖的复验，不另计唯一用例数）。保留的中间日志含已修复的历史失败；最终证据按用例对应后续通过记录。
+- 默认与 `/review/` 的组合构建、各十八个模板的 63 页链接检查、前缀双语六组十八卡目录与主站产物检查均通过。十八个独立构建及其 63 页检查通过，独立模式没有博客返回与模板切换入口。最终 JS 语法与 `git diff --check` 检查通过。
+- Node 使用 `node --test` 运行 `bookstore`、`content-dashboard`、`workshop-booking`、`trip-planner`、`demo-registry`、`demo-template-links`、`demo-catalog-links`、`build-site`、`photo-demo-check`、`deployed-site-check` 对应的测试文件；浏览器使用 `node scripts/run-e2e.cjs` 运行 `bookstore`、`content-dashboard`、`demo-templates`、`demos`、`portfolio-presentation`、`trip-planner`、`workshop-booking` 七份 spec，`--workers 2 --max-failures 1`。构建及链接检查使用 `node scripts/build-site.cjs`、`node scripts/check-demo-builds.cjs` 和各案例的 Python 检查器。
+- 本批按新 DOM 修正了工作台导航、票券面板、无脚本／隐藏控件与键盘顺序的测试定位；目录的整批导航测试拆为按语言与模板独立计时的用例，原有内容、链接和预览断言保留。用户授权本批同类测试定位与格式问题直接定点修正。
+- 证据位于 `F:/agents/code/temp/demo-complete-redesign-20261002/`，包括 `node-tests-final.log`、`browser-coverage.json`、`e2e-*.log`、`build-final.log`、`build-prefix.log`、`demo-checks.log`、`prefix-checks.log`、`standalone-checks.log`、`output-check.log`、`comparison.png`、`mobile-comparison.png` 与 `mobile/`。恢复基线为干净提交 `e671dad`；本批仅本地验收与提交，未推送、未运行远程 CI、未部署。

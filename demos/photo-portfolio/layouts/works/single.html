@@ -1,4 +1,9 @@
 {{ define "main" }}
+{{ if eq site.Params.demoTemplate "gallery" }}
+  {{ partial "gallery/single.html" . }}
+{{ else if eq site.Params.demoTemplate "filmstrip" }}
+  {{ partial "filmstrip/single.html" . }}
+{{ else }}
 <main id="main" class="shell detail-page{{ if eq site.Params.demoTemplate "gallery" }} gallery-detail{{ end }}" tabindex="-1">
   <a class="back-link" href="{{ .CurrentSection.RelPermalink }}"><span aria-hidden="true">←</span> 全部作品</a>
   <header class="detail-heading">
@@ -34,4 +39,5 @@
   </section>
   {{ end }}
 </main>
+{{ end }}
 {{ end }}

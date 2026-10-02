@@ -1,33 +1,24 @@
 {{ define "main" }}
 <main id="main" class="main shell planner-page" tabindex="-1">
+  {{ $template := site.Params.demoTemplate | default "classic" }}
+  {{ if eq $template "journal" }}
+  {{ partial "journal-page.html" . }}
+  {{ else if eq $template "workbench" }}
+  {{ partial "workbench-page.html" . }}
+  {{ else }}
   <header class="planner-intro">
     <div><p class="eyebrow">{{ site.Params.demoNotice }}</p><h1>{{ .Title }}</h1><p class="intro-copy">挑几处想停下来的地方，把先后顺序留给自己。时间和预算一起算，山路只在这张虚构地图上展开。</p></div>
     <div class="weekend-stamp" aria-hidden="true"><span>WEEKEND</span><strong>慢一点<br>也很好</strong><span>FARWEEK / 01</span></div>
   </header>
-  {{ if eq (site.Params.demoTemplate | default "classic") "journal" }}
-  <nav class="journal-section-nav" aria-label="编排行程导航"><a href="#places-heading">挑选地点 <span aria-hidden="true">↓</span></a><a href="#itinerary-heading">查看行程 <span aria-hidden="true">↓</span></a><a href="#terrain-heading">辅助地图 <span aria-hidden="true">↓</span></a></nav>
-  {{ end }}
-  {{ if eq (site.Params.demoTemplate | default "classic") "workbench" }}
-  <nav class="workbench-nav" aria-label="行程工作台导航"><a href="#places-heading">挑选地点</a><a href="#itinerary-heading">编排行程</a><a href="#terrain-heading">核对路线</a></nav>
-  {{ end }}
   <div data-trip-planner data-ready="false">
     <noscript><p class="noscript-note">JavaScript 未开启时，可以只读浏览八个虚构地点和基础地图；行程编排控件保持禁用，启用 JavaScript 后可添加与重排地点。</p></noscript>
     <div class="planner-layout">
-      {{ if eq (site.Params.demoTemplate | default "classic") "journal" }}
-      {{ partial "itinerary-panel.html" . }}
-      {{ partial "places-panel.html" . }}
-      {{ partial "map-panel.html" . }}
-      {{ else if eq (site.Params.demoTemplate | default "classic") "workbench" }}
-      {{ partial "places-panel.html" . }}
-      {{ partial "itinerary-panel.html" . }}
-      {{ partial "map-panel.html" . }}
-      {{ else }}
       {{ partial "places-panel.html" . }}
       {{ partial "map-panel.html" . }}
       {{ partial "itinerary-panel.html" . }}
-      {{ end }}
     </div>
     <script id="planner-data" type="application/json">{{ site.Data.places | jsonify | safeJS }}</script>
   </div>
+  {{ end }}
 </main>
 {{ end }}

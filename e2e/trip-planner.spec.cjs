@@ -90,6 +90,10 @@ test('trip keyboard sorting retains the moved stop and removal focuses a neighbo
     expect(await itineraryIds(page)).toEqual(['cloud-bridge', 'pine-ridge', 'terrace-lake']);
     expect(await page.evaluate(() => document.activeElement.closest('[data-stop-id]')?.dataset.stopId)).toBe('cloud-bridge');
     await page.keyboard.press('Tab');
+    if (demo.templateId === 'journal') {
+        await expect(page.locator('[data-stop-note="cloud-bridge"] > summary')).toBeFocused();
+        await page.keyboard.press('Tab');
+    }
     await expect(page.getByRole('button', { name: '下移雾桥溪', exact: true })).toBeFocused();
     await page.keyboard.press('Enter');
     expect(await itineraryIds(page)).toEqual(['pine-ridge', 'cloud-bridge', 'terrace-lake']);
@@ -132,6 +136,94 @@ test('trip planner fits phone and desktop screens without storage or external re
     expect(external).toEqual([]);
 });
 
+if (demo.templateId === 'journal') {
+test('terracotta notebook expands place notes and preserves an expanded timeline stop through reorder', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 1000 });
+    await openPlanner(page);
+    await expect(page.locator('.journal-desk')).toHaveCSS('display', 'grid');
+    const notebook = await page.locator('.itinerary-panel').boundingBox();
+    const collection = await page.locator('.journal-library').boundingBox();
+    const map = await page.locator('.map-panel').boundingBox();
+    expect(collection.x).toBeGreaterThanOrEqual(notebook.x + notebook.width);
+    expect(map.y).toBeGreaterThan(notebook.y);
+    const placeNote = page.locator('[data-place-id="cloud-bridge"] .journal-place-details');
+    await expect(placeNote).not.toHaveAttribute('open');
+    await placeNote.locator('summary').click();
+    await expect(placeNote).toHaveAttribute('open', '');
+    await expect(placeNote.locator('p')).toContainText('跨过低矮木桥');
+    await addPlaces(page, ['松风脊', '雾桥溪', '阶影湖']);
+    const note = page.locator('[data-stop-note="cloud-bridge"]');
+    await expect(note).not.toHaveAttribute('open');
+    await note.locator('summary').click();
+    await expect(note.locator('p')).toBeVisible();
+    await expect(note.locator('p')).toContainText('跨过低矮木桥');
+    await page.getByRole('button', { name: '上移雾桥溪', exact: true }).click();
+    expect(await itineraryIds(page)).toEqual(['cloud-bridge', 'pine-ridge', 'terrace-lake']);
+    await expect(page.locator('[data-stop-note="cloud-bridge"]')).toHaveAttribute('open', '');
+    expect(await page.locator('#itinerary-list .stop-time').allTextContents()).toEqual(['累计 0 — 75 分钟', '累计 95 — 185 分钟', '累计 205 — 315 分钟']);
+    await expectTotals(page, 3, 275, 40, 315, '¥12.00');
+    await page.getByRole('button', { name: '移除雾桥溪', exact: true }).click();
+    await expect(page.locator('[data-stop-note="cloud-bridge"]')).toHaveCount(0);
+    await addPlaces(page, ['雾桥溪']);
+    await expect(page.locator('[data-stop-note="cloud-bridge"]')).not.toHaveAttribute('open');
+});
+}
+
+if (demo.templateId === 'workbench') {
+test('blue map workspace supports keyboard inspection, adding from the map and collapsing panels without losing the route', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 1000 });
+    await openPlanner(page);
+    await expect(page.locator('.workbench-layout')).toHaveCSS('display', 'block');
+    await expect(page.locator('.workbench-places')).toHaveCSS('position', 'absolute');
+    await expect(page.locator('.workbench-itinerary')).toHaveCSS('position', 'absolute');
+    await expect(page.locator('.terrain-map')).toHaveAttribute('role', 'group');
+    await expect(page.locator('[data-map-choice][role="button"]')).toHaveCount(8);
+    await expect(page.locator('[data-map-choice][tabindex="0"]')).toHaveCount(1);
+    const pine = page.locator('[data-map-id="pine-ridge"]');
+    const bridge = page.locator('[data-map-id="cloud-bridge"]');
+    await pine.focus();
+    await pine.press('Enter');
+    await expect(page.locator('[data-map-inspector]')).toHaveAttribute('data-map-selection', 'pine-ridge');
+    await expect(page.locator('[data-map-inspector-title]')).toHaveText('松风脊');
+    await expectTotals(page, 0, 0, 0, 0, '¥0.00');
+    await pine.press('ArrowRight');
+    await expect(bridge).toBeFocused();
+    await bridge.press('Space');
+    await expect(bridge).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('[data-map-inspector-copy]')).toContainText('跨过低矮木桥');
+    await expect(page.locator('[data-map-inspector-meta]')).toContainText('75 分钟');
+    await page.getByRole('button', { name: '将雾桥溪加入行程', exact: true }).click();
+    await expect(page.locator('[data-map-add]')).toBeDisabled();
+    await expect(bridge.locator('[data-route-number]')).toHaveText('1');
+    await pine.click();
+    await page.getByRole('button', { name: '将松风脊加入行程', exact: true }).click();
+    expect(await itineraryIds(page)).toEqual(['cloud-bridge', 'pine-ridge']);
+    await expect(page.locator('#itinerary-route')).toHaveAttribute('points', '352,112 160,156.8');
+    await expectTotals(page, 2, 165, 20, 185, '¥0.00');
+    const itineraryToggle = page.locator('[data-workbench-panel="itinerary"]');
+    await itineraryToggle.click();
+    await expect(page.locator('#workbench-itinerary')).toBeHidden();
+    await expect(itineraryToggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('#itinerary-route')).toHaveAttribute('points', '352,112 160,156.8');
+    const lake = page.locator('[data-map-id="terrace-lake"]');
+    await bridge.focus();
+    await bridge.press('ArrowDown');
+    await expect(lake).toBeFocused();
+    await lake.press('Enter');
+    await page.getByRole('button', { name: '将阶影湖加入行程', exact: true }).click();
+    await expect(page.locator('#workbench-itinerary')).toBeVisible();
+    await expect(itineraryToggle).toHaveAttribute('aria-expanded', 'true');
+    expect(await itineraryIds(page)).toEqual(['cloud-bridge', 'pine-ridge', 'terrace-lake']);
+    await page.locator('[data-workbench-panel="places"]').click();
+    await expect(page.locator('#workbench-places')).toBeHidden();
+    await page.getByRole('button', { name: '清空行程', exact: true }).click();
+    await expect(page.locator('#workbench-places')).toBeVisible();
+    await expect(page.getByLabel('筛选地点类型')).toBeFocused();
+    await expectTotals(page, 0, 0, 0, 0, '¥0.00');
+    await expect(page.locator('#itinerary-route')).toBeHidden();
+});
+}
+
 test.describe('trip planner without JavaScript', () => {
     test.use({ javaScriptEnabled: false });
     test('retains eight readable places and the base map with disabled editing controls', async ({ page }) => {
@@ -147,6 +239,16 @@ test.describe('trip planner without JavaScript', () => {
         await expectTotals(page, 0, 0, 0, 0, '¥0.00');
         await expect(page.locator('#itinerary-list > li')).toHaveCount(0);
         await expect(page.locator('#itinerary-route')).toBeHidden();
+        if (demo.templateId === 'journal') {
+            await expect(page.locator('.journal-place-details[open]')).toHaveCount(8);
+            await expect(page.locator('.field-note-copy:visible')).toHaveCount(8);
+        }
+        if (demo.templateId === 'workbench') {
+            await expect(page.locator('.terrain-map')).toHaveAttribute('role', 'img');
+            await expect(page.locator('[data-map-choice][role="button"]')).toHaveCount(0);
+            await expect(page.locator('[data-map-choice][tabindex]')).toHaveCount(0);
+            for (const button of await page.locator('[data-workbench-panel]').all()) await expect(button).toBeDisabled();
+        }
         await page.goto(`${demoPath}about/`);
         await expect(page.locator('main h1')).toHaveText('行程说明');
         await expect(page.locator('.prose')).toContainText('非真实地理导航');

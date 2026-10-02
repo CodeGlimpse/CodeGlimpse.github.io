@@ -1,14 +1,2 @@
-<main id="main" class="gallery-home" tabindex="-1">
-  {{ $works := site.GetPage "/works" }}
-  {{ range first 1 $works.Pages.ByWeight }}
-  <section class="gallery-stage shell" aria-labelledby="hero-title">
-    {{ partial "hero-media.html" (dict "page" . "sizes" "(max-width: 1400px) 100vw, 1320px") }}
-    {{ partial "home-intro.html" . }}
-  </section>
-  {{ end }}
-  <section class="selected gallery-selection shell" aria-labelledby="selected-title">
-    {{ partial "selected-heading.html" . }}
-    {{ partial "gallery/contact-sheet.html" (after 1 $works.Pages.ByWeight) }}
-  </section>
-  {{ partial "home-about.html" . }}
-</main>
+{{ $works := site.GetPage "/works" }}
+<main id="main" class="gallery-home" tabindex="-1"><header class="cinema-opening shell"><div class="cinema-opening-label"><p>{{ site.Params.creatorName }} / 摄影作品集演示</p><span aria-hidden="true">LIGHT<br>/ STILL</span></div><div><h1 id="hero-title">{{ site.Home.Params.heading }}</h1><div class="cinema-opening-copy"><p>{{ site.Home.Params.intro }}</p><a href="{{ $works.RelPermalink }}">浏览全部作品 ↗</a></div></div></header><section class="cinema-exhibition shell" aria-labelledby="selected-title"><div class="cinema-exhibition-heading"><div><p>SELECTED SERIES / 01—03</p><h2 id="selected-title">{{ $works.Title }}</h2></div><p>{{ $works.Params.summary }}</p></div>{{ partial "gallery/stage.html" (dict "pages" $works.Pages.ByWeight "prefix" "home") }}</section><section class="cinema-about shell" aria-labelledby="about-title"><p>ABOUT / CONTACT</p><h2 id="about-title">画面之外，<br>也留一句介绍。</h2><div><p>{{ site.Params.creatorName }}是本站设定的虚构摄影师。这里的作品图像由 AI 生成，用于演示照片、简介与联系入口在个人网站中的呈现。</p><a href="{{ (site.GetPage "/about").RelPermalink }}#contact">查看关于与联系 ↗</a></div></section></main>

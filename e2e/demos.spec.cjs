@@ -20,9 +20,9 @@ async function expectImageAspectRatio(image, aspectRatio) {
     expect(box.width / box.height).toBeCloseTo(aspectRatio, 2);
 }
 
-test('bilingual demo catalog presents registry copy and opens every demo', async ({ page }) => {
-    for (const [prefix, language] of [['', 'zh-cn'], ['/en', 'en']]) {
-        for (const demo of DEMO_REGISTRY) {
+for (const [prefix, language] of [['', 'zh-cn'], ['/en', 'en']]) {
+    for (const demo of DEMO_REGISTRY) {
+        test(`bilingual demo catalog ${language} opens ${demo.id} with registry copy`, async ({ page }) => {
             await page.goto(`${prefix}/demos/`);
             await expect(page.locator('main h1')).toHaveCount(1);
             await expect(page.locator('.demo-card')).toHaveCount(DEMO_REGISTRY.length);
@@ -54,9 +54,9 @@ test('bilingual demo catalog presents registry copy and opens every demo', async
             }
             const contentImage = page.locator('main img').first();
             if (await contentImage.count()) await expectImageLoaded(contentImage);
-        }
+        });
     }
-});
+}
 
 for (const demo of DEMO_REGISTRY) {
     test(`${demo.id} pages return to the demo catalog`, async ({ page }) => {

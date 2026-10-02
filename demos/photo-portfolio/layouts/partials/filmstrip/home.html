@@ -1,9 +1,2 @@
-<main id="main" class="filmstrip-home shell" tabindex="-1">
-  {{ $works := site.GetPage "/works" }}
-  <header class="filmstrip-intro">{{ partial "home-intro.html" . }}</header>
-  <section aria-labelledby="selected-title">
-    <div class="section-heading"><div><p class="eyebrow">LIGHT / STILL</p><h2 id="selected-title">{{ $works.Title }}</h2></div><p>{{ $works.Params.summary }}</p></div>
-    {{ partial "filmstrip/frames.html" $works.Pages.ByWeight }}
-  </section>
-  {{ partial "home-about.html" . }}
-</main>
+{{ $works := site.GetPage "/works" }}
+<main id="main" class="filmstrip-home shell" tabindex="-1"><div class="magazine-nameplate" aria-hidden="true"><span>LIGHT</span><span>/ STILL</span></div><header class="filmstrip-intro" data-magazine-section><div class="magazine-opening-copy"><p class="magazine-kicker">{{ site.Params.creatorName }} / 摄影作品集演示</p><h1 id="hero-title">{{ site.Home.Params.heading }}</h1><p>{{ site.Home.Params.intro }}</p><a class="magazine-text-link" href="{{ $works.RelPermalink }}">浏览全部作品 ↗</a><span class="magazine-issue-mark" aria-hidden="true">01<br>VISUAL<br>JOURNAL</span></div>{{ range first 1 $works.Pages.ByWeight }}{{ partial "filmstrip/feature.html" . }}{{ end }}</header><section class="magazine-selected" aria-labelledby="selected-title" data-magazine-section><div class="magazine-section-heading"><p>SELECTED SERIES / 02—03</p><h2 id="selected-title">再看两处光</h2><p>从安静的室内，到潮水退去后的海岸。</p></div>{{ partial "filmstrip/frames.html" (after 1 $works.Pages.ByWeight) }}</section><section class="magazine-home-about" aria-labelledby="about-title" data-magazine-section><p class="magazine-kicker">ABOUT / CONTACT</p><h2 id="about-title">画面之外，<br>也留一句介绍。</h2><div><p>{{ site.Params.creatorName }}是本站设定的虚构摄影师。这里的作品图像由 AI 生成，用于演示照片、简介与联系入口在个人网站中的呈现。</p><a class="magazine-text-link" href="{{ (site.GetPage "/about").RelPermalink }}#contact">查看关于与联系 ↗</a></div><span aria-hidden="true">↗</span></section></main>

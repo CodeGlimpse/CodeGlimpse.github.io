@@ -1,0 +1,9 @@
+{{ $cover := .Resources.GetMatch .Params.cover }}
+{{ if not $cover }}{{ errorf "Missing cover image for %s: %v" .File.Path .Params.cover }}{{ end }}
+<main id="main" class="editorial-story shell" tabindex="-1">
+  <a class="editorial-back" href="{{ .CurrentSection.RelPermalink }}">← 返回{{ .CurrentSection.Title }}</a>
+  <header class="editorial-story-heading"><p>{{ if eq .Section "works" }}图片作品{{ else }}项目案例{{ end }} / {{ .Params.category }}</p><h1>{{ .Title }}</h1><p>{{ .Params.summary }}</p></header>
+  <figure class="detail-cover editorial-story-cover">{{ with $cover }}<img src="{{ .RelPermalink }}" alt="{{ $.Params.cover_alt }}" width="1200" height="800" decoding="async">{{ end }}<figcaption>{{ .Params.category }} / {{ .Title }}</figcaption></figure>
+  <div class="editorial-story-body"><aside aria-hidden="true"><span>↘</span>IMAGE<br>&amp; PROCESS</aside><article class="prose">{{ .Content }}</article></div>
+  <div class="editorial-story-end"><p>{{ site.Params.demoNotice }}</p><a href="{{ .CurrentSection.RelPermalink }}">浏览更多{{ .CurrentSection.Title }} ↗</a></div>
+</main>

@@ -35,12 +35,12 @@ marked template anchor, never an image, unmarked link, or source attribute.
 
 | Content case | Existing template | Second template | Third template |
 | --- | --- | --- | --- |
-| creator-portfolio | classic: gallery | editorial: image chapters and project index | archive: numbered thumbnail entries |
-| photo-portfolio | classic: photo stories | gallery: dark walls and contact sheets | filmstrip: continuous photo sequence |
-| content-dashboard | classic: overview | workspace: filter sidebar and record cards | report: scope-first data report |
-| bookstore | classic: bookshelf | catalog: indexed horizontal book entries | checklist: compact list and bag summary |
-| workshop-booking | classic: course selection | calendar: date-first sessions | agenda: sessions beside course reference |
-| trip-planner | classic: map planner | journal: itinerary timeline with supporting map | workbench: places beside itinerary, map below |
+| creator-portfolio | classic: gallery | editorial: cobalt poster chapters and scroll navigation | archive: dark index with live split preview |
+| photo-portfolio | classic: photo stories | gallery: single-image cinema with thumbnails | filmstrip: vermilion magazine collage and reading progress |
+| content-dashboard | classic: overview | workspace: dark app views and record drawer | report: orange chart chapters and collapsible records |
+| bookstore | classic: bookshelf | catalog: one-book stage, spine shelf and bag drawer | checklist: yellow selection desk, inline quantities and blue receipt |
+| workshop-booking | classic: course selection | calendar: midnight date grid and session panel | agenda: purple ticket flow for course, session and preview |
+| trip-planner | classic: map planner | journal: terracotta timeline and expandable stops | workbench: blue map workspace with selectable markers and floating panels |
 
 Existing URLs remain `demos/<case>/`; new templates live at
 `demos/variants/<case>/<template>/`. The catalog groups all three previews under one
@@ -57,6 +57,13 @@ delivery; there will be no blog-only switching or return links. Unknown template
 IDs fail the build. All versions reuse the same Markdown, JSON, originals,
 business core, and shared content partials; never duplicate source content to
 create a template.
+
+The twelve alternate templates use different page structures and presentation
+controllers. Keep the six classic presentations intact when changing them.
+Presentation effects must respect reduced motion. Without JavaScript, the
+source content remains readable and interactive business controls stay disabled.
+Native dialogs restore focus to their opener; live preview buttons do not
+replace real detail-page links.
 
 ## Refresh real page previews
 

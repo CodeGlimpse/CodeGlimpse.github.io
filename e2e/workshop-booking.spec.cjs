@@ -20,6 +20,32 @@ async function openWorkshop(page, demo, { showAll = true } = {}) {
     if (demo.templateId === 'calendar' && showAll) await calendarButton(page, 'all').click();
 }
 
+async function showAgendaStep(page, demo, step) {
+    if (demo.templateId !== 'agenda') return;
+    const root = page.locator('[data-workshop]');
+    if (await root.getAttribute('data-agenda-step') !== String(step)) await page.locator(`[data-agenda-goto="${step}"]`).click();
+    await expect(root).toHaveAttribute('data-agenda-step', String(step));
+}
+
+async function chooseCourse(page, demo, id) {
+    await showAgendaStep(page, demo, 0);
+    await courseButton(page, id).click();
+}
+
+async function chooseSession(page, demo, id) {
+    await showAgendaStep(page, demo, 1);
+    await sessionButton(page, id).click();
+}
+
+async function selectDate(page, demo, value) {
+    await showAgendaStep(page, demo, 1);
+    await page.getByLabel('排期日期', { exact: true }).selectOption(value);
+}
+
+async function showPreviewStep(page, demo) {
+    await showAgendaStep(page, demo, 2);
+}
+
 for (const demo of demos) {
     test.describe(demo.templateId, () => {
         test('craft and date filters lead to a complete local reservation preview with independently calculated totals', async ({ page, context, baseURL }) => {
@@ -41,10 +67,11 @@ for (const demo of demos) {
             await page.getByLabel('手作分类', { exact: true }).selectOption(course.category);
             await expect(page.locator('[data-course-id]:visible')).toHaveCount(schedule.courses.filter(item => item.category === course.category).length);
             if (demo.templateId === 'calendar') await page.getByLabel('排期日期', { exact: true }).selectOption(session.date);
-            await courseButton(page, course.id).click();
-            if (demo.templateId !== 'calendar') await page.getByLabel('排期日期', { exact: true }).selectOption(session.date);
+            await chooseCourse(page, demo, course.id);
+            if (demo.templateId !== 'calendar') await selectDate(page, demo, session.date);
             await expect(page.locator('[data-session-id]:visible')).toHaveCount(schedule.sessions.filter(item => item.courseId === course.id && item.date === session.date).length);
-            await sessionButton(page, session.id).click();
+            await chooseSession(page, demo, session.id);
+            await showPreviewStep(page, demo);
             await page.getByLabel('参与人数', { exact: true }).selectOption('2');
             await page.getByRole('button', { name: '查看预约单预览' }).click();
             await expect(page.locator('#booking-preview')).toBeVisible();
@@ -68,34 +95,36 @@ for (const demo of demos) {
         test('insufficient capacity preserves the chosen session, blocks preview, and changes clear stale summaries', async ({ page }) => {
             await openWorkshop(page, demo);
             const limited = schedule.sessions.find(item => item.remaining > 0 && item.remaining < 6);
-            await courseButton(page, limited.courseId).click();
-            await sessionButton(page, limited.id).click();
+            await chooseCourse(page, demo, limited.courseId);
+            await chooseSession(page, demo, limited.id);
+            await showPreviewStep(page, demo);
             await page.getByRole('button', { name: '查看预约单预览' }).click();
             await expect(page.locator('#booking-preview')).toBeVisible();
             await page.getByLabel('参与人数', { exact: true }).selectOption(String(limited.remaining + 1));
             await expect(sessionButton(page, limited.id)).toHaveAttribute('aria-pressed', 'true');
             await expect(page.locator('#booking-status')).toContainText('余位不足');
-            await expect(page.getByRole('button', { name: '查看预约单预览' })).toBeDisabled();
+            await expect(page.locator('#preview-booking')).toBeDisabled();
             await expect(page.locator('#booking-preview')).toBeHidden();
             await expect(page.locator('[data-preview=course]')).toHaveText('—');
             await expect(page.locator('[data-preview=total]')).toHaveText('—');
             await page.getByLabel('参与人数', { exact: true }).selectOption('1');
             await page.getByRole('button', { name: '查看预约单预览' }).click();
             const anotherDate = schedule.sessions.find(item => item.date !== limited.date).date;
-            await page.getByLabel('排期日期', { exact: true }).selectOption(anotherDate);
+            await selectDate(page, demo, anotherDate);
             await expect(page.locator('#booking-preview')).toBeHidden();
             await expect(page.locator('[data-selection=date]')).toHaveText('尚未选场');
             await expect(sessionButton(page, limited.id)).toHaveAttribute('aria-pressed', 'false');
-            await page.getByLabel('排期日期', { exact: true }).selectOption('all');
+            await selectDate(page, demo, 'all');
             if (demo.templateId === 'calendar') await courseButton(page, limited.courseId).click();
-            await sessionButton(page, limited.id).click();
+            await chooseSession(page, demo, limited.id);
+            await showPreviewStep(page, demo);
             await page.getByRole('button', { name: '查看预约单预览' }).click();
             const otherCourse = schedule.courses.find(item => item.id !== limited.courseId);
-            await courseButton(page, otherCourse.id).click();
+            await chooseCourse(page, demo, otherCourse.id);
             await expect(page.locator('[data-selection=course]')).toHaveText(otherCourse.title);
             await expect(page.locator('[data-selection=date]')).toHaveText('尚未选场');
             await expect(page.locator('#booking-preview')).toBeHidden();
-            await expect(page.getByRole('button', { name: '查看预约单预览' })).toBeDisabled();
+            await expect(page.locator('#preview-booking')).toBeDisabled();
             await page.getByRole('button', { name: '重置选择', exact: true }).click();
             if (demo.templateId === 'calendar') {
                 await expect(page.locator('[data-calendar-details]')).toBeHidden();
@@ -105,7 +134,7 @@ for (const demo of demos) {
             }
             const soldOut = schedule.sessions.find(item => item.remaining === 0);
             await expect(sessionButton(page, soldOut.id)).toBeDisabled();
-            await expect(page.locator('[data-session-id]:visible')).toHaveCount(schedule.sessions.length);
+            await expect(page.locator('[data-session-id]:not([hidden])')).toHaveCount(schedule.sessions.length);
         });
 
         test('first Tab reaches the skip link and keyboard course, session, and preview actions retain focus', async ({ page }) => {
@@ -129,11 +158,13 @@ for (const demo of demos) {
             await page.keyboard.press('Space');
             await expect(course).toHaveAttribute('aria-pressed', 'true');
             await expect(course).toBeFocused();
+            await showAgendaStep(page, demo, 1);
             const choice = sessionButton(page, session.id);
             await choice.focus();
             await page.keyboard.press('Enter');
             await expect(choice).toHaveAttribute('aria-pressed', 'true');
             await expect(choice).toBeFocused();
+            await showPreviewStep(page, demo);
             const preview = page.getByRole('button', { name: '查看预约单预览' });
             await preview.focus();
             await page.keyboard.press('Enter');
@@ -155,8 +186,9 @@ for (const demo of demos) {
                     await calendarButton(page, 'all').click();
                 }
                 const session = schedule.sessions.find(item => item.remaining > 0);
-                await courseButton(page, session.courseId).click();
-                await sessionButton(page, session.id).click();
+                await chooseCourse(page, demo, session.courseId);
+                await chooseSession(page, demo, session.id);
+                await showPreviewStep(page, demo);
                 await page.getByRole('button', { name: '查看预约单预览' }).click();
                 await expect(page.locator('#booking-preview')).toBeVisible();
                 expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width + 1);
@@ -169,6 +201,28 @@ for (const demo of demos) {
         });
 
         if (demo.templateId === 'calendar') {
+            test('midnight calendar uses a separate day panel and retains course names and times inside phone date cells', async ({ page }) => {
+                await page.setViewportSize({ width: 1280, height: 1000 });
+                await openWorkshop(page, demo, { showAll: false });
+                await expect(page.locator('.calendar-workspace')).toHaveCSS('display', 'grid');
+                const month = await page.locator('.calendar-month-column').boundingBox();
+                const day = await page.locator('.calendar-day-column').boundingBox();
+                expect(day.x).toBeGreaterThanOrEqual(month.x + month.width);
+                for (const width of [320, 390]) {
+                    await page.setViewportSize({ width, height: 1000 });
+                    await expect(page.locator('.calendar-day-number:visible')).toHaveCount(31);
+                    await expect(page.locator('.calendar-slot:visible')).toHaveCount(schedule.sessions.length);
+                    for (const session of schedule.sessions) {
+                        const course = schedule.courses.find(item => item.id === session.courseId);
+                        const cell = calendarButton(page, session.date);
+                        const slot = cell.locator('.calendar-slot').filter({ hasText: course.title }).filter({ hasText: session.start });
+                        await expect(slot.locator('strong')).toBeVisible();
+                        await expect(slot.locator('span').filter({ hasText: session.start })).toBeVisible();
+                    }
+                    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width + 1);
+                }
+            });
+
             test('calendar opens at date entry with a complete Monday-first October grid', async ({ page }) => {
                 await openWorkshop(page, demo, { showAll: false });
                 await expect(page.getByLabel('排期日期', { exact: true })).toHaveValue('');
@@ -284,7 +338,7 @@ for (const demo of demos) {
                 await expect(page.locator(`[data-session-id="${soldOut.id}"]`)).toBeVisible();
                 await expect(sessionButton(page, soldOut.id)).toBeDisabled();
                 await courseButton(page, soldOut.courseId).click();
-                await expect(page.getByRole('button', { name: '查看预约单预览' })).toBeDisabled();
+                await expect(page.locator('#preview-booking')).toBeDisabled();
                 const all = calendarButton(page, 'all');
                 await all.focus();
                 await page.keyboard.press('Space');
@@ -323,6 +377,56 @@ for (const demo of demos) {
             });
         }
 
+        if (demo.templateId === 'agenda') {
+            test('purple ticket wizard gates each step and preserves selections on back while invalidating a changed course', async ({ page }) => {
+                await page.setViewportSize({ width: 1280, height: 1000 });
+                await page.emulateMedia({ reducedMotion: 'reduce' });
+                await openWorkshop(page, demo);
+                const root = page.locator('[data-workshop]');
+                await expect(page.locator('.agenda-steps')).toHaveCSS('display', 'grid');
+                await expect(page.locator('.agenda-step[data-agenda-step]')).toHaveCount(3);
+                await expect(page.locator('.agenda-step[data-agenda-step]:visible')).toHaveCount(1);
+                await expect(root).toHaveAttribute('data-agenda-step', '0');
+                await expect(page.locator('[data-agenda-goto="0"]')).toHaveAttribute('aria-current', 'step');
+                await expect(page.locator('[data-agenda-next="1"]')).toBeDisabled();
+                await expect(page.locator('[data-agenda-goto="1"]')).toBeDisabled();
+                await expect(page.locator('[data-agenda-goto="2"]')).toBeDisabled();
+
+                const session = schedule.sessions.find(item => item.remaining >= 2);
+                const course = schedule.courses.find(item => item.id === session.courseId);
+                await chooseCourse(page, demo, course.id);
+                await page.locator('[data-agenda-next="1"]').click();
+                await expect(root).toHaveAttribute('data-agenda-step', '1');
+                await expect(page.locator('#agenda-session-heading')).toBeFocused();
+                await expect(page.locator('.agenda-step[data-agenda-step]:visible')).toHaveCount(1);
+                await expect(page.locator('[data-agenda-next="2"]')).toBeDisabled();
+                await chooseSession(page, demo, session.id);
+                await page.locator('[data-agenda-next="2"]').click();
+                await expect(root).toHaveAttribute('data-agenda-step', '2');
+                await expect(page.locator('#agenda-preview-heading')).toBeFocused();
+                await page.getByLabel('参与人数', { exact: true }).selectOption('2');
+                await page.getByRole('button', { name: '查看预约单预览' }).click();
+                await expect(page.locator('[data-preview=total]')).toHaveText(money(course.priceCents * 2));
+                await page.locator('[data-agenda-back="1"]').click();
+                await expect(sessionButton(page, session.id)).toHaveAttribute('aria-pressed', 'true');
+                await expect(page.locator('#agenda-session-heading')).toBeFocused();
+                await page.locator('[data-agenda-back="0"]').click();
+                await expect(courseButton(page, course.id)).toHaveAttribute('aria-pressed', 'true');
+                await expect(page.locator('#agenda-course-heading')).toBeFocused();
+                const other = schedule.courses.find(item => item.id !== course.id);
+                await chooseCourse(page, demo, other.id);
+                await expect(page.locator('[data-session-choice][aria-pressed=true]')).toHaveCount(0);
+                await expect(page.locator('#booking-preview')).toBeHidden();
+                await expect(page.locator('[data-preview=total]')).toHaveText('—');
+                await expect(page.locator('[data-agenda-goto="2"]')).toBeDisabled();
+                await expect(page.locator('#preview-booking')).toBeDisabled();
+                await page.getByRole('button', { name: '重置选择', exact: true }).click();
+                await expect(root).toHaveAttribute('data-agenda-step', '0');
+                await expect(page.getByLabel('手作分类', { exact: true })).toBeFocused();
+                await expect(page.locator('[data-agenda-next="1"]')).toBeDisabled();
+            });
+        }
+
         test.describe('workshop without JavaScript', () => {
             test.use({ javaScriptEnabled: false });
             test('retains all courses and twelve read-only sessions with disabled controls and a real noscript paragraph', async ({ page }) => {
@@ -339,7 +443,7 @@ for (const demo of demos) {
                 await expect(page.getByLabel('手作分类', { exact: true })).toBeDisabled();
                 await expect(page.getByLabel('排期日期', { exact: true })).toBeDisabled();
                 await expect(page.getByLabel('参与人数', { exact: true })).toBeDisabled();
-                await expect(page.getByRole('button', { name: '查看预约单预览' })).toBeDisabled();
+                await expect(page.locator('#preview-booking')).toBeDisabled();
                 await expect(page.locator('p.noscript-note')).toBeVisible();
                 await expect(page.locator('p.noscript-note')).toContainText('只读浏览全部六门课程和十二个示例场次');
                 await expect(page.locator('#booking-preview')).toBeHidden();
@@ -349,6 +453,10 @@ for (const demo of demos) {
                     await expect(page.locator('[data-calendar-date]:visible')).toHaveCount(scheduledDates.length + 1);
                     for (const date of [...scheduledDates, 'all']) await expect(calendarButton(page, date)).toBeDisabled();
                     await expect(page.locator('.calendar-day-number:visible')).toHaveCount(31);
+                }
+                if (demo.templateId === 'agenda') {
+                    await expect(page.locator('.agenda-step[data-agenda-step]:visible')).toHaveCount(3);
+                    for (const button of await page.locator('[data-agenda-goto], [data-agenda-next], [data-agenda-back]').all()) await expect(button).toBeDisabled();
                 }
             });
         });

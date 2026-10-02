@@ -3,28 +3,12 @@
 {{ $template := site.Params.demoTemplate | default "classic" }}
 {{ $context := dict "schedule" $schedule "template" $template }}
 <main id="main" class="shell booking-page" data-workshop tabindex="-1">
-  {{ partial "workshop-intro.html" . }}
   {{ if eq $template "agenda" }}
-  <nav class="agenda-nav" aria-label="排期总览导航"><a href="#schedule-heading">查看场次</a><a href="#course-heading">对照课程</a><a href="#booking-heading">预约单预览</a></nav>
-  <div class="agenda-layout" data-agenda>
-    {{ partial "workshop-schedule.html" $context }}
-    {{ partial "workshop-courses.html" $context }}
-    {{ partial "workshop-booking-panel.html" $context }}
-  </div>
+  {{ partial "agenda-page.html" (dict "page" . "context" $context) }}
   {{ else if eq $template "calendar" }}
-  {{ partial "workshop-calendar.html" $context }}
-  <p class="calendar-prompt" data-calendar-prompt hidden>先在日历中挑选日期，再展开当天的课程与场次。</p>
-  <div class="calendar-details" id="calendar-details" data-calendar-details>
-    <div class="calendar-details-heading"><p class="eyebrow">YOUR DAY / 把一个日子留给手作</p><h2 data-calendar-summary>十月完整课程与排期</h2></div>
-    <div class="booking-layout">
-      <div class="selection-column">
-        {{ partial "workshop-courses.html" $context }}
-        {{ partial "workshop-schedule.html" $context }}
-      </div>
-      {{ partial "workshop-booking-panel.html" $context }}
-    </div>
-  </div>
+  {{ partial "calendar-page.html" (dict "page" . "context" $context) }}
   {{ else }}
+  {{ partial "workshop-intro.html" . }}
   <div class="booking-layout">
     <div class="selection-column">
       {{ partial "workshop-courses.html" $context }}

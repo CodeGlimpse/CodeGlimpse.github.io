@@ -258,67 +258,6 @@ test.describe('new templates without JavaScript', () => {
     }
 });
 
-for (const [caseId, templateId] of [
-    ['creator-portfolio', 'archive'], ['photo-portfolio', 'filmstrip'],
-    ['content-dashboard', 'report'], ['bookstore', 'checklist'],
-    ['workshop-booking', 'agenda'], ['trip-planner', 'workbench'],
-]) {
-    test(`${caseId} ${templateId} preserves its distinct reading order on desktop and phone`, async ({ page, baseURL }) => {
-        const demo = DEMO_REGISTRY.find(item => item.caseId === caseId && item.templateId === templateId);
-        for (const width of [1280, 320]) {
-            await page.setViewportSize({ width, height: 960 });
-            await openDemo(page, demo, '', baseURL);
-            const box = selector => page.locator(selector).first().boundingBox();
-            if (templateId === 'archive') {
-                await expect(page.locator('.archive-entry')).toHaveCount(4);
-                const intro = await box('.archive-intro');
-                const entries = await box('.archive-sections');
-                if (width === 1280) expect(entries.x).toBeGreaterThan(intro.x + intro.width);
-                else expect(entries.y).toBeGreaterThan(intro.y + intro.height);
-            } else if (templateId === 'filmstrip') {
-                await expect(page.locator('.filmstrip-frame')).toHaveCount(3);
-                const frames = await page.locator('.filmstrip-frame').all();
-                for (let index = 1; index < frames.length; index++) {
-                    const previous = await frames[index - 1].boundingBox();
-                    const next = await frames[index].boundingBox();
-                    expect(next.y).toBeGreaterThanOrEqual(previous.y + previous.height - 1);
-                }
-            } else if (templateId === 'report') {
-                const filters = await box('.filter-panel');
-                const overview = await box('.report-overview');
-                const content = await box('.content-panel');
-                expect(overview.y).toBeGreaterThan(filters.y + filters.height);
-                expect(content.y).toBeGreaterThan(overview.y + overview.height);
-                const metrics = await box('.metrics-grid');
-                const channels = await box('.channel-panel');
-                if (width === 1280) expect(channels.x).toBeGreaterThan(metrics.x + metrics.width);
-                else expect(channels.y).toBeGreaterThan(metrics.y + metrics.height);
-            } else if (templateId === 'checklist') {
-                const catalog = await box('.catalog');
-                const bag = await box('.bag-panel');
-                expect(bag.y).toBeGreaterThan(catalog.y + catalog.height);
-                const cards = page.locator('.book-card');
-                expect((await cards.nth(1).boundingBox()).y).toBeGreaterThan((await cards.nth(0).boundingBox()).y);
-                await expect(page.getByRole('link', { name: '02 / 购物袋汇总' })).toHaveAttribute('href', '#bag-heading');
-            } else if (templateId === 'agenda') {
-                const schedule = await box('.schedule-section');
-                const courses = await box('.course-section');
-                const booking = await box('.booking-panel');
-                if (width === 1280) expect(courses.x).toBeGreaterThan(schedule.x + schedule.width);
-                else expect(courses.y).toBeGreaterThan(schedule.y + schedule.height);
-                expect(booking.y).toBeGreaterThan(Math.max(schedule.y + schedule.height, courses.y + courses.height));
-            } else {
-                const places = await box('.places-panel');
-                const itinerary = await box('.itinerary-panel');
-                const map = await box('.map-panel');
-                if (width === 1280) expect(itinerary.x).toBeGreaterThan(places.x + places.width);
-                else expect(itinerary.y).toBeGreaterThan(places.y + places.height);
-                expect(map.y).toBeGreaterThan(Math.max(places.y + places.height, itinerary.y + itinerary.height));
-            }
-        }
-    });
-}
-
 test('trip journal cumulative ranges follow reordering and end at the total minutes', async ({ page, baseURL }) => {
     const demo = DEMO_REGISTRY.find(candidate => candidate.caseId === 'trip-planner' && candidate.templateId === 'journal');
     const places = embeddedData['trip-planner'].source;

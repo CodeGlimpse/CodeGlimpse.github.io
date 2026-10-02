@@ -1,0 +1,10 @@
+<header class="editorial-masthead">
+  <div class="shell editorial-masthead-inner">
+    <a class="editorial-wordmark" href="{{ site.Home.RelPermalink }}" aria-label="返回作品集首页"><span aria-hidden="true">↗</span>{{ site.Params.siteLabel }}</a>
+    <span class="editorial-edition" aria-hidden="true">VISUAL EDITION / 01</span>
+    <nav class="editorial-site-nav" aria-label="主导航">
+      <a href="{{ (site.GetPage "/works").RelPermalink }}"{{ if eq .Section "works" }} aria-current="page"{{ end }}>图片作品</a>
+      <a href="{{ (site.GetPage "/projects").RelPermalink }}"{{ if eq .Section "projects" }} aria-current="page"{{ end }}>项目案例</a>
+    </nav>
+  </div>
+</header>

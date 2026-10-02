@@ -5,7 +5,7 @@
 {{ $offset := index (dict "Monday" 0 "Tuesday" 1 "Wednesday" 2 "Thursday" 3 "Friday" 4 "Saturday" 5 "Sunday" 6) (printf "%s" $monthStart.Weekday) }}
 {{ $trailing := mod (sub 7 (mod (add $offset $dayCount) 7)) 7 }}
 <section class="calendar-overview" data-booking-calendar aria-labelledby="calendar-heading">
-  <div class="calendar-heading"><div><p class="eyebrow">01 / PICK YOUR DAY</p><h2 id="calendar-heading">先挑一个空闲的日子</h2><p>日期下的课程都来自同一份固定示例排期，选择后展开当天的课程与场次。</p></div><div class="calendar-month"><strong>{{ $monthStart.Format "01" }}</strong><span>{{ $monthStart.Format "2006" }}<br>OCTOBER / 手作日历</span></div></div>
+  <div class="calendar-heading"><div><p class="eyebrow">MONTH VIEW / 固定示例排期</p><h2 id="calendar-heading">{{ site.Params.monthLabel }}</h2><p>先挑一个空闲的日子。每个有排期的日期都列出课程和开始时间。</p></div><div class="calendar-month"><strong>{{ $monthStart.Format "01" }}</strong><span>{{ $monthStart.Format "2006" }}<br>手作日历</span></div></div>
   <div class="calendar-weekdays" aria-hidden="true"><span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span></div>
   <ol class="calendar-days" aria-label="{{ site.Params.monthLabel }}固定示例课程日历">
     {{ if gt $offset 0 }}{{ range seq 1 $offset }}<li class="calendar-blank" aria-hidden="true"></li>{{ end }}{{ end }}

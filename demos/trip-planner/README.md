@@ -6,19 +6,19 @@
 
 ## 页面模板
 
-`workbench`：行程工作台将地点和行程并排放置，下方展示完整路线图；手机按地点、行程、地图排列，并提供页面内跳转。额外加载 `static/css/workbench.css`，沿用原有三份面板、行程控制器和金额计算。集成地址为 `/demos/variants/trip-planner/workbench/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'workbench'`。
+`workbench`：电光蓝地图工作台。桌面以地图为工作区底板，地点与行程面板浮在两侧，所选地点详情位于地图下缘；窄屏改为地图、详情、地点、行程。点击地图标记，或用方向键、Home、End 移动焦点后按 Enter / 空格，可以查看对应地点并加入同一行程。浮动面板可收起和展开，路线不会因此重置；从地图加入地点会展开行程，清空时展开地点面板并恢复筛选焦点。额外加载 `static/css/workbench.css`；所有增强在已有 `planner.js` 中按模板启用。集成地址为 `/demos/variants/trip-planner/workbench/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'workbench'`。
 
 `params.demoTemplate` 支持 `classic`、`journal` 和 `workbench`，未设置时使用 `classic`；其他值会通过 Hugo `errorf` 中止构建。
 
 | 模板 | 版式 |
 | --- | --- |
 | `classic` | 原地图编辑布局：地点列表、地图与行程面板并排，窄屏按原顺序排列 |
-| `journal` | 路线日志：主列为可重排的行程时间线，地点列表及地图为辅助列；手机依次呈现行程、地点与地图，并提供页面内跳转 |
-| `workbench` | 行程工作台：地点与行程并排操作，地图在下方核对路线；手机依次展示地点、行程、地图 |
+| `journal` | 陶土旅行手记：笔记本主列包含累计时间线与可展开的站点手记，旁边是地点便签收藏夹，下方有手绘路线；手机依次呈现行程、地点与地图 |
+| `workbench` | 电光蓝地图工作台：地图工作区、可收起的两侧浮动面板和地点详情卡；手机依次展示地图、详情、地点与行程 |
 
-三套模板共用地点数据、内容、核心和控制器。三个共用面板分别位于 `layouts/partials/places-panel.html`、`map-panel.html`、`itinerary-panel.html`。布局选择仅改变面板排列和视觉结构，地点与地图点位仍由同一份 JSON 生成。
+三套模板共用地点数据、业务内容、核心和控制器。原版保留 `places-panel.html`、`map-panel.html`、`itinerary-panel.html`；旅行手记使用 `journal-page.html` 与 `journal-places.html` 组织笔记本和可展开便签，地图工作台使用 `workbench-page.html` 与 `workbench-map.html` 组织地图底板与浮动面板。地点、费用、停留与 SVG 点位仍由同一份 JSON 生成。
 
-日志模板从 0 分钟起，按停留时间与每段交通 20 分钟计算各站的累计分钟范围；上移、下移和移除会重新计算。这些范围是虚构的相对时长，不是到达时刻，也不提供真实交通或地理导航。编排按钮、焦点恢复、地图连线与汇总继续使用已有逻辑。
+手记模板从 0 分钟起，按停留时间与每段交通 20 分钟计算各站的累计分钟范围；上移、下移和移除会重新计算。每站的手记可以展开阅读地点描述，展开状态在重排时保留，移除后清除。地点收藏夹同样可展开，添加按钮始终位于便签之外。这些范围是虚构的相对时长，不是到达时刻，也不提供真实交通或地理导航。编排按钮、焦点恢复、地图连线与汇总继续使用同一业务逻辑。
 
 所有页面加载 `css/site.css` 和共用的 `css/demo-templates.css`，`journal` 额外加载 `css/journal.css`；`body[data-template]` 标记当前模板。说明页使用同一日志风格。模板入口由 `layouts/partials/demo-templates.html` 提供，在目录入口之后、主导航之前；主站注入 `demoTemplates` 链接时保持当前详情路由。集成构建的日志地址为 `/demos/variants/trip-planner/journal/`，主站有前缀时会加上该前缀。
 
@@ -36,9 +36,9 @@ Remove-Item Env:HUGO_PARAMS_DEMOTEMPLATE
 
 - `durationMinutes` 是每处虚构地点的固定停留时间。每一对相邻地点加 20 分钟交通时间，与示意距离和顺序无关。空行程全部为零，一处不加交通；总时间超过 480 分钟（8 小时）时提醒拆分行程。
 - `costCents` 为整数分，按地点费用相加再显示金额。费用只是体验或停留的示例预算，未包含清单之外的交通、住宿和个人消费，不能用于真实出行决策。
-- 地点、描述、地形和坐标均为原创虚构内容。橙色折线只表示当前先后顺序，**非真实地理导航**，不代表道路或路线距离。
+- 地点、描述、地形和坐标均为原创虚构内容。地图折线只表示当前先后顺序，**非真实地理导航**，不代表道路或路线距离；原版和手记版使用橙色路线，工作台使用蓝色路线。
 - 没有定位、预约、后端、外部请求或持久化。状态仅存在页面内存中，刷新重置；不访问 localStorage 或 sessionStorage。
-- 关闭 JavaScript 时保留八个地点和基础地图，控件初始禁用；初始化成功后才启用编排。移动后焦点跟随同一地点；移除后优先转到下一处或上一处，空清单时转到类型筛选。状态播报使用简短的 `aria-live` 消息。
+- 关闭 JavaScript 时保留八个地点和基础地图，控件初始禁用；手记便签全部展开，工作台地图标记只是基础图形，成功增强后才获得按钮语义和键盘交互。移动后焦点跟随同一地点；移除后优先转到下一处或上一处，空清单时转到类型筛选。状态播报使用简短的 `aria-live` 消息。
 
 ## 本地预览与独立构建
 
@@ -67,12 +67,12 @@ python -B -X utf8 scripts/check_build.py "$env:TEMP\trip-planner-build" --base-u
 
 - `data/places.json` 是地点数组：`id` 用唯一小写英文短名；`name` 和 `description` 是展示文字；`category` 只能是自然、人文、休憩。
 - `durationMinutes` 使用正整数分钟；`costCents` 使用非负整数分，例如 `1299` 显示为 ¥12.99；`x`、`y` 是 0–100 的示意坐标。所有汇总必须处于 JavaScript 安全整数范围。
-- 更新文字、示例费用或位置后重新构建；列表、基础 SVG 点位与 JSON 同时从这份数据生成。地形路径在 `layouts/partials/map-panel.html`，不是外部地图底图。
+- 更新文字、示例费用或位置后重新构建；列表、基础 SVG 点位与 JSON 同时从这份数据生成。地形路径在 `layouts/partials/map-panel.html` 与 `workbench-map.html`，不是外部地图底图。
 - `content/about/index.md` 更新口径说明；`hugo.toml` 更新站名和页面描述；`static/css/site.css` 是默认样式，`static/css/journal.css` 是日志布局与时间线样式。
 - `static/js/planner-core.js` 提供 CommonJS 与 `window.TripPlannerCore` 接口；UI 在 `static/js/planner.js`。初始化只读页面中的 HTML 转义 JSON，不使用网络、存储或动态 HTML 拼接。
 
 仓库根目录的 `tests/trip-planner.test.cjs` 和 `e2e/trip-planner.spec.cjs` 分别覆盖核心状态边界、地图顺序、汇总、焦点、手机布局与无 JavaScript 退化。新增地点或调整估算时，人工核对并同步对应预期，再由维护者运行相关测试。
 
-模板调整后应分别检查加入、重排、移除、六处上限、地图数字和焦点恢复，核对日志累计分钟终点与含交通总时间一致；首页与说明页需要在 320/390 像素及关闭 JavaScript 的情况下保留完整内容。
+模板调整后应分别检查加入、重排、移除、六处上限、地图数字和焦点恢复，核对手记累计分钟终点与含交通总时间一致，并验证手记展开状态在重排时保留、地图标记可通过键盘查看并加入地点、面板收起不会清空路线。首页与说明页需要在 320/390 像素及关闭 JavaScript 的情况下保留完整内容。
 
 本样本供内部验证。虚构演示和已实现的交互不表示任何真实客户交付、预订服务或旅游数据授权。

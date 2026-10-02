@@ -8,7 +8,7 @@
     {{ $description := site.Params.description }}
     {{ with .Params.summary }}{{ $description = . }}{{ end }}
     <meta name="description" content="{{ $description }}">
-    <meta name="theme-color" content="#f7f1e5">
+    <meta name="theme-color" content="{{ if eq $template "calendar" }}#0c1429{{ else if eq $template "agenda" }}#5524a8{{ else }}#f7f1e5{{ end }}">
     <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
     <link rel="canonical" href="{{ .Permalink }}">
     <link rel="icon" type="image/svg+xml" href="{{ "favicon.svg" | relURL }}">

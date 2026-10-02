@@ -25,9 +25,9 @@ python -B -X utf8 scripts/check_build.py "$env:TEMP\photo-portfolio-build" --bas
 
 ## 同一作品的三种模板
 
-`filmstrip`：胶片长卷把同一组三个系列顺序排列，保留原照片比例与作品详情。页面 partial 位于 `layouts/partials/filmstrip/`，样式为 `static/css/filmstrip.css`；继续生成既有 JPEG 缩略图，没有新增照片。集成地址为 `/demos/variants/photo-portfolio/filmstrip/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'filmstrip'`。
+`filmstrip`：朱红摄影杂志用封面故事、错位图片和编号拼贴组织同一组三个系列。顶部阅读进度随正文滚动更新，详情页继续展示完整原图与原正文。页面 partial 位于 `layouts/partials/filmstrip/`，样式为 `static/css/filmstrip.css`，呈现控制器为 `static/js/filmstrip.js`；继续生成既有 JPEG 缩略图，没有新增照片。集成地址为 `/demos/variants/photo-portfolio/filmstrip/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'filmstrip'`。
 
-`classic` 保留原来的浅色作品集和图片比例；`gallery` 使用暗色画廊、照片优先的首页和缩略图联系表，作品详情与关于页沿用同一套画廊版式。这里的“联系表”是照片缩略图索引，不是联系表单。三个系列、正文、四张原图及 AI 演示声明来自同一份内容与页面资源。
+`classic` 保留原来的浅色作品集和图片比例；`gallery` 是黑金影像放映台，每次放映一张图片，可用缩略图、前后按钮或键盘左右方向键切换，Home / End 跳到首尾。图片与标题保留真实详情入口，雨后街角详情可在主图与近景图间切换。关于页用作品索引和人物介绍分栏排版。三个系列、正文、四张原图及 AI 演示声明来自同一份内容与页面资源。
 
 默认独立构建使用 `classic`。在本站目录设置参数即可预览暗色画廊：
 
@@ -38,7 +38,7 @@ hugo server
 
 构建时同样设置这个参数，并为每个模板使用独立的 `--destination` 与 `--baseURL`。结束后执行 `Remove-Item Env:\HUGO_PARAMS_DEMOTEMPLATE` 恢复默认，或显式选择 `classic`；其他模板名会使构建报错。版式在构建时确定，不保存浏览器状态。
 
-所有页面先加载 `static/css/site.css`；画廊版额外加载 `static/css/gallery.css`。首页介绍、图片、作品说明与个人介绍由共用 partial 生成，画廊组织在 `layouts/partials/gallery/`。照片处理继续使用现有 JPEG 响应式图片与预览资源；没有新增图片、外部字体、外部请求或 JavaScript。博客集成的模板入口由父站注入，复制本站独立构建时不依赖博客注册表。
+所有页面先加载 `static/css/site.css`；放映台额外加载 `static/css/gallery.css` 和 `static/js/gallery.js`。两套新模板各自拥有首页、列表、详情与关于页结构，并直接读取原有内容和页面资源。关闭 JavaScript 时，放映台按顺序展示所有图片与说明，切换控件隐藏且禁用；杂志页面保留完整阅读内容。两套模板适配 320px，并遵循减少动态效果的系统偏好。照片处理继续使用现有 JPEG 响应式图片与预览资源，没有新增图片、外部字体或外部请求。博客集成的模板入口由父站注入，复制本站独立构建时不依赖博客注册表。
 
 ## 修改内容
 

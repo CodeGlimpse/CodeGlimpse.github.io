@@ -94,26 +94,29 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "杂志编排",
-            "description": "大图与交错章节串联同一组作品和项目。",
-            "previewAlt": "创作者作品集「杂志编排」模板的真实页面截图",
+            "name": "钴蓝作品海报",
+            "description": "以钴蓝海报开场，沿章节导航阅读同一组作品与项目。",
+            "previewAlt": "创作者作品集「钴蓝作品海报」模板的真实页面截图",
             "features": [
-              "大图章节",
-              "项目索引"
+              "海报首屏",
+              "章节导航",
+              "滚动过渡"
             ]
           },
           "en": {
-            "name": "Editorial",
-            "description": "Large images and alternating chapters present the same works and projects.",
-            "previewAlt": "Screenshot of the Editorial template for Creator portfolio",
+            "name": "Cobalt poster",
+            "description": "A cobalt poster opens a chapter-led journey through the same works and projects.",
+            "previewAlt": "Screenshot of the Cobalt poster template for Creator portfolio",
             "features": [
-              "Image chapters",
-              "Project index"
+              "Poster opening",
+              "Chapter navigation",
+              "Scroll transitions"
             ]
           }
         },
         "assets": [
-          "css/editorial.css"
+          "css/editorial.css",
+          "js/editorial.js"
         ]
       },
       {
@@ -126,28 +129,29 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "档案索引",
-            "description": "编号、缩略图与信息行组织同一组作品和项目。",
-            "previewAlt": "创作者作品集「档案索引」模板的真实页面截图",
+            "name": "数字档案",
+            "description": "在暗色索引中选择作品，通过并排预览查看同一份创作档案。",
+            "previewAlt": "创作者作品集「数字档案」模板的真实页面截图",
             "features": [
               "编号索引",
-              "分组目录",
+              "并排预览",
               "作品档案"
             ]
           },
           "en": {
-            "name": "Archive index",
-            "description": "Browse the same works and projects as numbered archive entries.",
-            "previewAlt": "Screenshot of the Archive index template for Creator portfolio",
+            "name": "Digital archive",
+            "description": "Select entries in a dark index and preview the same work archive beside it.",
+            "previewAlt": "Screenshot of the Digital archive template for Creator portfolio",
             "features": [
               "Numbered index",
-              "Grouped entries",
+              "Split preview",
               "Work archive"
             ]
           }
         },
         "assets": [
-          "css/archive.css"
+          "css/archive.css",
+          "js/archive.js"
         ]
       }
     ]
@@ -247,26 +251,29 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "暗色画廊",
-            "description": "用暗色展墙与联系表浏览同一组影像。",
-            "previewAlt": "摄影作品集「暗色画廊」模板的真实页面截图",
+            "name": "黑金放映室",
+            "description": "以单幅影像放映，使用缩略图与键盘切换同一组摄影故事。",
+            "previewAlt": "摄影作品集「黑金放映室」模板的真实页面截图",
             "features": [
-              "暗色展墙",
-              "联系表"
+              "单幅放映",
+              "缩略图切换",
+              "键盘浏览"
             ]
           },
           "en": {
-            "name": "Dark gallery",
-            "description": "Explore the same images on dark gallery walls and contact sheets.",
-            "previewAlt": "Screenshot of the Dark gallery template for Photography portfolio",
+            "name": "Cinema room",
+            "description": "View the same photo stories on a single-image stage with thumbnail and keyboard navigation.",
+            "previewAlt": "Screenshot of the Cinema room template for Photography portfolio",
             "features": [
-              "Dark gallery",
-              "Contact sheet"
+              "Image stage",
+              "Thumbnails",
+              "Keyboard navigation"
             ]
           }
         },
         "assets": [
-          "css/gallery.css"
+          "css/gallery.css",
+          "js/gallery.js"
         ]
       },
       {
@@ -279,28 +286,29 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "胶片长卷",
-            "description": "沿连续影像长卷浏览同一组照片与创作说明。",
-            "previewAlt": "摄影作品集「胶片长卷」模板的真实页面截图",
+            "name": "朱红影像刊",
+            "description": "朱红刊头与影像拼贴组织相同摄影故事，沿阅读进度逐篇浏览。",
+            "previewAlt": "摄影作品集「朱红影像刊」模板的真实页面截图",
             "features": [
-              "连续长卷",
-              "影像编号",
-              "系列详情"
+              "影像拼贴",
+              "杂志章节",
+              "阅读进度"
             ]
           },
           "en": {
-            "name": "Filmstrip",
-            "description": "Follow the same photographs and image notes in a continuous filmstrip.",
-            "previewAlt": "Screenshot of the Filmstrip template for Photography portfolio",
+            "name": "Vermilion magazine",
+            "description": "A vermilion masthead and image collage present the same stories with reading progress.",
+            "previewAlt": "Screenshot of the Vermilion magazine template for Photography portfolio",
             "features": [
-              "Continuous sequence",
-              "Frame numbers",
-              "Series details"
+              "Image collage",
+              "Magazine chapters",
+              "Reading progress"
             ]
           }
         },
         "assets": [
-          "css/filmstrip.css"
+          "css/filmstrip.css",
+          "js/filmstrip.js"
         ]
       }
     ]
@@ -396,26 +404,29 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "内容工作台",
-            "description": "侧栏筛选、紧凑指标与卡片明细呈现相同记录。",
-            "previewAlt": "内容运营看板「内容工作台」模板的真实页面截图",
+            "name": "暗色内容工作台",
+            "description": "在应用式工作台切换总览与记录，打开抽屉查看同一批内容明细。",
+            "previewAlt": "内容运营看板「暗色内容工作台」模板的真实页面截图",
             "features": [
+              "视图切换",
               "侧栏筛选",
-              "卡片明细"
+              "明细抽屉"
             ]
           },
           "en": {
-            "name": "Workspace",
-            "description": "Sidebar filters, compact metrics, and record cards use the same dataset.",
-            "previewAlt": "Screenshot of the Workspace template for Content dashboard",
+            "name": "Dark workspace",
+            "description": "Switch overview and record views in an app-like workspace and inspect records in a drawer.",
+            "previewAlt": "Screenshot of the Dark workspace template for Content dashboard",
             "features": [
+              "View switching",
               "Sidebar filters",
-              "Record cards"
+              "Record drawer"
             ]
           }
         },
         "assets": [
-          "css/workspace.css"
+          "css/workspace.css",
+          "js/dashboard-presentation.js"
         ]
       },
       {
@@ -428,28 +439,29 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "数据简报",
-            "description": "先限定数据范围，再阅读指标、渠道分析和明细。",
-            "previewAlt": "内容运营看板「数据简报」模板的真实页面截图",
+            "name": "橙色数据简报",
+            "description": "按橙白简报章节阅读相同指标和图表，按需展开记录明细。",
+            "previewAlt": "内容运营看板「橙色数据简报」模板的真实页面截图",
             "features": [
-              "范围置顶",
-              "报告编排",
-              "数据明细"
+              "图表章节",
+              "范围筛选",
+              "折叠明细"
             ]
           },
           "en": {
-            "name": "Data report",
-            "description": "Set a scope, then read metrics, channel analysis, and detailed records.",
-            "previewAlt": "Screenshot of the Data report template for Content dashboard",
+            "name": "Orange report",
+            "description": "Read the same metrics and charts as an orange-and-white report with collapsible records.",
+            "previewAlt": "Screenshot of the Orange report template for Content dashboard",
             "features": [
-              "Scope first",
-              "Report layout",
-              "Detailed records"
+              "Chart chapters",
+              "Scope filters",
+              "Collapsible records"
             ]
           }
         },
         "assets": [
-          "css/report.css"
+          "css/report.css",
+          "js/dashboard-presentation.js"
         ]
       }
     ]
@@ -545,26 +557,29 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "书目目录",
-            "description": "横向书目与编号索引呈现同样的十二本书。",
-            "previewAlt": "纸间书店「书目目录」模板的真实页面截图",
+            "name": "深夜阅览室",
+            "description": "一次细看一本书，通过书脊切换十二本书，在抽屉里整理购物袋。",
+            "previewAlt": "纸间书店「深夜阅览室」模板的真实页面截图",
             "features": [
-              "编号书目",
-              "紧凑购物袋"
+              "单本展台",
+              "书脊导航",
+              "购物袋抽屉"
             ]
           },
           "en": {
-            "name": "Catalog",
-            "description": "Browse the same twelve books in an indexed horizontal catalog.",
-            "previewAlt": "Screenshot of the Catalog template for Zhijian bookstore",
+            "name": "Night reading room",
+            "description": "Explore the same twelve books one at a time, select their spines, and organize a bag drawer.",
+            "previewAlt": "Screenshot of the Night reading room template for Zhijian bookstore",
             "features": [
-              "Indexed books",
-              "Compact bag"
+              "Book stage",
+              "Spine navigation",
+              "Bag drawer"
             ]
           }
         },
         "assets": [
-          "css/catalog.css"
+          "css/catalog.css",
+          "js/reading-presentation.js"
         ]
       },
       {
@@ -577,28 +592,29 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "选书清单",
-            "description": "用紧凑书目比较同一批图书，在汇总区查看购物袋。",
-            "previewAlt": "纸间书店「选书清单」模板的真实页面截图",
+            "name": "明黄选书台",
+            "description": "在明黄选书台对照相同书目，直接调整数量并查看常驻蓝色小票。",
+            "previewAlt": "纸间书店「明黄选书台」模板的真实页面截图",
             "features": [
-              "紧凑书目",
-              "价格对照",
-              "购物袋汇总"
+              "紧凑记录",
+              "行内数量",
+              "常驻小票"
             ]
           },
           "en": {
-            "name": "Reading checklist",
-            "description": "Compare the same books in a compact list and review the bag below.",
-            "previewAlt": "Screenshot of the Reading checklist template for Zhijian bookstore",
+            "name": "Yellow selection desk",
+            "description": "Compare the same books at a yellow selection desk with inline quantities and a blue receipt.",
+            "previewAlt": "Screenshot of the Yellow selection desk template for Zhijian bookstore",
             "features": [
-              "Compact list",
-              "Price comparison",
-              "Bag summary"
+              "Compact records",
+              "Inline quantities",
+              "Permanent receipt"
             ]
           }
         },
         "assets": [
-          "css/checklist.css"
+          "css/checklist.css",
+          "js/reading-presentation.js"
         ]
       }
     ]
@@ -694,21 +710,23 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "日历排期",
-            "description": "从日历日期进入相同课程与场次，生成预约预览。",
-            "previewAlt": "拾光工坊「日历排期」模板的真实页面截图",
+            "name": "午夜日历",
+            "description": "在午夜蓝日历中选择日期，再浏览同一天的课程与场次。",
+            "previewAlt": "拾光工坊「午夜日历」模板的真实页面截图",
             "features": [
-              "日期浏览",
-              "场次展开"
+              "日期网格",
+              "场次面板",
+              "预约预览"
             ]
           },
           "en": {
-            "name": "Calendar",
-            "description": "Choose dates on a calendar to explore the same courses and sessions.",
-            "previewAlt": "Screenshot of the Calendar template for Shiguang workshop",
+            "name": "Midnight calendar",
+            "description": "Choose a date on a midnight-blue calendar to inspect the same courses and sessions.",
+            "previewAlt": "Screenshot of the Midnight calendar template for Shiguang workshop",
             "features": [
-              "Calendar dates",
-              "Session details"
+              "Date grid",
+              "Session panel",
+              "Booking preview"
             ]
           }
         },
@@ -726,22 +744,22 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "排期总览",
-            "description": "并排查看课程与场次，从排期直接选择预约预览。",
-            "previewAlt": "拾光工坊「排期总览」模板的真实页面截图",
+            "name": "紫色票券",
+            "description": "通过票券式步骤依次选择相同课程、场次与人数，生成预约预览。",
+            "previewAlt": "拾光工坊「紫色票券」模板的真实页面截图",
             "features": [
-              "场次优先",
-              "课程对照",
+              "课程票券",
+              "分步选择",
               "预约预览"
             ]
           },
           "en": {
-            "name": "Session agenda",
-            "description": "Compare courses and sessions side by side, then preview a reservation.",
-            "previewAlt": "Screenshot of the Session agenda template for Shiguang workshop",
+            "name": "Purple tickets",
+            "description": "Follow a ticket-style flow through the same courses, sessions, and group sizes.",
+            "previewAlt": "Screenshot of the Purple tickets template for Shiguang workshop",
             "features": [
-              "Sessions first",
-              "Course reference",
+              "Course tickets",
+              "Step-by-step flow",
               "Booking preview"
             ]
           }
@@ -843,21 +861,23 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "行程手记",
-            "description": "以时间线整理相同地点，结合地图查看行程。",
-            "previewAlt": "远山周末「行程手记」模板的真实页面截图",
+            "name": "陶土旅行手记",
+            "description": "以旅行手记编排相同地点，沿时间线展开停留详情。",
+            "previewAlt": "远山周末「陶土旅行手记」模板的真实页面截图",
             "features": [
-              "行程时间线",
-              "辅助地图"
+              "时间线",
+              "展开停留",
+              "旅行手记"
             ]
           },
           "en": {
-            "name": "Journal",
-            "description": "Arrange the same places on a timeline with a supporting route map.",
-            "previewAlt": "Screenshot of the Journal template for Farweek trip planner",
+            "name": "Terracotta journal",
+            "description": "Arrange the same places in a travel journal with a timeline and expandable stops.",
+            "previewAlt": "Screenshot of the Terracotta journal template for Farweek trip planner",
             "features": [
-              "Trip timeline",
-              "Supporting map"
+              "Timeline",
+              "Expandable stops",
+              "Travel journal"
             ]
           }
         },
@@ -875,23 +895,23 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "行程工作台",
-            "description": "并排挑选地点与编排行程，在下方地图核对路线。",
-            "previewAlt": "远山周末「行程工作台」模板的真实页面截图",
+            "name": "蓝色地图工作台",
+            "description": "以地图为中心选择同一批地点，通过浮动面板编排路线和预算。",
+            "previewAlt": "远山周末「蓝色地图工作台」模板的真实页面截图",
             "features": [
-              "并排编排",
-              "地点清单",
-              "路线核对"
+              "地图选点",
+              "浮动面板",
+              "路线联动"
             ]
           },
           "en": {
-            "name": "Trip workbench",
-            "description": "Pick places beside the itinerary, then check the route on the map below.",
-            "previewAlt": "Screenshot of the Trip workbench template for Farweek trip planner",
+            "name": "Blue map workspace",
+            "description": "Select the same places on a central map and arrange routes with floating planner panels.",
+            "previewAlt": "Screenshot of the Blue map workspace template for Farweek trip planner",
             "features": [
-              "Side-by-side planning",
-              "Place list",
-              "Route overview"
+              "Map selection",
+              "Floating panels",
+              "Linked route"
             ]
           }
         },

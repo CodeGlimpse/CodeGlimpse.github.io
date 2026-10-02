@@ -30,9 +30,9 @@ python -B -X utf8 'scripts\check_build.py' "$env:TEMP\portfolio-demo-build" --ba
 
 ## 同一内容的三种模板
 
-`archive`：档案索引以编号、缩略图与信息行分组展示作品和项目，详情页用左右分区组织图片与正文。页面 partial 位于 `layouts/partials/archive/`，样式为 `static/css/archive.css`。集成地址为 `/demos/variants/creator-portfolio/archive/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'archive'`。
+`archive`：暗色数字档案用紧凑编号索引整理作品和项目。点击独立的“预览”按钮，在并排查看器中显示原封面、标题与简介；“阅读作品”链接进入实际详情页。页面 partial 位于 `layouts/partials/archive/`，样式为 `static/css/archive.css`，呈现控制器为 `static/js/archive.js`。集成地址为 `/demos/variants/creator-portfolio/archive/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'archive'`。
 
-`classic` 保留原来的双列作品卡片；`editorial` 使用杂志式大图、交错章节和项目索引，列表与详情页也采用同一套编辑版式。三者读取同一份 Markdown、站点参数与页面图片资源，不复制作品内容。
+`classic` 保留原来的双列作品卡片；`editorial` 以钴蓝作品海报开场，沿章节导航展开大图、作品说明与项目案例。滚动时章节位置同步更新，并带有轻微图片过渡；列表与详情页采用独立海报版式。三者读取同一份 Markdown、站点参数与页面图片资源，不复制作品内容。
 
 独立预览默认选择 `classic`。在此目录设置 Hugo 参数即可切换，以下命令只选择版式，不修改内容：
 
@@ -43,7 +43,7 @@ hugo server
 
 构建时也使用这个环境参数，并为不同模板指定不同的 `--destination` 和 `--baseURL`。预览结束后执行 `Remove-Item Env:\HUGO_PARAMS_DEMOTEMPLATE` 可恢复默认；也可显式设置为 `classic`。其他模板名会使构建报错。模板参数在整站构建时固定，不在浏览器中存储。
 
-经典样式来自 `static/css/site.css`；杂志式额外加载 `static/css/editorial.css`。杂志模板的页面组织在 `layouts/partials/editorial/`，详情仍直接读取现有正文。博客集成时，返回目录与模板选择入口由父站参数提供；独立构建无需博客目录或注册表。
+经典样式来自 `static/css/site.css`；钴蓝海报额外加载 `static/css/editorial.css` 和 `static/js/editorial.js`。海报模板的页面组织在 `layouts/partials/editorial/`，详情仍直接读取现有正文。新增脚本只增强呈现；关闭 JavaScript 时，各作品图片、文字和详情链接仍完整显示，档案预览按钮保持隐藏且不可用。页面适配 320px，并遵循减少动态效果的系统偏好。博客集成时，返回目录与模板选择入口由父站参数提供；独立构建无需博客目录或注册表。
 
 ## 内容结构
 

@@ -7,7 +7,7 @@
       <div class="estimate"><span>预览合计<small data-unit-price>选定课程后显示单价</small></span><strong data-estimate>—</strong></div>
       <p id="booking-status" class="booking-status" role="status" aria-live="polite" aria-atomic="true">请选择课程与场次，查看一份预约单预览。</p>
       <button id="preview-booking" class="preview-button" type="button" aria-describedby="booking-status" disabled>查看预约单预览 <span aria-hidden="true">↗</span></button>
-      <button id="reset-booking" class="reset-button" type="button" disabled>重置选择</button>
+      {{ if ne .template "agenda" }}<button id="reset-booking" class="reset-button" type="button" disabled>重置选择</button>{{ end }}
       <p class="preview-boundary">仅生成页面内预览，不会提交信息、锁定名额或完成真实预约。</p>
       <section id="booking-preview" class="booking-preview" aria-labelledby="preview-heading" hidden>
         <p class="eyebrow">PREVIEW / 仅供演示</p>

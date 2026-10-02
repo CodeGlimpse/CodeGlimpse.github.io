@@ -1,0 +1,68 @@
+{{ $books := site.Data.books | default (slice) }}
+{{ $template := site.Params.demoTemplate | default "classic" }}
+<main id="main" class="main shell bookstore-page" data-bookstore tabindex="-1">
+  <section class="hero" aria-labelledby="page-heading">
+    <div class="hero-copy">
+      <p class="eyebrow">A LITTLE ROOM FOR READING <span aria-hidden="true">/</span> 纸上书店</p>
+      <h1 id="page-heading">{{ .Params.heading }}</h1>
+      <p class="hero-intro">{{ .Params.intro }}</p>
+      <p class="demo-notice"><span aria-hidden="true">○</span> {{ site.Params.demoNotice }}</p>
+    </div>
+    <div class="hero-note" aria-label="本期书架：十二本虚构图书，文学、设计与生活三类">
+      <p class="eyebrow">ON THE SHELF / VOL. 01</p>
+      <p class="hero-number">12<span>本书，三条小路。</span></p>
+      <p class="hero-categories">文学 <i aria-hidden="true">·</i> 设计 <i aria-hidden="true">·</i> 生活</p>
+      <div class="shelf-illustration" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span>慢一点，翻下一页。</span></div>
+    </div>
+  </section>
+
+  {{ if eq $template "checklist" }}
+  <nav class="checklist-nav" aria-label="选书清单导航"><a href="#catalog-heading">01 / 选书清单</a><a href="#bag-heading">02 / 购物袋汇总</a></nav>
+  {{ end }}
+  <div class="store-layout">
+    <section class="catalog" aria-labelledby="catalog-heading">
+      <div class="section-heading">
+        <div><p class="eyebrow">THE READING LIST</p><h2 id="catalog-heading">今日书架</h2></div>
+        <p id="result-summary" role="status" aria-live="polite" aria-atomic="true">共 {{ len $books }} 本书</p>
+      </div>
+      <div class="filter-controls" aria-label="书目筛选">
+        <div class="filter-field category-field"><label for="category-filter">图书分类</label><select id="category-filter" disabled><option value="all">全部分类</option><option value="文学">文学</option><option value="设计">设计</option><option value="生活">生活</option></select></div>
+        <div class="filter-field search-field"><label for="book-search">书名关键词</label><input id="book-search" type="search" placeholder="试试「雨」或「颜色 地图」" autocomplete="off" disabled></div>
+        <button id="reset-filters" class="text-button" type="button" disabled>重置筛选</button>
+      </div>
+      <noscript><p class="noscript-note">JavaScript 已关闭：保留全部静态书目，分类、搜索和模拟购物袋控件不可用。</p></noscript>
+      {{ if eq $template "catalog" }}<div class="catalog-column-labels" aria-hidden="true"><span>索引</span><span>书目 / READING LIST</span><span>单价与购物袋</span></div>{{ end }}
+      <div id="book-grid" class="book-grid">
+        {{ range $index, $book := $books }}
+        <article class="book-card" data-book-id="{{ .id }}" aria-labelledby="title-{{ .id }}">
+          {{ if eq $template "catalog" }}<span class="book-index" aria-hidden="true">{{ printf "%02d" (add $index 1) }}</span>{{ end }}
+          <div class="cover-stage">
+            <div class="book-cover cover--{{ .cover }}" aria-hidden="true">
+              <span class="cover-series">纸间原创 · {{ .category }}</span>
+              <span class="cover-title">{{ .title }}</span>
+              <span class="cover-author">{{ .author }} / 著</span>
+              <span class="cover-art"></span>
+              <span class="cover-edition">ZHIJIAN <span>{{ printf "%02d" (add $index 1) }}</span></span>
+            </div>
+          </div>
+          <div class="book-copy">
+            <div class="book-meta"><span class="category-tag">{{ .category }}</span><span class="book-author">{{ .author }} 著</span></div>
+            <h3 id="title-{{ .id }}">{{ .title }}</h3>
+            <p class="book-description">{{ .description }}</p>
+          </div>
+          <div class="book-order">
+            <div class="book-purchase"><span class="book-price">{{ partial "money.html" .priceCents }}</span><span class="book-stock{{ if eq .stock 0 }} is-sold-out{{ end }}">{{ if eq .stock 0 }}售罄{{ else }}示例库存 {{ .stock }} 本{{ end }}</span></div>
+            <button class="add-button" type="button" data-add-book="{{ .id }}" aria-label="加入《{{ .title }}》到模拟购物袋" disabled>{{ if eq .stock 0 }}暂时售罄{{ else }}加入购物袋 <span aria-hidden="true">＋</span>{{ end }}</button>
+          </div>
+        </article>
+        {{ end }}
+      </div>
+      <div id="empty-state" class="empty-state" hidden><span aria-hidden="true">∅</span><h3>这一页暂时没有书</h3><p>试试更短的书名关键词，或重置筛选再逛逛。</p></div>
+      <p class="catalog-note">书名、作者与内容全部虚构。</p>
+    </section>
+
+    {{ partial "book-bag.html" . }}
+  </div>
+  <section class="closing-note" aria-label="纸间阅读寄语"><span aria-hidden="true">「</span><p>好好读一页，<br>也是好好过一天。</p><a href="{{ (site.GetPage "/about").RelPermalink }}">关于这间纸上书店 <span aria-hidden="true">↗</span></a></section>
+  <script id="bookstore-data" type="application/json">{{ $books | jsonify | safeJS }}</script>
+</main>

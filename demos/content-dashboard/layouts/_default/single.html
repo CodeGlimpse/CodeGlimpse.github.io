@@ -1,4 +1,21 @@
 {{ define "main" }}
+{{ $template := site.Params.demoTemplate | default "classic" }}
+{{ if eq $template "workspace" }}
+<main id="main" class="shell workspace-about-page" tabindex="-1">
+  <div class="workspace-about-layout">
+    <aside class="workspace-about-nav" aria-label="工作区页面"><p class="workspace-sidebar-label">WORKSPACE / GUIDE</p><a href="{{ site.Home.RelPermalink }}">◫ 内容总览</a><a href="{{ .RelPermalink }}" aria-current="page">ⓘ 数据说明</a></aside>
+    <div class="workspace-about-content">
+      <header class="about-heading"><p class="eyebrow">DATA REFERENCE <span aria-hidden="true">/</span> {{ site.Params.demoNotice }}</p><h1>{{ .Title }}</h1><p>看懂数字之前，先了解它们从哪里来、如何计算。</p></header>
+      <div class="about-grid">{{ partial "dashboard-about-summary.html" . }}<article class="prose">{{ .Content }}</article></div>
+    </div>
+  </div>
+</main>
+{{ else if eq $template "report" }}
+<main id="main" class="shell report-about-page" tabindex="-1">
+  <header class="report-about-cover"><p class="eyebrow">FIELDNOTES / REPORT METHODOLOGY</p><h1>{{ .Title }}</h1><p>看懂数字之前，先了解它们从哪里来、如何计算。</p></header>
+  <div class="report-about-layout"><article class="prose">{{ .Content }}</article>{{ partial "dashboard-about-summary.html" . }}</div>
+</main>
+{{ else }}
 <main id="main" class="shell about-page" tabindex="-1">
   <header class="about-heading">
     <p class="eyebrow">ABOUT THE DATA <span aria-hidden="true">/</span> {{ site.Params.demoNotice }}</p>
@@ -16,4 +33,5 @@
     <article class="prose">{{ .Content }}</article>
   </div>
 </main>
+{{ end }}
 {{ end }}

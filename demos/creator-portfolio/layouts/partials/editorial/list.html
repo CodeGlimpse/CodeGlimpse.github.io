@@ -1,0 +1,5 @@
+<main id="main" class="editorial-listing shell" tabindex="-1" data-editorial>
+  <header class="editorial-list-poster"><p class="editorial-kicker">{{ if eq .Section "works" }}Gallery{{ else }}Case studies{{ end }} / VISUAL INDEX</p><h1>{{ .Title }}</h1><p>{{ .Params.summary }}</p><span aria-hidden="true">↓</span></header>
+  <nav class="editorial-chapter-nav" aria-label="作品章节" data-editorial-nav><span class="editorial-nav-label">CHAPTERS</span><div class="editorial-chapter-links">{{ range $index, $page := .Pages.ByWeight }}<a href="#editorial-entry-{{ add $index 1 }}" data-editorial-target="editorial-entry-{{ add $index 1 }}"><span>{{ printf "%02d" (add $index 1) }}</span>{{ $page.Title }}</a>{{ end }}</div><output class="editorial-position" data-editorial-status hidden aria-label="当前章节"></output></nav>
+  <div class="editorial-chapters">{{ range $index, $page := .Pages.ByWeight }}{{ partial "editorial/chapter.html" (dict "page" $page "index" (add $index 1) "id" (printf "editorial-entry-%d" (add $index 1)) "loading" (cond (eq $index 0) "eager" "lazy")) }}{{ end }}</div>
+</main>

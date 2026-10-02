@@ -54,7 +54,10 @@
     let composing = false;
 
     function announce(text) {
-        if (message.textContent !== text) message.textContent = text;
+        const targets = [message, ...root.querySelectorAll('[data-bag-announcement]')];
+        targets.forEach(target => {
+            if (target.textContent !== text) target.textContent = text;
+        });
     }
 
     function filterCatalog() {
@@ -64,6 +67,7 @@
         const summary = '共 ' + matches.length + ' 本书';
         if (results.textContent !== summary) results.textContent = summary;
         empty.hidden = matches.length !== 0;
+        root.dispatchEvent(new CustomEvent("bookstore:filtered"));
     }
 
     function element(tag, className, text) {
@@ -149,7 +153,15 @@
             const quantity = lines.find(line => line.book.id === id)?.quantity || 0;
             button.disabled = book.stock === 0;
             button.setAttribute('aria-disabled', String(book.stock === 0 || quantity >= book.stock));
+            const output = card.querySelector('[data-book-quantity]');
+            const decrease = card.querySelector('[data-decrease-book]');
+            if (output) output.textContent = String(quantity);
+            if (decrease) {
+                decrease.disabled = false;
+                decrease.setAttribute('aria-disabled', String(quantity === 0));
+            }
         });
+        root.querySelectorAll('[data-bag-count]').forEach(node => { node.textContent = String(summary.count); });
         if (activeLine && !activeLine.isConnected) {
             const nextLine = bagList.children[Math.min(oldIndex, bagList.children.length - 1)];
             const target = nextLine ? nextLine.querySelector('[data-bag-action="' + oldAction + '"]') : bagHeading;
@@ -176,11 +188,11 @@
         filterCatalog();
     });
     grid.addEventListener('click', (event) => {
-        const button = event.target.closest('[data-add-book]');
+        const button = event.target.closest('[data-add-book], [data-decrease-book]');
         if (!button || !grid.contains(button) || button.disabled) return;
-        const book = bookByID.get(button.dataset.addBook);
+        const book = bookByID.get(button.dataset.addBook || button.dataset.decreaseBook);
         if (!book) return;
-        const result = bag.add(book.id);
+        const result = button.dataset.decreaseBook ? bag.decrease(book.id) : bag.add(book.id);
         if (result.changed) renderBag();
         showBagResult(book, result);
     });

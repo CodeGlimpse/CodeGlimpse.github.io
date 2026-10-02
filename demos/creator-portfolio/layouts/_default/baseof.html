@@ -25,6 +25,11 @@
     </div>
     {{ end }}
     {{ partial "demo-templates.html" . }}
+    {{ if eq $template "editorial" }}
+      {{ partial "editorial/header.html" . }}
+    {{ else if eq $template "archive" }}
+      {{ partial "archive/header.html" . }}
+    {{ else }}
     <header class="site-header">
       <div class="shell header-inner">
         <a class="brand" href="{{ site.Home.RelPermalink }}" aria-label="返回作品集首页">
@@ -37,6 +42,7 @@
         </nav>
       </div>
     </header>
+    {{ end }}
 
     {{ block "main" . }}{{ end }}
 
@@ -46,5 +52,7 @@
         <a href="{{ site.Home.RelPermalink }}">返回首页 ↑</a>
       </div>
     </footer>
+    {{ if eq $template "editorial" }}<script src="{{ "js/editorial.js" | relURL }}" defer></script>{{ end }}
+    {{ if eq $template "archive" }}<script src="{{ "js/archive.js" | relURL }}" defer></script>{{ end }}
   </body>
 </html>

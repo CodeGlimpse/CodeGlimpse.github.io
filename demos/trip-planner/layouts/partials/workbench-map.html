@@ -1,0 +1,20 @@
+<section class="panel map-panel workbench-map-panel" aria-labelledby="terrain-heading">
+  <header class="panel-heading"><div><p class="panel-kicker">MAP / 08 ORIGINAL STOPS</p><h2 id="terrain-heading" tabindex="-1">周末地形工作区</h2></div><span class="map-scale">路线顺序实时同步</span></header>
+  <svg class="terrain-map" viewBox="0 0 800 560" width="800" height="560" role="img" aria-labelledby="map-title map-description">
+    <title id="map-title">远山周末原创地形示意图</title><desc id="map-description">八个虚构地点的示意位置。蓝色连线和数字按行程顺序更新。非真实地理导航。</desc>
+    <defs><pattern id="workspace-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#c5dcff" stroke-opacity=".09"/></pattern><radialGradient id="workspace-glow"><stop stop-color="#2965ce" stop-opacity=".5"/><stop offset="1" stop-color="#17376c" stop-opacity="0"/></radialGradient></defs>
+    <rect width="800" height="560" fill="#10244a"/><rect width="800" height="560" fill="url(#workspace-grid)"/><ellipse cx="490" cy="280" rx="370" ry="260" fill="url(#workspace-glow)"/>
+    <g fill="none" stroke="#5f8acd" stroke-opacity=".22" stroke-width="1.5"><path d="M-40 96C92 28 173 37 267 132s129 58 206 12 207-64 350 13"/><path d="M-40 120C91 55 170 60 254 150s137 57 221 15 208-66 348 13"/><path d="M-40 148C78 86 173 80 242 174s145 54 231 14 215-69 350 18"/><path d="M-30 453C94 356 207 378 316 451s177 36 257-38 176-35 251 20"/><path d="M-30 481C105 389 205 402 317 478s176 35 258-39 180-34 251 20"/><path d="M-30 510C105 418 208 430 316 508s176 35 258-39 180-34 250 20"/></g>
+    <path d="M332-20c-54 101 66 138 36 230s28 85 69 139 28 136-2 231" fill="none" stroke="#4689d9" stroke-width="21" opacity=".18"/><path d="M332-20c-54 101 66 138 36 230s28 85 69 139 28 136-2 231" fill="none" stroke="#95caff" stroke-width="1.5" opacity=".35"/>
+    <path d="M550 169c54-20 111 13 103 54s-62 56-88 23-59-62-15-77Z" fill="#477fbe" opacity=".3"/>
+    <g transform="translate(744 45)" fill="#b5d5ff" aria-hidden="true"><path d="m0-17-8 28 8-5 8 5Z"/><text y="34" text-anchor="middle" font-size="14">N</text></g>
+    <polyline id="itinerary-route" class="map-route" points="" hidden/>
+    {{ range site.Data.places }}
+    <g class="map-place" data-map-id="{{ .id }}" data-map-choice transform="translate({{ mul .x 8 }}, {{ mul .y 5.6 }})">
+      <circle class="map-active-halo" r="26"/><circle class="map-place-ring" r="14"/><circle class="map-place-dot" r="5"/>
+      <text class="map-place-name" x="23" y="6">{{ .name }}</text><circle class="route-disc" data-route-disc r="17" hidden aria-hidden="true"/><text class="route-number" data-route-number text-anchor="middle" y="6" hidden aria-hidden="true"></text>
+    </g>
+    {{ end }}
+  </svg>
+  <div class="map-caption"><p><span class="route-swatch" aria-hidden="true"></span>蓝线与编号按清单顺序连接 · 地图标记可查看详情</p><p>相邻地点统一估算 20 分钟交通，与画面距离无关。原创地形示意 · 非真实地理导航。</p></div>
+</section>

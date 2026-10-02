@@ -1,26 +1,8 @@
 {{ define "main" }}
 {{ if eq site.Params.demoTemplate "archive" }}
-<main id="main" class="shell archive-listing" tabindex="-1">
-  <header class="page-heading"><p class="eyebrow">ARCHIVE / {{ .Section }}</p><h1>{{ .Title }}</h1><p>{{ .Params.summary }}</p></header>
-  {{ partial "archive/entries.html" .Pages.ByWeight }}
-</main>
+  {{ partial "archive/list.html" . }}
 {{ else if eq site.Params.demoTemplate "editorial" }}
-<main id="main" class="shell editorial-listing" tabindex="-1">
-  <header class="page-heading">
-    <p class="eyebrow">{{ if eq .Section "works" }}Gallery{{ else }}Case studies{{ end }}</p>
-    <h1>{{ .Title }}</h1>
-    <p>{{ .Params.summary }}</p>
-  </header>
-  {{ if eq .Section "projects" }}
-    {{ partial "editorial/project-index.html" .Pages.ByWeight }}
-  {{ else }}
-  <div class="editorial-chapters">
-    {{ range $index, $page := .Pages.ByWeight }}
-      {{ partial "editorial/chapter.html" (dict "page" $page "index" (add $index 1)) }}
-    {{ end }}
-  </div>
-  {{ end }}
-</main>
+  {{ partial "editorial/list.html" . }}
 {{ else }}
 <main id="main" class="shell listing-page">
   <header class="page-heading">

@@ -1,0 +1,48 @@
+{{ $books := site.Data.books | default (slice) }}
+{{ $room := eq site.Params.demoTemplate "catalog" }}
+<main id="main" class="main shell bookstore-page {{ if $room }}reading-room{{ else }}selection-desk{{ end }}" data-bookstore tabindex="-1">
+  <section class="reading-intro" aria-labelledby="page-heading">
+    <div><p class="eyebrow">{{ if $room }}THE READING ROOM / 纸间阅览室{{ else }}BOOK SELECTION / 纸间选书台{{ end }}</p>
+      <h1 id="page-heading">{{ .Params.heading }}</h1><p class="hero-intro">{{ .Params.intro }}</p></div>
+    {{ if $room }}<button class="room-bag-open" type="button" data-open-bag disabled>打开购物袋 <span data-bag-count>0</span></button>
+    {{ else }}<div class="desk-stamp" aria-label="十二本虚构图书"><strong>{{ len $books }}</strong><span>FICTIONAL BOOKS</span></div>{{ end }}
+  </section>
+  <p class="demo-notice">{{ site.Params.demoNotice }}</p>
+  {{ if $room }}<p class="reading-message" data-bag-announcement role="status" aria-live="polite" aria-atomic="true">选一本书，试试购物袋。</p>{{ end }}
+  <div class="reading-layout">
+    <section class="catalog" aria-labelledby="catalog-heading">
+      <div class="section-heading"><h2 id="catalog-heading">{{ if $room }}今日展台{{ else }}选书清单{{ end }}</h2><p id="result-summary" role="status" aria-live="polite" aria-atomic="true">共 {{ len $books }} 本书</p></div>
+      <div class="filter-controls" aria-label="书目筛选">
+        <div class="filter-field category-field"><label for="category-filter">图书分类</label><select id="category-filter" disabled><option value="all">全部分类</option><option value="文学">文学</option><option value="设计">设计</option><option value="生活">生活</option></select></div>
+        <div class="filter-field search-field"><label for="book-search">书名关键词</label><input id="book-search" type="search" placeholder="试试「雨」或「颜色 地图」" autocomplete="off" disabled></div>
+        <button id="reset-filters" class="text-button" type="button" disabled>重置筛选</button>
+      </div>
+      <noscript><p class="noscript-note">JavaScript 已关闭：保留全部静态书目，分类、搜索和模拟购物袋控件不可用。</p></noscript>
+      <div id="book-grid" class="book-grid">
+      {{ range $index, $book := $books }}
+        <article class="book-card" data-book-id="{{ .id }}" aria-labelledby="title-{{ .id }}">
+          {{ if not $room }}<span class="row-number" aria-hidden="true">{{ printf "%02d" (add $index 1) }}</span>{{ end }}
+          <div class="cover-stage">{{ partial "book-cover.html" (dict "book" . "number" (add $index 1)) }}</div>
+          <div class="book-copy"><div class="book-meta"><span class="category-tag">{{ .category }}</span><span class="book-author">{{ .author }} 著</span></div>
+            <h3 id="title-{{ .id }}">{{ .title }}</h3>
+            {{ if $room }}<p class="book-description">{{ .description }}</p>{{ else }}<details class="book-details"><summary>翻阅简介</summary><p class="book-description">{{ .description }}</p></details>{{ end }}
+          </div>
+          <div class="book-order"><div class="book-purchase"><span class="book-price">{{ partial "money.html" .priceCents }}</span><span class="book-stock{{ if eq .stock 0 }} is-sold-out{{ end }}">{{ if eq .stock 0 }}售罄{{ else }}示例库存 {{ .stock }} 本{{ end }}</span></div>
+            {{ if $room }}<button class="add-button" type="button" data-add-book="{{ .id }}" aria-label="加入《{{ .title }}》到模拟购物袋" disabled>{{ if eq .stock 0 }}暂时售罄{{ else }}加入购物袋 <span aria-hidden="true">＋</span>{{ end }}</button>
+            {{ else }}<div class="desk-stepper" role="group" aria-label="选购《{{ .title }}》"><button type="button" data-decrease-book="{{ .id }}" aria-label="从选书清单减少《{{ .title }}》" disabled>−</button><output data-book-quantity="{{ .id }}" aria-label="清单中《{{ .title }}》的数量">0</output><button type="button" class="add-button" data-add-book="{{ .id }}" aria-label="加入《{{ .title }}》到模拟购物袋" disabled>＋</button></div>{{ end }}
+          </div>
+        </article>
+      {{ end }}
+      </div>
+      <div id="empty-state" class="empty-state" hidden><span aria-hidden="true">∅</span><h3>这一页暂时没有书</h3><p>试试更短的书名关键词，或重置筛选再逛逛。</p></div>
+      {{ if $room }}
+      <div class="room-controls" hidden><span>一本一本，慢慢读。</span><div><button type="button" id="previous-book" aria-label="上一本书" disabled>←</button><output id="book-position" aria-live="polite"></output><button type="button" id="next-book" aria-label="下一本书" disabled>→</button></div></div>
+      <nav class="spine-shelf" aria-label="选择展台图书" hidden>{{ range $index, $book := $books }}<button class="spine" type="button" data-select-book="{{ .id }}" disabled><span>{{ printf "%02d" (add $index 1) }}</span><strong>{{ .title }}</strong><small>{{ .category }}</small></button>{{ end }}</nav>
+      {{ end }}
+      <p class="catalog-note">书名、作者与内容全部虚构。</p>
+    </section>
+    {{ if $room }}<dialog id="bag-drawer" aria-labelledby="bag-heading" open><button type="button" data-close-bag disabled hidden>关闭购物袋 ×</button>{{ partial "book-bag.html" . }}</dialog>
+    {{ else }}{{ partial "book-bag.html" . }}{{ end }}
+  </div>
+  <script id="bookstore-data" type="application/json">{{ $books | jsonify | safeJS }}</script>
+</main>

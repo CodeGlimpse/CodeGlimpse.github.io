@@ -1,4 +1,9 @@
 {{ define "main" }}
+{{ if eq site.Params.demoTemplate "gallery" }}
+  {{ partial "gallery/list.html" . }}
+{{ else if eq site.Params.demoTemplate "filmstrip" }}
+  {{ partial "filmstrip/list.html" . }}
+{{ else }}
 <main id="main" class="shell listing-page{{ if eq site.Params.demoTemplate "gallery" }} gallery-listing{{ end }}" tabindex="-1">
   <header class="page-heading">
     <p class="eyebrow">ARCHIVE / 01—03</p>
@@ -15,4 +20,5 @@
     </div>
   {{ end }}
 </main>
+{{ end }}
 {{ end }}

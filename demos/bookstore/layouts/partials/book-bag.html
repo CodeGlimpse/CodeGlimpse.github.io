@@ -1,0 +1,12 @@
+    <aside class="bag-panel" aria-labelledby="bag-heading">
+      <div class="bag-heading"><p class="eyebrow">YOUR LITTLE BOOK BAG</p><h2 id="bag-heading" tabindex="-1">模拟购物袋</h2><p>放几本想读的，留在这一页。</p></div>
+      <div id="bag-empty" class="bag-empty"><span class="bag-drawing" aria-hidden="true"></span><h3>购物袋还是空的</h3><p>从书架选一本，<br>试试你的阅读组合。</p></div>
+      <ul id="bag-lines" class="bag-lines" aria-label="购物袋图书" hidden></ul>
+      <div class="bag-summary">
+        <dl><div><dt>图书件数</dt><dd><span id="bag-count">0</span> 件</dd></div><div class="subtotal-row"><dt>商品小计</dt><dd id="bag-subtotal">¥0.00</dd></div></dl>
+        <p>仅显示图书价格合计。</p>
+        <button id="bag-clear" class="clear-button" type="button" disabled>清空购物袋</button>
+      </div>
+      <p id="bag-message" class="bag-message" role="status" aria-live="polite" aria-atomic="true">选一本书，试试购物袋。</p>
+      <p class="bag-notice">{{ site.Params.demoNotice }}<br>刷新或离开页面即重置；没有结算、下单或支付。</p>
+    </aside>

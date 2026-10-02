@@ -20,6 +20,12 @@
     const courseButtons = Array.from(root.querySelectorAll('[data-course-id]'));
     const sessionRows = Array.from(root.querySelectorAll('[data-session-id]'));
     const calendarMode = document.body.dataset.template === 'calendar';
+    const agendaMode = document.body.dataset.template === 'agenda';
+    const agendaSteps = Array.from(root.querySelectorAll('[data-agenda-step]'));
+    const agendaNavigation = Array.from(root.querySelectorAll('[data-agenda-goto]'));
+    const agendaNext = Array.from(root.querySelectorAll('[data-agenda-next]'));
+    const agendaBack = Array.from(root.querySelectorAll('[data-agenda-back]'));
+    const agendaNote = root.querySelector('[data-agenda-note]');
     const calendar = root.querySelector('[data-booking-calendar]');
     const calendarDetails = root.querySelector('[data-calendar-details]');
     const calendarPrompt = root.querySelector('[data-calendar-prompt]');
@@ -38,6 +44,7 @@
     if (!core || !dataNode || controls.some(control => !control)
         || !previewButton || !preview || !status || !courseCount || !sessionCount || !empty || !unitPrice || !estimate
         || (calendarMode && (!calendar || !calendarDetails || !calendarPrompt || !calendarSummary || !calendarButtons.length))
+        || (agendaMode && (agendaSteps.length !== 3 || agendaNavigation.length !== 3 || !agendaNote))
         || Object.values(summary).some(element => !element) || Object.values(previewFields).some(element => !element)) {
         showDataError();
         return;
@@ -57,6 +64,36 @@
     }
 
     let state = core.createState();
+    let agendaStep = 0;
+
+    function updateAgenda() {
+        if (!agendaMode) return;
+        const reachableStep = state.courseId ? (state.sessionId ? 2 : 1) : 0;
+        agendaStep = Math.min(agendaStep, reachableStep);
+        agendaSteps.forEach(step => { step.hidden = Number(step.dataset.agendaStep) !== agendaStep; });
+        agendaNavigation.forEach(button => {
+            const step = Number(button.dataset.agendaGoto);
+            button.disabled = step > reachableStep;
+            button.classList.toggle('is-complete', step < reachableStep);
+            if (step === agendaStep) button.setAttribute('aria-current', 'step');
+            else button.removeAttribute('aria-current');
+        });
+        agendaNext.forEach(button => { button.disabled = Number(button.dataset.agendaNext) > reachableStep; });
+        agendaBack.forEach(button => { button.disabled = false; });
+        agendaNote.textContent = agendaStep === 0
+            ? (state.courseId ? '课程已选好。点击下一步，挑选对应场次。' : '第 1 步：选择一门喜欢的课程。')
+            : agendaStep === 1
+                ? (state.sessionId ? '场次已选好。点击下一步，核对人数与费用。' : '第 2 步：选择一个有余位的场次。')
+                : '第 3 步：核对人数和费用，再查看预约单预览。';
+        root.dataset.agendaStep = String(agendaStep);
+    }
+
+    function navigateAgenda(step) {
+        agendaStep = step;
+        updateAgenda();
+        const active = agendaSteps.find(panel => Number(panel.dataset.agendaStep) === agendaStep);
+        active.querySelector('.agenda-step-heading h2').focus();
+    }
 
     function clearPreview() {
         preview.hidden = true;
@@ -118,8 +155,10 @@
         status.textContent = calendarMode && !calendarExpanded
             ? '请先在日历中选择日期，再选择当天课程与场次。'
             : result.ok ? '课程、场次和 ' + state.quantity + ' 人已选好，可查看预约单预览。' : result.message;
+        updateAgenda();
         if (focused && root.contains(focused) && (focused.closest('[hidden]') || focused.disabled)) {
-            (calendarMode && !calendarExpanded ? date : category).focus();
+            if (agendaMode) agendaSteps[agendaStep].querySelector('.agenda-step-heading h2').focus();
+            else (calendarMode && !calendarExpanded ? date : category).focus();
         }
     }
 
@@ -197,6 +236,7 @@
         quantity.value = '1';
         clearPreview();
         update();
+        if (agendaMode) category.focus();
     });
     previewButton.addEventListener('click', () => {
         const plan = core.createPreview(schedule, state);
@@ -215,6 +255,12 @@
         status.dataset.tone = 'normal';
         status.textContent = '预约单预览已生成，仅在本页展示，没有提交任何信息。';
     });
+
+    if (agendaMode) {
+        agendaNavigation.forEach(button => button.addEventListener('click', () => navigateAgenda(Number(button.dataset.agendaGoto))));
+        agendaNext.forEach(button => button.addEventListener('click', () => navigateAgenda(Number(button.dataset.agendaNext))));
+        agendaBack.forEach(button => button.addEventListener('click', () => navigateAgenda(Number(button.dataset.agendaBack))));
+    }
 
     controls.forEach(control => { control.disabled = false; });
     courseButtons.forEach(button => { button.disabled = false; });

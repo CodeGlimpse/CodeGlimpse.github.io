@@ -1,0 +1,961 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>教程 on Fernweh的个人博客</title><link>https://blog.codeglimpse.top/categories/tutorials/</link><description>Recent content in 教程 on Fernweh的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Wed, 09 Sep 2026 00:02:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/categories/tutorials/index.xml" rel="self" type="application/rss+xml"/><item><title>反应测试为什么会多算几十毫秒：按下、松开与浏览器计时</title><link>https://blog.codeglimpse.top/p/reaction-timing/</link><pubDate>Wed, 09 Sep 2026 00:02:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/reaction-timing/</guid><description>&lt;p&gt;本站&lt;a class="link" href="https://blog.codeglimpse.top/games/reaction/" &gt;反应测试&lt;/a&gt;曾出现一个问题：同一个人在其他站点大约测得 220–250 毫秒，在这里却经常超过 300 毫秒。排查后发现，旧实现把鼠标从按下到松开的时间也算进去了。&lt;/p&gt;
+&lt;h2 id="click-往往比按下更晚"&gt;click 往往比按下更晚
+&lt;/h2&gt;&lt;p&gt;一次常见的鼠标点击包含按下、松开，随后才产生 &lt;code&gt;click&lt;/code&gt;。如果测试目标是“看到变绿后，多久按下按钮”，在 &lt;code&gt;click&lt;/code&gt; 中计时就可能测到另一个终点。&lt;/p&gt;
+&lt;p&gt;用可控的浏览器输入进行对照：变绿后 230 毫秒按下，继续按住 80 毫秒再松开。旧实现到松开时记录 &lt;strong&gt;310 毫秒&lt;/strong&gt;；修正后在按下时记录 &lt;strong&gt;230 毫秒&lt;/strong&gt;，松开不会再次计分。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://blog.codeglimpse.top/p/reaction-timing/timing.svg"
+loading="lazy"
+alt="变绿后 230 毫秒按下，310 毫秒松开；click 会包含额外的按住时间"
+&gt;&lt;/p&gt;
+&lt;p&gt;这里的 230 和 80 是测试中指定的时间，不是人的平均反应值，也不是应该给所有成绩减去的固定偏差。&lt;/p&gt;
+&lt;h2 id="先明确输入的终点"&gt;先明确输入的终点
+&lt;/h2&gt;&lt;p&gt;本站现在按以下边界结算：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;输入方式&lt;/th&gt;
+&lt;th&gt;记录时机&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;鼠标&lt;/td&gt;
+&lt;td&gt;主按钮的 &lt;code&gt;pointerdown&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;触屏&lt;/td&gt;
+&lt;td&gt;手指接触面板产生的主指针按下&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;键盘&lt;/td&gt;
+&lt;td&gt;空格或回车的首次 &lt;code&gt;keydown&lt;/code&gt;，忽略按住后的连发&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;辅助技术的虚拟激活&lt;/td&gt;
+&lt;td&gt;保留相应的 &lt;code&gt;click&lt;/code&gt; 路径，并避免重复结算&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;鼠标或触摸按下已经计分后，其后产生的兼容 &lt;code&gt;click&lt;/code&gt; 不应再开新一轮。第二个触点、非主按钮和修饰键组合也不应被当成正常反应。&lt;/p&gt;
+&lt;h2 id="用事件时间而不是处理事件时的时间"&gt;用事件时间，而不是处理事件时的时间
+&lt;/h2&gt;&lt;p&gt;事件可能先发生，再排队等待主线程处理。假设按下发生在第 230 毫秒，处理函数到第 310 毫秒才执行：直接取处理函数里的 &lt;code&gt;performance.now()&lt;/code&gt;，会把这 80 毫秒的排队时间也算进去。&lt;/p&gt;
+&lt;p&gt;因此，输入端优先采用事件的 &lt;code&gt;timeStamp&lt;/code&gt;，并把它归一到与起点一致的时间基准。当前实现的核心调用是：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;pressedAt&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;inputTime&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;timeStamp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;performance&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;now&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;performance&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;timeOrigin&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nx"&gt;state&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;respond&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;state&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;pressedAt&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;归一化会处理异常值，以及使用 Unix 时间而非页面时间基准的旧式时间戳。不能直接把两个不同时间基准的数相减。&lt;/p&gt;
+&lt;p&gt;这也影响抢跑判断：一个在变绿之前发生、却到变绿后才被处理的输入，仍应判定为抢跑。&lt;/p&gt;
+&lt;h2 id="变色与起点放到同一个绘制回调"&gt;变色与起点放到同一个绘制回调
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;setTimeout&lt;/code&gt; 到期表示回调可以运行，不代表屏幕已经变绿。若先开始计时，再等待页面显示，显示延迟也可能被算入成绩。&lt;/p&gt;
+&lt;p&gt;本站在随机等待结束后，使用同一个动画帧回调更新面板并记录起点。下面省略了暂停与状态检查，仅展示顺序：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nx"&gt;requestAnimationFrame&lt;/span&gt;&lt;span class="p"&gt;(()&lt;/span&gt; &lt;span class="p"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ready&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;state&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;arm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;state&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;performance&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;now&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;requestAnimationFrame&lt;/code&gt; 在绘制之前运行，这样能缩小脚本更新与下一次绘制之间的时序差异。&lt;strong&gt;它仍不是显示器像素真正发光的时间戳。&lt;/strong&gt; 屏幕刷新率、输入设备、浏览器和系统调度仍会影响最终测量。&lt;/p&gt;
+&lt;h2 id="暂停重开和抢跑也属于计时逻辑"&gt;暂停、重开和抢跑也属于计时逻辑
+&lt;/h2&gt;&lt;p&gt;暂停或离开游戏时，需要取消等待定时器和尚未执行的动画帧；恢复后重新等待信号，保留已经完成的成绩。否则旧回调可能突然把新一轮面板变绿。&lt;/p&gt;
+&lt;p&gt;提前按下不计入五次有效成绩。完成一次后，再按一下面板开始下一次等待。重新开始则清空本局成绩与旧任务。&lt;/p&gt;
+&lt;p&gt;比较不同站点时，尽量使用相同设备、相同输入方式和相近的前台运行条件。本站修复了可明确定位的事件终点与排队偏差，但浏览器小游戏不能替代专用测量设备。&lt;/p&gt;
+&lt;h2 id="继续阅读"&gt;继续阅读
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://blog.codeglimpse.top/games/reaction/" &gt;本站反应测试&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/CodeGlimpse/CodeGlimpse.github.io/blob/master/assets/js/games/reaction.js" target="_blank" rel="noopener"
+&gt;反应测试控制器源码&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerdown_event" target="_blank" rel="noopener"
+&gt;MDN：pointerdown&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.mozilla.org/en-US/docs/Web/API/Event/timeStamp" target="_blank" rel="noopener"
+&gt;MDN：Event.timeStamp&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame" target="_blank" rel="noopener"
+&gt;MDN：requestAnimationFrame&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>OpenClaw 装好了却用不了：从运行时到 Gateway 排查</title><link>https://blog.codeglimpse.top/p/openclaw-troubleshooting/</link><pubDate>Wed, 09 Sep 2026 00:01:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/openclaw-troubleshooting/</guid><description>&lt;p&gt;“安装完成”和“可以完成一次任务”之间，还有运行时、Gateway、认证和浏览器连接几个环节。把失败定位到具体环节，才能选对下一步。&lt;/p&gt;
+&lt;h2 id="先排除命令与运行时问题"&gt;先排除命令与运行时问题
+&lt;/h2&gt;&lt;p&gt;在 Windows PowerShell 中检查：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Get-Command&lt;/span&gt; &lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;npm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;openclaw&lt;/span&gt; &lt;span class="n"&gt;-All&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;openclaw&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;命令找不到时，先确认安装方式、命令所在目录和当前终端的 PATH。CLI 能被找到后，还要检查运行它的 Node.js 是否符合所用版本的要求。&lt;/p&gt;
+&lt;p&gt;本机的 Node.js 是 &lt;code&gt;v22.13.1&lt;/code&gt;。在隔离目录运行 &lt;strong&gt;OpenClaw 2026.9.2 发布包的启动器&lt;/strong&gt;时，&lt;code&gt;--version&lt;/code&gt; 就被以下检查拦住了，退出码为 1：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw: Node.js &amp;gt;=22.22.3 &amp;lt;23, &amp;gt;=24.15.0 &amp;lt;25, or &amp;gt;=25.9.0 is required (current: v22.13.1).
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这次复现只运行了发布包的启动器和运行时检查，没有进行全局安装或启动 Gateway。它说明：&lt;strong&gt;同样叫 Node 22，也不代表满足最低补丁版本。&lt;/strong&gt; 此时还没进入模型认证或浏览器配对阶段，修改那些配置不会解决这个报错。&lt;/p&gt;
+&lt;p&gt;2026.9.2 的包元数据和启动器都规定了上述范围。处理时按所用 OpenClaw 版本的要求选受支持的 Node，然后重新检查 &lt;code&gt;node --version&lt;/code&gt; 与 &lt;code&gt;openclaw --version&lt;/code&gt;。具体安装入口见&lt;a class="link" href="https://blog.codeglimpse.top/p/openclaw-install/" &gt;安装与配置&lt;/a&gt;。&lt;/p&gt;
+&lt;h2 id="cli-可以运行再检查-gateway"&gt;CLI 可以运行，再检查 Gateway
+&lt;/h2&gt;&lt;p&gt;下面是 CLI 已经可以执行时的排查步骤，不是上面这台实验环境的成功输出。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw gateway status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw logs --follow
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;logs --follow&lt;/code&gt; 会持续输出日志，看完后用 Ctrl+C 退出。官方排障文档将 &lt;code&gt;Runtime: running&lt;/code&gt;、&lt;code&gt;Connectivity probe: ok&lt;/code&gt; 和 &lt;code&gt;Capability: ...&lt;/code&gt; 列为应关注的 Gateway 信息。字段会随版本变化，要结合完整错误判断。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;现象&lt;/th&gt;
+&lt;th&gt;优先检查&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;服务没有运行&lt;/td&gt;
+&lt;td&gt;服务安装方式、启动日志和运行账户&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ECONNREFUSED&lt;/code&gt; / connection refused&lt;/td&gt;
+&lt;td&gt;目标地址与端口，以及对应服务是否监听&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;服务运行，但连接探测失败&lt;/td&gt;
+&lt;td&gt;地址、端口、认证及相关错误；不要把“进程存在”当成连通成功&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;终端 CLI 与后台服务表现不同&lt;/td&gt;
+&lt;td&gt;两者使用的 OpenClaw/Node 路径、版本和配置来源是否一致&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;openclaw doctor&lt;/code&gt; 可以提供诊断信息。遇到修复、迁移或重启提示时，先读清楚将改变什么；&lt;code&gt;doctor --fix&lt;/code&gt; 和 &lt;code&gt;gateway restart&lt;/code&gt; 是会修改状态的操作，应在问题范围明确后使用。&lt;/p&gt;
+&lt;h2 id="模型请求与浏览器连接分别验证"&gt;模型请求与浏览器连接分别验证
+&lt;/h2&gt;&lt;p&gt;Gateway 可连接，仍不等于模型请求成功。选择你自己的模型配置完成一次不含敏感内容的简单请求，再依据日志区分认证失败、提供商配额、模型名称或网络问题。401、403、429 应结合具体提供商的错误正文解释。&lt;/p&gt;
+&lt;p&gt;浏览器连接则按任务选择资料目录与连接模式：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile openclaw status
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;上面检查的是独立托管浏览器。需要复用现有登录态时，按&lt;a class="link" href="https://blog.codeglimpse.top/p/openclaw-chrome/" &gt;浏览器三种模式&lt;/a&gt;选择 &lt;code&gt;user&lt;/code&gt; 或 &lt;code&gt;chrome&lt;/code&gt; 并完成各自授权。网页能打开、扩展已安装、附加到正确标签页是不同的检查点。&lt;/p&gt;
+&lt;h2 id="记录足够的信息再反馈"&gt;记录足够的信息再反馈
+&lt;/h2&gt;&lt;p&gt;保留系统与版本、运行命令、实际地址的非敏感部分、错误时间和对应日志片段。删除令牌、密钥、Cookie 和个人会话内容。&lt;/p&gt;
+&lt;p&gt;普通 JSON 示例可用&lt;a class="link" href="https://blog.codeglimpse.top/tools/json/" &gt;JSON 工具&lt;/a&gt;检查；两份经过脱敏的示例可用&lt;a class="link" href="https://blog.codeglimpse.top/tools/diff/" &gt;文本 Diff&lt;/a&gt;比较。OpenClaw 的完整配置可能是 JSON5，应使用其自身诊断功能，不用普通 JSON 格式化器改写完整配置。&lt;/p&gt;
+&lt;h2 id="参考"&gt;参考
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/gateway/troubleshooting" target="_blank" rel="noopener"
+&gt;OpenClaw 官方排障指南&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/install" target="_blank" rel="noopener"
+&gt;安装与运行时要求&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/tools/browser" target="_blank" rel="noopener"
+&gt;浏览器模式&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://www.npmjs.com/package/openclaw/v/2026.9.2" target="_blank" rel="noopener"
+&gt;OpenClaw 2026.9.2 包信息&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>Python 装了包却无法导入：先确认解释器和 pip</title><link>https://blog.codeglimpse.top/p/python-environment-mismatch/</link><pubDate>Wed, 09 Sep 2026 00:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/python-environment-mismatch/</guid><description>&lt;p&gt;&lt;code&gt;pip install&lt;/code&gt; 显示成功，运行程序却出现 &lt;code&gt;ModuleNotFoundError&lt;/code&gt;，首先需要回答的是：&lt;strong&gt;安装包和运行程序，用的是同一个 Python 吗？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;下面的例子使用 Windows、Python 3.13.2 和两个独立虚拟环境。重点是找到实际解释器的路径，这个方法也适用于其他 Python 3 版本。&lt;/p&gt;
+&lt;h2 id="先看命令指向哪里"&gt;先看命令指向哪里
+&lt;/h2&gt;&lt;p&gt;在运行程序的同一个 PowerShell 窗口中执行：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Get-Command&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;py&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="n"&gt;-All&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import sys; print(sys.executable); print(sys.prefix); print(sys.base_prefix)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;Get-Command&lt;/code&gt; 显示命令解析结果；&lt;code&gt;sys.executable&lt;/code&gt; 显示真正运行的解释器；&lt;code&gt;python -m pip&lt;/code&gt; 让这个解释器加载自己的 pip。仅比较版本号不够，同一个版本也可以存在于多个目录。&lt;/p&gt;
+&lt;p&gt;在本机，&lt;code&gt;python&lt;/code&gt; 指向 &lt;code&gt;D:\JDKs\Python3.13\python.exe&lt;/code&gt;，旧版 &lt;code&gt;py&lt;/code&gt; 启动器的列表同时包含普通版 3.13、自由线程版 3.13t 和 2.7。&lt;code&gt;py&lt;/code&gt; 的默认条目还是 3.13t。因此，直接输入 &lt;code&gt;py&lt;/code&gt; 与输入 &lt;code&gt;python&lt;/code&gt; 并不一定选择同一套运行时。&lt;/p&gt;
+&lt;p&gt;旧启动器可用 &lt;code&gt;py --list-paths&lt;/code&gt; 查看条目；新版 Python Install Manager 使用 &lt;code&gt;py list&lt;/code&gt;。先根据帮助输出判断自己用的是哪一种，再选择明确的版本，例如 &lt;code&gt;py -3.13&lt;/code&gt;。安装方式见&lt;a class="link" href="https://blog.codeglimpse.top/p/python-install/" &gt;Python 安装教程&lt;/a&gt;。&lt;/p&gt;
+&lt;h2 id="一次环境错位的实际复现"&gt;一次环境错位的实际复现
+&lt;/h2&gt;&lt;p&gt;我在隔离目录创建了 &lt;code&gt;env-a&lt;/code&gt;、&lt;code&gt;env-b&lt;/code&gt;，并制作了一个名为 &lt;code&gt;blog-env-demo&lt;/code&gt; 的本地演示包。它只提供一个字符串，用来验证包安装在哪个环境；&lt;strong&gt;它不是需要你从 PyPI 下载的依赖&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;两个环境都是 Python 3.13，pip 输出也都是 24.3.1，但路径分别落在各自的目录中。下列输出把实验目录统一缩写为 &lt;code&gt;&amp;lt;实验目录&amp;gt;&lt;/code&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;env-a:
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip 24.3.1 from &amp;lt;实验目录&amp;gt;\env-a\Lib\site-packages\pip (python 3.13)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;env-b:
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip 24.3.1 from &amp;lt;实验目录&amp;gt;\env-b\Lib\site-packages\pip (python 3.13)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;只给 A 安装演示包后，A 可以导入，B 则报错：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\&lt;/span&gt;&lt;span class="nb"&gt;env-a&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import blog_env_demo; print(blog_env_demo.MARKER)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# installed in this interpreter&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\&lt;/span&gt;&lt;span class="nb"&gt;env-b&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import blog_env_demo&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# ModuleNotFoundError: No module named &amp;#39;blog_env_demo&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;随后，用 &lt;strong&gt;B 自己的解释器&lt;/strong&gt;执行 &lt;code&gt;-m pip&lt;/code&gt;，把同一个本地 wheel 装入 B，B 的导入也成功了。整个过程中没有重装 Python，也没有改全局 PATH。报错来自环境错位。&lt;/p&gt;
+&lt;h2 id="在自己的项目中怎么修正"&gt;在自己的项目中怎么修正
+&lt;/h2&gt;&lt;p&gt;先确定项目实际使用的解释器。已有 &lt;code&gt;.venv&lt;/code&gt; 时，可以直接检查它：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import sys; print(sys.executable)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果这是尚未创建虚拟环境的新项目，再用已安装的目标版本创建环境：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="mf"&gt;-3.13&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;venv&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;venv&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在提供了 &lt;code&gt;requirements.txt&lt;/code&gt; 的项目中，让安装和运行使用同一路径：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;-r&lt;/span&gt; &lt;span class="n"&gt;requirements&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;txt&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;py&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;将版本号、依赖文件和入口文件替换为项目实际使用的值。IDE、调试器、定时任务也应选同一个解释器。直接调用 &lt;code&gt;.venv&lt;/code&gt; 中的 Python 不要求先运行激活脚本，因此也不必为此修改 PowerShell 执行策略。&lt;/p&gt;
+&lt;h2 id="路径一致后还需要检查什么"&gt;路径一致后，还需要检查什么
+&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;现象&lt;/th&gt;
+&lt;th&gt;下一步&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;安装名和导入名不同&lt;/td&gt;
+&lt;td&gt;查包的使用文档，例如安装 &lt;code&gt;Pillow&lt;/code&gt; 后导入的是 &lt;code&gt;PIL&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;报错指向项目内的同名文件&lt;/td&gt;
+&lt;td&gt;检查是否用 &lt;code&gt;json.py&lt;/code&gt;、&lt;code&gt;requests.py&lt;/code&gt; 等文件名遮蔽了真正的模块&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;pip 有包，IDE 仍报错&lt;/td&gt;
+&lt;td&gt;查看 IDE 当前运行配置中的解释器路径，而不只看终端状态&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;自由线程版与普通版混用&lt;/td&gt;
+&lt;td&gt;核对运行时及二进制扩展支持情况，不直接复制另一个环境的 &lt;code&gt;site-packages&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;sys.prefix != sys.base_prefix&lt;/code&gt; 通常表示当前解释器处于虚拟环境。最终应以实际运行程序的解释器和完整错误为准。&lt;/p&gt;
+&lt;h2 id="参考"&gt;参考
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/library/venv.html" target="_blank" rel="noopener"
+&gt;Python：venv 虚拟环境&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/using/windows.html" target="_blank" rel="noopener"
+&gt;Python：Windows 上的 Python&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pip.pypa.io/en/stable/user_guide/" target="_blank" rel="noopener"
+&gt;pip：用户指南&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>保护 Linux 服务器的一大利器：Fail2ban</title><link>https://blog.codeglimpse.top/p/%E4%BF%9D%E6%8A%A4-linux-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E4%B8%80%E5%A4%A7%E5%88%A9%E5%99%A8fail2ban/</link><pubDate>Wed, 01 Apr 2026 15:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/%E4%BF%9D%E6%8A%A4-linux-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E4%B8%80%E5%A4%A7%E5%88%A9%E5%99%A8fail2ban/</guid><description>&lt;p&gt;Fail2ban 根据日志中的失败事件执行封禁动作。它能补充 SSH 等服务的防护，但需要正确的日志来源、过滤器和防火墙动作；安装服务本身不等于已经保护所有入口。&lt;/p&gt;
+&lt;h2 id="适用范围与安装"&gt;适用范围与安装
+&lt;/h2&gt;&lt;p&gt;下面以使用 systemd 的 Debian/Ubuntu 软件包环境和 SSH 为例。先核对发行版、SSH 实际端口及 Fail2ban 软件包版本；Fedora、RHEL 和其他发行版的仓库与日志配置不能直接套用。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt update
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install fail2ban
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;fail2ban-client --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;优先使用发行版维护的软件包。确需源码安装时，按&lt;a class="link" href="https://github.com/fail2ban/fail2ban" target="_blank" rel="noopener"
+&gt;上游说明&lt;/a&gt;选择版本，并确认依赖、服务文件和后续升级方式。&lt;/p&gt;
+&lt;h2 id="先确认-ssh-日志在哪里"&gt;先确认 SSH 日志在哪里
+&lt;/h2&gt;&lt;p&gt;Ubuntu/Debian 常见服务单元为 &lt;code&gt;ssh&lt;/code&gt;，其他环境可能是 &lt;code&gt;sshd&lt;/code&gt;。检查实际单元及日志：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo systemctl status ssh --no-pager
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo journalctl -u ssh -n &lt;span class="m"&gt;30&lt;/span&gt; --no-pager
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果使用文件日志，先确认 &lt;code&gt;/var/log/auth.log&lt;/code&gt; 等文件确实存在且包含 SSH 认证事件。不要仅因为某篇教程写了该路径，就假定机器正在向它写日志。&lt;/p&gt;
+&lt;h2 id="用小型覆盖文件配置-ssh-jail"&gt;用小型覆盖文件配置 SSH jail
+&lt;/h2&gt;&lt;p&gt;保留发行版的 &lt;code&gt;jail.conf&lt;/code&gt;，在 &lt;code&gt;/etc/fail2ban/jail.d/sshd.local&lt;/code&gt; 中写入需要覆盖的参数，避免复制整份默认配置后长期失去上游更新。&lt;/p&gt;
+&lt;p&gt;启用前先确保有第二条管理会话或控制台，并将确认过的固定管理地址加入 &lt;code&gt;ignoreip&lt;/code&gt;。下面只列出回环地址；它不包含你的远程管理地址。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[DEFAULT]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;ignoreip&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;127.0.0.1/8 ::1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;[sshd]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;enabled&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;ssh&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;backend&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;systemd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;maxretry&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;findtime&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;10m&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;bantime&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;1h&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;使用自定义 SSH 端口时，将 &lt;code&gt;port&lt;/code&gt; 改为实际端口。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;systemd&lt;/code&gt; 后端读取 journal，&lt;strong&gt;不能同时照抄文件型 &lt;code&gt;logpath&lt;/code&gt;&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;若改用文件日志，选择合适的文件后端，并设置已确认的路径，例如 &lt;code&gt;backend = polling&lt;/code&gt; 配合 &lt;code&gt;logpath = /var/log/auth.log&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;maxretry&lt;/code&gt; 和 &lt;code&gt;findtime&lt;/code&gt; 控制触发条件；&lt;code&gt;bantime&lt;/code&gt; 是封禁时长，按业务和恢复能力调整。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="验证配置后再启用"&gt;验证配置后再启用
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client -t
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;配置检查通过后，再启用或重新加载服务：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo systemctl &lt;span class="nb"&gt;enable&lt;/span&gt; --now fail2ban
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client reload
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client ping
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client status sshd
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;确认 &lt;code&gt;sshd&lt;/code&gt; 已启用、日志来源正确，并检查实际的封禁动作。需要测试封禁时，使用受控测试来源并保留恢复入口，不要反复用唯一管理连接试错。&lt;/p&gt;
+&lt;h2 id="封禁解禁与持久化"&gt;封禁、解禁与持久化
+&lt;/h2&gt;&lt;p&gt;下面的 &lt;code&gt;192.0.2.10&lt;/code&gt; 是文档示例地址，操作前替换为经过核实的目标：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client &lt;span class="nb"&gt;set&lt;/span&gt; sshd banip 192.0.2.10
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client &lt;span class="nb"&gt;set&lt;/span&gt; sshd unbanip 192.0.2.10
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo fail2ban-client unban 192.0.2.10
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;上游默认配置启用 SQLite 持久化，&lt;code&gt;dbfile&lt;/code&gt; 为 &lt;code&gt;/var/lib/fail2ban/fail2ban.sqlite3&lt;/code&gt;。因此不能笼统地说“重启后所有封禁都会失效”；恢复结果还受数据库、封禁剩余时间、清理策略和发行版配置影响。应检查当前有效配置和服务重启后的实际状态。&lt;/p&gt;
+&lt;h2 id="扩展到其他服务前"&gt;扩展到其他服务前
+&lt;/h2&gt;&lt;p&gt;不要只添加一个不存在过滤器的 &lt;code&gt;nginx-404&lt;/code&gt; jail。先确认过滤器文件、真实日志格式和误报范围，再用 &lt;code&gt;fail2ban-regex&lt;/code&gt; 对受控样例验证。JavaScript 正则工具也不能替代 Fail2ban 自身的过滤器测试。&lt;/p&gt;
+&lt;p&gt;如果没有封禁事件，按“日志是否产生 → 后端是否读取 → 过滤器是否匹配 → 防火墙动作是否成功”的顺序排查。修改配置后先运行 &lt;code&gt;fail2ban-client -t&lt;/code&gt;，不要靠反复重启猜测原因。&lt;/p&gt;
+&lt;h2 id="官方依据"&gt;官方依据
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/fail2ban/fail2ban" target="_blank" rel="noopener"
+&gt;Fail2ban 项目与安装说明&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/fail2ban/fail2ban/blob/master/config/jail.conf" target="_blank" rel="noopener"
+&gt;默认 jail 配置与后端说明&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/fail2ban/fail2ban/blob/master/config/fail2ban.conf" target="_blank" rel="noopener"
+&gt;默认数据库与服务配置&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>OpenClaw 浏览器三种模式：托管、MCP 与 Chrome 扩展</title><link>https://blog.codeglimpse.top/p/openclaw-chrome/</link><pubDate>Tue, 24 Mar 2026 23:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/openclaw-chrome/</guid><description>&lt;p&gt;OpenClaw 提供三种浏览器模式：隔离的 &lt;code&gt;openclaw&lt;/code&gt;、基于 Chrome DevTools MCP 的 &lt;code&gt;user&lt;/code&gt;，以及基于 Chrome 扩展的 &lt;code&gt;chrome&lt;/code&gt;。它们主要区别在于是否复用个人登录态，以及连接时需要怎样的授权。&lt;/p&gt;
+&lt;h2 id="先选择连接模式"&gt;先选择连接模式
+&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;配置名&lt;/th&gt;
+&lt;th&gt;连接对象&lt;/th&gt;
+&lt;th&gt;适合的情况&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;openclaw&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;OpenClaw 管理的独立浏览器资料目录&lt;/td&gt;
+&lt;td&gt;自动化练习、测试，不需要个人浏览器登录态&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;user&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;通过 Chrome DevTools MCP 附加到已运行的浏览器&lt;/td&gt;
+&lt;td&gt;需要现有登录态，且有人在电脑前确认连接&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;chrome&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;通过 OpenClaw Chrome 扩展连接浏览器&lt;/td&gt;
+&lt;td&gt;需要现有登录态并已完成扩展安装、配对&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;独立浏览器是默认选择。两种复用登录态的方式都会扩大自动化能访问的内容，选择时应以任务需要和浏览器权限为准。&lt;/p&gt;
+&lt;h2 id="使用独立托管浏览器"&gt;使用独立托管浏览器
+&lt;/h2&gt;&lt;p&gt;在 Gateway 已可用的前提下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile openclaw status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile openclaw start
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile openclaw open https://example.com
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile openclaw snapshot
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这组命令可以分别核对状态、启动浏览器、打开测试网页和读取快照。仅命令退出成功，不能替代实际页面和快照结果的检查。&lt;/p&gt;
+&lt;h2 id="使用-user-连接已有-chrome"&gt;使用 &lt;code&gt;user&lt;/code&gt; 连接已有 Chrome
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;user&lt;/code&gt; 模式要求目标 Chromium 浏览器为 &lt;strong&gt;144+&lt;/strong&gt;，并启用远程调试。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;保持目标 Chrome 运行，在地址栏打开 &lt;code&gt;chrome://inspect/#remote-debugging&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;在该页面启用远程调试。&lt;/li&gt;
+&lt;li&gt;运行连接命令，在浏览器出现授权提示时人工确认：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile user start
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile user status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile user tabs
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile user snapshot --format ai
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;user&lt;/code&gt; 是内置配置名，无需为最简单场景手写整份配置。成功时，状态应包含 &lt;code&gt;driver: existing-session&lt;/code&gt;、&lt;code&gt;transport: chrome-mcp&lt;/code&gt; 和 &lt;code&gt;running: true&lt;/code&gt;；标签页列表与快照还应对应实际浏览器。&lt;/p&gt;
+&lt;p&gt;Brave、Edge 或其他资料目录可能需要显式设置 &lt;code&gt;userDataDir&lt;/code&gt;；已经用调试端口启动的浏览器可能需要 &lt;code&gt;cdpUrl&lt;/code&gt;。这些属于不同连接条件，按&lt;a class="link" href="https://docs.openclaw.ai/tools/browser#existing-session-via-chrome-devtools-mcp" target="_blank" rel="noopener"
+&gt;官方已有会话说明&lt;/a&gt;配置。&lt;/p&gt;
+&lt;h2 id="chrome-扩展仍是支持的方式"&gt;Chrome 扩展仍是支持的方式
+&lt;/h2&gt;&lt;p&gt;当前官方扩展入口为：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser extension install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;然后依照&lt;a class="link" href="https://docs.openclaw.ai/tools/chrome-extension" target="_blank" rel="noopener"
+&gt;扩展文档&lt;/a&gt;完成安装、授权和配对。macOS/Linux 的本地主机引导与 Windows 的手动配对流程不同，请选择对应系统的步骤。&lt;/p&gt;
+&lt;p&gt;完成配对后，使用 &lt;code&gt;chrome&lt;/code&gt; 配置检查连接：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile chrome status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw browser --browser-profile chrome tabs
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="排查顺序"&gt;排查顺序
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;没有 &lt;code&gt;browser&lt;/code&gt; 子命令&lt;/strong&gt;：核对 OpenClaw 版本和浏览器插件是否启用。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;无法附加 &lt;code&gt;user&lt;/code&gt;&lt;/strong&gt;：核对浏览器版本、远程调试开关、授权提示和目标资料目录。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;状态正常但看不到目标页面&lt;/strong&gt;：先确认使用了正确的 profile，再检查 &lt;code&gt;tabs&lt;/code&gt; 返回内容。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;扩展无法连接&lt;/strong&gt;：检查当前操作系统对应的安装和配对流程，不能用 MCP 的调试开关代替扩展配对。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="官方依据"&gt;官方依据
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/tools/browser" target="_blank" rel="noopener"
+&gt;Browser：模式、CLI 和已有会话&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/tools/chrome-extension" target="_blank" rel="noopener"
+&gt;Chrome extension：安装与配对&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>OpenClaw 安装与配置：环境检查与验收</title><link>https://blog.codeglimpse.top/p/openclaw-install/</link><pubDate>Mon, 23 Mar 2026 22:00:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/openclaw-install/</guid><description>&lt;p&gt;OpenClaw 可以在自己的设备上运行 Gateway，并连接聊天渠道和模型服务。本篇按“检查环境 → 选择安装方式 → 初始化 → 验收”的顺序整理官方 CLI 流程。&lt;/p&gt;
+&lt;h2 id="先检查适用环境"&gt;先检查适用环境
+&lt;/h2&gt;&lt;p&gt;官方安装页列出的 Node.js 范围为 &lt;strong&gt;22.22.3+、24.15+ 或 25.9+，推荐 Node 26&lt;/strong&gt;。Windows 用户可以选择原生 Windows Hub、PowerShell CLI 或 WSL2；这里主要介绍 CLI。&lt;/p&gt;
+&lt;p&gt;先记录实际版本，再选用对应命令：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;node --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;模型认证方式取决于提供商。按照初始化向导在自己的设备上完成认证，不把密钥写进截图、分享链接或问题报告。安装器、初始化和守护进程步骤会改变本机环境。&lt;/p&gt;
+&lt;h2 id="方式一通过包管理器安装"&gt;方式一：通过包管理器安装
+&lt;/h2&gt;&lt;p&gt;使用 &lt;strong&gt;npm 12 或 npm 11.16+&lt;/strong&gt; 时，官方当前命令显式允许 OpenClaw 自身的安装脚本：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm install -g openclaw@latest --allow-scripts&lt;span class="o"&gt;=&lt;/span&gt;openclaw
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;npm 11.15 及更早版本&lt;/strong&gt;不支持上述选项，使用：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm install -g openclaw@latest
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果使用 pnpm，当前官方全局安装方式为：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm add -g --allow-build&lt;span class="o"&gt;=&lt;/span&gt;openclaw openclaw@latest
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;pnpm approve-builds -g&lt;/code&gt; 不是当前支持的全局安装流程。&lt;code&gt;latest&lt;/code&gt; 会变化；需要复现时，应先确认具体发布版本，再将其替换为明确版本号并记录 Node、包管理器和操作系统版本。&lt;/p&gt;
+&lt;h2 id="方式二使用官方安装脚本"&gt;方式二：使用官方安装脚本
+&lt;/h2&gt;&lt;p&gt;脚本可能安装或切换 Node.js、安装 OpenClaw 并启动向导。先下载并阅读，再决定是否执行；有发布方校验信息时一并核对。&lt;/p&gt;
+&lt;h3 id="macos--linux--wsl2"&gt;macOS / Linux / WSL2
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;installer_path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;mktemp&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -fL https://openclaw.ai/install.sh -o &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$installer_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;less &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$installer_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 审阅完成后执行&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bash &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$installer_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="windows-powershell"&gt;Windows PowerShell
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;$installerPath&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;Join-Path&lt;/span&gt; &lt;span class="nv"&gt;$env:TEMP&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;openclaw-install.ps1&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Invoke-WebRequest&lt;/span&gt; &lt;span class="n"&gt;-Uri&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;https://openclaw.ai/install.ps1&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;-OutFile&lt;/span&gt; &lt;span class="nv"&gt;$installerPath&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Get-Content&lt;/span&gt; &lt;span class="n"&gt;-LiteralPath&lt;/span&gt; &lt;span class="nv"&gt;$installerPath&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# 审阅完成后执行&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt; &lt;span class="nv"&gt;$installerPath&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;本篇使用官方 OpenClaw 发行版。第三方分支、国内镜像可能采用不同的包名、配置和版本，应按其各自文档安装。源码构建请按&lt;a class="link" href="https://docs.openclaw.ai/install" target="_blank" rel="noopener"
+&gt;官方安装页&lt;/a&gt;对应版本的 pnpm 要求操作。&lt;/p&gt;
+&lt;h2 id="初始化和验收"&gt;初始化和验收
+&lt;/h2&gt;&lt;p&gt;如果安装器尚未运行初始化向导：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw onboard --install-daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;该命令会配置模型、Gateway 和后台启动方式。完成后分别检查 CLI 和服务：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw doctor
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw gateway status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw dashboard
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;doctor&lt;/code&gt; 是诊断入口，某些版本可能提示迁移或修复配置；先阅读输出再接受变更。能输出版本号不等于 Gateway 已运行，打开 Dashboard 也不等于已经完成一次模型请求。&lt;/p&gt;
+&lt;h2 id="常见失败与下一步"&gt;常见失败与下一步
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;找不到 &lt;code&gt;openclaw&lt;/code&gt;&lt;/strong&gt;：重新打开终端，检查 &lt;code&gt;npm prefix -g&lt;/code&gt; 和命令搜索路径，确认使用的是安装时的 Node 环境。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;安装脚本未获允许&lt;/strong&gt;：先核对 npm/pnpm 版本和上面的许可选项，不要批量允许不认识的包。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Gateway 未运行&lt;/strong&gt;：查看 &lt;code&gt;openclaw gateway status&lt;/code&gt; 的服务与连接信息，再按官方排障页定位。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;下一篇介绍浏览器的三种连接方式。普通 JSON 示例可以用本站 &lt;a class="link" href="https://blog.codeglimpse.top/tools/json/" &gt;JSON 工具&lt;/a&gt;检查语法；完整 JSON5 配置仍应由 OpenClaw 自身诊断。&lt;/p&gt;
+&lt;h2 id="官方依据"&gt;官方依据
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/install" target="_blank" rel="noopener"
+&gt;安装与系统要求&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.openclaw.ai/start/getting-started" target="_blank" rel="noopener"
+&gt;入门与初始化&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/openclaw/openclaw/releases" target="_blank" rel="noopener"
+&gt;版本发布记录&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>如何彻底卸载 OpenClaw 小龙虾</title><link>https://blog.codeglimpse.top/p/%E5%A6%82%E4%BD%95%E5%BD%BB%E5%BA%95%E5%8D%B8%E8%BD%BD-openclaw-%E5%B0%8F%E9%BE%99%E8%99%BE/</link><pubDate>Wed, 18 Mar 2026 17:22:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/%E5%A6%82%E4%BD%95%E5%BD%BB%E5%BA%95%E5%8D%B8%E8%BD%BD-openclaw-%E5%B0%8F%E9%BE%99%E8%99%BE/</guid><description>&lt;p&gt;卸载 OpenClaw 涉及不同范围：Gateway 服务、状态目录、工作区、桌面应用和 CLI 包。先确定哪些内容需要保留，并确认备份，再开始清理。&lt;/p&gt;
+&lt;h2 id="优先使用内置卸载器"&gt;优先使用内置卸载器
+&lt;/h2&gt;&lt;p&gt;CLI 仍可用时，先预览所有清理范围：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw uninstall --dry-run --all
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;核对实际目录和服务后，进入交互式卸载：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;openclaw uninstall
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;当前官方交互流程初始只选中 Gateway 服务，状态、工作区和应用是独立选项；&lt;code&gt;--all&lt;/code&gt; 会选择全部四项。删除状态不等于删除配置过的工作区。服务移除失败时，相关数据范围可能被保留，并报告部分清理失败。&lt;/p&gt;
+&lt;p&gt;如果 CLI 已删除但后台服务仍在，按&lt;a class="link" href="https://docs.openclaw.ai/install/uninstall" target="_blank" rel="noopener"
+&gt;官方手动移除说明&lt;/a&gt;处理对应操作系统的服务，不要终止所有 Node.js 进程。&lt;/p&gt;
+&lt;p&gt;下面的附带脚本只负责范围更窄的包、进程和 Docker 资源盘点及清理，不能替代内置卸载器对服务、状态和工作区的处理。&lt;/p&gt;
+&lt;h2 id="自动化卸载脚本先检查再执行"&gt;自动化卸载脚本（先检查，再执行）
+&lt;/h2&gt;&lt;p&gt;清理脚本默认只做 &lt;strong&gt;dry-run（只读盘点）&lt;/strong&gt;，列出检测到的 OpenClaw 全局包、命令行明确包含 OpenClaw 的 Node.js 进程，以及当前 Docker 上下文中名称或镜像明确匹配 OpenClaw 的资源。脚本不会停止全部 Node.js 进程，也不会扫描或删除用户目录、配置文件、注册表或任意 Docker 资源。&lt;/p&gt;
+&lt;p&gt;不要使用 &lt;code&gt;curl | bash&lt;/code&gt; 或 &lt;code&gt;irm | iex&lt;/code&gt; 直接执行远程脚本。请先下载、核对 SHA-256、阅读内容，再运行 dry-run。确认清单无误后使用 &lt;code&gt;-Apply&lt;/code&gt;/&lt;code&gt;--apply&lt;/code&gt;；交互模式还会要求输入 &lt;code&gt;REMOVE OPENCLAW&lt;/code&gt;。&lt;/p&gt;
+&lt;h3 id="windowspowershell"&gt;Windows（PowerShell）
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;$scriptUrl&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForWindows.ps1&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;$scriptPath&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;Join-Path&lt;/span&gt; &lt;span class="nv"&gt;$env:TEMP&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;CleanupOpenClawForWindows.ps1&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Invoke-WebRequest&lt;/span&gt; &lt;span class="n"&gt;-Uri&lt;/span&gt; &lt;span class="nv"&gt;$scriptUrl&lt;/span&gt; &lt;span class="n"&gt;-OutFile&lt;/span&gt; &lt;span class="nv"&gt;$scriptPath&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;$expectedSha256&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;eab731bd073f42fb75569be6c1dd3af37aca3214957057241ed13072fcc40daa&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="nb"&gt;Get-FileHash&lt;/span&gt; &lt;span class="n"&gt;-Algorithm&lt;/span&gt; &lt;span class="n"&gt;SHA256&lt;/span&gt; &lt;span class="n"&gt;-LiteralPath&lt;/span&gt; &lt;span class="nv"&gt;$scriptPath&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="py"&gt;Hash&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;ToLowerInvariant&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;-ne&lt;/span&gt; &lt;span class="nv"&gt;$expectedSha256&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;throw&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;SHA-256 校验失败，请勿执行该文件。&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;Get-Content&lt;/span&gt; &lt;span class="n"&gt;-LiteralPath&lt;/span&gt; &lt;span class="nv"&gt;$scriptPath&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt; &lt;span class="nv"&gt;$scriptPath&lt;/span&gt; &lt;span class="c"&gt;# dry-run，只读盘点&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt; &lt;span class="nv"&gt;$scriptPath&lt;/span&gt; &lt;span class="n"&gt;-Apply&lt;/span&gt; &lt;span class="c"&gt;# 查看同一清单并要求明确确认后执行&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;通常不需要管理员权限；只有当前安装位置或 Docker 环境本身要求提升权限时，才应使用管理员终端。&lt;code&gt;-Apply -Yes&lt;/code&gt; 仅用于你已经审核过清单的受控自动化环境。&lt;/p&gt;
+&lt;h3 id="linuxbash"&gt;Linux（Bash）
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;script_path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;mktemp&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -fL &lt;span class="s1"&gt;&amp;#39;https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForLinux.sh&amp;#39;&lt;/span&gt; -o &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;printf&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;%s %s\n&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;0cfab4f8823a1644ef2e5b47275b144417c271372b7b11b795cf8c60a6689cb8&amp;#39;&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sha256sum -c -
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;less &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bash &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; &lt;span class="c1"&gt;# dry-run，只读盘点&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bash &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; --apply &lt;span class="c1"&gt;# 要求输入 REMOVE OPENCLAW 后执行&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="macosbash"&gt;macOS（Bash）
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;script_path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;mktemp&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl -fL &lt;span class="s1"&gt;&amp;#39;https://blog.codeglimpse.top/post/openclaw-uninstall/CleanupOpenClawForMacOS.sh&amp;#39;&lt;/span&gt; -o &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;printf&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;%s %s\n&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;a7e6048a20a933e4297edfe64847afc8f5a206add153502ff6ac260be9d7a801&amp;#39;&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; shasum -a &lt;span class="m"&gt;256&lt;/span&gt; -c -
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;less &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bash &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; &lt;span class="c1"&gt;# dry-run，只读盘点&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;bash &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$script_path&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; --apply &lt;span class="c1"&gt;# 要求输入 REMOVE OPENCLAW 后执行&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="卸载-cli-包并验收"&gt;卸载 CLI 包并验收
+&lt;/h2&gt;&lt;p&gt;处理完所选服务和数据范围后，使用当初安装它的包管理器卸载 CLI。下列命令按实际情况选择一种：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# npm 安装&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npm uninstall -g openclaw
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# pnpm 安装&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pnpm remove -g openclaw
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;openclaw-cn&lt;/code&gt; 等第三方分支应单独确认。按实际包前缀和已审核清单处理残留，不照抄猜测的全局安装路径直接删除。随后检查原服务和命令搜索结果；仅 CLI 命令消失不能证明后台服务已经移除。&lt;/p&gt;
+&lt;h2 id="常见问题"&gt;常见问题
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;权限不足时，先确认安装位置或 Docker 环境的实际要求，不统一使用管理员权限处理所有清理步骤。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;找不到命令时，核对当初安装使用的 PATH 和包管理器环境；脚本清单只覆盖实际检测到的范围。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;dry-run 只报告计划，实际完成情况还要检查执行结果、剩余服务与资源。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="官方依据"&gt;官方依据
+&lt;/h2&gt;&lt;p&gt;&lt;a class="link" href="https://docs.openclaw.ai/install/uninstall" target="_blank" rel="noopener"
+&gt;OpenClaw 卸载范围、预览与手动服务移除&lt;/a&gt;&lt;/p&gt;</description></item><item><title>Python 下载与安装教程</title><link>https://blog.codeglimpse.top/p/python-install/</link><pubDate>Sun, 28 Sep 2025 16:20:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/python-install/</guid><description>&lt;p&gt;先选择适合项目的 Python 版本，再确认实际执行的解释器，最后为项目创建虚拟环境。以下介绍 &lt;strong&gt;Python 3.14&lt;/strong&gt; 的安装方式；独立安装器的截图展示的是 3.12/3.13 界面。&lt;/p&gt;
+&lt;h2 id="windows优先了解-python-install-manager"&gt;Windows：优先了解 Python Install Manager
+&lt;/h2&gt;&lt;p&gt;官方目前推荐从 &lt;a class="link" href="https://www.python.org/downloads/windows/" target="_blank" rel="noopener"
+&gt;python.org&lt;/a&gt; 或 Microsoft Store 获取 &lt;strong&gt;Python Install Manager&lt;/strong&gt;。它与旧版独立 &lt;code&gt;.exe&lt;/code&gt; 安装器及旧 &lt;code&gt;py&lt;/code&gt; 启动器需要区分；遇到命令冲突时先查看官方 Windows 文档。&lt;/p&gt;
+&lt;p&gt;安装管理器后，在 PowerShell 中确认可用命令，再安装所需版本。以下以 3.14 为例，实际项目仍需检查依赖兼容性：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;help&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="mf"&gt;3.14&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;list&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="mf"&gt;-3.14&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="mf"&gt;-3.14&lt;/span&gt; &lt;span class="n"&gt;-c&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;import sys; print(sys.executable)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;管理器会下载运行时。Python 3.14 的 Windows 支持范围见官方说明；不要把旧系统支持和当前受维护系统混为一谈。&lt;/p&gt;
+&lt;h3 id="已有-312313-独立安装器时"&gt;已有 3.12/3.13 独立安装器时
+&lt;/h3&gt;&lt;p&gt;旧界面仍可能在已有环境中出现。一般开发场景先选择当前用户安装；只有明确需要所有用户共用时，才选择系统范围安装并提升权限。&lt;code&gt;py&lt;/code&gt; 启动器提供版本选择，不等于所有终端中的 &lt;code&gt;python&lt;/code&gt; 都会指向同一个解释器。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://blog.codeglimpse.top/p/python-install/1.png"
+width="999"
+height="615"
+srcset="https://blog.codeglimpse.top/p/python-install/1_hu_75941b03da09acbf.png 480w, https://blog.codeglimpse.top/p/python-install/1_hu_5a66238aca6937f8.png 1024w"
+loading="lazy"
+alt="旧版 Windows Python 安装器示例"
+class="gallery-image"
+data-flex-grow="162"
+data-flex-basis="389px"
+&gt;&lt;/p&gt;
+&lt;p&gt;安装时保留 pip；调试符号、调试二进制和完整标准库测试套件是按需组件。PATH 和文件关联也应结合已有解释器决定，不要统一勾选全部选项。&lt;/p&gt;
+&lt;p&gt;静默安装必须使用&lt;strong&gt;已经下载并核对的具体安装器文件名&lt;/strong&gt;。例如，下面的参数用于旧安装器的当前用户安装：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# 将文件名替换为已核对的安装包&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;./&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;3.13&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;7&lt;/span&gt;&lt;span class="n"&gt;-amd64&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="p"&gt;/&lt;/span&gt;&lt;span class="n"&gt;quiet&lt;/span&gt; &lt;span class="n"&gt;InstallAllUsers&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;0&lt;/span&gt; &lt;span class="n"&gt;PrependPath&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;1&lt;/span&gt; &lt;span class="n"&gt;Include_test&lt;/span&gt;&lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这里的文件名仅演示旧安装器语法，不表示 3.13.7 是推荐下载的最新补丁版本。3.14 文档已将完整安装器列为弃用方式，新环境应先评估安装管理器。&lt;/p&gt;
+&lt;h2 id="macos"&gt;macOS
+&lt;/h2&gt;&lt;h3 id="使用官方安装包"&gt;使用官方安装包
+&lt;/h3&gt;&lt;p&gt;从 &lt;a class="link" href="https://www.python.org/downloads/macos/" target="_blank" rel="noopener"
+&gt;Python for macOS&lt;/a&gt; 下载与你的 macOS 和处理器兼容的安装包，阅读安装器中的支持范围与许可说明。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://blog.codeglimpse.top/p/python-install/9.png"
+width="621"
+height="442"
+srcset="https://blog.codeglimpse.top/p/python-install/9_hu_815802463d774b41.png 480w, https://blog.codeglimpse.top/p/python-install/9_hu_88508ecc55777416.png 1024w"
+loading="lazy"
+alt="macOS Python 安装器历史示例"
+class="gallery-image"
+data-flex-grow="140"
+data-flex-basis="337px"
+&gt;&lt;/p&gt;
+&lt;p&gt;安装完成后，按当前安装器说明运行对应版本目录中的 &lt;code&gt;Install Certificates.command&lt;/code&gt;。它会联网安装该 Python 使用的证书组件。不要照抄旧截图中的版本目录。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 -c &lt;span class="s2"&gt;&amp;#34;import sys; print(sys.executable)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;不要删除或修改 Apple 管理的 &lt;code&gt;/usr/bin/python3&lt;/code&gt;。官方 Python 可以与系统开发工具使用的解释器并存。&lt;/p&gt;
+&lt;h3 id="已使用-homebrew-时"&gt;已使用 Homebrew 时
+&lt;/h3&gt;&lt;p&gt;先查看 &lt;a class="link" href="https://docs.brew.sh/Installation" target="_blank" rel="noopener"
+&gt;Homebrew 当前安装要求&lt;/a&gt;。其要求涉及受支持的 macOS、硬件和 Xcode Command Line Tools，不能概括为“必须先安装系统 Python”。&lt;/p&gt;
+&lt;p&gt;在 Homebrew 已正常配置的终端中：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;brew --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;brew install python
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;command&lt;/span&gt; -v python3
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果尚未安装 Homebrew，先按官网说明下载、审阅安装脚本再执行。出现路径冲突时先检查终端配置，不要直接强制覆盖链接。&lt;/p&gt;
+&lt;h2 id="linux使用发行版软件包"&gt;Linux：使用发行版软件包
+&lt;/h2&gt;&lt;h3 id="debian--ubuntu"&gt;Debian / Ubuntu
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt update
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install python3 python3-pip python3-venv
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;安装 Python 不需要顺带升级整台机器、修改整个 &lt;code&gt;~/.local&lt;/code&gt; 的所有者或删除 APT 锁文件。遇到锁占用时，先确认另一个包管理任务是否仍在运行，等待完成或按发行版的故障处理流程排查。&lt;/p&gt;
+&lt;h3 id="fedora"&gt;Fedora
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo dnf install python3 python3-pip
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;RHEL 及其他发行版的软件包版本和仓库策略不同，应按对应发行版文档选择。不要替换系统 Python，也不要默认使用 &lt;code&gt;sudo pip&lt;/code&gt; 安装项目依赖。&lt;/p&gt;
+&lt;h2 id="为每个项目创建虚拟环境"&gt;为每个项目创建虚拟环境
+&lt;/h2&gt;&lt;p&gt;在项目目录中执行。Windows 示例明确使用已安装的 3.14：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-powershell" data-lang="powershell"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="mf"&gt;-3.14&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;venv&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;venv&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;.\.&lt;/span&gt;&lt;span class="n"&gt;venv&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;Scripts&lt;/span&gt;&lt;span class="p"&gt;\&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="py"&gt;exe&lt;/span&gt; &lt;span class="n"&gt;-m&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-version&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;macOS / Linux：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python3 -m venv .venv
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;.venv/bin/python --version
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;.venv/bin/python -m pip --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;直接调用虚拟环境中的解释器即可，不必为了运行示例而修改 PowerShell 执行策略。安装依赖时沿用同一个解释器的 &lt;code&gt;-m pip&lt;/code&gt;。&lt;/p&gt;
+&lt;h2 id="验收与常见问题"&gt;验收与常见问题
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;记录操作系统、&lt;code&gt;--version&lt;/code&gt; 输出、&lt;code&gt;sys.executable&lt;/code&gt; 和 &lt;code&gt;pip --version&lt;/code&gt;，确认它们属于预期环境。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;python&lt;/code&gt; 打开商店或版本不对：检查应用执行别名、&lt;code&gt;py list&lt;/code&gt; 与 PATH。&lt;/li&gt;
+&lt;li&gt;提示 &lt;code&gt;externally-managed-environment&lt;/code&gt;：为项目创建虚拟环境，不绕过发行版保护。&lt;/li&gt;
+&lt;li&gt;缺少 &lt;code&gt;venv&lt;/code&gt;/&lt;code&gt;ensurepip&lt;/code&gt;：安装发行版对应的虚拟环境组件，再重新创建环境。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="官方依据"&gt;官方依据
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/using/windows.html" target="_blank" rel="noopener"
+&gt;Python on Windows&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/using/mac.html" target="_blank" rel="noopener"
+&gt;Python on macOS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.python.org/3/library/venv.html" target="_blank" rel="noopener"
+&gt;venv 虚拟环境&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.brew.sh/Installation" target="_blank" rel="noopener"
+&gt;Homebrew 安装要求&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

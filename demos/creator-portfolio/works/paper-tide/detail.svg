@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" fill="none">
+  <defs>
+    <linearGradient id="sheet" x1="110" y1="36" x2="1468" y2="965" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F4E9D7"/>
+      <stop offset="1" stop-color="#DCC7A9"/>
+    </linearGradient>
+    <linearGradient id="deepwater" x1="275" y1="524" x2="1369" y2="927" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5A737B"/>
+      <stop offset="1" stop-color="#1F3A48"/>
+    </linearGradient>
+    <linearGradient id="sun" x1="1008" y1="119" x2="1240" y2="365" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D99C57"/>
+      <stop offset="1" stop-color="#B65F3E"/>
+    </linearGradient>
+    <pattern id="maplines" width="124" height="94" patternUnits="userSpaceOnUse">
+      <path d="M-28 43c25-33 55-40 88-19 29 18 52 18 75-1M-30 72c29-26 57-31 84-14 34 22 64 22 94-1" stroke="#F6EAD7" stroke-opacity=".29" stroke-width="2"/>
+      <circle cx="84" cy="17" r="2" fill="#F6EAD7" fill-opacity=".35"/>
+    </pattern>
+    <pattern id="grain" width="37" height="37" patternUnits="userSpaceOnUse">
+      <circle cx="5" cy="8" r=".8" fill="#6E5B48" fill-opacity=".15"/>
+      <circle cx="28" cy="28" r=".7" fill="#6E5B48" fill-opacity=".12"/>
+    </pattern>
+  </defs>
+  <path fill="url(#sheet)" d="M0 0h1600v1000H0z"/>
+  <circle cx="1139" cy="248" r="170" fill="url(#sun)"/>
+  <circle cx="1139" cy="248" r="222" stroke="#A66749" stroke-opacity=".38" stroke-width="2"/>
+  <circle cx="1139" cy="248" r="269" stroke="#A66749" stroke-opacity=".22" stroke-width="2" stroke-dasharray="3 17"/>
+  <path fill="#C88C5F" d="M0 511c174-83 344-78 511 15 116 64 226 73 331 28 155-68 301-43 438 74 101 87 208 92 320 16v356H0z"/>
+  <path fill="#8A968C" d="M0 623c171-68 344-58 519 31 137 70 255 77 354 20 148-85 296-71 445 42 105 80 199 98 282 54v230H0z"/>
+  <path fill="url(#deepwater)" d="M0 735c166-61 324-52 474 27 160 84 302 90 426 20 152-85 312-66 480 57 91 67 164 90 220 70v91H0z"/>
+  <path fill="url(#maplines)" d="M0 511c174-83 344-78 511 15 116 64 226 73 331 28 155-68 301-43 438 74 101 87 208 92 320 16v356H0z"/>
+  <path stroke="#F8EFDE" stroke-opacity=".88" stroke-width="5" d="M0 619c171-69 344-58 519 31 137 70 255 77 354 20 148-85 296-71 445 42 105 80 199 98 282 54"/>
+  <path stroke="#E2C19A" stroke-opacity=".9" stroke-width="4" d="M0 697c158-55 307-44 448 33 161 87 310 94 448 21 158-84 318-56 481 83 79 67 153 95 223 84"/>
+  <path stroke="#F8EFDE" stroke-opacity=".68" stroke-width="3" d="M0 800c124-36 246-26 367 31 168 79 326 83 474 10 171-85 351-47 539 116 81 70 155 99 220 89"/>
+  <g fill="#27414A" fill-opacity=".82">
+    <path d="m186 815 16-116 16 116h-32Zm58 18 13-92 13 92h-26Zm106-26 17-127 17 127h-34Z"/>
+    <path d="m1346 782 15-103 15 103h-30Zm74 33 11-73 11 73h-22Z"/>
+  </g>
+  <path stroke="#42616B" stroke-opacity=".35" stroke-width="2" d="M168 160c121-63 245-81 373-54M194 198c104-49 208-62 312-40M157 239c81-30 163-39 245-26"/>
+  <path fill="url(#grain)" d="M0 0h1600v1000H0z"/>
+</svg>

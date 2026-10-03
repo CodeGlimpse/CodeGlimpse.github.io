@@ -1,9 +1,9 @@
 /* The photograph sets the atmosphere; the page below reads as a quiet index. */
-.gallery-cover-page { --paper: #f1f3ef; --ink: #192a30; --muted: #52656b; --line: #ced8d4; --accent: #315448; --focus: #315448; color-scheme: light; background: var(--paper); color: var(--ink); }
-.gallery-cover-page .demo-template-switcher { background: #e8ece7; color: #344b51; border-color: #d2dbd5; }
-.gallery-cover-page .demo-template-options a { color: #344b51; border-color: #788d8c; background: transparent; }
-.gallery-cover-page .demo-template-options a[aria-current="page"] { color: white; border-color: #315448; background: #315448; }
-.gallery-cover-page .demo-template-inner small { color: #344b51; }
+.gallery-cover-page { --paper: #faf9f6; --ink: #42392f; --muted: #746b60; --line: #dedbd4; --accent: #766044; --focus: #766044; color-scheme: light; background: var(--paper); color: var(--ink); }
+.gallery-cover-page .demo-template-switcher { background: #efeee9; color: #62594e; border-color: #dedbd4; }
+.gallery-cover-page .demo-template-options a { color: #62594e; border-color: #a49b8c; background: transparent; }
+.gallery-cover-page .demo-template-options a[aria-current="page"] { color: white; border-color: #766044; background: #766044; }
+.gallery-cover-page .demo-template-inner small { color: #62594e; }
 .photo-masthead { min-height: 100px; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 20px clamp(24px, 4.5vw, 80px); background: var(--paper); }
 .photo-wordmark { display: flex; align-items: baseline; gap: 22px; }
 .photo-wordmark strong { font: 500 36px/1 "Songti SC", "SimSun", Georgia, serif; letter-spacing: .12em; }
@@ -12,18 +12,18 @@
 .photo-masthead nav a { display: inline-flex; align-items: center; min-height: 44px; }
 .photo-masthead nav a:hover { text-decoration: underline; text-underline-offset: 6px; }
 .cinema-feature { --photo-height: clamp(580px, 53vw, 820px); position: relative; outline-offset: -4px; }
-.cinema-feature:focus-visible { outline: 3px solid #315448; }
-.feature-intro { position: absolute; z-index: 2; top: 0; left: 0; width: 100%; height: var(--photo-height); display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; padding: 0 clamp(24px, 6vw, 96px) 64px; background: linear-gradient(180deg, transparent 35%, #06131c38 55%, #06131cbb 100%); color: white; pointer-events: none; transition: opacity .35s; }
+.cinema-feature:focus-visible { outline: 3px solid #766044; }
+.feature-intro { position: absolute; z-index: 2; top: 0; left: 0; width: 100%; height: var(--photo-height); display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; padding: 0 clamp(24px, 6vw, 96px) 64px; background: linear-gradient(180deg, transparent 46%, #faf9f680 62%, #faf9f6ed 100%); color: var(--ink); pointer-events: none; transition: opacity .35s; }
 .feature-intro > p { margin: 0 0 20px; font-size: 13px; letter-spacing: .06em; }
 .feature-intro h1 { max-width: 100%; margin: 0; font-size: clamp(42px, 4.8vw, 76px); font-weight: 500; line-height: 1.38; letter-spacing: .035em; }
 .feature-intro h1 > span { display: block; max-width: 100%; text-wrap: balance; }
-.feature-photo { margin: 0; height: var(--photo-height); background: #06131c; }
+.feature-photo { margin: 0; height: var(--photo-height); background: #e9e7e1; }
 .feature-photo > a, .feature-picture { display: block; width: 100%; height: 100%; }
 .feature-picture img { width: 100%; height: 100%; object-fit: cover; object-position: center 51%; }
-.feature-focus { position: absolute; z-index: 3; right: clamp(24px, 4.5vw, 80px); top: 26px; display: flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; padding: 10px 15px; color: white; background: #06131cbb; border: 1px solid #ffffff80; border-radius: 30px; font: inherit; font-size: 12px; cursor: pointer; }
+.feature-focus { position: absolute; z-index: 3; right: clamp(24px, 4.5vw, 80px); top: 26px; display: flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; padding: 10px 15px; color: var(--ink); background: #faf9f6ed; border: 1px solid #d8d1c5; border-radius: 30px; font: inherit; font-size: 12px; cursor: pointer; }
 .feature-focus > span:first-child { font: 22px/1 system-ui, sans-serif; }
-.feature-focus:hover { background: #06131c; }
-.feature-focus:focus-visible { outline: 3px solid white; outline-offset: 4px; }
+.feature-focus:hover { background: #e9e7e1; }
+.feature-focus:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
 .cinema-feature[data-gallery-focus="true"] .feature-intro { opacity: 0; }
 .cinema-feature[data-gallery-focus="true"] .feature-picture img { object-fit: contain; }
 .cinema-feature .feature-work { display: grid; grid-template-columns: 210px minmax(0, 1fr) auto; align-items: center; gap: 36px; min-height: 142px; padding: 30px clamp(24px, 4.5vw, 80px); border-bottom: 1px solid var(--line); }
@@ -43,10 +43,10 @@
 .feature-choice small { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 400; }
 .feature-choice strong { color: var(--ink); font-family: "Songti SC", "SimSun", Georgia, serif; font-size: 20px; font-weight: 500; }
 .feature-choice-mark { align-self: end; font-size: 19px; visibility: hidden; }
-.feature-choice[aria-pressed="true"] { border-color: #315448; }
+.feature-choice[aria-pressed="true"] { border-color: #766044; }
 .feature-choice[aria-pressed="true"] .feature-choice-mark { visibility: visible; }
 .feature-choice:hover img { opacity: .8; }
-.feature-choice:focus-visible { outline: 2px solid #315448; outline-offset: 5px; }
+.feature-choice:focus-visible { outline: 2px solid #766044; outline-offset: 5px; }
 .feature-keyboard-note { margin: 12px clamp(24px, 4.5vw, 80px) 0; font-size: 11px; color: var(--muted); }
 .photo-note { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 1320px; margin: auto; padding: 120px 64px; }
 .photo-note-title { display: flex; gap: 32px; align-items: flex-start; }
@@ -54,11 +54,11 @@
 .photo-note-copy > p { font-size: 14px; line-height: 2; color: var(--muted); }
 .photo-note-copy .photo-note-lead { margin-bottom: 25px; color: var(--ink); font: 23px/1.8 "Songti SC", "SimSun", serif; }
 .photo-note-copy > a { display: inline-flex; align-items: center; gap: 40px; min-height: 44px; margin-top: 10px; border-bottom: 1px solid var(--ink); font-size: 13px; }
-.photo-index { padding: 54px clamp(24px, 4.5vw, 80px) 64px; background: #e4eae4; }
+.photo-index { padding: 54px clamp(24px, 4.5vw, 80px) 64px; background: #eeede7; }
 .photo-index-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 30px; padding-bottom: 32px; }
 .photo-index-heading h2 { margin: 0; font-size: 23px; }
 .photo-index-heading p { max-width: 42em; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.8; }
-.photo-index-entry { display: grid; grid-template-columns: 210px minmax(0, 1fr) auto; gap: 36px; align-items: center; padding: 24px 0; border-top: 1px solid #b5c3ba; }
+.photo-index-entry { display: grid; grid-template-columns: 210px minmax(0, 1fr) auto; gap: 36px; align-items: center; padding: 24px 0; border-top: 1px solid #d1cbc0; }
 .photo-index-entry > span:first-child { color: var(--muted); font-size: 12px; }
 .photo-index-entry h3 { margin: 0; font-size: clamp(26px, 3vw, 40px); font-weight: 500; }
 .photo-index-entry > span:last-child { font-size: 24px; }

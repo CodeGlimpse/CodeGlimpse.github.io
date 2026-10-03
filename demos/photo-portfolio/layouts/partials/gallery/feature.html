@@ -1,7 +1,6 @@
-{{ $pages := .Pages.ByWeight }}
+{{ $pages := (where .Pages.ByWeight "Slug" "window-light") | append (where .Pages.ByWeight "Slug" "ne" "window-light") }}
 <section class="cinema-feature" data-gallery aria-label="留光影像画廊">
   <header class="feature-intro" id="feature-intro">
-    <p>{{ site.Params.creatorName }}的影像练习</p>
     <h1>{{ $phrases := split site.Home.Params.heading "，" }}{{ range $index, $phrase := $phrases }}<span>{{ $phrase }}{{ if lt $index (sub (len $phrases) 1) }}，{{ end }}</span>{{ end }}</h1>
   </header>
   <button type="button" class="feature-focus" data-gallery-focus-toggle aria-controls="feature-intro" aria-pressed="false" hidden disabled><span aria-hidden="true">⤢</span><span data-gallery-focus-label>只看影像</span></button>

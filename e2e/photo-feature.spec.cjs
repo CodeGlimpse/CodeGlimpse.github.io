@@ -12,6 +12,7 @@ for (const width of [320, 390, 1440]) {
         await page.goto(route(baseURL));
         const root = page.locator('.cinema-feature');
         await expect(root).toHaveAttribute('data-gallery-ready', 'true');
+        await expect(page.locator('[data-gallery-slide][data-current="true"] .feature-work h2')).toHaveText('窗边片刻');
         const image = page.locator('.feature-picture img').first();
         const bounds = await image.boundingBox();
         expect(bounds.y).toBeLessThan(180);
@@ -39,7 +40,7 @@ for (const width of [320, 390, 1440]) {
         const target = await link.getAttribute('href');
         await link.click();
         await expect(page).toHaveURL(url => url.pathname === target);
-        await expect(page.locator('main h1')).toHaveText('窗边片刻');
+        await expect(page.locator('main h1')).toHaveText('雨后街角');
         expect(errors).toEqual([]);
     });
 }

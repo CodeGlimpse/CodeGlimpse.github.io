@@ -251,28 +251,29 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "黑金放映室",
-            "description": "以单幅影像放映，使用缩略图与键盘切换同一组摄影故事。",
-            "previewAlt": "摄影作品集「黑金放映室」模板的真实页面截图",
+            "name": "沉浸影像",
+            "description": "从全幅影像进入，按需隐去文字，使用缩略图与键盘浏览同一组摄影故事。",
+            "previewAlt": "摄影作品集「沉浸影像」模板的真实页面截图",
             "features": [
-              "单幅放映",
-              "缩略图切换",
-              "键盘浏览"
+              "全幅影像",
+              "纯净观看",
+              "键盘切换"
             ]
           },
           "en": {
-            "name": "Cinema room",
-            "description": "View the same photo stories on a single-image stage with thumbnail and keyboard navigation.",
-            "previewAlt": "Screenshot of the Cinema room template for Photography portfolio",
+            "name": "Immersive gallery",
+            "description": "Enter through a full-width photograph, hide the text, and explore the same stories with thumbnails and keyboard navigation.",
+            "previewAlt": "Screenshot of the Immersive gallery template for Photography portfolio",
             "features": [
-              "Image stage",
-              "Thumbnails",
+              "Full-width imagery",
+              "Image-only view",
               "Keyboard navigation"
             ]
           }
         },
         "assets": [
           "css/gallery.css",
+          "css/gallery-home.css",
           "js/gallery.js"
         ]
       },

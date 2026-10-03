@@ -134,7 +134,8 @@ for (const demoCase of portfolioCases) {
             await openDemo(page, demo, '', baseURL);
             const links = await workLinks(page, demo, baseURL, detailRoutes);
             expect(links).toEqual([...detailRoutes].sort());
-            records.push({ title: await page.locator('main h1').innerText(), links });
+            // Compare authored content independently of presentation-only line breaks.
+            records.push({ title: (await page.locator('main h1').textContent()).trim(), links });
         }
         for (const record of records) expect(record).toEqual(records[0]);
     });

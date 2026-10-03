@@ -1,13 +1,13 @@
 {{ $works := site.GetPage "/works" }}
 <main id="main" class="gallery-home" tabindex="-1">
-  <header class="cinema-opening shell">
-    <div class="cinema-opening-label"><p>{{ site.Params.creatorName }} / 摄影作品集演示</p><span aria-hidden="true">LIGHT<br>/ STILL</span></div>
-    <div><h1 id="hero-title">{{ $phrases := split site.Home.Params.heading "，" }}{{ range $index, $phrase := $phrases }}<span class="cinema-title-phrase">{{ $phrase }}{{ if lt $index (sub (len $phrases) 1) }}，{{ end }}</span>{{ end }}</h1></div>
-  </header>
-  <section class="cinema-exhibition shell" aria-labelledby="selected-title">
-    <div class="cinema-exhibition-heading"><h2 id="selected-title">{{ $works.Title }}</h2><a href="{{ $works.RelPermalink }}">浏览全部作品 ↗</a></div>
-    {{ partial "gallery/stage.html" (dict "pages" $works.Pages.ByWeight "prefix" "home") }}
-    <div class="cinema-series-note"><p>{{ site.Home.Params.intro }}</p><p>{{ $works.Params.summary }}</p></div>
+  {{ partial "gallery/feature.html" $works }}
+  <section class="photo-note" aria-labelledby="photo-note-title">
+    <div class="photo-note-title"><h2 id="photo-note-title">画面之外，<br>也留一句介绍。</h2></div>
+    <div class="photo-note-copy"><p class="photo-note-lead">{{ site.Home.Params.intro }}</p><p>{{ site.Params.creatorName }}是本站设定的虚构摄影师。这里的作品图像由 AI 生成，用于演示照片、简介与联系入口在个人网站中的呈现。</p><a href="{{ (site.GetPage "/about").RelPermalink }}#contact">关于与联系 <span aria-hidden="true">↗</span></a></div>
   </section>
-  <section class="cinema-about shell" aria-labelledby="about-title"><h2 id="about-title">画面之外，<br>也留一句介绍。</h2><div><p>{{ site.Params.creatorName }}是本站设定的虚构摄影师。这里的作品图像由 AI 生成，用于演示照片、简介与联系入口在个人网站中的呈现。</p><a href="{{ (site.GetPage "/about").RelPermalink }}#contact">查看关于与联系 ↗</a></div></section>
+  <section class="photo-index" aria-labelledby="photo-index-title">
+    <div class="photo-index-heading"><h2 id="photo-index-title">{{ $works.Title }}</h2><p>{{ $works.Params.summary }}</p></div>
+    {{ range $works.Pages.ByWeight }}<a class="photo-index-entry" href="{{ .RelPermalink }}"><span>{{ .Params.series }}</span><h3>{{ .Title }}</h3><span aria-hidden="true">↗</span></a>{{ end }}
+  </section>
+  <p class="photo-disclosure">{{ site.Params.demoNotice }}</p>
 </main>

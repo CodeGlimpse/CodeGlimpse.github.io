@@ -78,7 +78,7 @@ for (const width of [1280, 320]) {
         await expect(projector.locator('[data-gallery-select][aria-pressed="true"]')).toHaveCount(1);
         await expect(projector.locator('[data-gallery-select="2"]')).toHaveAttribute('aria-pressed', 'true');
         const title = await slides.nth(2).getAttribute('data-gallery-title');
-        const detailLink = slides.nth(2).locator('.gallery-film-copy h3 a');
+        const detailLink = slides.nth(2).locator('.gallery-film-copy :is(h2, h3) a');
         const detailURL = new URL(await detailLink.getAttribute('href'), page.url());
         await expect(projector.locator('[data-gallery-status]')).toContainText(title);
         await detailLink.focus();

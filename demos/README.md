@@ -36,7 +36,7 @@ marked template anchor, never an image, unmarked link, or source attribute.
 | Content case | Existing template | Second template | Third template |
 | --- | --- | --- | --- |
 | creator-portfolio | classic: gallery | editorial: cobalt poster chapters and scroll navigation | archive: dark index with live split preview |
-| photo-portfolio | classic: photo stories | gallery: single-image cinema with thumbnails | filmstrip: vermilion magazine collage and reading progress |
+| photo-portfolio | classic: photo stories | gallery: immersive photo homepage with image-only mode; dark interior pages | filmstrip: vermilion magazine collage and reading progress |
 | content-dashboard | classic: overview | workspace: dark app views and record drawer | report: orange chart chapters and collapsible records |
 | bookstore | classic: bookshelf | catalog: one-book stage, spine shelf and bag drawer | checklist: yellow selection desk, inline quantities and blue receipt |
 | workshop-booking | classic: course selection | calendar: midnight date grid and session panel | agenda: purple ticket flow for course, session and preview |

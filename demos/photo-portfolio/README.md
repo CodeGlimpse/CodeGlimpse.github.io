@@ -27,9 +27,9 @@ python -B -X utf8 scripts/check_build.py "$env:TEMP\photo-portfolio-build" --bas
 
 `filmstrip`：朱红摄影杂志用封面故事、错位图片和编号拼贴组织同一组三个系列。顶部阅读进度随正文滚动更新，详情页继续展示完整原图与原正文。页面 partial 位于 `layouts/partials/filmstrip/`，样式为 `static/css/filmstrip.css`，呈现控制器为 `static/js/filmstrip.js`；继续生成既有 JPEG 缩略图，没有新增照片。集成地址为 `/demos/variants/photo-portfolio/filmstrip/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'filmstrip'`。
 
-`classic` 保留原来的浅色作品集和图片比例；`gallery` 是黑金影像放映台，每次放映一张图片，可用缩略图、前后按钮或键盘左右方向键切换，Home / End 跳到首尾。图片与标题保留真实详情入口，雨后街角详情可在主图与近景图间切换。关于页用作品索引和人物介绍分栏排版。三个系列、正文、四张原图及 AI 演示声明来自同一份内容与页面资源。
+`classic` 保留原来的浅色作品集和图片比例；`gallery` 首页采用沉浸影像：冷白页眉、通栏照片与衬线叠字，作品说明、缩略图和索引依次展开。可用缩略图、前后按钮或键盘左右方向键切换，Home / End 跳到首尾；“只看影像”隐藏叠字并显示完整照片，Escape 恢复文字与按钮焦点。此轮仅重做首页，列表、详情和关于页仍保留暗色放映台设计。图片与标题保留真实详情入口，雨后街角详情可在主图与近景图间切换。三个系列、正文、四张原图及 AI 演示声明来自同一份内容与页面资源。
 
-默认独立构建使用 `classic`。在本站目录设置参数即可预览暗色画廊：
+默认独立构建使用 `classic`。在本站目录设置参数即可预览沉浸影像：
 
 ```powershell
 $env:HUGO_PARAMS_DEMOTEMPLATE = 'gallery'

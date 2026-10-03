@@ -16,12 +16,13 @@
     <link rel="stylesheet" href="{{ "css/site.css" | relURL }}">
     <link rel="stylesheet" href="{{ "css/demo-templates.css" | relURL }}">
     {{ if eq $template "gallery" }}<link rel="stylesheet" href="{{ "css/gallery.css" | relURL }}">{{ end }}
+    {{ if and (eq $template "gallery") .IsHome }}<link rel="stylesheet" href="{{ "css/gallery-home.css" | relURL }}">{{ end }}
     {{ if eq $template "filmstrip" }}<link rel="stylesheet" href="{{ "css/filmstrip.css" | relURL }}">{{ end }}
   </head>
-  <body id="top" data-template="{{ $template }}">
+  <body id="top" data-template="{{ $template }}"{{ if and (eq $template "gallery") .IsHome }} class="gallery-cover-page"{{ end }}>
     <a class="skip-link" href="#main">跳到正文</a>
     {{ partial "demo-templates.html" . }}
-    <div class="demo-banner" role="note">{{ site.Params.demoNotice }}</div>
+    {{ if not (and (eq $template "gallery") .IsHome) }}<div class="demo-banner" role="note">{{ site.Params.demoNotice }}</div>{{ end }}
     {{ if eq $template "gallery" }}
       {{ partial "gallery/header.html" . }}
     {{ else if eq $template "filmstrip" }}

@@ -1,0 +1,31 @@
+{{ $pages := .Pages.ByWeight }}
+<section class="cinema-feature" data-gallery aria-label="留光影像画廊">
+  <header class="feature-intro" id="feature-intro">
+    <p>{{ site.Params.creatorName }}的影像练习</p>
+    <h1>{{ $phrases := split site.Home.Params.heading "，" }}{{ range $index, $phrase := $phrases }}<span>{{ $phrase }}{{ if lt $index (sub (len $phrases) 1) }}，{{ end }}</span>{{ end }}</h1>
+  </header>
+  <button type="button" class="feature-focus" data-gallery-focus-toggle aria-controls="feature-intro" aria-pressed="false" hidden disabled><span aria-hidden="true">⤢</span><span data-gallery-focus-label>只看影像</span></button>
+  <div class="feature-screen" data-gallery-screen>
+    {{ range $index, $page := $pages }}
+    <article id="feature-slide-{{ $index }}" class="feature-slide" data-gallery-slide data-gallery-title="{{ $page.Title }}">
+      <figure class="feature-photo"><a href="{{ $page.RelPermalink }}" aria-label="查看《{{ $page.Title }}》作品详情">{{ partial "responsive-image.html" (dict "page" $page "name" $page.Params.cover "alt" $page.Params.cover_alt "sizes" "(max-width: 720px) 900px, 100vw" "loading" (cond (eq $index 0) "eager" "lazy") "class" "feature-picture") }}</a></figure>
+      <div class="feature-work gallery-film-copy">
+        <div><p class="feature-series">{{ $page.Params.series }}</p><h2><a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a></h2></div>
+        <p>{{ $page.Params.summary }}</p>
+        <a class="feature-detail" href="{{ $page.RelPermalink }}">走近这幅影像 <span aria-hidden="true">↗</span></a>
+      </div>
+    </article>
+    {{ end }}
+  </div>
+  <div class="feature-navigation">{{ partial "gallery/controls.html" . }}</div>
+  <div class="feature-picker" data-gallery-thumbnails hidden aria-label="选择放映影像">
+    {{ range $index, $page := $pages }}{{ $source := $page.Resources.GetMatch $page.Params.cover }}{{ $image := $source.Resize "760x jpg q76" }}{{ $image = resources.Copy (printf "previews/%s.jpg" $page.Slug) $image }}
+    <button type="button" class="feature-choice" data-gallery-select="{{ $index }}" aria-controls="feature-slide-{{ $index }}" aria-label="放映《{{ $page.Title }}》" aria-pressed="false" disabled>
+      <img src="{{ $image.RelPermalink }}" width="{{ $image.Width }}" height="{{ $image.Height }}" alt="{{ $page.Params.cover_alt }}" loading="lazy" decoding="async">
+      <span><small>{{ $page.Params.series }}</small><strong>{{ $page.Title }}</strong></span><span class="feature-choice-mark" aria-hidden="true">↗</span>
+    </button>
+    {{ end }}
+  </div>
+  <p class="feature-keyboard-note" data-gallery-keyboard-note hidden>方向键切换作品，Home / End 跳至首尾</p>
+  <p class="gallery-live-status" data-gallery-status role="status" aria-live="polite" aria-atomic="true" hidden></p>
+</section>

@@ -1,1 +1,5 @@
+{{ if .IsHome }}
+<header class="photo-masthead"><a class="photo-wordmark" href="{{ site.Home.RelPermalink }}" aria-label="留光，返回首页"><strong>留光</strong><span>{{ site.Params.creatorName }} / 虚构影像作品集</span></a><nav aria-label="主导航"><a href="{{ (site.GetPage "/works").RelPermalink }}">全部作品</a><a href="{{ (site.GetPage "/about").RelPermalink }}">关于与联系</a></nav></header>
+{{ else }}
 <header class="cinema-masthead"><div class="shell cinema-masthead-inner"><a class="cinema-brand" href="{{ site.Home.RelPermalink }}" aria-label="留光，返回首页"><span aria-hidden="true">◒</span><strong>留光</strong><small>LIGHT / STILL</small></a><span class="cinema-edition" aria-hidden="true">AN IMAGE AT A TIME</span><nav aria-label="主导航"><a href="{{ (site.GetPage "/works").RelPermalink }}"{{ if eq .Section "works" }} aria-current="page"{{ end }}>全部作品</a><a href="{{ (site.GetPage "/about").RelPermalink }}"{{ if eq .Section "about" }} aria-current="page"{{ end }}>关于与联系</a></nav></div></header>
+{{ end }}

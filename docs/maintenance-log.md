@@ -307,3 +307,10 @@
 - 默认与 `/review/` 组合构建、十八套模板的 63 页链接/资源检查、双语六组十八卡目录与主站产物检查均通过。十八个独立构建的 63 页通过，独立模式无博客工具栏。JS 语法（106 文件）、内容结构和 `git diff --check` 通过。构建使用现有 Hugo 模块缓存并关闭 Go 网络代理，单独隔离资源输出与 getresource/misc 缓存；首次指定全新模块缓存的构建未成功，随后修正临时构建环境，未安装依赖。
 - 主要命令：`node --test` 运行既有十份 demo、业务核心和构建检查器测试；`node scripts/run-e2e.cjs` 运行 `demos`、`demo-templates`、`demo-polish`、`portfolio-presentation`、`content-dashboard`、`bookstore`、`workshop-booking`、`trip-planner`，使用 `--workers 2 --max-failures 1`。构建与检查使用 `scripts/build-site.cjs`、`scripts/check-demo-builds.cjs`、`scripts/check-build-output.cjs` 和各案例 Python 检查器。
 - 证据目录为 `F:/agents/code/temp/demo-polish-20261002/`：`browser-coverage.json` 将每个用例映射到通过日志，另有 `unit.log`、`catalog-unit.log`、`refined-e2e.log`、`prefix-e2e.log`、`previews-e2e.log`、`build-final.log`、`build-prefix.log`、`standalone-final.log`、`output-final.log`、`measurements.json` 与 `before-after.png`。恢复基线为 `046db3d`；本批仅完成本地精修、验收与提交，没有推送或部署。
+
+## 2026-10-03 - 留光沉浸影像首页样稿
+
+- 以干净提交 `3a244f2` 为恢复基线，仅重做摄影 gallery 首页：冷白页眉、通栏照片、衬线叠字、独立作品说明与下方索引；其余模板及 gallery 内页保持原样。新增首页专用样式，不增加照片、依赖或外部字体。
+- 新增“只看影像”模式，隐藏叠字并使用 contain 显示完整照片，Escape 恢复文字与焦点。保留缩略图、键盘、真实详情入口与无脚本阅读；更新双语注册表和一张真实目录预览。
+- 验证：33 项相关 Node 测试、42 项相关浏览器用例通过；最终图片接入后 5 项复验通过。组合构建及十八模板资源检查通过，gallery 独立 `/review/` 构建检查通过（6 页、3 作品）。320/390/800/1280/1440px 均无横向溢出，查看桌面、手机、纯影像及第二张照片截图。标题一致性测试改为比较 textContent，排除视觉断行；截图等待切换后的懒加载图片解码后再拍摄。
+- 证据：`F:/agents/code/temp/photo-direction-20261002/` 中的 `build-final.log`、`node-tests.log`、`e2e.log`、`e2e-final.log`、`demo-links-final.log`、`standalone.log` 及截图。完成本地验收，未推送或部署；视觉方向待用户查看样稿。

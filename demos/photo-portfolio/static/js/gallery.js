@@ -15,6 +15,17 @@
         thumbnails.some((button, index) => Number(button.dataset.gallerySelect) !== index)) continue;
 
     let current = 0;
+    const focusButton = root.querySelector('[data-gallery-focus-toggle]');
+    function focusImage(enabled) {
+      root.dataset.galleryFocus = String(enabled);
+      focusButton.setAttribute('aria-pressed', String(enabled));
+      focusButton.querySelector('[data-gallery-focus-label]').textContent = enabled ? '恢复文字' : '只看影像';
+    }
+    if (focusButton) {
+      focusButton.hidden = false;
+      focusButton.disabled = false;
+      focusButton.addEventListener('click', () => focusImage(root.dataset.galleryFocus !== 'true'));
+    }
     function show(index, announce = true) {
       current = (index + slides.length) % slides.length;
       const focused = document.activeElement;
@@ -36,6 +47,12 @@
     next.addEventListener("click", () => show(current + 1));
     thumbnails.forEach((button, index) => button.addEventListener("click", () => show(index)));
     root.addEventListener("keydown", (event) => {
+      if (event.key === 'Escape' && focusButton && root.dataset.galleryFocus === 'true') {
+        event.preventDefault();
+        focusImage(false);
+        focusButton.focus({ preventScroll: true });
+        return;
+      }
       if (event.altKey || event.ctrlKey || event.metaKey || event.target.closest("input, textarea, select, [contenteditable]")) return;
       const targets = { ArrowLeft: current - 1, ArrowRight: current + 1, Home: 0, End: slides.length - 1 };
       if (!(event.key in targets)) return;

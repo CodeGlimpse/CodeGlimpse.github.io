@@ -12,7 +12,7 @@
     <article class="demo-case" data-demo-case="{{ .id }}" aria-labelledby="case-{{ .id }}">
       <header class="demo-case-heading">
         <div><span class="demo-card-label">{{ $copy.label }}</span><h2 id="case-{{ .id }}">{{ $copy.title }}</h2><p>{{ $copy.description }}</p></div>
-        <span class="demo-case-count">{{ len .templates }} {{ if eq $language "en" }}templates · same content{{ else }}套模板 · 同一内容{{ end }}</span>
+        <span class="demo-case-count">{{ len .templates }} {{ if .differentContent }}{{ if eq $language "en" }}genres · distinct collections{{ else }}种题材 · 不同作品{{ end }}{{ else }}{{ if eq $language "en" }}templates · same content{{ else }}套模板 · 同一内容{{ end }}{{ end }}</span>
       </header>
       <div class="demo-template-grid">
       {{ range .templates }}

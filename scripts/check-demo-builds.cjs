@@ -5,22 +5,24 @@ const { DEMO_REGISTRY, templateLinks } = require('./demo-registry.cjs');
 const projectRoot = path.resolve(__dirname, '..');
 
 function checkerArgs(demo, outputRoot, baseURL) {
+    const links = templateLinks(demo, baseURL);
     return [
         '-B', '-X', 'utf8', path.join(projectRoot, demo.source, 'scripts/check_build.py'),
         path.join(outputRoot, demo.path), '--base-url', new URL(demo.path, baseURL).href,
         '--check-demo-pages', '--catalog-url', new URL('demos/', baseURL).pathname,
-        ...templateLinks(demo, baseURL).flatMap(template => demo.checks.pages.flatMap(page => ['--template-url', template.url + page])),
+        ...demo.siblings.flatMap((sibling, index) => (demo.differentContent ? [''] : sibling.pages || demo.checks.pages)
+            .flatMap(page => ['--template-url', links[index].url + page])),
     ];
 }
 
-function checkDemoBuilds(environment = process.env, run = spawnSync) {
+function checkDemoBuilds(environment = process.env, run = spawnSync, registry = DEMO_REGISTRY) {
     const outputRoot = path.resolve(environment.SITE_ROOT || path.join(projectRoot, 'public'));
     const baseURL = new URL((environment.SITE_URL || 'https://blog.codeglimpse.top/').replace(/\/+$/, '') + '/');
     if (!['http:', 'https:'].includes(baseURL.protocol) || baseURL.search || baseURL.hash) throw new Error('SITE_URL must be an HTTP(S) directory URL');
     const commands = environment.PYTHON ? [environment.PYTHON] : process.platform === 'win32' ? ['python', 'python3'] : ['python3', 'python'];
-    for (const demo of DEMO_REGISTRY) {
+    for (const demo of registry) {
         // Resolve every switch destination in the combined artifact before permitting it.
-        for (const sibling of demo.siblings) for (const page of demo.checks.pages) {
+        for (const sibling of demo.siblings) for (const page of demo.differentContent ? [''] : sibling.pages || demo.checks.pages) {
             const file = path.join(outputRoot, sibling.path, page, 'index.html');
             if (!fs.existsSync(file)) throw new Error(`Missing template destination: ${sibling.path}${page}`);
         }

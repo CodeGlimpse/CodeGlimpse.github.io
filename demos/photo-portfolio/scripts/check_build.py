@@ -21,6 +21,18 @@ def valid_template_url(value: str) -> bool:
             and not any(part in (".", "..") for part in decoded.split("/")))
 
 
+def valid_photo_url(value: str | None) -> bool:
+    if not value or "\\" in value or any(char.isspace() or ord(char) < 32 or 127 <= ord(char) <= 159 for char in value):
+        return False
+    try:
+        parsed = urlsplit(value)
+        # Reading the port also rejects malformed or out-of-range authorities.
+        _ = parsed.port
+        return parsed.scheme == "https" and bool(parsed.hostname)
+    except ValueError:
+        return False
+
+
 class PageChecker(HTMLParser):
     def __init__(self, page: Path, output: Path, prefix: str, catalog_url: str | None = None) -> None:
         super().__init__()
@@ -29,12 +41,17 @@ class PageChecker(HTMLParser):
         self.prefix = prefix
         self.catalog_url = catalog_url
         self.template_urls: set[str] = set()
+        self.photo_links: dict[str, list[str | None]] = {"data-photo-source": [], "data-photo-license": []}
         self.errors: list[str] = []
 
     def check_url(self, raw: str) -> None:
         if not raw or raw.startswith(("#", "data:", "mailto:", "tel:")):
             return
-        parsed = urlsplit(raw)
+        try:
+            parsed = urlsplit(raw)
+        except ValueError:
+            self.errors.append(f"{self.page}: invalid URL: {raw}")
+            return
         if parsed.scheme or parsed.netloc:
             return
         path = unquote(parsed.path)
@@ -56,6 +73,10 @@ class PageChecker(HTMLParser):
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         values = dict(attrs)
+        if tag == "a":
+            for marker in self.photo_links:
+                if marker in values:
+                    self.photo_links[marker].append(values.get("href"))
         if tag == "img" and not (values.get("alt") or "").strip():
             self.errors.append(f"{self.page}: image lacks meaningful alt text")
         for attribute in ("href", "src"):
@@ -81,7 +102,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("output", type=Path)
     parser.add_argument("--base-url", required=True)
-    parser.add_argument("--check-demo-pages", action="store_true", help="Also require the demo disclosures and blog integration image")
+    parser.add_argument("--check-demo-pages", action="store_true", help="Also require photography demo disclosures and source/license credits")
     parser.add_argument("--catalog-url", help="Allow only a marked catalog link to this exact root-relative directory path")
     parser.add_argument("--template-url", action="append", default=[], help="Allow a marked template link to this exact root-relative directory path")
     args = parser.parse_args()
@@ -110,7 +131,7 @@ def main() -> int:
     home = output / "index.html"
     if args.check_demo_pages and home.is_file():
         home_text = home.read_text(encoding="utf-8")
-        for notice in ("虚构演示", "AI 生成"):
+        for notice in ("摄影专题演示", "真实摄影作品"):
             if notice not in home_text:
                 errors.append(f"home page missing disclosure: {notice}")
 
@@ -120,6 +141,13 @@ def main() -> int:
         checker.template_urls = set(args.template_url)
         checker.feed(page.read_text(encoding="utf-8"))
         errors.extend(checker.errors)
+        if args.check_demo_pages and page in work_pages:
+            for marker, label in (("data-photo-source", "source"), ("data-photo-license", "license")):
+                links = checker.photo_links[marker]
+                if not links:
+                    errors.append(f"{page}: missing photo {label} link ({marker})")
+                elif any(not valid_photo_url(link) for link in links):
+                    errors.append(f"{page}: photo {label} link ({marker}) must use a non-empty HTTPS URL")
 
     preview_files = sorted((output / "previews").glob("*.jpg"))
     if len(preview_files) < len(work_pages):
@@ -127,8 +155,6 @@ def main() -> int:
     for preview in preview_files:
         if preview.stat().st_size <= 0:
             errors.append(f"empty preview: {preview}")
-    if args.check_demo_pages and not (output / "works/rain-street/cover.png").is_file():
-        errors.append("missing original rain-street cover for blog integration")
 
     if errors:
         print("\n".join(errors))

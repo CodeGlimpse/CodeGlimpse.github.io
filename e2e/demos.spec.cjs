@@ -135,25 +135,25 @@ test('demo cards and photography portfolio fit desktop and mobile viewports', as
     }
 });
 
-for (const [width, heroAspectRatio] of [[390, 1], [800, 1.24], [1280, 1.24]]) {
-    test(`photography portfolio images keep their aspect ratios at ${width}px`, async ({ page }) => {
+for (const width of [390, 800, 1280]) {
+    test(`portrait portfolio images retain their editorial vertical framing at ${width}px`, async ({ page }) => {
         await page.setViewportSize({ width, height: 844 });
         await page.goto(photoPath);
-        const heroImage = page.locator('.hero-picture img');
+        const heroImage = page.locator('.portrait-cover img');
         await expect(heroImage).toHaveCount(1);
-        await expectImageAspectRatio(heroImage, heroAspectRatio);
+        await expectImageAspectRatio(heroImage, 3 / 4);
 
-        const homeImages = page.locator('.selected .work-card-media img');
+        const homeImages = page.locator('.portrait-stories .image-link img');
         await expect(homeImages).toHaveCount(photoWorkPages.length - 1);
-        for (const image of await homeImages.all()) {
-            await expectImageAspectRatio(image, 1.45);
+        for (const [index, image] of (await homeImages.all()).entries()) {
+            await expectImageAspectRatio(image, index === 0 ? 4 / 5 : 3 / 4);
         }
 
         await page.goto(`${photoPath}works/`);
-        const workImages = page.locator('.works-grid .work-card-media img');
+        const workImages = page.locator('.genre-archive .image-link img');
         await expect(workImages).toHaveCount(photoWorkPages.length);
         for (const image of await workImages.all()) {
-            await expectImageAspectRatio(image, 1.17);
+            await expectImageAspectRatio(image, 3 / 4);
         }
     });
 }

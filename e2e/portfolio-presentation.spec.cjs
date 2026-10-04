@@ -50,45 +50,30 @@ for (const width of [1280, 320]) {
         await expect(page.locator('main h1')).toHaveText(title);
     });
 
-    test(`cinema keyboard and thumbnail controls show the chosen image and retain its detail link at ${width}px`, async ({ page, baseURL }) => {
+    test(`nature photo stories open their authored detail and full original at ${width}px`, async ({ page, baseURL }) => {
         const demo = demoFor('photo-portfolio', 'gallery');
         await page.setViewportSize({ width, height: 960 });
         await openPortfolio(page, demo, '', baseURL);
-        const projector = page.locator('[data-gallery]');
-        await expect(projector).toHaveAttribute('data-gallery-ready', 'true');
-        const slides = projector.locator('[data-gallery-slide]');
-        await expect(slides).toHaveCount(3);
-        await expect(slides.nth(0)).toBeVisible();
-        await projector.focus();
-        await projector.press('ArrowRight');
-        await expect(slides.nth(1)).toBeVisible();
-        await expect(slides.nth(0)).toBeHidden();
-        await expect(projector.locator('[data-gallery-counter]')).toHaveText('02 / 03');
-        await projector.press('ArrowLeft');
-        await expect(slides.nth(0)).toBeVisible();
-        await projector.press('End');
-        await expect(slides.nth(2)).toBeVisible();
-        await projector.press('ArrowRight');
-        await expect(slides.nth(0)).toBeVisible();
-        await projector.press('Home');
-        await expect(slides.nth(0)).toBeVisible();
-        await projector.locator('[data-gallery-select="2"]').click();
-        await expect(slides.nth(2)).toBeVisible();
-        await expect(projector.locator('[data-gallery-select="2"]')).toBeFocused();
-        await expect(projector.locator('[data-gallery-select][aria-pressed="true"]')).toHaveCount(1);
-        await expect(projector.locator('[data-gallery-select="2"]')).toHaveAttribute('aria-pressed', 'true');
-        const title = await slides.nth(2).getAttribute('data-gallery-title');
-        const detailLink = slides.nth(2).locator('.gallery-film-copy :is(h2, h3) a');
+        const stories = page.locator('.nature-stories .story-card');
+        await expect(stories).toHaveCount(2);
+        const detailLink = stories.last().locator('h2 a');
+        const title = await detailLink.innerText();
         const detailURL = new URL(await detailLink.getAttribute('href'), page.url());
-        await expect(projector.locator('[data-gallery-status]')).toContainText(title);
-        await detailLink.focus();
-        await detailLink.press('ArrowLeft');
-        await expect(slides.nth(1)).toBeVisible();
-        await expect(projector).toBeFocused();
-        await projector.locator('[data-gallery-select="2"]').click();
         await detailLink.click();
         await expect(page).toHaveURL(url => url.pathname === detailURL.pathname);
         await expect(page.locator('main h1')).toHaveText(title);
+        const image = page.locator('.detail-figure img');
+        await expect(image).toBeVisible();
+        const opener = page.locator('button[data-image]');
+        await expect(opener).toBeVisible();
+        const original = await opener.getAttribute('data-image');
+        await opener.click();
+        await expect(page.locator('.image-dialog')).toBeVisible();
+        await expect(page.locator('.image-dialog img')).toHaveAttribute('src', original);
+        await expect(page.locator('.image-dialog img')).toHaveAttribute('alt', await image.getAttribute('alt'));
+        await page.keyboard.press('Escape');
+        await expect(page.locator('.image-dialog')).toBeHidden();
+        await expect(opener).toBeFocused();
     });
 
     test(`cobalt chapter navigation follows the scroll location at ${width}px`, async ({ page, baseURL }) => {
@@ -111,51 +96,44 @@ for (const width of [1280, 320]) {
         await expect(root.locator('[data-editorial-status]')).toHaveText('01 / 04');
     });
 
-    test(`photography magazine progress follows actual reading distance at ${width}px`, async ({ page, baseURL }) => {
+    test(`astronomy photography keeps complete image framing and readable source facts at ${width}px`, async ({ page, baseURL }) => {
         const demo = demoFor('photo-portfolio', 'filmstrip');
         await page.setViewportSize({ width, height: 960 });
         await openPortfolio(page, demo, '', baseURL);
-        const reading = page.locator('[data-reading-progress]');
-        await expect(reading).toHaveAttribute('data-reading-ready', 'true');
-        await expect(reading).toBeVisible();
-        await expect(reading.locator('[data-reading-value]')).toHaveText('0%');
-        await page.locator('main').evaluate(main => {
-            const bounds = main.getBoundingClientRect();
-            const start = bounds.top + window.scrollY;
-            window.scrollTo(0, start + Math.max(1, bounds.height - window.innerHeight) / 2);
-        });
-        await expect.poll(async () => Number(await reading.getAttribute('data-reading-percent'))).toBeGreaterThanOrEqual(49);
-        expect(Number(await reading.getAttribute('data-reading-percent'))).toBeLessThanOrEqual(51);
-        await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-        await expect(reading.locator('[data-reading-value]')).toHaveText('100%');
-        await expect(reading.locator('[data-reading-meter]')).toHaveJSProperty('value', 100);
-        await expect(reading.locator('[data-reading-meter]')).toHaveAttribute('aria-valuetext', '已阅读 100%');
-        await reading.locator('a[href="#main"]').click();
-        await expect(reading.locator('[data-reading-value]')).toHaveText('0%');
+        await expect(page.locator('.astro-cover img')).toBeVisible();
+        await expect(page.locator('.astro-cover img')).toHaveCSS('object-fit', 'contain');
+        const detailLink = page.locator('.astro-title a');
+        const destination = new URL(await detailLink.getAttribute('href'), page.url());
+        await detailLink.click();
+        await expect(page).toHaveURL(url => url.pathname === destination.pathname);
+        await expect(page.locator('.detail-figure img')).toBeVisible();
+        await expect(page.locator('.detail-figure img')).toHaveCSS('object-fit', 'contain');
+        await expect(page.locator('.photo-facts')).toBeVisible();
+        await expect(page.locator('.photo-facts dt')).toHaveText(['作者 / 机构', '拍摄 / 发布', '使用许可']);
+        for (const fact of await page.locator('.photo-facts dd').all()) await expect(fact).toHaveText(/\S/);
     });
 }
 
-test('cinema detail viewer switches between the original cover and near view', async ({ page, baseURL }) => {
-    const demo = demoFor('photo-portfolio', 'gallery');
-    await openPortfolio(page, demo, 'works/rain-street/', baseURL);
-    const projector = page.locator('[data-gallery]');
-    await expect(projector).toHaveAttribute('data-gallery-ready', 'true');
-    const figures = projector.locator('.detail-figure');
-    await expect(figures).toHaveCount(2);
-    await expect(figures.nth(0)).toBeVisible();
-    await projector.focus();
-    await projector.press('ArrowRight');
-    await expect(figures.nth(1)).toBeVisible();
-    await expect(figures.nth(0)).toBeHidden();
-    await expect(figures.nth(1).locator('img')).toHaveAttribute('alt', /自行车轮/);
-    await projector.getByRole('button', { name: '放映主图', exact: true }).click();
-    await expect(figures.nth(0)).toBeVisible();
-    await expect(figures.nth(0).locator('img')).toHaveAttribute('alt', /蓝色傍晚/);
+test('each photography genre retains readable author and licence source links on its detail page', async ({ page, baseURL }) => {
+    for (const templateId of ['classic', 'gallery', 'filmstrip']) {
+        const demo = demoFor('photo-portfolio', templateId);
+        const detail = demo.checks.pages.find(route => /^works\/[^/]+\/$/.test(route));
+        expect(detail).toBeDefined();
+        await openPortfolio(page, demo, detail, baseURL);
+        const sources = page.locator('.photo-facts .source-credit a');
+        await expect(sources).toHaveCount(2);
+        await expect(sources.nth(0)).toHaveText('原始作品与署名');
+        await expect(sources.nth(1)).toHaveText('查看授权说明');
+        for (const source of await sources.all()) {
+            await expect(source).toBeVisible();
+            await expect(source).toHaveAttribute('href', /^https?:\/\//);
+        }
+    }
 });
 
 test.describe('portfolio presentation controls without JavaScript', () => {
     test.use({ javaScriptEnabled: false });
-    test('archive and cinema controls stay unavailable while their source content remains visible', async ({ page, baseURL }) => {
+    test('archive controls stay unavailable while their source content remains visible', async ({ page, baseURL }) => {
         await openPortfolio(page, demoFor('creator-portfolio', 'archive'), '', baseURL);
         await expect(page.locator('[data-archive-preview]')).toBeHidden();
         for (const button of await page.locator('[data-archive-preview-button]').all()) {
@@ -163,13 +141,5 @@ test.describe('portfolio presentation controls without JavaScript', () => {
             await expect(button).toBeDisabled();
         }
         for (const record of await page.locator('[data-archive-entry]').all()) await expect(record).toBeVisible();
-        await openPortfolio(page, demoFor('photo-portfolio', 'gallery'), '', baseURL);
-        await expect(page.locator('[data-gallery-controls]')).toBeHidden();
-        await expect(page.locator('[data-gallery-thumbnails]')).toBeHidden();
-        for (const slide of await page.locator('[data-gallery-slide]').all()) await expect(slide).toBeVisible();
-        for (const button of await page.locator('[data-gallery] button').all()) await expect(button).toBeDisabled();
-        await openPortfolio(page, demoFor('photo-portfolio', 'filmstrip'), '', baseURL);
-        await expect(page.locator('[data-reading-progress]')).toBeHidden();
-        await expect(page.locator('.magazine-cover')).toBeVisible();
     });
 });

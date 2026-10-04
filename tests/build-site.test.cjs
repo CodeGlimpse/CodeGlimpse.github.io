@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 
 const { buildSite, resolveSourceCommit, configurationArgs } = require('../scripts/build-site.cjs');
-const { DEMO_REGISTRY } = require('../scripts/demo-registry.cjs');
+const { DEMO_CASES, DEMO_REGISTRY, expandDemoRegistry } = require('../scripts/demo-registry.cjs');
 const projectRoot = path.resolve(__dirname, '..');
 const environment = { HUGO_PARAMS_SOURCECOMMIT: 'a'.repeat(40) };
 
@@ -91,6 +91,27 @@ test('does not pass differently cased parent output overrides into demos', () =>
     assert.equal(child.HUGO_BASEURL, `https://example.test/${DEMO_REGISTRY[0].path}`);
     assert.equal(child.HUGO_PUBLISHDIR, path.join(projectRoot, 'public', DEMO_REGISTRY[0].path));
     assert.equal(child.HUGO_PARAMS_DEMOCATALOGURL, '/demos/');
+});
+
+test('scopes content directory overrides to each child without inheriting the main content directory', () => {
+    const entries = structuredClone(DEMO_CASES);
+    entries[0].templates[1].contentDir = 'content/portraits';
+    const registry = expandDemoRegistry(entries);
+    const fake = fakeHugo();
+    const env = { ...environment, HUGO_CONTENTDIR: 'main-content', hugo_contentdir: 'stale-main-content', CUSTOM_SETTING: 'retained' };
+    assert.equal(buildSite([], env, fake.run, registry), 0);
+    assert.equal(fake.calls[0].options.env, env);
+    assert.equal(fake.calls[1].options.env.HUGO_CONTENTDIR, 'main-content');
+    for (const [index, demo] of registry.entries()) {
+        const child = fake.calls[index + 2].options.env;
+        assert.equal(child.hugo_contentdir, undefined);
+        assert.equal(child.HUGO_CONTENTDIR, demo.contentDir);
+        assert.equal(Object.hasOwn(child, 'HUGO_CONTENTDIR'), demo.contentDir !== undefined);
+        assert.equal(child.CUSTOM_SETTING, 'retained');
+    }
+    const overrideIndex = registry.findIndex(demo => demo.contentDir === 'content/portraits');
+    assert.ok(overrideIndex >= 0);
+    assert.equal(fake.calls[overrideIndex + 2].options.env.HUGO_CONTENTDIR, 'content/portraits');
 });
 
 test('stops before publishing later demos when a preceding build fails', () => {

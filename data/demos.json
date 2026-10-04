@@ -159,13 +159,13 @@
   {
     "id": "photo-portfolio",
     "source": "demos/photo-portfolio",
-    "brand": "留光 / LIGHT · STILL",
+    "brand": "目光 / 野境 / 遥光",
     "copy": {
       "zh-cn": {
         "title": "摄影作品集",
-        "label": "虚构摄影 · AI 生成图片",
-        "description": "浏览虚构摄影故事、作品详情与个人介绍，体验手机和电脑上的图片展示。",
-        "previewAlt": "摄影作品集首页的真实页面截图，包含个人介绍和 AI 生成的虚构雨街影像",
+        "label": "真实摄影 · 公开授权素材",
+        "description": "人像、自然、天文：不同作品与不同视觉风格，逐张提供来源和使用许可。",
+        "previewAlt": "真实摄影专题页面预览",
         "features": [
           "摄影故事",
           "响应式图片",
@@ -174,9 +174,9 @@
       },
       "en": {
         "title": "Photography portfolio",
-        "label": "Fictional photography · AI imagery",
-        "description": "Browse fictional photo stories, work details, and a personal profile. Demo pages are in Chinese.",
-        "previewAlt": "Screenshot of the photography portfolio homepage, showing its introduction and AI-generated fictional rainy street imagery",
+        "label": "Real photography · Licensed images",
+        "description": "Portrait, nature and astronomy collections with distinct photographs, visual styles and source credits.",
+        "previewAlt": "Preview of real photography collections",
         "features": [
           "Photo stories",
           "Responsive images",
@@ -188,19 +188,16 @@
       "pages": [
         "",
         "works/",
-        "works/rain-street/",
-        "works/window-light/",
-        "works/low-tide/",
         "about/"
       ],
       "assets": [
-        "css/site.css",
-        "previews/rain-street.jpg",
-        "css/demo-templates.css"
+        "css/genres.css",
+        "css/demo-templates.css",
+        "js/genres.js"
       ],
       "requiredText": [
-        "虚构演示",
-        "AI 生成"
+        "摄影专题演示",
+        "真实摄影作品"
       ],
       "navigation": [
         "works/",
@@ -219,27 +216,38 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "摄影叙事",
-            "description": "浏览虚构摄影故事、作品详情与个人介绍，体验手机和电脑上的图片展示。",
-            "previewAlt": "摄影作品集首页的真实页面截图，包含个人介绍和 AI 生成的虚构雨街影像",
+            "name": "目光 · 人像摄影",
+            "description": "从十九世纪的镜头出发，观看目光、姿态与人的存在。",
+            "previewAlt": "目光摄影专题的实际页面截图",
             "features": [
-              "摄影故事",
-              "响应式图片",
-              "关于与联系"
+              "历史肖像",
+              "编辑式排版",
+              "作者档案"
             ]
           },
           "en": {
-            "name": "Photo stories",
-            "description": "Browse fictional photo stories, work details, and a personal profile. Demo pages are in Chinese.",
-            "previewAlt": "Screenshot of the photography portfolio homepage, showing its introduction and AI-generated fictional rainy street imagery",
+            "name": "Gaze · Portraits",
+            "description": "Historical photographic portraits presented as a bright editorial collection.",
+            "previewAlt": "portrait photography website screenshot",
             "features": [
-              "Photo stories",
-              "Responsive images",
-              "About & contact"
+              "Real photographs",
+              "Source credits",
+              "Full image view"
             ]
           }
         },
-        "assets": []
+        "assets": [],
+        "contentDir": "content/portrait",
+        "checks": {
+          "pages": [
+            "",
+            "works/",
+            "about/",
+            "works/julia-jackson/",
+            "works/frederick-douglass/",
+            "works/custer-portrait/"
+          ]
+        }
       },
       {
         "id": "gallery",
@@ -251,31 +259,38 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "沉浸影像",
-            "description": "从全幅影像进入，按需隐去文字，使用缩略图与键盘浏览同一组摄影故事。",
-            "previewAlt": "摄影作品集「沉浸影像」模板的真实页面截图",
+            "name": "野境 · 自然摄影",
+            "description": "湖水映照山脊，溪流穿过森林。把目光交还给真实的自然。",
+            "previewAlt": "野境摄影专题的实际页面截图",
             "features": [
-              "全幅影像",
-              "纯净观看",
-              "键盘切换"
+              "真实风光",
+              "宽幅画册",
+              "原图查看"
             ]
           },
           "en": {
-            "name": "Immersive gallery",
-            "description": "Enter through a full-width photograph, hide the text, and explore the same stories with thumbnails and keyboard navigation.",
-            "previewAlt": "Screenshot of the Immersive gallery template for Photography portfolio",
+            "name": "Wildland · Nature",
+            "description": "Mountains, forests and open landscapes in an expansive field album.",
+            "previewAlt": "nature photography website screenshot",
             "features": [
-              "Full-width imagery",
-              "Image-only view",
-              "Keyboard navigation"
+              "Real photographs",
+              "Source credits",
+              "Full image view"
             ]
           }
         },
-        "assets": [
-          "css/gallery.css",
-          "css/gallery-home.css",
-          "js/gallery.js"
-        ]
+        "assets": [],
+        "contentDir": "content/nature",
+        "checks": {
+          "pages": [
+            "",
+            "works/",
+            "about/",
+            "works/ergaki-lake/",
+            "works/whirinaki-forest/",
+            "works/mongolia-grassland/"
+          ]
+        }
       },
       {
         "id": "filmstrip",
@@ -287,32 +302,41 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "朱红影像刊",
-            "description": "朱红刊头与影像拼贴组织相同摄影故事，沿阅读进度逐篇浏览。",
-            "previewAlt": "摄影作品集「朱红影像刊」模板的真实页面截图",
+            "name": "遥光 · 天文摄影",
+            "description": "从星云的尘埃到星系的旋臂，观看望远镜记录下的宇宙。",
+            "previewAlt": "遥光摄影专题的实际页面截图",
             "features": [
-              "影像拼贴",
-              "杂志章节",
-              "阅读进度"
+              "深空观测",
+              "科学图像",
+              "仪器与出处"
             ]
           },
           "en": {
-            "name": "Vermilion magazine",
-            "description": "A vermilion masthead and image collage present the same stories with reading progress.",
-            "previewAlt": "Screenshot of the Vermilion magazine template for Photography portfolio",
+            "name": "Distant Light · Astronomy",
+            "description": "Webb and Hubble observations presented as a deep-space image exhibition.",
+            "previewAlt": "astronomy photography website screenshot",
             "features": [
-              "Image collage",
-              "Magazine chapters",
-              "Reading progress"
+              "Real photographs",
+              "Source credits",
+              "Full image view"
             ]
           }
         },
-        "assets": [
-          "css/filmstrip.css",
-          "js/filmstrip.js"
-        ]
+        "assets": [],
+        "contentDir": "content/astronomy",
+        "checks": {
+          "pages": [
+            "",
+            "works/",
+            "about/",
+            "works/cosmic-cliffs/",
+            "works/whirlpool-galaxy/",
+            "works/pillars-creation/"
+          ]
+        }
       }
-    ]
+    ],
+    "differentContent": true
   },
   {
     "id": "content-dashboard",

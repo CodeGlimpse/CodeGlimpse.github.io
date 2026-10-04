@@ -1,24 +1,11 @@
-{{ define "main" }}
-{{ if eq site.Params.demoTemplate "filmstrip" }}
-  {{ partial "filmstrip/home.html" . }}
-{{ else if eq site.Params.demoTemplate "gallery" }}
-  {{ partial "gallery/home.html" . }}
-{{ else }}
+{{ define "main" }}{{ $works := (site.GetPage "/works").Pages.ByWeight }}{{ $first := index $works 0 }}{{ $template := site.Params.demoTemplate | default "classic" }}
 <main id="main" tabindex="-1">
-  {{ $works := site.GetPage "/works" }}
-  {{ range first 1 $works.Pages.ByWeight }}
-  <section class="hero shell" aria-labelledby="hero-title">
-    {{ partial "home-intro.html" . }}
-    {{ partial "hero-media.html" (dict "page" . "sizes" "(max-width: 800px) 100vw, 66vw") }}
-  </section>
-  {{ end }}
-  <section class="selected shell" aria-labelledby="selected-title">
-    {{ partial "selected-heading.html" . }}
-    <div class="card-grid">
-      {{ range after 1 $works.Pages.ByWeight }}{{ partial "work-card.html" . }}{{ end }}
-    </div>
-  </section>
-  {{ partial "home-about.html" . }}
-</main>
+{{ if eq $template "classic" }}
+<section class="portrait-opening shell"><div class="portrait-title"><p class="genre-eyebrow">{{ site.Home.Params.genre }}</p><h1>{{ .Params.heading }}</h1><p>{{ .Params.intro }}</p></div><figure class="portrait-cover">{{ partial "genres/image.html" (dict "page" $first "loading" "eager") }}<figcaption>{{ $first.Title }} / {{ $first.Params.author }}</figcaption></figure><div class="portrait-side"><p>人物的目光，时代的侧影。</p><a href="{{ $first.RelPermalink }}">阅读这幅肖像</a></div></section>
+{{ else if eq $template "gallery" }}
+<section class="nature-opening">{{ partial "genres/image.html" (dict "page" $first "loading" "eager") }}<div class="nature-title"><p class="genre-eyebrow">{{ site.Home.Params.genre }}</p><h1>{{ .Params.heading }}</h1><p>{{ .Params.intro }}</p><a href="{{ $first.RelPermalink }}">走进这片风景</a></div></section>
+{{ else }}
+<section class="astro-opening shell"><div class="astro-title"><p class="genre-eyebrow">{{ site.Home.Params.genre }}</p><h1>{{ .Params.heading }}</h1><p>{{ .Params.intro }}</p><a href="{{ $first.RelPermalink }}">查看观测影像</a></div><figure class="astro-cover">{{ partial "genres/image.html" (dict "page" $first "loading" "eager") }}<figcaption>{{ $first.Title }} / {{ $first.Params.author }}</figcaption></figure></section>
 {{ end }}
-{{ end }}
+<section class="shell"><header class="genre-section-heading"><h2>继续观看</h2><p>每幅作品，保留它自己的故事与出处。</p></header><div class="{{ if eq $template "classic" }}portrait{{ else if eq $template "gallery" }}nature{{ else }}astro{{ end }}-stories">{{ range after 1 $works }}{{ partial "genres/card.html" . }}{{ end }}</div></section>
+</main>{{ end }}

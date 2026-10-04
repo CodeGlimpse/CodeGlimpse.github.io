@@ -8,7 +8,7 @@ const embeddedData = {
     'workshop-booking': { id: 'booking-data', source: require('../demos/workshop-booking/data/schedule.json') },
     'trip-planner': { id: 'planner-data', source: require('../demos/trip-planner/data/places.json') },
 };
-const portfolioCases = DEMO_CASES.filter(demo => !embeddedData[demo.id]);
+const portfolioCases = DEMO_CASES.filter(demo => !embeddedData[demo.id] && !demo.differentContent);
 const detailPattern = /^(?:works|projects)\/[^/]+\/$/;
 
 function versionsFor(demoCase) {
@@ -53,7 +53,7 @@ async function expectTemplateNavigation(page, demo, route, baseURL) {
     for (const sibling of demo.siblings) {
         const link = nav.locator(`a[data-demo-template="${sibling.id}"]`);
         await expect(link).toHaveText(sibling.label);
-        await expect(link).toHaveAttribute('href', sitePath(baseURL, sibling.path + route));
+        await expect(link).toHaveAttribute('href', sitePath(baseURL, sibling.path + (demo.differentContent ? '' : route)));
         if (sibling.id === demo.templateId) await expect(link).toHaveAttribute('aria-current', 'page');
     }
     await expect(nav.locator('a[aria-current="page"]')).toHaveCount(1);
@@ -158,11 +158,11 @@ for (const demoCase of portfolioCases) {
 }
 
 for (const demoCase of DEMO_CASES) {
-    for (const route of switchRoutes(demoCase)) {
+    const versions = versionsFor(demoCase);
+    for (const route of [...new Set(versions.flatMap(demo => switchRoutes(demo)))]) {
         test(`${demoCase.id} templates switch between every pair on ${route || 'home'} with skip and catalog first`, async ({ page, baseURL }) => {
-            const versions = versionsFor(demoCase);
             expect(versions).toHaveLength(demoCase.templates.length);
-            for (const demo of versions) {
+            for (const demo of versions.filter(demo => demo.checks.pages.includes(route))) {
                 await openDemo(page, demo, route, baseURL);
                 await expectTemplateNavigation(page, demo, route, baseURL);
                 await page.keyboard.press('Tab');
@@ -170,12 +170,13 @@ for (const demoCase of DEMO_CASES) {
                 await page.keyboard.press('Tab');
                 await expect(page.locator('a[data-demo-catalog]')).toBeFocused();
                 for (const sibling of versions.filter(candidate => candidate.templateId !== demo.templateId)) {
+                    const destinationRoute = demo.differentContent ? '' : route;
                     await openDemo(page, demo, route, baseURL);
                     await page.locator("[data-demo-template-menu] > summary").click();
                     await page.locator(`nav[data-demo-templates] a[data-demo-template="${sibling.templateId}"]`).click();
-                    await expect(page).toHaveURL(url => url.pathname === pagePath(sibling, route, baseURL));
+                    await expect(page).toHaveURL(url => url.pathname === pagePath(sibling, destinationRoute, baseURL));
                     await expect(page.locator('body')).toHaveAttribute('data-template', sibling.templateId);
-                    await expectTemplateNavigation(page, sibling, route, baseURL);
+                    await expectTemplateNavigation(page, sibling, destinationRoute, baseURL);
                     await expect(page.locator('main h1')).toHaveCount(1);
                 }
             }
@@ -184,12 +185,11 @@ for (const demoCase of DEMO_CASES) {
 }
 
 for (const demo of DEMO_REGISTRY) {
-    const demoCase = DEMO_CASES.find(candidate => candidate.id === demo.caseId);
     for (const width of [320, 390, 1280]) {
-        test(`${demo.id} home and ${representativeRoute(demoCase)} fit ${width}px`, async ({ page, baseURL }, testInfo) => {
+        test(`${demo.id} home and ${representativeRoute(demo)} fit ${width}px`, async ({ page, baseURL }, testInfo) => {
             await page.setViewportSize({ width, height: 960 });
             await page.emulateMedia({ reducedMotion: 'reduce' });
-            for (const route of ['', representativeRoute(demoCase)]) {
+            for (const route of ['', representativeRoute(demo)]) {
                 await openDemo(page, demo, route, baseURL);
                 await expectTemplateNavigation(page, demo, route, baseURL);
                 for (const image of await page.locator('main img').all()) {
@@ -241,7 +241,7 @@ test.describe('new templates without JavaScript', () => {
                 }
                 for (const control of await page.locator('main button, main select, main input').all()) await expect(control).toBeDisabled();
             } else {
-                const routes = demoCase.checks.pages.filter(route => detailPattern.test(route));
+                const routes = demo.checks.pages.filter(route => detailPattern.test(route));
                 expect(await workLinks(page, demo, baseURL, routes)).toEqual([...routes].sort());
                 for (const route of routes) await expect(page.locator(`main a[href="${pagePath(demo, route, baseURL)}"]`).first()).toBeVisible();
                 await expect(page.locator('main img').first()).toBeVisible();
@@ -251,11 +251,11 @@ test.describe('new templates without JavaScript', () => {
             await page.locator(`nav[data-demo-templates] a[data-demo-template="${classic.templateId}"]`).click();
             await expect(page).toHaveURL(url => url.pathname === pagePath(classic, '', baseURL));
             await expect(page.locator('body')).toHaveAttribute('data-template', classic.templateId);
-            const route = representativeRoute(demoCase);
+            const route = representativeRoute(classic);
             await openDemo(page, classic, route, baseURL);
             await page.locator("[data-demo-template-menu] > summary").click();
             await page.locator(`nav[data-demo-templates] a[data-demo-template="${demo.templateId}"]`).click();
-            await expect(page).toHaveURL(url => url.pathname === pagePath(demo, route, baseURL));
+            await expect(page).toHaveURL(url => url.pathname === pagePath(demo, demo.differentContent ? '' : route, baseURL));
             await expect(page.locator('body')).toHaveAttribute('data-template', demo.templateId);
             await expect(page.locator('main h1')).toBeVisible();
         });

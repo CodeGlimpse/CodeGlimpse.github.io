@@ -66,7 +66,7 @@ function resolveSourceCommit(environment = process.env) {
     return commit.toLowerCase();
 }
 
-function buildSite(args = process.argv.slice(2), environment = process.env, run = spawnSync) {
+function buildSite(args = process.argv.slice(2), environment = process.env, run = spawnSync, registry = DEMO_REGISTRY) {
     const sourceCommit = resolveSourceCommit(environment);
     const options = resolveBuildOptions(args, environment, run);
     const hugoArgs = ['--cleanDestinationDir', '--minify', '--gc', ...args];
@@ -80,14 +80,14 @@ function buildSite(args = process.argv.slice(2), environment = process.env, run 
     if (result.status !== 0) return result.status ?? 1;
 
     // Each demo keeps its own layouts and CSS, but belongs to the same artifact.
-    for (const demoInfo of DEMO_REGISTRY) {
+    for (const demoInfo of registry) {
         const baseURL = new URL(demoInfo.path, options.baseURL).toString();
         const destination = path.join(options.outputRoot, demoInfo.path);
         const catalogURL = new URL('demos/', options.baseURL).pathname;
         // Hugo environment settings override CLI flags. Scope these values to
         // the child site, including differently cased keys on Windows.
         const demoEnvironment = Object.fromEntries(Object.entries(environment)
-            .filter(([key]) => !['HUGO_BASEURL', 'HUGO_PUBLISHDIR', 'HUGO_PARAMS_DEMOCATALOGURL', 'HUGO_PARAMS_DEMOTEMPLATE', 'HUGO_PARAMS_DEMOTEMPLATES'].includes(key.toUpperCase())));
+            .filter(([key]) => !['HUGO_BASEURL', 'HUGO_PUBLISHDIR', 'HUGO_CONTENTDIR', 'HUGO_PARAMS_DEMOCATALOGURL', 'HUGO_PARAMS_DEMOTEMPLATE', 'HUGO_PARAMS_DEMOTEMPLATES'].includes(key.toUpperCase())));
         const demo = run('hugo', [
             '--cleanDestinationDir', '--minify', '--gc', '--panicOnWarning',
             '--baseURL', baseURL,
@@ -98,6 +98,7 @@ function buildSite(args = process.argv.slice(2), environment = process.env, run 
                 ...demoEnvironment,
                 HUGO_BASEURL: baseURL,
                 HUGO_PUBLISHDIR: destination,
+                ...(demoInfo.contentDir === undefined ? {} : { HUGO_CONTENTDIR: demoInfo.contentDir }),
                 HUGO_PARAMS_DEMOCATALOGURL: catalogURL,
                 HUGO_PARAMS_DEMOTEMPLATE: demoInfo.templateId,
                 HUGO_PARAMS_DEMOTEMPLATES: JSON.stringify(templateLinks(demoInfo, options.baseURL)),

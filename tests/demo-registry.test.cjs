@@ -36,7 +36,15 @@ test('rejects paths that escape the site or source tree', () => {
     assert.throws(() => validateDemoRegistry(entries), /Invalid demo preview/);
 });
 
-test('expands templates with one content source and independent destinations', () => {
+test('rejects template content directories that escape the source tree', () => {
+    for (const value of ['', null, '../escape', '/absolute', 'C:/absolute', 'folder/../../escape', 'content\\portrait', './content', 'content/%2e%2e', 'content\u0000', 'content/.. /escape', 'content.', 'content/*', 'content\u007f']) {
+        const entries = structuredClone(DEMO_CASES);
+        entries[0].templates[0].contentDir = value;
+        assert.throws(() => validateDemoRegistry(entries), /Invalid template contentDir/);
+    }
+});
+
+test('expands templates with independent content checks and destinations', () => {
     assert.equal(DEMO_CASES.length, 6);
     assert.equal(DEMO_REGISTRY.length, DEMO_CASES.reduce((count, item) => count + item.templates.length, 0));
     for (const item of DEMO_CASES) {
@@ -44,10 +52,57 @@ test('expands templates with one content source and independent destinations', (
         assert.equal(new Set(variants.map(demo => demo.source)).size, 1);
         assert.equal(variants.find(demo => demo.templateId === 'classic').path, `demos/${item.id}/`);
         for (const demo of variants) {
-            assert.deepEqual(demo.checks.pages, item.checks.pages);
-            assert.ok(item.checks.assets.every(asset => demo.checks.assets.includes(asset)));
+            const template = item.templates.find(template => template.id === demo.templateId);
+            assert.equal(demo.contentDir, template.contentDir);
+            assert.equal(demo.differentContent, item.differentContent === true);
+            assert.deepEqual(demo.checks.pages, template.checks?.pages || item.checks.pages);
+            assert.ok((template.checks?.assets || item.checks.assets).every(asset => demo.checks.assets.includes(asset)));
         }
     }
+});
+
+test('merges validated template checks without retaining replaced case assets', () => {
+    const entries = structuredClone(DEMO_CASES);
+    const item = entries[0];
+    item.differentContent = true;
+    const template = item.templates[1];
+    template.contentDir = 'content/portraits';
+    template.checks = {
+        pages: ['', 'portraits/'],
+        navigation: ['portraits/'],
+        requiredText: ['摄影作品演示'],
+        assets: ['css/portraits.css'],
+    };
+    const expanded = expandDemoRegistry(entries);
+    const demo = expanded.find(demo => demo.caseId === item.id && demo.templateId === template.id);
+    assert.equal(demo.contentDir, 'content/portraits');
+    assert.equal(demo.differentContent, true);
+    assert.deepEqual(demo.checks.pages, ['', 'portraits/']);
+    assert.deepEqual(demo.checks.navigation, ['portraits/']);
+    assert.deepEqual(demo.checks.requiredText, ['摄影作品演示']);
+    assert.deepEqual(demo.checks.assets, [...new Set(['css/portraits.css', ...template.assets])]);
+    assert.ok(!demo.checks.assets.includes(item.checks.assets[0]));
+    assert.deepEqual(demo.siblings.find(sibling => sibling.id === template.id).pages, ['', 'portraits/']);
+    const classic = expanded.find(demo => demo.caseId === item.id && demo.templateId === item.defaultTemplate);
+    assert.deepEqual(classic.checks.pages, item.checks.pages);
+    assert.deepEqual(classic.checks.requiredText, item.checks.requiredText);
+});
+
+test('validates partial template checks with the case homepage contract', () => {
+    const entries = structuredClone(DEMO_CASES);
+    entries[0].templates[0].checks = { requiredText: ['New disclosure'] };
+    assert.doesNotThrow(() => validateDemoRegistry(entries));
+    for (const checks of [
+        null, [], { unknown: [] }, { pages: ['works/'] }, { pages: ['', '../escape/'] },
+        { navigation: ['missing/'] }, { assets: ['../escape.css'] }, { requiredText: [] },
+        { requiredText: [''] }, { requiredText: [42] },
+    ]) {
+        const invalid = structuredClone(DEMO_CASES);
+        invalid[0].templates[0].checks = checks;
+        assert.throws(() => validateDemoRegistry(invalid));
+    }
+    entries[0].differentContent = 'true';
+    assert.throws(() => validateDemoRegistry(entries), /Invalid differentContent/);
 });
 
 test('rejects conflicting templates, ambiguous defaults, and nested destinations', () => {
@@ -65,13 +120,37 @@ test('rejects conflicting templates, ambiguous defaults, and nested destinations
 });
 
 test('Python checks receive exact sibling page allowances with the deployment prefix', () => {
-    const demo = DEMO_REGISTRY.find(item => item.id === 'photo-portfolio-gallery');
+    const demo = DEMO_REGISTRY.find(item => item.id === 'creator-portfolio-editorial');
     const args = checkerArgs(demo, projectRoot, 'https://example.test/review/');
-    assert.equal(args[args.indexOf('--base-url') + 1], 'https://example.test/review/demos/variants/photo-portfolio/gallery/');
+    assert.equal(args[args.indexOf('--base-url') + 1], 'https://example.test/review/demos/variants/creator-portfolio/editorial/');
     const allowed = args.flatMap((value, index) => value === '--template-url' ? [args[index + 1]] : []);
     assert.equal(allowed.length, demo.checks.pages.length * demo.siblings.length);
-    assert.ok(allowed.includes('/review/demos/photo-portfolio/works/rain-street/'));
-    assert.ok(allowed.includes('/review/demos/variants/photo-portfolio/gallery/about/'));
-    assert.ok(allowed.includes('/review/demos/variants/photo-portfolio/filmstrip/works/rain-street/'));
+    assert.ok(allowed.includes('/review/demos/creator-portfolio/works/window-light/'));
+    assert.ok(allowed.includes('/review/demos/variants/creator-portfolio/editorial/projects/'));
+    assert.ok(allowed.includes('/review/demos/variants/creator-portfolio/archive/projects/leaf-atlas/'));
     assert.ok(!allowed.includes('/review/'));
+});
+
+test('independent photography content permits only exact sibling homepages', () => {
+    const entries = structuredClone(DEMO_CASES);
+    const photo = entries.find(item => item.id === 'photo-portfolio');
+    photo.differentContent = true;
+    photo.templates[1].checks = { ...photo.templates[1].checks, pages: ['', 'works/', 'works/nature-detail/', 'about/'] };
+    const demo = expandDemoRegistry(entries).find(item => item.id === 'photo-portfolio-gallery');
+    const args = checkerArgs(demo, projectRoot, 'https://example.test/review/');
+    const allowed = args.flatMap((value, index) => value === '--template-url' ? [args[index + 1]] : []);
+    assert.deepEqual(allowed, demo.siblings.map(sibling => `/review/${sibling.path}`));
+    assert.ok(!allowed.some(url => url.endsWith('works/nature-detail/')));
+});
+
+test('shared-content allowances use the sibling actual page list', () => {
+    const entries = structuredClone(DEMO_CASES);
+    const item = entries[0];
+    item.templates[1].checks = { pages: ['', ...item.checks.navigation, 'works/sibling-only/'] };
+    const demo = expandDemoRegistry(entries).find(demo => demo.caseId === item.id && demo.templateId === item.defaultTemplate);
+    const args = checkerArgs(demo, projectRoot, 'https://example.test/review/');
+    const allowed = args.flatMap((value, index) => value === '--template-url' ? [args[index + 1]] : []);
+    const siblingPrefix = `/review/${item.templates[1].path}`;
+    assert.ok(allowed.includes(`${siblingPrefix}works/sibling-only/`));
+    assert.ok(!allowed.includes(`${siblingPrefix}works/window-light/`));
 });

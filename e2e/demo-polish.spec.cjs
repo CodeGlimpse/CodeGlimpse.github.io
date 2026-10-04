@@ -53,7 +53,7 @@ for (const width of [320, 390]) {
 
     test(`Chinese headlines retain complete phrases without orphan characters at ${width}px`, async ({ page, baseURL }) => {
         await page.setViewportSize({ width, height: 844 });
-        for (const [caseId, templateId] of [['bookstore', 'checklist'], ['trip-planner', 'journal'], ['photo-portfolio', 'gallery']]) {
+        for (const [caseId, templateId] of [['bookstore', 'checklist'], ['trip-planner', 'journal']]) {
             await page.goto(targetPath(baseURL, demoFor(caseId, templateId).path));
             const lines = await titleLines(page.locator('main h1'));
             expect(lines.length).toBeGreaterThan(0);
@@ -78,7 +78,11 @@ for (const width of [320, 390]) {
             await expect(menu.locator('summary')).toBeFocused();
             await page.keyboard.press('Enter');
             await expect(menu).toHaveJSProperty('open', true);
-            await expect(menu.locator('small')).toContainText('切换模板将重置');
+            if (demo.caseId === 'photo-portfolio') {
+                await expect(menu.locator('small')).toHaveText('不同题材与作品，切换后进入对应摄影站首页。');
+            } else {
+                await expect(menu.locator('small')).toContainText('切换模板将重置');
+            }
             for (const link of await menu.locator('a').all()) {
                 await expect(link).toBeVisible();
                 const box = await link.boundingBox();
@@ -118,12 +122,16 @@ test('workspace metrics precede filters and collapsing controls preserves the se
     await expect(page.locator('[data-metric=views]')).toHaveText('8,020');
 });
 
-test('cinema desktop headline keeps the complete sentence without an orphan ending', async ({ page, baseURL }) => {
+test('nature desktop headline stays readable in a local sand panel without filtering the photograph', async ({ page, baseURL }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto(targetPath(baseURL, demoFor('photo-portfolio', 'gallery').path));
-    const lines = await titleLines(page.locator('main h1'));
-    expect(lines.join('')).toBe('把片刻的光，留给慢一点的目光。');
-    for (const line of lines) expect(line.replace(/[^\u4e00-\u9fff]/g, '').length).toBeGreaterThanOrEqual(3);
+    const heading = page.locator('.nature-title h1');
+    await expect(heading).toBeVisible();
+    const lines = await titleLines(heading);
+    expect(lines.length).toBeGreaterThan(0);
+    expect(lines.join('').trim()).toBe((await heading.textContent()).trim());
+    await expect(page.locator('.nature-title')).toHaveCSS('background-color', 'rgb(238, 233, 220)');
+    await expect(page.locator('.nature-opening > img')).toHaveCSS('filter', 'none');
 });
 
 test('catalog heading aligns with cases and real preview images fill their frames', async ({ page, baseURL }) => {

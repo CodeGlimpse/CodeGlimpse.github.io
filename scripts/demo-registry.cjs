@@ -7,6 +7,25 @@ function relativePath(value, allowEmpty = false) {
         && path.posix.normalize(value) === value);
 }
 
+function validateChecks(checks, id) {
+    for (const key of ['pages', 'assets', 'navigation']) {
+        if (!Array.isArray(checks?.[key]) || !checks[key].length
+            || checks[key].some(value => !relativePath(value, key === 'pages'))) throw new Error(`Invalid demo ${key}: ${id}`);
+    }
+    if (!checks.pages.includes('') || checks.pages.some(route => route !== '' && !route.endsWith('/'))
+        || !checks.assets.some(asset => asset.endsWith('.css'))
+        || !checks.navigation.every(route => checks.pages.includes(route))
+        || !Array.isArray(checks.requiredText) || !checks.requiredText.length
+        || checks.requiredText.some(value => typeof value !== 'string' || !value.trim())) {
+        throw new Error(`Missing demo homepage checks: ${id}`);
+    }
+}
+
+function templateChecks(demo, template) {
+    const checks = { ...demo.checks, ...template.checks };
+    return { ...checks, assets: [...new Set([...checks.assets, ...template.assets])] };
+}
+
 function validateDemoRegistry(entries) {
     if (!Array.isArray(entries) || entries.length === 0) throw new Error('Demo registry must contain at least one demo');
     const seen = { id: new Set(), source: new Set(), path: new Set(), preview: new Set() };
@@ -24,22 +43,17 @@ function validateDemoRegistry(entries) {
                 throw new Error(`Missing ${language} demo copy: ${demo.id}`);
             }
         }
-        for (const key of ['pages', 'assets', 'navigation']) {
-            if (!Array.isArray(demo.checks?.[key]) || !demo.checks[key].length
-                || demo.checks[key].some(value => !relativePath(value, key === 'pages'))) throw new Error(`Invalid demo ${key}: ${demo.id}`);
-        }
-        if (!demo.checks.pages.includes('') || demo.checks.pages.some(route => route !== '' && !route.endsWith('/'))
-            || !demo.checks.assets.some(asset => asset.endsWith('.css'))
-            || !demo.checks.navigation.every(route => demo.checks.pages.includes(route))
-            || !Array.isArray(demo.checks.requiredText) || !demo.checks.requiredText.length) {
-            throw new Error(`Missing demo homepage checks: ${demo.id}`);
-        }
+        validateChecks(demo.checks, demo.id);
+        if (demo.differentContent !== undefined && typeof demo.differentContent !== 'boolean') throw new Error(`Invalid differentContent: ${demo.id}`);
         if (!Array.isArray(demo.templates) || !demo.templates.length) throw new Error(`Missing templates: ${demo.id}`);
         const templateIds = new Set();
         for (const template of demo.templates) {
             if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(template.id || '') || templateIds.has(template.id)) throw new Error(`Invalid or duplicate template id: ${demo.id}`);
             templateIds.add(template.id);
             if (!relativePath(template.path) || !template.path.endsWith('/')) throw new Error(`Invalid demo paths: ${demo.id}`);
+            if (template.contentDir !== undefined && (!relativePath(template.contentDir)
+                || /[<>|"*\x7f-\x9f]/.test(template.contentDir)
+                || template.contentDir.split('/').some(part => /[. ]$/.test(part)))) throw new Error(`Invalid template contentDir: ${demo.id}/${template.id}`);
             if (!relativePath(template.preview?.image) || !template.preview.image.endsWith('.jpg')
                 || !Number.isInteger(template.preview.width) || template.preview.width < 320
                 || !Number.isInteger(template.preview.height) || template.preview.height < 240) throw new Error(`Invalid demo preview: ${demo.id}`);
@@ -48,6 +62,11 @@ function validateDemoRegistry(entries) {
                 seen[key].add(value);
             }
             if (!Array.isArray(template.assets) || template.assets.some(asset => !relativePath(asset))) throw new Error(`Invalid template assets: ${demo.id}`);
+            if (template.checks !== undefined) {
+                if (!template.checks || typeof template.checks !== 'object' || Array.isArray(template.checks)
+                    || Object.keys(template.checks).some(key => !['pages', 'assets', 'navigation', 'requiredText'].includes(key))) throw new Error(`Invalid template checks: ${demo.id}/${template.id}`);
+                validateChecks({ ...demo.checks, ...template.checks }, `${demo.id}/${template.id}`);
+            }
             for (const language of ['zh-cn', 'en']) {
                 const copy = template.copy?.[language];
                 if (!copy || ['name', 'description', 'previewAlt'].some(key => typeof copy[key] !== 'string' || !copy[key].trim())
@@ -66,14 +85,15 @@ function validateDemoRegistry(entries) {
 function expandDemoRegistry(cases) {
     return validateDemoRegistry(cases).flatMap(demo => demo.templates.map(template => ({
         id: template.id === demo.defaultTemplate ? demo.id : `${demo.id}-${template.id}`,
-        caseId: demo.id, templateId: template.id, source: demo.source,
+        caseId: demo.id, templateId: template.id, source: demo.source, contentDir: template.contentDir,
+        differentContent: demo.differentContent === true,
         path: template.path, preview: template.preview, brand: demo.brand,
         copy: Object.fromEntries(['zh-cn', 'en'].map(language => [language, {
             ...demo.copy[language], ...template.copy[language],
             title: `${demo.copy[language].title} · ${template.copy[language].name}`,
         }])),
-        checks: { ...demo.checks, assets: [...new Set([...demo.checks.assets, ...template.assets])] },
-        siblings: demo.templates.map(item => ({ id: item.id, path: item.path, label: item.copy['zh-cn'].name })),
+        checks: templateChecks(demo, template),
+        siblings: demo.templates.map(item => ({ id: item.id, path: item.path, label: item.copy['zh-cn'].name, pages: item.checks?.pages || demo.checks.pages })),
     })));
 }
 

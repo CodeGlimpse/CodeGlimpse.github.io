@@ -1,5 +1,25 @@
 # 留光摄影作品集：内部实验记录
 
+> **历史归档（2026-10-05 注）：**下文的模拟简报、12 分 07 秒耗时、四张 AI 图片与构建结果仅对应 2026-09-24 初版实验。它们不表示当前人像、自然、天文三个专题已通过本轮验收。
+
+## 2026-10-05 本轮概况
+
+- 当前站点分为“目光 · 人像摄影”“野境 · 自然摄影”“遥光 · 天文摄影”，分别使用 `content/portrait`、`content/nature`、`content/astronomy`，每组有三张不同的真实摄影作品。
+- 模板标识仍为 `classic`、`gallery`、`filmstrip`。本轮核对了本地演示注册表、Hugo 配置、作品字段、布局入口与来源清单，并同步 [README](../README.md)和 [更新指南](UPDATE_GUIDE.md)，明确独立构建时须匹配内容目录、模板参数与发布地址。
+- 当前素材来源以 [PHOTO_SOURCES.json](PHOTO_SOURCES.json)为准；顶层 HTTPS 链接用于页面，`source_record` 保留原始采集证据。清单的许可核验日期仍为 `2026-10-03`；卡斯特肖像的单项来源补充见 [来源说明](ASSET_PROVENANCE.md)。九张本地图片的 SHA-256 与清单一致。
+
+### 本轮本地验收
+
+- 修复了检查样例仍引用旧样式表、未打开弹窗中的空图片、三处 CC0 展示链接使用 HTTP，以及 Hugo 创建预览资源后未引用发布地址导致缺少缩略图的问题。原图弹窗在首次打开时创建图片并设置真实描述，再次打开复用该图片；关闭和 Escape 均恢复按钮焦点。
+- 人像标题保留两行，自然标题遵循内容中的换行，天文首页主图按原始比例显示。重新拍摄三套 1280×960 JPEG 目录预览；查看了三套 390px 与 1440px 全页截图，等待所有正文图片加载完成后再截图。
+- 181 项相关 Node 测试通过：构建、注册表、部署检查和摄影检查器 53 项；模板及目录链接检查器 128 项。191 项 Chromium 浏览器用例通过，覆盖三种摄影题材、九篇详情、原图、题材切换、无脚本、键盘焦点、手机布局和其他演示的组合导航。浏览器验收使用仓库的 `serve-public.cjs`；补齐 JPEG MIME 类型，让本地原图响应与图片类型一致。
+- 组合构建、全部十八个演示版本的链接/资源检查、主站产物检查通过。三种摄影题材还分别以独立站方式构建到 `/review/` 子路径，每套均通过 6 个 HTML 页面、3 篇作品与 3 张缩略图检查。没有安装或升级依赖。
+- 测试入口（在博客仓库根目录）：`node --test tests/build-site.test.cjs tests/demo-registry.test.cjs tests/check-demo-builds.test.cjs tests/deployed-site-check.test.cjs tests/photo-demo-check.test.cjs`；`node --test tests/demo-template-links.test.cjs tests/demo-catalog-links.test.cjs`；`node node_modules/@playwright/test/cli.js test e2e/photo-feature.spec.cjs e2e/demo-polish.spec.cjs e2e/demo-templates.spec.cjs e2e/demos.spec.cjs e2e/portfolio-presentation.spec.cjs --workers=4`。
+- 组合构建使用 `scripts/build-site.cjs --destination F:/agents/code/temp/photo-genres-20261003/public`，复用现有 Hugo 缓存并关闭 Go 网络下载；`SITE_ROOT` 指向该目录运行 `scripts/check-demo-builds.cjs` 和 `scripts/check-build-output.cjs`。浏览器使用 `E2E_BASE_URL=http://127.0.0.1:4195`、`E2E_USE_LOCAL_SERVER=false` 访问该产物。
+- 证据在 `F:/agents/code/temp/photo-genres-20261003/`：`tests-20261005.log`、`link-tests-20261005.log`、`e2e-final-20261005.log`、`build-delivery.log`、`check-demos-delivery.log`、`check-output-delivery.log` 和 `handoff-*.png`。以上是本机验证；未推送、未部署，也没有记录客户独立试用或其他系统上的人工验收。
+
+## 2026-09-24 原始实验记录
+
 ## 模拟设计简报
 
 - **对象：**虚构摄影师“林予安”；站名“留光｜摄影作品集演示”。

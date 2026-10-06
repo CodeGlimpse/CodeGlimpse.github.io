@@ -1,56 +1,68 @@
-# 留光｜摄影作品集演示
+# 摄影专题演示：目光 / 野境 / 遥光
 
-这是供内部验证的独立 Hugo 静态站，模拟虚构摄影师“林予安”的个人作品集。首页、全部作品、三篇详情、关于与联系入口都可用。人物、作品文字和客户情境均为虚构；四张图片均为 **AI 生成演示影像**，不是实拍或真实客户案例。图片来源、具体用途与生成提示词见 [演示影像来源](docs/ASSET_PROVENANCE.md)。
+这是一个独立 Hugo 静态站，提供人像、自然、天文三个摄影专题。每个专题有自己的首页、作品列表、三篇详情和“关于与来源”页面，使用各自的三张真实摄影作品与文字。人物肖像为历史作品选编，天文专题为望远镜观测影像；页面保留原作者或机构、来源和许可说明。本站不冒充原作者，也不暗示其认可本站。
 
-网站用于检验：访问者能否直接看到照片与简介，以及内容所有者能否通过一个 Markdown 文件完成简单文字更新。它没有后台、登录、表单或可视化编辑器。联系邮箱 `contact@example.invalid` 是明确占位，不指向真实第三方，正式使用前必须替换。
+网站用于检验照片浏览、作品故事、来源署名以及 Markdown 内容更新流程，没有后台、登录、表单或可视化编辑器。当前九张图片的来源、许可、处理说明和文件校验记录见 [PHOTO_SOURCES.json](docs/PHOTO_SOURCES.json)。早期四张 AI 图片的 [来源记录](docs/ASSET_PROVENANCE.md)与 [实验记录](docs/EXPERIMENT_LOG.md)已标为历史归档。
+
+## 三个独立专题
+
+`classic`、`gallery`、`filmstrip` 保留为博客集成的模板标识。当前每个标识同时对应一个题材和一套视觉呈现；三个专题使用不同作品，切换入口会进入目标专题首页。
+
+| 模板标识 | 专题 | 内容目录 | 博客集成路径 |
+| --- | --- | --- | --- |
+| `classic` | 目光 · 人像摄影，明亮的编辑式排版 | `content/portrait` | `/demos/photo-portfolio/` |
+| `gallery` | 野境 · 自然摄影，宽幅风景画册 | `content/nature` | `/demos/variants/photo-portfolio/gallery/` |
+| `filmstrip` | 遥光 · 天文摄影，深色观测影像展览 | `content/astronomy` | `/demos/variants/photo-portfolio/filmstrip/` |
+
+博客主项目的 [演示注册表](../../data/demos.json)为各专题指定 `contentDir`、独立发布路径与预览图。本站的默认配置为 `content/portrait`，模板默认为 `classic`。独立构建时必须同时匹配内容目录和 `demoTemplate`；只改模板参数会把另一题材的内容套进所选版式。
 
 ## 本地预览与构建
 
-需要 Hugo Extended 0.157.0。在本站目录运行：
+需要 Hugo Extended 0.157.0。在本站目录预览默认人像专题：
 
 ```powershell
-hugo server
+$env:HUGO_PARAMS_DEMOTEMPLATE = 'classic'
+hugo server --contentDir 'content/portrait' --baseURL 'http://localhost:1313/'
 ```
 
-默认 `baseURL` 是 `https://blog.codeglimpse.top/demos/photo-portfolio/`，用于集成到博客的子路径。可在本地或客户独立仓库中覆盖，例如：
-
-```powershell
-hugo --destination "$env:TEMP\photo-portfolio-build" --baseURL 'https://example.github.io/my-portfolio/' --minify --panicOnWarning
-python -B -X utf8 scripts/check_build.py "$env:TEMP\photo-portfolio-build" --base-url 'https://example.github.io/my-portfolio/' --check-demo-pages
-```
-
-`--check-demo-pages` 会额外检查本演示首页的“虚构演示”“AI 生成”说明，以及博客集成所需的 `works/rain-street/cover.png`。客户站替换演示内容后应省略此参数；通用模式仍检查必需页面、作品详情、站内链接、`srcset` 图片、替代文字和生成缩略图。博客主 CI 启用演示模式，独立仓库的 Pages 工作流使用通用模式。
-
-`example.github.io` 只是命令示例，不代表已部署。构建输出中的 `previews/rain-street.jpg` 是稳定路径的轻量缩略图；原始 `works/rain-street/cover.png` 仍发布供需要原图的页面使用。页面展示同时生成多个尺寸的 JPEG，浏览器按屏幕宽度选择。源码中的 PNG 不会被改写。本机 Hugo 0.157.0 Windows 对 WebP 处理触发 panic，因此本实验采用同一版本的 Hugo JPEG 处理；具体经过见 [实验记录](docs/EXPERIMENT_LOG.md)。
-
-## 同一作品的三种模板
-
-`filmstrip`：朱红摄影杂志用封面故事、错位图片和编号拼贴组织同一组三个系列。顶部阅读进度随正文滚动更新，详情页继续展示完整原图与原正文。页面 partial 位于 `layouts/partials/filmstrip/`，样式为 `static/css/filmstrip.css`，呈现控制器为 `static/js/filmstrip.js`；继续生成既有 JPEG 缩略图，没有新增照片。集成地址为 `/demos/variants/photo-portfolio/filmstrip/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'filmstrip'`。
-
-`classic` 保留原来的浅色作品集和图片比例；`gallery` 首页采用沉浸影像：柔白页眉、通栏照片与深棕衬线叠字，以“窗边片刻”开场，作品说明、缩略图和索引依次展开。可用缩略图、前后按钮或键盘左右方向键切换，Home / End 跳到首尾；“只看影像”隐藏叠字并在浅灰衬底上显示完整照片，Escape 恢复文字与按钮焦点。此轮仅重做首页，列表、详情和关于页仍保留暗色放映台设计。图片与标题保留真实详情入口，雨后街角详情可在主图与近景图间切换。三个系列、正文、四张原图及 AI 演示声明来自同一份内容与页面资源。
-
-默认独立构建使用 `classic`。在本站目录设置参数即可预览沉浸影像：
+预览自然专题时，同时选择模板和内容目录：
 
 ```powershell
 $env:HUGO_PARAMS_DEMOTEMPLATE = 'gallery'
-hugo server
+hugo server --contentDir 'content/nature' --baseURL 'http://localhost:1313/'
 ```
 
-构建时同样设置这个参数，并为每个模板使用独立的 `--destination` 与 `--baseURL`。结束后执行 `Remove-Item Env:\HUGO_PARAMS_DEMOTEMPLATE` 恢复默认，或显式选择 `classic`；其他模板名会使构建报错。版式在构建时确定，不保存浏览器状态。
+天文专题使用 `filmstrip` 与 `content/astronomy`。其他模板名会使构建报错。停止预览后可执行 `Remove-Item Env:\HUGO_PARAMS_DEMOTEMPLATE`，恢复默认模板选择。
 
-所有页面先加载 `static/css/site.css`；放映台额外加载 `static/css/gallery.css` 和 `static/js/gallery.js`。两套新模板各自拥有首页、列表、详情与关于页结构，并直接读取原有内容和页面资源。关闭 JavaScript 时，放映台按顺序展示所有图片与说明，切换控件隐藏且禁用；杂志页面保留完整阅读内容。两套模板适配 320px，并遵循减少动态效果的系统偏好。照片处理继续使用现有 JPEG 响应式图片与预览资源，没有新增图片、外部字体或外部请求。博客集成的模板入口由父站注入，复制本站独立构建时不依赖博客注册表。
+默认 `baseURL` 为 `https://blog.codeglimpse.top/demos/photo-portfolio/`。为其他专题或客户独立站构建时，使用与目标地址一致的 `--baseURL`，并为每次构建指定独立输出目录。例如构建自然专题：
 
-## 修改内容
+```powershell
+$env:HUGO_PARAMS_DEMOTEMPLATE = 'gallery'
+hugo --contentDir 'content/nature' --destination "$env:TEMP\photo-portfolio-nature-build" --baseURL 'https://example.github.io/my-portfolio/' --minify --panicOnWarning
+python -B -X utf8 scripts/check_build.py "$env:TEMP\photo-portfolio-nature-build" --base-url 'https://example.github.io/my-portfolio/' --check-demo-pages
+Remove-Item Env:\HUGO_PARAMS_DEMOTEMPLATE
+```
 
-- `content/works/<英文短名>/index.md`：每组作品的标题、简介、正文及图片说明。
-- 与 `index.md` 同目录的 `cover.png`：作品封面；可选 `detail.png`：第二张图。
-- `content/about/index.md`：个人介绍。`hugo.toml`：站名、网站说明和联系占位文字。
-- `layouts/` 与 `static/css/site.css`：页面结构与样式。`previews/` 由 Hugo 构建生成，不直接编辑。
+`example.github.io` 只是命令示例，不表示已部署。`--check-demo-pages` 检查本演示首页的“摄影专题演示”“真实摄影作品”说明，以及每篇作品详情的 HTTPS 来源和许可链接。替换成客户内容后，可按实际用途省略此参数；通用模式仍检查必需页面、作品详情、站内链接、`srcset` 图片、替代文字和生成缩略图。检查脚本核对构建产物，不会联网重新确认图片许可或证明线上发布成功。
 
-具体字段、更新与回退步骤见 [更新指南](docs/UPDATE_GUIDE.md)。本次仅完成了执行者自行模拟的 Markdown 更新与本地复构建，尚未由真实非技术用户独立试用。
+当前页面结构位于 `layouts/`，三题材的样式与原图查看控制器为 `static/css/genres.css` 和 `static/js/genres.js`。Hugo 从各作品的 `cover.jpg` 生成多个尺寸的 JPEG，浏览器按屏幕宽度选择；`previews/<作品短名>.jpg` 是构建生成的稳定缩略图路径。“查看完整原图”展示本地保存的完整构图版本，该版本可能已按来源清单记录进行缩小或格式转换。
+
+## 修改内容与来源
+
+- `content/<题材>/works/<英文短名>/index.md`：作品标题、简介、正文、图片描述、作者与许可字段。
+- 与 `index.md` 同目录的 `cover.jpg`：当前作品图片。
+- `content/<题材>/_index.md`：专题品牌、首页标题与简介；`works/_index.md`：作品列表标题与简介。
+- `content/<题材>/about/index.md`：专题介绍与素材使用说明。
+- `hugo.toml`：默认内容目录与站点配置；`docs/PHOTO_SOURCES.json`：素材来源和处理记录。
+
+具体字段、更新和回退步骤见 [更新指南](docs/UPDATE_GUIDE.md)。根 `content/works/` 下的旧演示内容不在当前三题材的构建目录内，修改它不会更新这些专题。生成的 `previews/` 与 `resources/_gen/` 不直接编辑。
+
+来源清单中每条记录的顶层 `source`、`license_url` 对应当前页面使用的链接；页面实际读取作品 `index.md` 的同名字段，更新素材时须同步两处。`source_record` 保存采集时的原始元数据，可能含 HTTP 链接、HTML 和地区限制提示。顶层链接使用 HTTPS 不代表重新采集原始记录。现有 `verified_at` 为 `2026-10-03`；2026-10-05 对卡斯特肖像的单项来源复核见 [来源说明](docs/ASSET_PROVENANCE.md)，不代表全部图片已重新核验。
 
 ## 复制到客户自有 GitHub Pages 仓库
 
-将本目录的源码作为**独立仓库根目录**，由客户创建并持有仓库。在仓库 Settings → Pages 中选择 GitHub Actions 作为发布源，再推送到 `main`。随站点提供的 [Pages 工作流](.github/workflows/pages.yml)固定 Hugo 0.157.0，并读取 Pages 返回的地址覆盖 `baseURL`，以适配仓库子路径或客户自己的域名。本地构建已验证；工作流尚未在客户仓库实际运行。
+将本目录源码作为独立仓库根目录，由客户创建并持有仓库。随站点提供的 [Pages 工作流](.github/workflows/pages.yml)固定 Hugo 0.157.0，并读取 Pages 返回的地址覆盖 `baseURL`，以适配仓库子路径或客户域名。
 
-真实交付前，需要将人物介绍、全部 AI 演示图像、作品文字、邮箱与站名替换为客户确认的内容。实际客户取得所交付网站源码的永久使用权，制作方保留通用代码和组件的复用权；具体素材与第三方权利应在实际交付时另行约定。本虚构演示不表示已向任何客户授予模板或 AI 图片的使用权。
+该工作流直接读取 `hugo.toml`。若独立站选择自然或天文专题，应在配置中同时设置对应的 `contentDir` 与 `[params]` 下的 `demoTemplate`；本地 PowerShell 的环境变量不会自动传到 GitHub Actions。随后在 Settings → Pages 选择 GitHub Actions 为发布源，并按客户仓库的发布流程提交内容。提交完成、Actions 成功和线上页面可访问需分别确认。
+
+真实交付前，应将专题品牌、简介和作品文字替换为客户确认的内容，逐张核对素材及其具体使用条件。保留第三方摄影作品时须保留适用的作者署名、来源、许可及修改说明，并留意来源记录中的地区限制；网站源码的交付约定不能代替第三方素材许可。客户独立试用、其 Pages 工作流和线上发布结果应在实际执行后另行记录。

@@ -4,4 +4,4 @@
 <body id="top" data-template="{{ $template }}"><a class="skip-link" href="#main">跳到正文</a>{{ partial "demo-templates.html" . }}
 <header class="genre-header shell"><a class="genre-brand" href="{{ site.Home.RelPermalink }}"><strong>{{ site.Home.Params.brand }}</strong><span>{{ site.Home.Params.genre }}</span></a><nav aria-label="主导航"><a href="{{ "works/" | relURL }}">全部作品</a><a href="{{ "about/" | relURL }}">关于与来源</a></nav></header>
 {{ block "main" . }}{{ end }}<footer class="genre-footer shell"><strong>{{ site.Home.Params.brand }}</strong><p class="genre-disclosure">摄影专题演示 · 真实摄影作品，作者与许可见各作品来源。本站不冒充原作者或暗示其认可。</p><a href="{{ "about/" | relURL }}">素材来源与使用说明</a><a href="#top">返回顶部</a></footer>
-<dialog class="image-dialog" aria-label="完整摄影作品"><button type="button" data-close-image>关闭原图</button><img alt=""></dialog><script src="{{ "js/genres.js" | relURL }}" defer></script></body></html>
+<dialog class="image-dialog" aria-label="完整摄影作品"><button type="button" data-close-image>关闭原图</button></dialog><script src="{{ "js/genres.js" | relURL }}" defer></script></body></html>

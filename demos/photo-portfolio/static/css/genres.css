@@ -357,6 +357,7 @@ summary:focus-visible,
 .nature-title h1 {
     font-size: clamp(2.9rem, 5.5vw, 5rem);
     line-height: 1.12;
+    white-space: pre-line;
 }
 
 .nature-title > p:not(.genre-eyebrow) {
@@ -437,7 +438,7 @@ summary:focus-visible,
 
 .astro-cover img {
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: auto;
     object-fit: contain;
     background: var(--surface);
 }

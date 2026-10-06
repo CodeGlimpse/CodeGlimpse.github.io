@@ -139,11 +139,11 @@ test('discovers every local responsive candidate in source and img srcsets', () 
 test('validates photography landmarks, navigation and demo disclosures', () => {
     const check = checker.checks.find((check) => check.path === '/demos/photo-portfolio/' && check.demoHtml);
     const pageUrl = 'https://example.test/demos/photo-portfolio/';
-    const body = `<html><head><title>Demo</title><link rel="stylesheet" href="/demos/photo-portfolio/css/site.css"><link rel="stylesheet" href="/demos/photo-portfolio/css/demo-templates.css"></head><body><main>${check.requiredText.join(' · ')}<a href="works/">Works</a><a href="about/">About</a><a data-demo-catalog href="/demos/">All demos</a></main></body></html>`;
+    const body = `<html><head><title>Demo</title><link rel="stylesheet" href="/demos/photo-portfolio/css/genres.css"><link rel="stylesheet" href="/demos/photo-portfolio/css/demo-templates.css"></head><body><main>${check.requiredText.join(' · ')}<a href="works/">Works</a><a href="about/">About</a><a data-demo-catalog href="/demos/">All demos</a></main></body></html>`;
     assert.deepEqual(checker.validateResponse(check, 200, body, pageUrl), []);
     assert.ok(checker.validateResponse(check, 200, body.replace('href="about/"', 'href="missing/"'), pageUrl).includes('missing about navigation link'));
     assert.ok(checker.validateResponse(check, 200, body.replace(check.requiredText[0], ''), pageUrl).some(error => error.includes(check.requiredText[0])));
-    assert.ok(checker.validateResponse(check, 200, body.replace('site.css', 'missing.css'), pageUrl).includes('missing demo stylesheet: css/site.css'));
+    assert.ok(checker.validateResponse(check, 200, body.replace('genres.css', 'missing.css'), pageUrl).includes('missing demo stylesheet: css/genres.css'));
 });
 
 test('registers every demo page, preview and asset with its homepage contract', () => {

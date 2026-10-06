@@ -128,11 +128,27 @@ test('nature desktop headline stays readable in a local sand panel without filte
     const heading = page.locator('.nature-title h1');
     await expect(heading).toBeVisible();
     const lines = await titleLines(heading);
-    expect(lines.length).toBeGreaterThan(0);
-    expect(lines.join('').trim()).toBe((await heading.textContent()).trim());
+    expect(lines.map(line => line.trim())).toEqual(['山野之间，', '慢慢观看。']);
     await expect(page.locator('.nature-title')).toHaveCSS('background-color', 'rgb(238, 233, 220)');
     await expect(page.locator('.nature-opening > img')).toHaveCSS('filter', 'none');
 });
+
+for (const width of [390, 1440]) {
+    test(`photography opening preserves portrait title lines and astronomy image proportions at ${width}px`, async ({ page, baseURL }) => {
+        await page.setViewportSize({ width, height: 1000 });
+        await page.goto(targetPath(baseURL, demoFor('photo-portfolio', 'classic').path));
+        const lines = await titleLines(page.locator('.portrait-title h1'));
+        expect(lines.map(line => line.trim())).toEqual(['一张脸，', '一个时代。']);
+        await page.goto(targetPath(baseURL, demoFor('photo-portfolio', 'filmstrip').path));
+        const image = page.locator('.astro-cover img');
+        await expect.poll(() => image.evaluate(node => node.naturalWidth)).toBeGreaterThan(0);
+        const ratios = await image.evaluate(node => ({
+            rendered: node.getBoundingClientRect().width / node.getBoundingClientRect().height,
+            source: node.naturalWidth / node.naturalHeight,
+        }));
+        expect(ratios.rendered).toBeCloseTo(ratios.source, 2);
+    });
+}
 
 test('catalog heading aligns with cases and real preview images fill their frames', async ({ page, baseURL }) => {
     for (const language of ['', 'en/']) {

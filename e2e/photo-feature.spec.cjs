@@ -98,6 +98,7 @@ for (const [index, demo] of photoDemos.entries()) {
                 const opener = page.locator('button[data-image]');
                 await expect(opener).toHaveCount(1);
                 await expect(opener).toBeVisible();
+                await expect(page.locator('.image-dialog img')).toHaveCount(0);
                 const original = await opener.getAttribute('data-image');
                 const source = new URL(original, page.url());
                 expect(source.origin).toBe(new URL(page.url()).origin);
@@ -123,6 +124,7 @@ for (const [index, demo] of photoDemos.entries()) {
                 await expect(dialog).toBeHidden();
                 await expect(opener).toBeFocused();
                 await opener.click();
+                await expect(dialog.locator('img')).toHaveCount(1);
                 await dialog.locator('[data-close-image]').click();
                 await expect(dialog).toBeHidden();
                 await expect(opener).toBeFocused();

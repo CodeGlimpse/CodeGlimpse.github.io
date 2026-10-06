@@ -6,9 +6,10 @@
     button.hidden = false;
     button.addEventListener('click', () => {
       opener = button;
-      const image = dialog.querySelector('img');
+      const image = dialog.querySelector('img') || document.createElement('img');
       image.src = button.dataset.image;
       image.alt = button.dataset.alt;
+      if (!image.isConnected) dialog.append(image);
       dialog.showModal();
     });
   }

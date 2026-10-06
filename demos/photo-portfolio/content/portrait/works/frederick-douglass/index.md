@@ -10,7 +10,7 @@ author = "Samuel J. Miller"
 date_label = "1847–1852"
 license = "CC0"
 source = "https://commons.wikimedia.org/wiki/File:1996.433_-_Frederick_Douglass.jpg"
-license_url = "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+license_url = "https://creativecommons.org/publicdomain/zero/1.0/deed.en"
 rights_note = "保留作者、来源与许可链接。按比例缩小并转为 JPEG；首页缩略图可能局部裁切，原图查看保留完整构图；未调色。"
 +++
 

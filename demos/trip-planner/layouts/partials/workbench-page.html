@@ -1,8 +1,8 @@
-<header class="workbench-intro"><div><p class="eyebrow">FARWEEK / ROUTE WORKSPACE</p><h1>{{ .Title }}</h1><p>从八个原创虚构地点编排行程，用地图核对顺序、时间和示例预算。</p></div><span class="workbench-demo-tag">{{ site.Params.demoNotice }}<br>非真实地理导航</span></header>
+<header class="workbench-intro"><div><p class="eyebrow">{{ .Params.brandEnglish }} / {{ .Params.sceneLabel }}</p><h1>{{ .Title }}</h1><p>{{ .Params.intro }}</p></div><span class="workbench-demo-tag">{{ site.Home.Params.dataNotice }}<br>非真实地理导航</span></header>
 <div data-trip-planner data-ready="false">
   <noscript><p class="noscript-note">JavaScript 未开启时，可以只读浏览八个虚构地点和基础地图；行程编排控件保持禁用，启用 JavaScript 后可添加与重排地点。</p></noscript>
   <div class="planner-layout workbench-layout">
-    <div class="workbench-map-tools"><span><i aria-hidden="true"></i> 山野周末 / 虚构地图工作区</span><div><button type="button" data-workbench-panel="places" aria-controls="workbench-places" aria-expanded="true" disabled>收起地点</button><button type="button" data-workbench-panel="itinerary" aria-controls="workbench-itinerary" aria-expanded="true" disabled>收起行程</button></div></div>
+    <div class="workbench-map-tools"><span><i aria-hidden="true"></i> {{ .Params.sceneLabel }} / {{ .Params.periodLabel }}</span><div><button type="button" data-workbench-panel="places" aria-controls="workbench-places" aria-expanded="true" disabled>收起地点</button><button type="button" data-workbench-panel="itinerary" aria-controls="workbench-itinerary" aria-expanded="true" disabled>收起行程</button></div></div>
     {{ partial "workbench-map.html" . }}
     <div class="workbench-floating-panel workbench-places" id="workbench-places">{{ partial "places-panel.html" . }}</div>
     <div class="workbench-floating-panel workbench-itinerary" id="workbench-itinerary">{{ partial "itinerary-panel.html" . }}</div>

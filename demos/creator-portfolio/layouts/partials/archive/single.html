@@ -1,3 +1,12 @@
 {{ $cover := .Resources.GetMatch .Params.cover }}
 {{ if not $cover }}{{ errorf "Missing cover image for %s: %v" .File.Path .Params.cover }}{{ end }}
-<main id="main" class="archive-dossier shell" tabindex="-1"><a class="archive-back" href="{{ .CurrentSection.RelPermalink }}">← 返回{{ .CurrentSection.Title }}</a><div class="archive-dossier-grid"><header class="archive-dossier-heading"><p class="archive-kicker">{{ if eq .Section "works" }}图片作品{{ else }}项目案例{{ end }} / {{ .Params.category }}</p><h1>{{ .Title }}</h1><p>{{ .Params.summary }}</p><dl class="archive-dossier-meta"><div><dt>CLASS</dt><dd>{{ .Params.category }}</dd></div><div><dt>COLLECTION</dt><dd>{{ .CurrentSection.Title }}</dd></div></dl></header><div class="archive-dossier-content"><figure class="detail-cover archive-dossier-cover">{{ with $cover }}<img src="{{ .RelPermalink }}" alt="{{ $.Params.cover_alt }}" width="1200" height="800" decoding="async">{{ end }}<figcaption>IMAGE / {{ .Title }}</figcaption></figure><article class="prose">{{ .Content }}</article></div></div><div class="archive-dossier-end"><p>{{ site.Params.demoNotice }}</p><a href="{{ .CurrentSection.RelPermalink }}">浏览更多{{ .CurrentSection.Title }} ↗</a></div></main>
+<main id="main" class="archive-dossier shell" tabindex="-1">
+  <a class="archive-back" href="{{ .CurrentSection.RelPermalink }}">← 返回{{ .CurrentSection.Title }}</a>
+  <div class="archive-dossier-grid">
+    <header class="archive-dossier-heading"><p class="archive-kicker">{{ .Params.recordId }} / {{ .Params.category }}</p><h1>{{ .Title }}</h1><p>{{ .Params.summary }}</p>
+      <dl class="archive-dossier-meta"><div><dt>记录编号</dt><dd>{{ .Params.recordId }}</dd></div><div><dt>媒介</dt><dd>{{ .Params.medium }}</dd></div><div><dt>构成规则</dt><dd>{{ .Params.rule }}</dd></div><div><dt>画布</dt><dd>1200 × 800</dd></div><div><dt>制作年份</dt><dd>{{ .Params.year }}</dd></div></dl>
+    </header>
+    <div class="archive-dossier-content"><figure class="detail-cover archive-dossier-cover">{{ with $cover }}<img src="{{ .RelPermalink }}" alt="{{ $.Params.cover_alt }}" width="1200" height="800" decoding="async">{{ end }}<figcaption>{{ .Params.recordId }} / {{ .Title }}</figcaption></figure><article class="prose">{{ .Content }}</article></div>
+  </div>
+  <div class="archive-dossier-end"><p>{{ site.Home.Params.demoNotice }}</p><a href="{{ .CurrentSection.RelPermalink }}">浏览更多{{ .CurrentSection.Title }} ↗</a></div>
+</main>

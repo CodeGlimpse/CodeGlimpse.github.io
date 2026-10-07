@@ -1,165 +1,161 @@
-# Demo integration
+# Independent demo scenes
 
-The six registered content cases are standalone Hugo 0.157.0 sites under their
-respective `demos/` directories. Each has three templates sharing the same
-content, images, JSON data, and business core. The blog builds first;
-`scripts/build-site.cjs` then builds all eighteen template instances with their
-published subpaths as base URLs. GitHub
-Pages deploys the combined `public/` artifact.
+The six standalone Hugo 0.157.0 sites under `demos/` each provide three
+independent scenes. All eighteen published instances have their own content,
+identity, and presentation. The four interactive cases also use separate JSON
+datasets. Layout components and business logic remain shared within each case.
+Photography uses credited real photographs; the other five cases use original
+fictional content and local SVG/CSS artwork.
+
+## Scene map
+
+| Case | `classic` | Second scene | Third scene |
+| --- | --- | --- | --- |
+| creator-portfolio | 岛页: narrative illustration | `editorial`: 拾度 brand design | `archive`: 回声单元 digital art |
+| photo-portfolio | 目光: portrait photography | `gallery`: 野境 nature | `filmstrip`: 遥光 astronomy |
+| content-dashboard | 桌边: editorial operations | `workspace`: 灯塔 communications | `report`: 第七镜 video review |
+| bookstore | 纸间: literature | `catalog`: 形间 art books | `checklist`: 周末 living books |
+| workshop-booking | 拾光: mixed crafts | `calendar`: 岸陶 ceramics | `agenda`: 折页 paper and print |
+| trip-planner | 远山: mountain weekend | `journal`: 巷里 old-town walk | `workbench`: 岬屿 island stroll |
+
+Existing URLs remain `demos/<case>/` and
+`demos/variants/<case>/<template>/`. The bilingual catalog groups three real
+screenshots under each case. Switching scenes opens the destination homepage;
+filters, bags, booking selections, and itineraries reset. The compact native
+`details` menu works with keyboard input and without JavaScript. Photography
+labels its menu by genre; other cases label it by scene.
+
+## Content, data, and registry
 
 `data/demos.json` is the shared registry for the bilingual catalog, build,
-published-output checks, deployment monitoring, and browser tests. Each entry
-defines its ID, source directory, published path, preview dimensions/image,
-bilingual copy and feature labels, expected pages, assets, and navigation.
-`scripts/demo-registry.cjs` validates the cases (`DEMO_CASES`) and expands their
-`templates` arrays into build instances (`DEMO_REGISTRY`). A case owns its unique
-`source`, content description, expected pages and shared assets. Each template
-owns its ID, path, preview, layout description, and additional assets. Keep
-template paths and preview images globally unique; no destination may be a
-parent of another destination. The standalone Python checkers stay inside each demo so copied
-repositories do not depend on the blog registry.
-CI calls `node scripts/check-demo-builds.cjs`, which expands the same registry,
-checks every template-switch destination exists, and runs each source's Python
-checker for each template. Checkers support `--base-url`, `--check-demo-pages`,
-`--catalog-url`, and repeatable `--template-url` flags.
+output checks, deployment monitoring, and browser tests. Each case owns its
+source directory and common checks; each template owns its path, preview,
+copy, content/data directories, and optional check overrides.
 
-The integrated build injects a root-relative `demoCatalogURL` into each demo.
-Its header then displays a keyboard-accessible return link to the blog's demo
-catalog, including any deployment prefix. Standalone Hugo builds do not set
-this parameter and do not display the blog link. To check an integrated demo's
-links, prefer the combined checker above. `--catalog-url /demos/` permits only
-the exact marked catalog anchor; each `--template-url` permits only an exact
-marked template anchor, never an image, unmarked link, or source attribute.
+- `contentDir` chooses the scene's Markdown and bundled artwork.
+- `dataDir` chooses the scene's JSON directory for the four interactive cases.
+- `differentContent: true` makes template links lead to sibling homepages.
+- Template `checks` override case-level pages, assets, navigation, or required
+  text; additional template `assets` are merged with the selected asset list.
 
-## Choose a presentation template
+For the five non-photography cases, the default scene remains in `content/`
+and `data/`. Alternative scenes live outside those roots, under
+`variants/<template>/content/` and `variants/<template>/data/`, so a default
+Hugo build cannot accidentally collect another scene's pages or records.
+The creator portfolio has Markdown bundles rather than a JSON dataset.
+Photography uses its existing `content/portrait`, `content/nature`, and
+`content/astronomy` directories.
 
-| Content case | Existing template | Second template | Third template |
-| --- | --- | --- | --- |
-| creator-portfolio | classic: gallery | editorial: cobalt poster chapters and scroll navigation | archive: dark index with live split preview |
-| photo-portfolio | classic: photo stories | gallery: immersive photo homepage with image-only mode; dark interior pages | filmstrip: vermilion magazine collage and reading progress |
-| content-dashboard | classic: overview | workspace: dark app views and record drawer | report: orange chart chapters and collapsible records |
-| bookstore | classic: bookshelf | catalog: one-book stage, spine shelf and bag drawer | checklist: yellow selection desk, inline quantities and blue receipt |
-| workshop-booking | classic: course selection | calendar: midnight date grid and session panel | agenda: purple ticket flow for course, session and preview |
-| trip-planner | classic: map planner | journal: terracotta timeline and expandable stops | workbench: blue map workspace with selectable markers and floating panels |
+The registry validates relative paths and unique published destinations and
+previews. `scripts/demo-registry.cjs` expands cases into build instances.
+`scripts/build-site.cjs` scopes `HUGO_CONTENTDIR` and `HUGO_DATADIR` to each
+child process, along with its template, destination, base URL, and navigation.
+Parent directory settings must never leak into another demo build.
 
-Existing URLs remain `demos/<case>/`; new templates live at
-`demos/variants/<case>/<template>/`. The catalog groups all three previews under one
-case. Integrated pages offer same-content template links that preserve the
-current detail-page route and deployment prefix. Switching loads another page,
-so transient filters, bags, bookings, and itineraries reset.
+Each scene owns its home/about text, brand, descriptive metadata, and data.
+Headers, footers, filter options, time ranges, and map artwork must agree with
+that scene. Keep filtering, sorting, integer-cent arithmetic, capacity checks,
+and itinerary logic in the existing shared core modules. Do not copy business
+controllers to create a scene.
 
-The return link and current template share one compact toolbar. Its native
-`details` menu starts closed, shows the reset notice when opened, and works
-with keyboard input or JavaScript disabled. Keep the shared toolbar partial
-and stylesheet identical in the six standalone sources. Catalog cards show
-full-width 4:3 screenshots; the case-name prefix in each card heading remains
-available to assistive technology without repeating it visually.
+## Local and standalone builds
 
-The build explicitly scopes `HUGO_PARAMS_DEMOTEMPLATE` and the JSON string
-`HUGO_PARAMS_DEMOTEMPLATES` to each child. Standalone builds default to `classic`.
-For example, from `demos/bookstore`, set the process environment variable
-`$env:HUGO_PARAMS_DEMOTEMPLATE = 'catalog'`, then run Hugo as usual. Leave
-`HUGO_PARAMS_DEMOTEMPLATES` and `HUGO_PARAMS_DEMOCATALOGURL` unset for standalone
-delivery; there will be no blog-only switching or return links. Unknown template
-IDs fail the build. All versions reuse the same Markdown, JSON, originals,
-business core, and shared content partials; never duplicate source content to
-create a template.
-
-The twelve alternate templates use different page structures and presentation
-controllers. Keep the six classic presentations intact when changing them.
-Presentation effects must respect reduced motion. Without JavaScript, the
-source content remains readable and interactive business controls stay disabled.
-Native dialogs restore focus to their opener; live preview buttons do not
-replace real detail-page links.
-
-`e2e/demo-polish.spec.cjs` checks mobile content placement, Chinese headline
-wrapping, keyboard access to every template menu, catalog alignment, and
-workspace filter state. Mobile workspaces show metrics before collapsible
-filters; resizing preserves the user's open/closed choice.
-
-## Refresh real page previews
-
-Catalog previews are JPEG screenshots of the actual demo homepages, captured
-at the dimensions in the registry. They are checked in under `static/img/demos/`
-and are not regenerated during CI. Update them when the visible demo design
-changes:
-
-1. Build the site with `npm.cmd run build` (a custom destination is also supported).
-2. In another terminal, serve that build with `node scripts/serve-public.cjs`.
-   Set `SITE_ROOT` when using a custom build directory and `PORT` when needed.
-3. Run `npm.cmd run demos:previews -- --base-url http://127.0.0.1:4173/`.
-   The tool uses installed Playwright Chromium, waits for visible images and
-   fonts, and captures the page without adding invented UI or replacing artwork.
-   It accepts only a locally served build and blocks external requests.
-4. Review the JPEGs, run the demo registry tests, then rebuild to copy the new
-   previews into the published artifact. Stop the local server when finished.
-
-Screenshots may differ slightly across operating systems because the demos use
-system fonts. The browser tests verify valid images, dimensions, links and page
-layout rather than requiring identical screenshot bytes.
-
-## Build configuration
-
-The build reads Hugo's effective configuration, including `--destination` /
-`-d`, `--baseURL` / `-b`, configuration files, and `HUGO_*` environment overrides.
-All demos follow the resulting output directory and URL prefix. For example:
+Build the combined blog from the repository root:
 
 ```powershell
-npm.cmd run build -- --destination F:/agents/code/temp/demo-preview/public --baseURL https://example.test/review/
+npm.cmd run build
+node scripts/check-demo-builds.cjs
+npm.cmd run check:output
 ```
 
-This writes the demos below `demo-preview/public/demos/` with URLs beginning
-`https://example.test/review/demos/`. The example does not publish anything.
-Hugo environment settings take precedence over command-line flags; remove an
-existing `HUGO_BASEURL` or `HUGO_PUBLISHDIR` override when switching back to CLI
-configuration. The build scopes both variables to each child demo so a parent
-override cannot make a demo overwrite the combined output directory.
-Use `SITE_ROOT` when running the local server or output checks against a custom
-directory. The blog's existing output checker assumes its production root URL;
-for a changed URL prefix, use each demo's checker with the matching `--base-url`.
+Each alternate non-photography scene includes a configuration overlay that
+selects its template, content directory, and data directory together. For
+example, from `demos/bookstore`:
 
-The integrated photography check uses
-`demos/photo-portfolio/scripts/check_build.py --check-demo-pages`; that mode
-requires its fictional/AI disclosures and blog preview source. A copied client
-site uses the default general mode, which checks pages, local links, responsive
-image candidates, and generated previews without requiring the sample content.
-Production asset monitoring also follows `img` and `source` `srcset` URLs.
+```powershell
+hugo server --config 'hugo.toml,variants/catalog/config.toml'
+hugo --config 'hugo.toml,variants/catalog/config.toml' --destination 'F:/agents/code/temp/art-bookstore/public' --baseURL 'https://example.github.io/art-books/' --minify --panicOnWarning
+python -B -X utf8 scripts/check_build.py 'F:/agents/code/temp/art-bookstore/public' --base-url 'https://example.github.io/art-books/' --check-demo-pages
+```
 
-Edit each portfolio's Markdown and image page bundles in its own directory,
-then run `npm run build` from the blog root. The creator portfolio's standalone
-update guide is `creator-portfolio/docs/UPDATE_GUIDE.md`. Its nested Pages
-workflow is only for a copy used as the root of its own repository; it does not
-run inside the blog repository.
+These URLs are examples, not deployments. Run the default scene with
+`hugo server`. See each README for the correct overlay and data schema;
+photography documents its separate content/template selection. Selecting only
+`HUGO_PARAMS_DEMOTEMPLATE` does not select an independent scene's content.
+Hugo environment overrides take precedence over CLI/config values; clear
+stale task-specific overrides before a standalone build.
 
-The creator portfolio uses original fictional content. The photography
-portfolio is also fictional, and its images are AI-generated. Do not replace
-either with client work or personal data. A client delivery should be copied
-to a client-owned repository with its own domain and publication settings.
+Integrated builds inject `demoCatalogURL` and sibling links. Standalone builds
+leave these unset and have no blog return or switching toolbar. Copy a demo
+as a complete source directory, then set the intended scene and customer URL
+in that repository's build configuration. Nested portfolio Pages workflows
+only run when the demo is the root of its own repository. A customer's build,
+account, domain, and online deployment need their own verification.
 
-## Content dashboard
+## Validation
 
-`content-dashboard/` demonstrates month/channel/keyword filters, linked summary
-metrics and channel bars, and numerical/date sorting over 24 fictional content
-records. Its source is `data/entries.json` inside the demo. Hugo renders the
-complete dataset for browsers without JavaScript, and the scripts enhance that
-same dataset without network requests or browser storage. Details and data
-constraints are in `content-dashboard/README.md`; tests are in
-`tests/content-dashboard.test.cjs` and `e2e/content-dashboard.spec.cjs` at the
-blog root. Keep the real preview screenshot in sync with visible design changes.
+Run only affected tests during development. Integration checks cover:
 
-## Bookstore, workshop, and trip planner
+- Registry paths, per-child environment isolation, all eighteen destinations,
+  template links, and the configured source commit.
+- Complete static content and inline JSON for each scene, plus evidence that
+  sibling content and artwork differ. A data change must update its fixture
+  expectations without dropping amount, date, capacity, or time tests.
+- Actual filtering, quantities, sorting, selection, reset behavior, keyboard
+  focus, and complete read-only content with JavaScript disabled.
+- Home and representative inner pages at 320, 390, and 1280 pixels, plus fresh
+  visual review on desktop and mobile after structural checks pass.
 
-- `bookstore/`: twelve original fictional books, category/title search, and a
-  sample book bag with stock limits and integer-cent totals. No checkout.
-- `workshop-booking/`: six fictional craft courses and twelve October sessions;
-  category/date filtering, group sizes, capacity checks, and a reservation
-  preview that never sends a booking.
-- `trip-planner/`: eight fictional destinations; add up to six, reorder or remove
-  stops, and compare an illustrated route with time and budget estimates. The
-  map is a schematic, not real navigation.
+`scripts/check-demo-builds.cjs` runs each demo's standalone Python checker with
+its exact base URL, catalog allowance, and sibling homepage allowances. These
+checkers remain inside the demo source so a copied site does not depend on the
+blog. They validate links, images, and applicable static/embedded data without
+accessing the network. Only explicitly marked and permitted anchors may cross
+a demo boundary. The deployed-site checker also follows local `img`/`source`
+`srcset` resources.
 
-Each keeps interaction state in memory and resets on reload. Source JSON,
-standalone build commands, and data constraints are documented in each demo's
-README. Original covers and illustrations use local CSS or SVG. Core tests and
-browser cases use the matching demo ID under `tests/` and `e2e/`. The shared
-catalog-link checker tests now iterate all registered demos.
+For a deployment-prefix check, use an isolated output directory:
+
+```powershell
+npm.cmd run build -- --destination F:/agents/code/temp/scene-prefix/public --baseURL https://example.test/review/
+$env:SITE_ROOT = 'F:/agents/code/temp/scene-prefix/public'
+$env:SITE_URL = 'https://example.test/review/'
+node scripts/check-demo-builds.cjs
+```
+
+Use a fresh shell or restore the task variables afterward. `SITE_ROOT` also
+selects the directory served by `scripts/serve-public.cjs`; `PORT` selects its
+local port. The main output checker normally expects the production root URL.
+
+## Real page previews
+
+Preview JPEGs are screenshots of actual homepages, stored in
+`static/img/demos/`. CI does not regenerate them. After a visible change:
+
+1. Build and serve the combined output locally.
+2. Run `npm.cmd run demos:previews -- --base-url http://127.0.0.1:4173/` to
+   refresh all eighteen previews, or capture only the changed instances at
+   their registered 1280×960 dimensions.
+3. Review desktop and mobile pages. Previews show the real content without
+   invented UI or substituted artwork. The capture tool blocks external
+   requests and waits for visible images and fonts.
+4. Check each JPEG remains between 1 and 300 KiB, rebuild to include it in the
+   artifact, and repeat affected catalog checks. Stop the local server.
+
+Screenshots can differ across operating systems because the demos use system
+fonts; tests verify working images, dimensions, layout, and navigation rather
+than identical screenshot bytes.
+
+## Demonstration boundaries
+
+All interactive state stays in page memory and resets on reload. There is no
+login, backend, checkout, real booking, location service, or persistent storage.
+Dashboard records are fictional; book bags do not create orders; workshop
+capacity is a fixed sample; trip coordinates and travel times are illustrative.
+
+Creator artwork and the five non-photography datasets are original fictional
+examples. Photography credits, sources, license conditions, and processing
+records are documented in `photo-portfolio/docs/PHOTO_SOURCES.json` and its
+README. A source-code delivery agreement does not replace media permissions.
+For customer delivery, replace sample identity and content, verify rights,
+and record customer acceptance separately from automated/local test results.

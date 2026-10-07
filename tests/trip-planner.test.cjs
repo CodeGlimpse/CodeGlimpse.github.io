@@ -20,6 +20,43 @@ test('trip places have valid unique IDs, integer estimates, map bounds and categ
     assert.equal(core.filterPlaces(places).length, 8);
 });
 
+const independentPlaces = {
+    classic: places,
+    journal: require('../demos/trip-planner/variants/journal/data/places.json'),
+    workbench: require('../demos/trip-planner/variants/workbench/data/places.json'),
+};
+
+test('mountain, old-town and island scenes have independent valid place copy and map positions', () => {
+    const ids = new Set();
+    const names = new Set();
+    const layouts = new Set();
+    for (const [scene, rows] of Object.entries(independentPlaces)) {
+        assert.equal(core.validatePlaces(rows), rows);
+        assert.equal(rows.length, 8);
+        const layout = JSON.stringify(rows.map(place => [place.x, place.y]));
+        assert.equal(layouts.has(layout), false, `map layout reused by ${scene}`);
+        layouts.add(layout);
+        for (const place of rows) {
+            assert.equal(ids.has(place.id), false, `shared scene ID: ${place.id}`);
+            assert.equal(names.has(place.name), false, `shared scene name: ${place.name}`);
+            ids.add(place.id);
+            names.add(place.name);
+        }
+        for (const category of ['自然', '人文', '休憩']) assert.ok(core.filterPlaces(rows, category).length > 0);
+        let selection = [];
+        for (const place of rows.slice(0, 6)) selection = core.addPlace(rows, selection, place.id).ids;
+        assert.equal(core.addPlace(rows, selection, rows[6].id).reason, 'full');
+        const summary = core.summarize(rows, selection);
+        assert.equal(summary.stayMinutes, rows.slice(0, 6).reduce((sum, place) => sum + place.durationMinutes, 0));
+        assert.equal(summary.costCents, rows.slice(0, 6).reduce((sum, place) => sum + place.costCents, 0));
+        assert.equal(summary.transferMinutes, 100);
+        assert.equal(summary.overDay, true);
+        const moved = core.movePlace(rows, selection, selection[2], -1).ids;
+        assert.deepEqual(core.routePoints(rows, moved).map(point => point.id), moved);
+        assert.deepEqual(core.summarize(rows, moved), summary);
+    }
+});
+
 test('adding rejects duplicates and caps the itinerary at six without mutating input', () => {
     const empty = [];
     assert.deepEqual(core.addPlace(places, empty, 'pine-ridge'), { ids: ['pine-ridge'], changed: true, reason: 'added' });

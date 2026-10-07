@@ -114,6 +114,24 @@ test('scopes content directory overrides to each child without inheriting the ma
     assert.equal(fake.calls[overrideIndex + 2].options.env.HUGO_CONTENTDIR, 'content/portraits');
 });
 
+test('isolates scene data from the parent and from the preceding demo', () => {
+    const entries = structuredClone(DEMO_CASES);
+    entries[0].templates[0].dataDir = 'data';
+    entries[0].templates[1].dataDir = 'variants/editorial/data';
+    delete entries[0].templates[2].dataDir;
+    const registry = expandDemoRegistry(entries);
+    const fake = fakeHugo();
+    const env = { ...environment, HUGO_DATADIR: 'private-parent-data', hugo_datadir: 'stale-data' };
+    assert.equal(buildSite([], env, fake.run, registry), 0);
+    assert.equal(fake.calls[1].options.env.HUGO_DATADIR, 'private-parent-data');
+    for (const [index, demo] of registry.entries()) {
+        const child = fake.calls[index + 2].options.env;
+        assert.equal(child.hugo_datadir, undefined);
+        assert.equal(child.HUGO_DATADIR, demo.dataDir);
+        assert.equal(Object.hasOwn(child, 'HUGO_DATADIR'), demo.dataDir !== undefined);
+    }
+});
+
 test('stops before publishing later demos when a preceding build fails', () => {
     for (let failureAt = 2; failureAt <= 2 + DEMO_REGISTRY.length; failureAt += 1) {
         const fake = fakeHugo({}, failureAt);

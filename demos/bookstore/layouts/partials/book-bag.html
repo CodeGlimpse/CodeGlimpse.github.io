@@ -1,6 +1,6 @@
     <aside class="bag-panel" aria-labelledby="bag-heading">
-      <div class="bag-heading"><p class="eyebrow">YOUR LITTLE BOOK BAG</p><h2 id="bag-heading" tabindex="-1">模拟购物袋</h2><p>放几本想读的，留在这一页。</p></div>
-      <div id="bag-empty" class="bag-empty"><span class="bag-drawing" aria-hidden="true"></span><h3>购物袋还是空的</h3><p>从书架选一本，<br>试试你的阅读组合。</p></div>
+      <div class="bag-heading"><p class="eyebrow">{{ site.Home.Params.brandMark }}的本页选书</p><h2 id="bag-heading" tabindex="-1">模拟购物袋</h2><p>{{ site.Home.Params.bagIntro }}</p></div>
+      <div id="bag-empty" class="bag-empty"><span class="bag-drawing" aria-hidden="true"></span><h3>购物袋还是空的</h3><p>{{ site.Home.Params.bagEmpty }}</p></div>
       <ul id="bag-lines" class="bag-lines" aria-label="购物袋图书" hidden></ul>
       <div class="bag-summary">
         <dl><div><dt>图书件数</dt><dd><span id="bag-count">0</span> 件</dd></div><div class="subtotal-row"><dt>商品小计</dt><dd id="bag-subtotal">¥0.00</dd></div></dl>

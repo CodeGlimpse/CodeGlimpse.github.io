@@ -284,3 +284,18 @@ body[data-template="workspace"] .workspace-filter-menu .filter-panel { margin: 0
   .workspace-filter-menu { margin-top: 10px; }
   .workspace-heading { gap: 12px; margin-bottom: 18px; }
 }
+/* A spring launch travels from one story to three publishing surfaces. */
+.workspace-transmission { width: clamp(130px, 18vw, 240px); height: auto; align-self: center; }
+body[data-template="workspace"] .workspace-heading > div:first-child { flex: 1; min-width: 0; }
+body[data-template="workspace"] .workspace-brand-icon { border-radius: 50% 50% 5px 5px; background: #f7c46d; color: #1b2c43; font-family: "SimSun", serif; font-size: 1.15rem; }
+body[data-template="workspace"] .workspace-spotlight { border-left: 3px solid #f7c46d; }
+body[data-template="workspace"] .badge-0 { background: #304e63; color: #cbecf1; }
+body[data-template="workspace"] .badge-1 { background: #494062; color: #e4d5f3; }
+body[data-template="workspace"] .badge-2 { background: #594c32; color: #f7ddb0; }
+@media (max-width: 960px) { .workspace-transmission { width: 155px; } }
+@media (max-width: 700px) {
+  .workspace-heading { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; margin-bottom: 16px; }
+  .workspace-heading > div:first-child { grid-column: 1 / -1; }
+  .workspace-transmission { width: 118px; align-self: center; }
+  .workspace-period { max-width: 160px; padding: 6px 10px; flex-direction: column; align-self: center; gap: 2px; }
+}

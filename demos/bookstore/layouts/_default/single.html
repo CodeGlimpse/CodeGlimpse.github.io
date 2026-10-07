@@ -1,8 +1,10 @@
 {{ define "main" }}
+{{ $home := site.Home.Params }}
+{{ $categories := slice }}{{ range site.Data.books }}{{ $categories = $categories | append .category }}{{ end }}
 <main id="main" class="main shell about-page" tabindex="-1">
-  <header class="about-heading"><p class="eyebrow">ABOUT ZHIJIAN <span aria-hidden="true">/</span> {{ site.Params.demoNotice }}</p><h1>{{ .Title }}</h1><p>书架里的故事是虚构的，页面里的每一次操作都有清楚的边界。</p></header>
+  <header class="about-heading"><p class="eyebrow">{{ $home.periodLabel }}</p><h1>{{ .Title }}</h1><p>{{ $home.shelfNote }} 虚构演示 · 模拟购物袋</p></header>
   <div class="about-layout">
-    <aside class="about-card" aria-label="演示概况"><span class="about-seal" aria-hidden="true">纸间</span><p class="eyebrow">A PAPER BOOKSHOP</p><h2>在书页之间，<br>留一小片日常。</h2><dl><div><dt>书目</dt><dd>十二本虚构图书</dd></div><div><dt>分类</dt><dd>文学 / 设计 / 生活</dd></div><div><dt>购物袋</dt><dd>本次页面内的模拟状态</dd></div></dl><a href="{{ site.Home.RelPermalink }}">回到今日书架 <span aria-hidden="true">↗</span></a></aside>
+    <aside class="about-card" aria-label="演示概况"><span class="about-seal" aria-hidden="true">{{ $home.brandMark }}</span><p>{{ $home.title }}</p><h2>{{ $home.closing }}</h2><dl><div><dt>书目</dt><dd>{{ len site.Data.books }} 本虚构图书</dd></div><div><dt>分类</dt><dd>{{ delimit (uniq $categories) " / " }}</dd></div><div><dt>购物袋</dt><dd>本次页面内的模拟状态</dd></div></dl><a href="{{ site.Home.RelPermalink }}">回到本期书架</a></aside>
     <article class="prose">{{ .Content }}</article>
   </div>
 </main>

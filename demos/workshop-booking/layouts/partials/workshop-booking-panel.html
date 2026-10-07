@@ -1,6 +1,6 @@
 <aside class="booking-panel" aria-labelledby="booking-heading">
       <p class="eyebrow">{{ if eq .template "calendar" }}04{{ else }}03{{ end }} / YOUR LITTLE PLAN</p>
-      <h2 id="booking-heading">这一场，<br>留给自己。</h2>
+      <h2 id="booking-heading">{{ site.Home.Params.panelHeading }}</h2>
       <p class="panel-intro">选好课程与时间，再看看人数和费用。</p>
       <dl class="selection-summary"><div><dt>课程</dt><dd data-selection="course">尚未选课</dd></div><div><dt>日期</dt><dd data-selection="date">尚未选场</dd></div><div><dt>时段</dt><dd data-selection="time">—</dd></div></dl>
       <div class="quantity-field"><label for="booking-quantity">参与人数</label><select id="booking-quantity" aria-describedby="quantity-note booking-status" disabled><option value="1">1 人</option><option value="2">2 人</option><option value="3">3 人</option><option value="4">4 人</option><option value="5">5 人</option><option value="6">6 人</option></select><p id="quantity-note">每次预览 1–6 人，不超过所选场次的示例余位。</p></div>

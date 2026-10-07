@@ -51,9 +51,11 @@ function validateDemoRegistry(entries) {
             if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(template.id || '') || templateIds.has(template.id)) throw new Error(`Invalid or duplicate template id: ${demo.id}`);
             templateIds.add(template.id);
             if (!relativePath(template.path) || !template.path.endsWith('/')) throw new Error(`Invalid demo paths: ${demo.id}`);
-            if (template.contentDir !== undefined && (!relativePath(template.contentDir)
-                || /[<>|"*\x7f-\x9f]/.test(template.contentDir)
-                || template.contentDir.split('/').some(part => /[. ]$/.test(part)))) throw new Error(`Invalid template contentDir: ${demo.id}/${template.id}`);
+            for (const directory of ['contentDir', 'dataDir']) {
+                if (template[directory] !== undefined && (!relativePath(template[directory])
+                    || /[<>|"*\x7f-\x9f]/.test(template[directory])
+                    || template[directory].split('/').some(part => /[. ]$/.test(part)))) throw new Error(`Invalid template ${directory}: ${demo.id}/${template.id}`);
+            }
             if (!relativePath(template.preview?.image) || !template.preview.image.endsWith('.jpg')
                 || !Number.isInteger(template.preview.width) || template.preview.width < 320
                 || !Number.isInteger(template.preview.height) || template.preview.height < 240) throw new Error(`Invalid demo preview: ${demo.id}`);
@@ -85,7 +87,7 @@ function validateDemoRegistry(entries) {
 function expandDemoRegistry(cases) {
     return validateDemoRegistry(cases).flatMap(demo => demo.templates.map(template => ({
         id: template.id === demo.defaultTemplate ? demo.id : `${demo.id}-${template.id}`,
-        caseId: demo.id, templateId: template.id, source: demo.source, contentDir: template.contentDir,
+        caseId: demo.id, templateId: template.id, source: demo.source, contentDir: template.contentDir, dataDir: template.dataDir,
         differentContent: demo.differentContent === true,
         path: template.path, preview: template.preview, brand: demo.brand,
         copy: Object.fromEntries(['zh-cn', 'en'].map(language => [language, {

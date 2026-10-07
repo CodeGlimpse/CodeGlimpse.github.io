@@ -128,3 +128,15 @@ h1 { font-size: clamp(2rem, 3.3vw, 3.5rem); font-weight: 600; letter-spacing: .0
   .about-page { padding-block: 40px 55px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+/* Each scene uses its own Chinese seal and home-page publishing notes. */
+.scene-brand-mark { display: grid; place-items: center; width: 38px; height: 38px; flex-shrink: 0; border: 1px solid currentColor; border-radius: 4px; font-family: "Songti SC", "SimSun", serif; font-size: 1.35rem; line-height: 1; }
+.footer-inner p > strong, .footer-inner p > span { display: block; }
+.footer-inner p > strong { margin-bottom: .3rem; font-size: .75rem; font-weight: 500; }
+.brand-name { font-size: 1.14rem; }
+@media (max-width: 700px) { .brand-name { font-size: 1.03rem; } .brand-note { font-size: .49rem; } .scene-brand-mark { width: 30px; height: 34px; font-size: 1.1rem; } .header-inner { gap: .6rem; } .site-nav { gap: .8rem; } }
+
+@media (max-width: 640px) {
+  .mountain-title-phrase { display: block; }
+  .terrain-map .map-place .map-place-name { font-size: 36px; }
+  body[data-template="classic"] .map-place-name { paint-order: stroke; stroke: #214b3e; stroke-width: 4px; stroke-linejoin: round; }
+}

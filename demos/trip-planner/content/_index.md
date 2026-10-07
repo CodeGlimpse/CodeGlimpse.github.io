@@ -1,4 +1,22 @@
----
-title: "把周末，走成一条山路。"
-summary: "从八个虚构地点里挑选自己的周末停靠点，编排行程顺序，查看时间与预算估算。"
----
++++
+brandName = "远山周末"
+brandEnglish = "FARWEEK"
+brandGlyph = "山"
+siteTitle = "远山周末｜山野周末行程"
+title = "把周末，走成一条山路。"
+summary = "从八个原创虚构的山谷地点里挑选停靠点，编排行程顺序，查看时间与预算估算。"
+intro = "松风、溪声与山口的一杯茶，挑几处想停下来的地方。山路只在这张虚构地图上展开。"
+description = "远山周末：以八个原创虚构的山谷地点演示停靠点筛选、行程顺序、时间与预算，不提供真实地理导航。"
+sceneLabel = "山野周末"
+periodLabel = "初秋山谷 / 周末一日"
+edition = "山谷册"
+themeColor = "#183f34"
+mapTitle = "周末地形手记"
+mapKicker = "山谷、溪流与停靠点"
+mapDescription = "远山周末原创山谷示意图"
+mapNote = "山脊、溪流与湖边的相对位置来自虚构创作。每段交通统一估算 20 分钟，与画面距离无关。"
+mapScene = "mountain"
+artCaption = "沿着溪声慢走"
+favicon = "art/farweek-mark.svg"
+dataNotice = "虚构演示 · 行程规划"
++++

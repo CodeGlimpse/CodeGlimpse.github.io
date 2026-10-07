@@ -1,0 +1,5 @@
+contentDir = 'variants/agenda/content'
+dataDir = 'variants/agenda/data'
+
+[params]
+demoTemplate = 'agenda'

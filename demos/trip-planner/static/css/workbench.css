@@ -155,3 +155,12 @@ body[data-template="workbench"] .back-link { color: #91bdff; }
   body[data-template="workbench"] .stop-meta { font-size: .68rem; }
 }
 @media (prefers-reduced-motion: reduce) { body[data-template="workbench"] .map-place { transition: none; } }
+/* The map is an invented archipelago; the blue marks read as tidal waypoints. */
+body[data-template="workbench"] .scene-brand-mark { border-radius: 18px 18px 4px 4px; border-color: #6faaca; color: #c9e9ef; }
+body[data-template="workbench"] .workbench-map-panel { background: #163857; }
+body[data-template="workbench"] .map-place-name { paint-order: stroke; stroke: #163857; stroke-width: 4px; stroke-linejoin: round; }
+body[data-template="workbench"] .workbench-intro h1 { letter-spacing: .02em; }
+/* Keep the two neighboring island labels separate when the SVG scales down. */
+@media (max-width: 640px) {
+  body[data-template="workbench"] [data-map-id="blue-workshop"] .map-place-name { transform: translate(10px, -12px); }
+}

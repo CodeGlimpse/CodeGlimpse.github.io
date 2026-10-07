@@ -1,0 +1,82 @@
+[
+  {
+    "id": "bell-court",
+    "name": "栖钟院",
+    "category": "人文",
+    "description": "穿过砖拱门，看看虚构旧钟楼背面的木梯与刻痕。",
+    "durationMinutes": 85,
+    "costCents": 1600,
+    "x": 22,
+    "y": 24
+  },
+  {
+    "id": "ink-alley",
+    "name": "墨线巷",
+    "category": "人文",
+    "description": "跟着墙上的旧字号慢走，停在一家没有招牌的装帧铺前。",
+    "durationMinutes": 70,
+    "costCents": 800,
+    "x": 46,
+    "y": 20
+  },
+  {
+    "id": "river-steps",
+    "name": "苇岸石阶",
+    "category": "自然",
+    "description": "沿虚构河岸的石阶下去，看芦苇在午后水面上留下影子。",
+    "durationMinutes": 95,
+    "costCents": 0,
+    "x": 71,
+    "y": 37
+  },
+  {
+    "id": "print-room",
+    "name": "拾页印房",
+    "category": "人文",
+    "description": "在小印房里辨认旧活字，把一行字拓到再生纸上。",
+    "durationMinutes": 100,
+    "costCents": 4200,
+    "x": 30,
+    "y": 55
+  },
+  {
+    "id": "courtyard-tree",
+    "name": "榆影庭",
+    "category": "自然",
+    "description": "走进一座虚构公共院落，在老榆树旁坐一会儿。",
+    "durationMinutes": 65,
+    "costCents": 0,
+    "x": 51,
+    "y": 48
+  },
+  {
+    "id": "tea-corner",
+    "name": "拐角晚茶",
+    "category": "休憩",
+    "description": "把这一段漫游留给一壶温茶，等巷口的灯亮起来。",
+    "durationMinutes": 90,
+    "costCents": 3800,
+    "x": 63,
+    "y": 68
+  },
+  {
+    "id": "canal-garden",
+    "name": "水门小园",
+    "category": "自然",
+    "description": "跨过水门旁的小桥，在口袋花园里读一页手记。",
+    "durationMinutes": 55,
+    "costCents": 0,
+    "x": 17,
+    "y": 79
+  },
+  {
+    "id": "bakery-window",
+    "name": "麦窗铺",
+    "category": "休憩",
+    "description": "在窗边分一块刚出炉的面包，整理一路收下的街巷便签。",
+    "durationMinutes": 50,
+    "costCents": 2400,
+    "x": 76,
+    "y": 82
+  }
+]

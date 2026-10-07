@@ -22,6 +22,7 @@
 
     function showDataError() {
         if (resultSummary) resultSummary.textContent = '示例数据暂时无法读取，请刷新页面重试。';
+        root.dataset.ready = 'error';
     }
 
     if (!core || !dataNode || controls.some(control => !control)
@@ -31,22 +32,15 @@
     }
 
     let rows;
+    let channels;
     try {
-        rows = JSON.parse(dataNode.textContent);
-        const ids = new Set();
-        const valid = Array.isArray(rows) && rows.every((row) => {
-            if (!row || typeof row.id !== 'string' || !row.id.trim() || ids.has(row.id)
-                || typeof row.title !== 'string' || !row.title.trim()
-                || typeof row.published !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(row.published)
-                || !['博客', '视频', '社区'].includes(row.channel)
-                || !Number.isInteger(row.views) || row.views < 0
-                || !Number.isInteger(row.interactions) || row.interactions < 0) {
-                return false;
-            }
-            ids.add(row.id);
-            return true;
-        });
-        if (!valid) throw new Error('Invalid dashboard data');
+        rows = core.validateRows(JSON.parse(dataNode.textContent));
+        channels = core.getChannels(rows);
+        const optionValues = select => [...select.options].map(option => option.value);
+        if (JSON.stringify(optionValues(channel)) !== JSON.stringify(['all', ...channels])
+            || JSON.stringify(optionValues(month)) !== JSON.stringify(['all', ...core.getMonths(rows)])) {
+            throw new Error('Dashboard filter options do not match data');
+        }
     } catch (error) {
         showDataError();
         return;
@@ -72,7 +66,7 @@
     }
 
     function renderChart() {
-        const totals = core.groupByChannel(filteredRows);
+        const totals = core.groupByChannel(filteredRows, channels);
         const maximum = Math.max(0, ...totals.map(item => item.views));
         const fragment = document.createDocumentFragment();
         totals.forEach((item, index) => {
@@ -111,7 +105,7 @@
         if (key === 'rate') cell.classList.add('rate-cell');
         if (key === 'channel') {
             const badge = document.createElement('span');
-            badge.className = 'channel-badge ' + ({ 博客: 'badge-blog', 视频: 'badge-video', 社区: 'badge-community' }[value]);
+            badge.className = 'channel-badge badge-' + channels.indexOf(value);
             badge.textContent = value;
             cell.replaceChildren(badge);
         }

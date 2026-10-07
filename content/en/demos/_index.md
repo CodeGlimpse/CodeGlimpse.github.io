@@ -1,7 +1,9 @@
 ---
 title: Demos
-description: Compare layouts and interactions using the same content.
+description: Six website categories and eighteen independent scenes, each with its own content and interactions.
 outputs: [HTML]
 ---
 
-Each of six cases has three templates using the same works, books, courses, or records. Compare their layouts and interactions, then switch templates on any page; switching resets current actions. All demos are in Chinese and use fictional content without real client information. Photography images are AI-generated. The sample book bag and reservation preview create no real orders or bookings.
+Each of six website categories offers three independent scenes with their own works, books, courses, records, or places. Explore how the presentation and interactions suit each subject. Switching scenes opens the destination homepage and resets current actions. Demo pages are in Chinese.
+
+The creator, dashboard, bookstore, workshop, and travel examples use original fictional content without real client information. Photography scenes use real works with sources, credits, and license details on their individual pages. Book bags and reservation previews create no real orders or bookings. Travel maps are fictional diagrams.

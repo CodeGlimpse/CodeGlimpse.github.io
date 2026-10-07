@@ -259,3 +259,13 @@ body[data-template="report"] .about-summary dt { color: #a57553; }
 @media (prefers-reduced-motion: reduce) {
   body[data-template="report"] *, body[data-template="report"] *::before, body[data-template="report"] *::after { animation: none !important; transition: none !important; }
 }
+/* A screening log: coral cover, quiet white chapters, original film frames. */
+body[data-template="report"] .report-cover { background: #dc4a35; }
+.report-filmstrip { width: clamp(140px, 20vw, 215px); height: auto; flex-shrink: 0; transform: rotate(-3deg); }
+body[data-template="report"] .report-cover h1 { max-width: 36rem; }
+body[data-template="report"] .report-cover-body > div:first-child { flex: 1; }
+body[data-template="report"] .badge-0 { background: #fbe0d6; color: #8d342c; }
+body[data-template="report"] .badge-1 { background: #e4edef; color: #476b73; }
+body[data-template="report"] .badge-2 { background: #eee6f1; color: #765186; }
+@media (max-width: 700px) { .report-cover-body { flex-wrap: wrap; } .report-filmstrip { width: 175px; margin-left: auto; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .report-filmstrip { transform: none; } }

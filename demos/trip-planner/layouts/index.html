@@ -7,8 +7,8 @@
   {{ partial "workbench-page.html" . }}
   {{ else }}
   <header class="planner-intro">
-    <div><p class="eyebrow">{{ site.Params.demoNotice }}</p><h1>{{ .Title }}</h1><p class="intro-copy">挑几处想停下来的地方，把先后顺序留给自己。时间和预算一起算，山路只在这张虚构地图上展开。</p></div>
-    <div class="weekend-stamp" aria-hidden="true"><span>WEEKEND</span><strong>慢一点<br>也很好</strong><span>FARWEEK / 01</span></div>
+    <div><p class="eyebrow">{{ .Params.sceneLabel }} / {{ .Params.periodLabel }}</p><h1>{{ $phrases := split .Title "，" }}{{ range $index, $phrase := $phrases }}<span class="mountain-title-phrase">{{ $phrase }}{{ if lt $index (sub (len $phrases) 1) }}，{{ end }}</span>{{ end }}</h1><p class="intro-copy">{{ .Params.intro }}</p></div>
+    <div class="weekend-stamp" aria-hidden="true"><span>{{ .Params.edition }}</span><strong>慢一点<br>听见山风</strong><span>{{ .Params.brandEnglish }}</span></div>
   </header>
   <div data-trip-planner data-ready="false">
     <noscript><p class="noscript-note">JavaScript 未开启时，可以只读浏览八个虚构地点和基础地图；行程编排控件保持禁用，启用 JavaScript 后可添加与重排地点。</p></noscript>

@@ -1,0 +1,122 @@
+[
+  {
+    "id": "weekend-soup",
+    "title": "周末的一锅汤",
+    "author": "陶米",
+    "category": "料理",
+    "description": "用想象中的四季食材安排一锅汤，从备料顺序到收拾台面，把厨房的小事写清楚。",
+    "priceCents": 3650,
+    "stock": 5,
+    "cover": "life-soup"
+  },
+  {
+    "id": "market-list",
+    "title": "菜市场的小清单",
+    "author": "周葱",
+    "category": "料理",
+    "description": "围绕三种虚构家庭菜单规划一周采购，练习按食材和用途整理购物清单。",
+    "priceCents": 2980,
+    "stock": 3,
+    "cover": "life-market"
+  },
+  {
+    "id": "bread-table",
+    "title": "面包与早起的桌子",
+    "author": "何麦",
+    "category": "料理",
+    "description": "记录十二个面包早餐的组合，比较温度、口感与摆盘带给早晨的变化。",
+    "priceCents": 4420,
+    "stock": 4,
+    "cover": "life-bread"
+  },
+  {
+    "id": "tea-afternoon",
+    "title": "留一壶下午茶",
+    "author": "许盏",
+    "category": "料理",
+    "description": "从清理桌面到搭配小点心，为一个人或两个人安排一段安静的午后。",
+    "priceCents": 3870,
+    "stock": 0,
+    "cover": "life-tea"
+  },
+  {
+    "id": "desk-reset",
+    "title": "重新整理一张桌子",
+    "author": "林屉",
+    "category": "居家",
+    "description": "从常用物件开始，把一张虚构书桌分成工作、阅读与临时放置的区域。",
+    "priceCents": 4690,
+    "stock": 7,
+    "cover": "life-desk"
+  },
+  {
+    "id": "repair-diary",
+    "title": "补好日常的针脚",
+    "author": "陈线",
+    "category": "居家",
+    "description": "一本虚构修补手记，记录纽扣、布袋与旧衣边角上的细小整理练习。",
+    "priceCents": 3280,
+    "stock": 2,
+    "cover": "life-repair"
+  },
+  {
+    "id": "lamp-corner",
+    "title": "台灯旁的小角落",
+    "author": "沈灯",
+    "category": "居家",
+    "description": "用摆放示意图观察光线、书本和座椅的位置，为小房间留一个阅读角。",
+    "priceCents": 5180,
+    "stock": 6,
+    "cover": "life-light"
+  },
+  {
+    "id": "small-house",
+    "title": "小屋的留物清单",
+    "author": "方柜",
+    "category": "居家",
+    "description": "按使用频率回看抽屉和柜子，让物件去留有记录，也让收纳更好寻找。",
+    "priceCents": 3960,
+    "stock": 4,
+    "cover": "life-small"
+  },
+  {
+    "id": "plant-week",
+    "title": "植物的一周观察",
+    "author": "黎芽",
+    "category": "自然",
+    "description": "选择一盆想象中的窗边植物，每天记录叶形、光照和生长的细微差别。",
+    "priceCents": 2850,
+    "stock": 9,
+    "cover": "life-leaf"
+  },
+  {
+    "id": "balcony-garden",
+    "title": "阳台上的微型花园",
+    "author": "唐苗",
+    "category": "自然",
+    "description": "用平面草图安排盆器、通道与水壶，观察一个小阳台如何容纳四季。",
+    "priceCents": 5370,
+    "stock": 3,
+    "cover": "life-garden"
+  },
+  {
+    "id": "city-birds",
+    "title": "认出城市里的鸟",
+    "author": "陆羽",
+    "category": "自然",
+    "description": "沿着虚构公园记录身形、鸣声和停留位置，为一次短散步整理观察笔记。",
+    "priceCents": 4180,
+    "stock": 8,
+    "cover": "life-bird"
+  },
+  {
+    "id": "tree-walk",
+    "title": "路边树木散步册",
+    "author": "顾枝",
+    "category": "自然",
+    "description": "从叶子、树皮和轮廓辨认想象中的街树，给周末的同一条路添一些发现。",
+    "priceCents": 3495,
+    "stock": 1,
+    "cover": "life-walk"
+  }
+]

@@ -1,6 +1,6 @@
 {{ define "main" }}
 <main id="main" class="main shell about-page" tabindex="-1">
-  <header class="about-heading"><p class="eyebrow">{{ site.Params.demoNotice }}</p><h1>{{ .Title }}</h1><p>{{ .Params.summary }}</p></header>
+  <header class="about-heading"><p class="eyebrow">{{ site.Home.Params.dataNotice }}</p><h1>{{ .Title }}</h1><p>{{ .Params.summary }}</p></header>
   <article class="prose">{{ .Content }}</article>
   <a class="back-link" href="{{ site.Home.RelPermalink }}">← 回到行程编排</a>
 </main>

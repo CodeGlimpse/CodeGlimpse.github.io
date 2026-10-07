@@ -1,12 +1,8 @@
 baseURL = 'https://blog.codeglimpse.top/demos/trip-planner/'
 languageCode = 'zh-CN'
 defaultContentLanguage = 'zh'
-title = '远山周末｜旅行行程编排演示'
+title = '远山周末｜山野周末行程'
 disableKinds = ['taxonomy', 'term', 'RSS']
-
-[params]
-description = '用八个原创虚构地点编排一个山野周末。地点、费用、停留与交通时间都是演示估算，不提供真实地理导航。'
-demoNotice = '虚构演示 · 行程规划'
 
 [markup.goldmark.renderer]
 unsafe = false

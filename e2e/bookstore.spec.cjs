@@ -1,8 +1,11 @@
 const { test, expect } = require('@playwright/test');
-const books = require('../demos/bookstore/data/books.json');
+const path = require('node:path');
 const { DEMO_REGISTRY } = require('../scripts/demo-registry.cjs');
 for (const demo of DEMO_REGISTRY.filter(item => item.caseId === 'bookstore')) {
 test.describe(demo.templateId, () => {
+const books = require(path.resolve(__dirname, '..', demo.source, demo.dataDir || 'data', 'books.json'));
+const categories = [...new Set(books.map(book => book.category))];
+const brands = { classic: '纸间文学书店', catalog: '形间艺术书房', checklist: '周末生活选书' };
 const demoPath = '/' + demo.path;
 const money = cents => `¥${Math.floor(cents / 100)}.${String(cents % 100).padStart(2, '0')}`;
 const addName = book => `加入《${book.title}》到模拟购物袋`;
@@ -11,6 +14,9 @@ const quantityName = book => `《${book.title}》的数量`;
 async function openBookstore(page) {
     await page.goto(demoPath);
     await expect(page.locator('[data-bookstore]')).toHaveAttribute('data-ready', 'true');
+    expect(JSON.parse(await page.locator('#bookstore-data').textContent())).toEqual(books);
+    await expect(page.locator('.brand-copy strong')).toHaveText(brands[demo.templateId]);
+    expect(await page.locator('#category-filter option').evaluateAll(options => options.map(option => option.value))).toEqual(['all', ...categories]);
     if (demo.templateId === 'catalog') await expect(page.locator('[data-bookstore]')).toHaveAttribute('data-presentation', 'ready');
 }
 async function revealBook(page, book) {
@@ -30,13 +36,13 @@ async function expectBag(page, count, cents) {
 
 test('bookstore combines category, multiple title terms, IME completion, empty state and reset', async ({ page }) => {
     await openBookstore(page);
-    await expect(page.locator('#book-grid .book-card:not([hidden])')).toHaveCount(12);
-    await page.getByLabel('图书分类', { exact: true }).selectOption('设计');
-    await expect(page.locator('#book-grid .book-card:not([hidden])')).toHaveCount(4);
+    await expect(page.locator('#book-grid .book-card:not([hidden])')).toHaveCount(books.length);
+    await page.getByLabel('图书分类', { exact: true }).selectOption(books[1].category);
+    await expect(page.locator('#book-grid .book-card:not([hidden])')).toHaveCount(books.filter(book => book.category === books[1].category).length);
     const search = page.getByLabel('书名关键词', { exact: true });
-    await search.fill('颜色　地图');
+    await search.fill(books[1].title.slice(0, 2) + '　' + books[1].title.slice(-2));
     await expect(page.locator('#book-grid .book-card:not([hidden])')).toHaveCount(1);
-    await expect(page.getByRole('article', { name: '颜色的散步地图', exact: true })).toBeVisible();
+    await expect(page.getByRole('article', { name: books[1].title, exact: true })).toBeVisible();
     await search.focus();
     await search.dispatchEvent('compositionstart');
     await search.fill('不存在的书名');
@@ -48,14 +54,14 @@ test('bookstore combines category, multiple title terms, IME completion, empty s
     await page.getByRole('button', { name: '重置筛选', exact: true }).click();
     await expect(search).toHaveValue('');
     await expect(page.getByLabel('图书分类', { exact: true })).toHaveValue('all');
-    await expect(page.locator('#book-grid .book-card:not([hidden])')).toHaveCount(12);
-    await expect(page.locator('#result-summary')).toHaveText('共 12 本书');
+    await expect(page.locator('#book-grid .book-card:not([hidden])')).toHaveCount(books.length);
+    await expect(page.locator('#result-summary')).toHaveText('共 ' + books.length + ' 本书');
 });
 
 test('bag adds pieces, computes cents, preserves keyboard focus, removes and clears', async ({ page }) => {
     await openBookstore(page);
     const first = books[0];
-    const second = books.find(book => book.id === 'small-repair');
+    const second = books.find(book => book.stock === 1);
     await revealBook(page, first);
     await page.getByRole('button', { name: addName(first), exact: true }).click();
     await revealBook(page, first);
@@ -77,7 +83,7 @@ test('bag adds pieces, computes cents, preserves keyboard focus, removes and cle
     await expect(decrease).toBeFocused();
     await expectBag(page, 3, first.priceCents * 2 + second.priceCents);
     await closeBag(page);
-    await page.getByLabel('图书分类', { exact: true }).selectOption('设计');
+    await page.getByLabel('图书分类', { exact: true }).selectOption(books[1].category);
     await openBag(page);
     await expectBag(page, 3, first.priceCents * 2 + second.priceCents);
     const removeSecond = page.getByRole('button', { name: `移除《${second.title}》`, exact: true });
@@ -180,14 +186,14 @@ test('skip navigation, desktop bag and both pages fit 320px and 390px screens', 
             await expect(page.getByRole('heading', { name: '模拟购物袋', exact: true })).toBeVisible();
         }
         await page.goto(`${demoPath}about/`);
-        await expect(page.locator('main h1')).toHaveText('关于这间纸上书店');
+        await expect(page.locator('main h1')).toHaveText('关于' + brands[demo.templateId]);
         await expect(page.locator('main h1')).toHaveCount(1);
         expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width + 1);
     }
 });
 
 
-test('presentation controls expose the same catalog and quantities', async ({ page }) => {
+test('presentation controls expose the scene catalog and quantities', async ({ page }) => {
     await openBookstore(page);
     if (demo.templateId === 'catalog') {
         await expect(page.locator('#book-grid .book-card:visible')).toHaveCount(1);
@@ -216,7 +222,7 @@ test('presentation controls expose the same catalog and quantities', async ({ pa
         await expect(card.locator('[data-book-quantity]')).toHaveText('1');
         await expectBag(page, 1, book.priceCents);
     } else {
-        await expect(page.locator('#book-grid .book-card:visible')).toHaveCount(12);
+        await expect(page.locator('#book-grid .book-card:visible')).toHaveCount(books.length);
     }
 });
 
@@ -225,7 +231,7 @@ test.describe('bookstore without JavaScript', () => {
     test('retains twelve static books and a visible explanatory paragraph with disabled controls', async ({ page }) => {
         await page.setViewportSize({ width: 320, height: 960 });
         await page.goto(demoPath);
-        await expect(page.locator('#book-grid .book-card')).toHaveCount(12);
+        await expect(page.locator('#book-grid .book-card')).toHaveCount(books.length);
         const note = page.locator('p.noscript-note');
         await expect(note).toBeVisible();
         await expect(note).toContainText('保留全部静态书目');
@@ -235,6 +241,7 @@ test.describe('bookstore without JavaScript', () => {
         for (const book of books) {
             const card = page.getByRole('article', { name: book.title, exact: true });
             await expect(card.locator('.book-price')).toHaveText(money(book.priceCents));
+            await expect(card.locator('.book-stock')).toHaveText(book.stock === 0 ? '售罄' : '示例库存 ' + book.stock + ' 本');
             await expect(card.getByRole('button', { name: addName(book), exact: true })).toBeDisabled();
         }
         await expectBag(page, 0, 0);

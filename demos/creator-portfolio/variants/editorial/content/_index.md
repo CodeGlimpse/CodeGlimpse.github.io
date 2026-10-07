@@ -1,0 +1,16 @@
+---
+title: "拾度设计｜品牌与公共文化"
+brand: "拾度设计 / Shidu"
+brandShort: "拾度"
+brandEnglish: "Shidu"
+summary: "拾度设计的虚构品牌命题：折光剧场、丘原咖啡、行间书展与渡口公共标识。"
+homeHeading: "让一个想法成为可辨认的形状"
+homeIntro: "从剧场的一束光，到书展的一行字。拾度为虚构的文化与日常品牌寻找识别线索，再把它们带到海报、包装和公共空间。"
+sceneLabel: "品牌识别与应用设计"
+edition: "命题作品选集 / 2026"
+aboutHeading: "从识别到使用"
+aboutCopy: "拾度是一间虚构设计工作室。本选集以四个自拟命题演示设计过程：先说清楚场景与受众，再建立标志、字形、色彩和版式，最后检查它们如何在不同尺寸中使用。"
+demoNotice: "虚构演示 · 原创设计命题，不代表真实客户案例。"
+footerNote: "拾度设计 · 四组原创虚构命题，未用于真实品牌或公共设施。"
+favicon: "icons/editorial.svg"
+---

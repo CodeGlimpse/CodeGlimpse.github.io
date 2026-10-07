@@ -1,0 +1,5 @@
+contentDir = 'variants/checklist/content'
+dataDir = 'variants/checklist/data'
+
+[params]
+demoTemplate = 'checklist'

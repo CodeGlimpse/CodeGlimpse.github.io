@@ -1,0 +1,194 @@
+[
+  {
+    "id": "report-202601-01",
+    "title": "第一集：木匠如何听出一块木料的声音",
+    "published": "2026-01-02",
+    "channel": "正片",
+    "views": 18400,
+    "interactions": 1120
+  },
+  {
+    "id": "report-202601-02",
+    "title": "幕后：把收音麦克风藏在刨台旁",
+    "published": "2026-01-05",
+    "channel": "幕后",
+    "views": 4290,
+    "interactions": 286
+  },
+  {
+    "id": "report-202601-03",
+    "title": "第一集预告：一间只有两把椅子的工作室",
+    "published": "2026-01-09",
+    "channel": "预告",
+    "views": 9630,
+    "interactions": 514
+  },
+  {
+    "id": "report-202601-04",
+    "title": "第二集：陶艺师等一只杯子慢慢成形",
+    "published": "2026-01-12",
+    "channel": "正片",
+    "views": 22670,
+    "interactions": 1431
+  },
+  {
+    "id": "report-202601-05",
+    "title": "幕后：窗边自然光与陶土表面",
+    "published": "2026-01-17",
+    "channel": "幕后",
+    "views": 5180,
+    "interactions": 382
+  },
+  {
+    "id": "report-202601-06",
+    "title": "第二集预告：窑门打开之前",
+    "published": "2026-01-21",
+    "channel": "预告",
+    "views": 11980,
+    "interactions": 651
+  },
+  {
+    "id": "report-202601-07",
+    "title": "第三集：装帧师把纸页重新缝在一起",
+    "published": "2026-01-25",
+    "channel": "正片",
+    "views": 16740,
+    "interactions": 906
+  },
+  {
+    "id": "report-202601-08",
+    "title": "幕后：一次没有重拍的长镜头",
+    "published": "2026-01-28",
+    "channel": "幕后",
+    "views": 3920,
+    "interactions": 235
+  },
+  {
+    "id": "report-202602-01",
+    "title": "第四集：修表师面对一个停住的下午",
+    "published": "2026-02-02",
+    "channel": "正片",
+    "views": 28710,
+    "interactions": 1859
+  },
+  {
+    "id": "report-202602-02",
+    "title": "幕后：拍清齿轮需要多近的镜头",
+    "published": "2026-02-05",
+    "channel": "幕后",
+    "views": 6490,
+    "interactions": 476
+  },
+  {
+    "id": "report-202602-03",
+    "title": "第四集预告：秒针回来那一刻",
+    "published": "2026-02-09",
+    "channel": "预告",
+    "views": 13850,
+    "interactions": 773
+  },
+  {
+    "id": "report-202602-04",
+    "title": "第五集：植物画家的一本旧图鉴",
+    "published": "2026-02-12",
+    "channel": "正片",
+    "views": 31280,
+    "interactions": 2194
+  },
+  {
+    "id": "report-202602-05",
+    "title": "幕后：颜色校对从一片叶子开始",
+    "published": "2026-02-17",
+    "channel": "幕后",
+    "views": 5710,
+    "interactions": 403
+  },
+  {
+    "id": "report-202602-06",
+    "title": "第五集预告：慢下来才看见的叶脉",
+    "published": "2026-02-21",
+    "channel": "预告",
+    "views": 15840,
+    "interactions": 948
+  },
+  {
+    "id": "report-202602-07",
+    "title": "第六集：染布师追一条蓝色的水痕",
+    "published": "2026-02-25",
+    "channel": "正片",
+    "views": 25960,
+    "interactions": 1670
+  },
+  {
+    "id": "report-202602-08",
+    "title": "幕后：湿布离开染缸后的第一分钟",
+    "published": "2026-02-28",
+    "channel": "幕后",
+    "views": 7840,
+    "interactions": 523
+  },
+  {
+    "id": "report-202603-01",
+    "title": "第七集：玻璃匠给光线留一道弧",
+    "published": "2026-03-02",
+    "channel": "正片",
+    "views": 34620,
+    "interactions": 2567
+  },
+  {
+    "id": "report-202603-02",
+    "title": "幕后：反光表面与摄影机的位置",
+    "published": "2026-03-05",
+    "channel": "幕后",
+    "views": 9320,
+    "interactions": 681
+  },
+  {
+    "id": "report-202603-03",
+    "title": "第七集预告：把热玻璃吹成一只瓶",
+    "published": "2026-03-09",
+    "channel": "预告",
+    "views": 17670,
+    "interactions": 1054
+  },
+  {
+    "id": "report-202603-04",
+    "title": "第八集：版画师留在纸上的手势",
+    "published": "2026-03-12",
+    "channel": "正片",
+    "views": 29980,
+    "interactions": 1956
+  },
+  {
+    "id": "report-202603-05",
+    "title": "幕后：把压印的声音留在剪辑里",
+    "published": "2026-03-17",
+    "channel": "幕后",
+    "views": 8630,
+    "interactions": 617
+  },
+  {
+    "id": "report-202603-06",
+    "title": "第八集预告：墨色落下以前",
+    "published": "2026-03-21",
+    "channel": "预告",
+    "views": 19340,
+    "interactions": 1291
+  },
+  {
+    "id": "report-202603-07",
+    "title": "第一季合辑：八间工作室里的共同节奏",
+    "published": "2026-03-25",
+    "channel": "正片",
+    "views": 41380,
+    "interactions": 3078
+  },
+  {
+    "id": "report-202603-08",
+    "title": "三月栏目复盘：下一季的拍摄备忘",
+    "published": "2026-03-28",
+    "channel": "幕后",
+    "views": 0,
+    "interactions": 0
+  }
+]

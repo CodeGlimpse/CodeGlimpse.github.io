@@ -1,0 +1,7 @@
+{{ $interactive := .interactive }}
+{{ range site.Data.places }}
+<g class="map-place" data-map-id="{{ .id }}"{{ if $interactive }} data-map-choice{{ end }} transform="translate({{ mul .x 8 }}, {{ mul .y 5.6 }})">
+  {{ if $interactive }}<circle class="map-active-halo" r="26"/>{{ end }}<circle class="map-place-ring" r="13"/><circle class="map-place-dot" r="5"/>
+  <text class="map-place-name" x="{{ if gt .x 77 }}-22{{ else }}22{{ end }}" y="6"{{ if gt .x 77 }} text-anchor="end"{{ end }}>{{ .name }}</text><circle class="route-disc" data-route-disc r="17" hidden aria-hidden="true"/><text class="route-number" data-route-number text-anchor="middle" y="6" hidden aria-hidden="true"></text>
+</g>
+{{ end }}

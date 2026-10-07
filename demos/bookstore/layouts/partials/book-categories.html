@@ -1,0 +1,2 @@
+{{ $categories := slice }}{{ range site.Data.books }}{{ $categories = $categories | append .category }}{{ end }}
+{{ range uniq $categories }}<option value="{{ . }}">{{ . }}</option>{{ end }}

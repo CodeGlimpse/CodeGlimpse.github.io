@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
@@ -41,6 +42,12 @@ class PageChecker(HTMLParser):
         self.catalog_text: list[str] = []
         self.in_catalog = False
         self.book_count = 0
+        self.book_ids: list[str] = []
+        self.book_text: dict[str, list[str]] = {}
+        self.current_book: str | None = None
+        self.in_book_data = False
+        self.data_text: list[str] = []
+        self.template = "classic"
 
     def check_url(self, raw: str) -> None:
         if not raw or raw.startswith(("#", "mailto:", "data:")):
@@ -78,6 +85,8 @@ class PageChecker(HTMLParser):
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         values = dict(attrs)
+        if tag == "body":
+            self.template = values.get("data-template") or "classic"
         if tag == "main":
             self.main_count += 1
             self.in_main = True
@@ -86,6 +95,11 @@ class PageChecker(HTMLParser):
             self.main_h1_count += 1
         if tag == "article" and "data-book-id" in values:
             self.book_count += 1
+            self.current_book = values["data-book-id"]
+            self.book_ids.append(self.current_book)
+            self.book_text[self.current_book] = []
+        if tag == "script":
+            self.in_book_data = values.get("id") == "bookstore-data" and values.get("type") == "application/json"
         if tag == "a":
             self.anchors.append(values)
             if "data-demo-catalog" in values:
@@ -119,12 +133,20 @@ class PageChecker(HTMLParser):
             self.check_url(raw)
 
     def handle_endtag(self, tag: str) -> None:
+        if tag == "article":
+            self.current_book = None
+        if tag == "script":
+            self.in_book_data = False
         if tag == "main":
             self.in_main = False
         if tag == "a":
             self.in_catalog = False
 
     def handle_data(self, data: str) -> None:
+        if self.in_book_data:
+            self.data_text.append(data)
+        if self.current_book:
+            self.book_text[self.current_book].append(data)
         if self.in_catalog:
             self.catalog_text.append(data)
 
@@ -140,6 +162,36 @@ class PageChecker(HTMLParser):
                 self.errors.append(f"{self.page}: require one catalog anchor immediately after the skip link")
             if "".join(self.catalog_text).strip() != "← 返回演示目录":
                 self.errors.append(f"{self.page}: catalog anchor text must be exact")
+
+    def check_books(self) -> None:
+        if self.template not in ("classic", "catalog", "checklist"):
+            self.errors.append(f"{self.page}: unsupported book scene")
+            return
+        try:
+            books = json.loads("".join(self.data_text))
+            if not isinstance(books, list) or len(books) != 12:
+                raise ValueError("require twelve books")
+            ids = [book["id"] for book in books]
+            if len(set(ids)) != len(ids) or sorted(ids) != sorted(self.book_ids):
+                raise ValueError("static book IDs must match complete embedded books")
+            source = Path(__file__).resolve().parents[1]
+            folder = source if self.template == "classic" else source / "variants" / self.template
+            if books != json.loads((folder / "data/books.json").read_text(encoding="utf-8")):
+                raise ValueError("embedded books must match the selected scene data")
+            for book in books:
+                text = " ".join("".join(self.book_text[book["id"]]).split())
+                cents = book["priceCents"]
+                stock = book["stock"]
+                if not isinstance(cents, int) or isinstance(cents, bool) or cents < 0 or cents > 9007199254740991:
+                    raise ValueError("invalid integer-cent book price")
+                if not isinstance(stock, int) or isinstance(stock, bool) or stock < 0 or stock > 9:
+                    raise ValueError("invalid bounded stock")
+                fields = [book["title"], book["author"], book["category"], book["description"],
+                          f"¥{cents // 100}.{cents % 100:02d}", "售罄" if stock == 0 else f"示例库存 {stock} 本"]
+                if any(field not in text for field in fields):
+                    raise ValueError(f"incomplete static book: {book['id']}")
+        except (ValueError, KeyError, TypeError, OSError) as error:
+            self.errors.append(f"{self.page}: invalid or incomplete bookstore data: {error}")
 
 
 def valid_directory_path(value: str) -> bool:
@@ -200,6 +252,9 @@ def main() -> int:
                     errors.append(f"index.html: missing bookstore marker: {marker}")
             if checker.book_count != 12:
                 errors.append("index.html: require all 12 static fictional books")
+            previous_errors = len(checker.errors)
+            checker.check_books()
+            errors.extend(checker.errors[previous_errors:])
     if errors:
         print("\n".join(errors))
         return 1

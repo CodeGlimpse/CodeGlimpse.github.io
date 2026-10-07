@@ -1,0 +1,5 @@
+contentDir = 'variants/workspace/content'
+dataDir = 'variants/workspace/data'
+
+[params]
+demoTemplate = 'workspace'

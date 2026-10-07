@@ -1,9 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const { DEMO_REGISTRY } = require('../scripts/demo-registry.cjs');
-const entries = require('../demos/content-dashboard/data/entries.json');
 const demos = DEMO_REGISTRY.filter(demo => demo.caseId === 'content-dashboard');
-const totalViews = entries.reduce((sum, row) => sum + row.views, 0);
-const totalInteractions = entries.reduce((sum, row) => sum + row.interactions, 0);
 const number = value => value.toLocaleString('zh-CN');
 
 function sitePath(baseURL, relativePath) {
@@ -50,28 +47,60 @@ async function expectTotals(page, count, views, interactions) {
 }
 
 for (const demo of demos) {
+    const entries = require('../' + demo.source + '/' + (demo.dataDir || 'data') + '/entries.json');
+    const channels = [...new Set(entries.map(row => row.channel))];
+    const months = [...new Set(entries.map(row => row.published.slice(0, 7)))].sort();
+    const firstChannel = channels[0];
+    const lastMonth = months.at(-1);
+    const filtered = entries.filter(row => row.published.startsWith(lastMonth) && row.channel === firstChannel);
+    const totalViews = entries.reduce((sum, row) => sum + row.views, 0);
+    const totalInteractions = entries.reduce((sum, row) => sum + row.interactions, 0);
+    const filteredViews = filtered.reduce((sum, row) => sum + row.views, 0);
+    const filteredInteractions = filtered.reduce((sum, row) => sum + row.interactions, 0);
+    const topEntry = entries.toSorted((a, b) => b.views - a.views)[0];
+    const filteredTop = filtered.toSorted((a, b) => b.views - a.views)[0];
+    const zeroEntry = entries.find(row => row.views === 0);
+    const sampleEntry = entries[11];
     test.describe(demo.templateId, () => {
         test('dashboard filters link exact totals, channel bars, and table records', async ({ page, baseURL }) => {
             const errors = [];
             page.on('pageerror', error => errors.push(error.message));
             await openDashboard(page, demo, baseURL);
             await expectTotals(page, 24, totalViews, totalInteractions);
-            await page.getByLabel('发布月份', { exact: true }).selectOption('2026-09');
-            await page.getByLabel('内容渠道').selectOption('博客');
-            await expectTotals(page, 3, 8020, 590);
-            expect(await page.locator('#content-rows tr').evaluateAll(rows => rows.every(row => row.dataset.entryId.startsWith('content-202609')))).toBe(true);
-            await expect(page.locator('[data-channel="博客"] .channel-total')).toHaveText('8,020');
-            await expect(page.locator('[data-channel="视频"] .channel-total')).toHaveText('0');
-            await expect(page.locator('[data-channel="社区"] .channel-total')).toHaveText('0');
+            expect(await page.locator('#dashboard-data').evaluate(node => JSON.parse(node.textContent))).toEqual(entries);
+            expect(await page.locator('#month-filter option').evaluateAll(options => options.map(option => option.value))).toEqual(['all', ...months]);
+            expect(await page.locator('#channel-filter option').evaluateAll(options => options.map(option => option.value))).toEqual(['all', ...channels]);
+            await page.getByLabel('发布月份', { exact: true }).selectOption(lastMonth);
+            await page.locator('#channel-filter').selectOption(firstChannel);
+            await expectTotals(page, filtered.length, filteredViews, filteredInteractions);
+            expect(new Set(await page.locator('#content-rows tr').evaluateAll(rows => rows.map(row => row.dataset.entryId)))).toEqual(new Set(filtered.map(row => row.id)));
+            for (const channel of channels) await expect(page.locator(`[data-channel="${channel}"] .channel-total`)).toHaveText(channel === firstChannel ? number(filteredViews) : '0');
             await showOverview(page, demo);
-            const widths = await page.locator('[data-channel="博客"] .bar-track').evaluate(track => ({ track: track.getBoundingClientRect().width, bar: track.firstElementChild.getBoundingClientRect().width }));
+            const widths = await page.locator(`[data-channel="${firstChannel}"] .bar-track`).evaluate(track => ({ track: track.getBoundingClientRect().width, bar: track.firstElementChild.getBoundingClientRect().width }));
             expect(widths.bar).toBeGreaterThan(0);
             expect(widths.bar).toBeCloseTo(widths.track, 1);
             if (demo.templateId !== 'classic') {
-                await expect(page.locator('[data-month="2026-09"] [data-monthly-views]')).toHaveText('8,020');
-                await expect(page.locator('[data-month="2026-09"] [data-monthly-count]')).toHaveText('3');
+                await expect(page.locator(`[data-month="${lastMonth}"] [data-monthly-views]`)).toHaveText(number(filteredViews));
+                await expect(page.locator(`[data-month="${lastMonth}"] [data-monthly-count]`)).toHaveText(String(filtered.length));
             }
             expect(errors).toEqual([]);
+        });
+
+        test('keyboard search and reset keep the selected scene records and first focus target', async ({ page, baseURL }) => {
+            await openDashboard(page, demo, baseURL);
+            await page.keyboard.press('Tab');
+            await expect(page.locator('.skip-link')).toBeFocused();
+            await showRecords(page, demo);
+            const search = page.getByLabel('标题关键词');
+            await search.focus();
+            await search.fill(sampleEntry.title);
+            await search.press('Enter');
+            await expectTotals(page, 1, sampleEntry.views, sampleEntry.interactions);
+            const reset = page.getByRole('button', { name: '重置', exact: true });
+            await reset.focus();
+            await reset.press('Enter');
+            await expectTotals(page, entries.length, totalViews, totalInteractions);
+            await expect(reset).toBeFocused();
         });
 
         test('sorting changes only row order and compares numeric rates and dates', async ({ page, baseURL }) => {
@@ -105,14 +134,14 @@ for (const demo of demos) {
             await expectTotals(page, 0, 0, 0);
             await expect(page.locator('#empty-state')).toBeVisible();
             await expect(search).toBeFocused();
-            await search.fill('九月 复盘');
+            await search.fill(zeroEntry.title);
             await expectTotals(page, 1, 0, 0);
             await expect(page.locator('#empty-state')).toBeHidden();
             await expect(page.locator('[data-cell=rate]')).toHaveText('0.00%');
             await page.getByRole('button', { name: '重置', exact: true }).click();
             await expectTotals(page, 24, totalViews, totalInteractions);
             await expect(search).toHaveValue('');
-            await expect(page.locator('#content-rows tr').first()).toHaveAttribute('data-entry-id', 'content-202609-02');
+            await expect(page.locator('#content-rows tr').first()).toHaveAttribute('data-entry-id', topEntry.id);
         });
 
         test('dashboard filters offline without storage access or external requests', async ({ page, context, baseURL }) => {
@@ -127,8 +156,8 @@ for (const demo of demos) {
             });
             await openDashboard(page, demo, baseURL);
             await context.setOffline(true);
-            await page.getByLabel('标题关键词').fill('素材 标记');
-            await expectTotals(page, 1, 1920, 118);
+            await page.getByLabel('标题关键词').fill(sampleEntry.title);
+            await expectTotals(page, 1, sampleEntry.views, sampleEntry.interactions);
             await context.setOffline(false);
             expect(externalRequests).toEqual([]);
         });
@@ -187,26 +216,26 @@ for (const demo of demos) {
             test('workspace navigation preserves filters and links its spotlight to the record drawer', async ({ page, baseURL }) => {
                 await openDashboard(page, demo, baseURL);
                 await expect(page.locator('a[data-workspace-view="overview"]')).toHaveAttribute('aria-current', 'page');
-                await page.getByLabel('发布月份', { exact: true }).selectOption('2026-09');
-                await page.getByLabel('内容渠道').selectOption('博客');
-                await expectTotals(page, 3, 8020, 590);
+                await page.getByLabel('发布月份', { exact: true }).selectOption(lastMonth);
+                await page.locator('#channel-filter').selectOption(firstChannel);
+                await expectTotals(page, filtered.length, filteredViews, filteredInteractions);
                 await showRecords(page, demo);
                 await expect(page.locator('a[data-workspace-view="records"]')).toHaveAttribute('aria-current', 'page');
                 await expect(page.locator('[data-workspace-panel="overview"]')).toBeHidden();
                 await expect(page.locator('[data-workspace-count]')).toHaveText('3');
                 await showOverview(page, demo);
-                await expect(page.getByLabel('发布月份', { exact: true })).toHaveValue('2026-09');
-                await expect(page.getByLabel('内容渠道')).toHaveValue('博客');
-                await expectTotals(page, 3, 8020, 590);
-                const top = entries.find(row => row.id === 'content-202609-07');
+                await expect(page.getByLabel('发布月份', { exact: true })).toHaveValue(lastMonth);
+                await expect(page.locator('#channel-filter')).toHaveValue(firstChannel);
+                await expectTotals(page, filtered.length, filteredViews, filteredInteractions);
+                const top = filteredTop;
                 await expect(page.locator('[data-spotlight-title]')).toHaveText(top.title);
                 await page.locator('[data-spotlight-open]').click();
                 const dialog = page.getByRole('dialog');
                 await expect(dialog).toBeVisible();
                 await expect(dialog.locator('[data-record-field="title"]')).toHaveText(top.title);
                 await expect(dialog.locator('[data-record-rank]')).toHaveText('第 1 / 3 条');
-                await expect(dialog.locator('[data-record-share]')).toHaveText(`${(top.views / 8020 * 100).toFixed(2)}%`);
-                await expect(dialog.locator('[data-record-context]')).toContainText('当前范围整体互动率为 7.36%');
+                await expect(dialog.locator('[data-record-share]')).toHaveText(`${(top.views / filteredViews * 100).toFixed(2)}%`);
+                await expect(dialog.locator('[data-record-context]')).toContainText(`当前范围整体互动率为 ${(filteredInteractions / filteredViews * 100).toFixed(2)}%`);
                 await page.keyboard.press('Escape');
                 await expect(dialog).toBeHidden();
                 await expect(page.locator('[data-spotlight-open]')).toBeFocused();
@@ -218,7 +247,7 @@ for (const demo of demos) {
                     await page.setViewportSize({ width, height: 960 });
                     await openDashboard(page, demo, baseURL);
                     await showRecords(page, demo);
-                    const top = entries.find(row => row.id === 'content-202609-02');
+                    const top = topEntry;
                     const opener = page.locator('#content-rows').getByRole('button', { name: '打开记录：' + top.title, exact: true });
                     await opener.click();
                     const dialog = page.getByRole('dialog');
@@ -241,7 +270,7 @@ for (const demo of demos) {
                     await expect(opener).toBeFocused();
                     const filters = page.locator('[data-workspace-filters]');
                     if (!await filters.evaluate(node => node.open)) await filters.locator('summary').click();
-                    await page.getByLabel('标题关键词').fill('九月 复盘');
+                    await page.getByLabel('标题关键词').fill(zeroEntry.title);
                     await expectTotals(page, 1, 0, 0);
                     await page.locator('#content-rows [data-record-open]').click();
                     await expect(dialog.locator('[data-record-field="views"]')).toHaveText('0');
@@ -276,15 +305,15 @@ for (const demo of demos) {
                 await page.keyboard.press('Enter');
                 await expect(details).toHaveJSProperty('open', true);
                 await expect(page.locator('#content-rows tr:visible')).toHaveCount(entries.length);
-                await page.getByLabel('发布月份', { exact: true }).selectOption('2026-09');
-                await page.getByLabel('内容渠道').selectOption('博客');
-                await expectTotals(page, 3, 8020, 590);
+                await page.getByLabel('发布月份', { exact: true }).selectOption(lastMonth);
+                await page.locator('#channel-filter').selectOption(firstChannel);
+                await expectTotals(page, filtered.length, filteredViews, filteredInteractions);
                 await expect(details).toHaveJSProperty('open', true);
                 await expect(page.locator('[data-report-record-count]')).toHaveText('3 条记录');
                 await details.locator('summary').click();
                 await expect(details).toHaveJSProperty('open', false);
                 await expect(page.locator('#content-rows tr:visible')).toHaveCount(0);
-                await expectTotals(page, 3, 8020, 590);
+                await expectTotals(page, filtered.length, filteredViews, filteredInteractions);
                 await showRecords(page, demo);
                 await expect(page.locator('#content-rows tr:visible')).toHaveCount(3);
             });

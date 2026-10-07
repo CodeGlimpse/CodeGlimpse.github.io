@@ -2,15 +2,15 @@
 {{ $entries := .entries }}
 <article class="report-sheet" data-report>
   <header class="report-cover">
-    <div class="report-cover-top"><span>FIELDNOTES / CONTENT OBSERVATORY</span><span>{{ site.Params.demoNotice }}</span></div>
-    <div class="report-cover-body"><div><p class="report-issue">季度内容观察 · 2026 Q3</p><h1>{{ $page.Params.heading }}</h1><p>{{ $page.Params.intro }}</p></div><div class="report-cover-number" aria-hidden="true">03<span>QUARTER</span></div></div>
-    <div class="report-cover-bottom"><span>{{ site.Params.periodRange }}</span><span>博客 / 视频 / 社区</span><span>静态样本 · 非实时数据</span></div>
+    <div class="report-cover-top"><span>{{ $page.Params.brandEnglish }} / {{ $page.Params.sceneLabel }}</span><span>{{ site.Home.Params.dataNotice }}</span></div>
+    <div class="report-cover-body"><div><p class="report-issue">{{ $page.Params.edition }}</p><h1>{{ $page.Params.heading }}</h1><p>{{ $page.Params.intro }}</p></div><img class="report-filmstrip" src="{{ $page.Params.art | relURL }}" width="220" height="160" alt="{{ $page.Params.artAlt }}"></div>
+    <div class="report-cover-bottom"><span>{{ site.Home.Params.periodRange }}</span><span>{{ $domains := partial "dashboard-domains.html" $entries }}{{ delimit $domains.channels " / " }}</span><span>静态样本 · 非实时数据</span></div>
   </header>
   <nav class="report-index" aria-label="报告章节"><a href="#report-summary"><span>01</span> 总览摘要</a><a href="#report-channels"><span>02</span> 渠道与节奏</a><a href="#report-records"><span>03</span> 逐条记录</a><a href="#report-method"><span>04</span> 阅读口径</a></nav>
   <div class="report-scope">{{ partial "dashboard-filters.html" $page }}</div>
   <section id="report-summary" class="report-chapter report-summary" aria-labelledby="report-summary-title">
-    <header class="report-chapter-heading"><span class="report-chapter-number">01</span><div><p class="eyebrow">THE OVERVIEW</p><h2 id="report-summary-title">总览摘要</h2></div><p>{{ site.Params.periodLabel }}</p></header>
-    <div class="report-summary-body"><p class="report-summary-intro">每一次发布，<br>都留下一组数字。<span>当前范围包含 <strong data-report-count>{{ len $entries }}</strong> 条内容，以下指标随筛选更新。</span></p>{{ partial "dashboard-metrics.html" $entries }}</div>
+    <header class="report-chapter-heading"><span class="report-chapter-number">01</span><div><p class="eyebrow">THE OVERVIEW</p><h2 id="report-summary-title">总览摘要</h2></div><p>{{ site.Home.Params.periodLabel }}</p></header>
+    <div class="report-summary-body"><p class="report-summary-intro">每一段故事，<br>都留下观看的痕迹。<span>当前范围包含 <strong data-report-count>{{ len $entries }}</strong> 条内容，以下指标随筛选更新。</span></p>{{ partial "dashboard-metrics.html" $entries }}</div>
   </section>
   <section id="report-channels" class="report-chapter" aria-labelledby="report-channels-title">
     <header class="report-chapter-heading"><span class="report-chapter-number">02</span><div><p class="eyebrow">DISTRIBUTION & RHYTHM</p><h2 id="report-channels-title">渠道与发布节奏</h2></div><p>两种角度，观察同一范围</p></header>
@@ -28,7 +28,7 @@
   </section>
   <section id="report-method" class="report-chapter report-method" aria-labelledby="report-method-title">
     <header class="report-chapter-heading"><span class="report-chapter-number">04</span><div><p class="eyebrow">READING THE NUMBERS</p><h2 id="report-method-title">先看规模，再看反馈</h2></div></header>
-    <div class="report-method-body"><p>阅读次数描述内容被看见的次数，包含重复阅读。互动率描述每次阅读收到的反馈，使用总互动次数 ÷ 总阅读次数 × 100%；总阅读为零时显示 0.00%。</p><a href="{{ (site.GetPage "/about").RelPermalink }}">阅读全文与统计口径 <span aria-hidden="true">↗</span></a></div>
-    <p class="report-method-disclosure">{{ site.Params.demoNotice }} · 全部记录为虚构示例，不代表真实运营效果。</p>
+    <div class="report-method-body"><p>{{ $page.Params.noteCopy }} 互动率使用总互动次数 ÷ 总阅读次数 × 100%；总阅读为零时显示 0.00%。</p><a href="{{ (site.GetPage "/about").RelPermalink }}">阅读全文与统计口径 <span aria-hidden="true">↗</span></a></div>
+    <p class="report-method-disclosure">{{ site.Home.Params.dataNotice }} · 全部记录为虚构示例，不代表真实运营效果。</p>
   </section>
 </article>

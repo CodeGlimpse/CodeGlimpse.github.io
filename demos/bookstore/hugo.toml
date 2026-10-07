@@ -1,11 +1,11 @@
 baseURL = 'https://blog.codeglimpse.top/demos/bookstore/'
 languageCode = 'zh-CN'
 defaultContentLanguage = 'zh'
-title = '纸间书店｜虚构书店演示'
+title = '纸间文学书店｜虚构文学书架'
 disableKinds = ['taxonomy', 'term', 'RSS']
 
 [params]
-description = '纸间书店：十二本虚构的文学、设计与生活读物，一次留在当前页面的模拟购物袋体验。'
+description = '纸间文学书店：十二本虚构小说、诗歌和散文，一次留在当前页面的模拟购物袋体验。'
 demoNotice = '虚构演示 · 模拟购物袋'
 
 [markup.goldmark.renderer]

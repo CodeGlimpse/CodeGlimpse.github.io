@@ -5,20 +5,20 @@
 {{ $offset := index (dict "Monday" 0 "Tuesday" 1 "Wednesday" 2 "Thursday" 3 "Friday" 4 "Saturday" 5 "Sunday" 6) (printf "%s" $monthStart.Weekday) }}
 {{ $trailing := mod (sub 7 (mod (add $offset $dayCount) 7)) 7 }}
 <section class="calendar-overview" data-booking-calendar aria-labelledby="calendar-heading">
-  <div class="calendar-heading"><div><p class="eyebrow">MONTH VIEW / 固定示例排期</p><h2 id="calendar-heading">{{ site.Params.monthLabel }}</h2><p>先挑一个空闲的日子。每个有排期的日期都列出课程和开始时间。</p></div><div class="calendar-month"><strong>{{ $monthStart.Format "01" }}</strong><span>{{ $monthStart.Format "2006" }}<br>手作日历</span></div></div>
+  <div class="calendar-heading"><div><p class="eyebrow">MONTH VIEW / 固定示例排期</p><h2 id="calendar-heading">{{ site.Home.Params.periodLabel }}</h2><p>先挑一个空闲的日子。选择带排期的日期，查看完整课程和开始时间。</p></div><div class="calendar-month"><strong>{{ $monthStart.Format "01" }}</strong><span>{{ $monthStart.Format "2006" }}<br>手作日历</span></div></div>
   <div class="calendar-weekdays" aria-hidden="true"><span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span></div>
-  <ol class="calendar-days" aria-label="{{ site.Params.monthLabel }}固定示例课程日历">
+  <ol class="calendar-days" aria-label="{{ site.Home.Params.periodLabel }}固定示例课程日历">
     {{ if gt $offset 0 }}{{ range seq 1 $offset }}<li class="calendar-blank" aria-hidden="true"></li>{{ end }}{{ end }}
     {{ range seq 1 $dayCount }}
     {{ $day := . }}
     {{ $date := printf "%s-%02d" $schedule.month $day }}
     {{ $sessions := where $schedule.sessions "date" $date }}
-    {{ $available := where $sessions "remaining" "gt" 0 }}
+    {{ $available := slice }}{{ range $sessions }}{{ if gt (int .remaining) 0 }}{{ $available = $available | append . }}{{ end }}{{ end }}
     <li class="calendar-day{{ if $sessions }} calendar-day-scheduled{{ if not $available }} calendar-day-full{{ end }}{{ else }} calendar-day-quiet{{ end }}">
       {{ if $sessions }}
       <button type="button" class="calendar-day-button" data-calendar-date="{{ $date }}" data-calendar-day="{{ $day }}" aria-pressed="false" aria-controls="calendar-details" aria-label="{{ partial "date.html" $date }}，{{ len $sessions }} 个示例场次{{ if not $available }}，全部已满额{{ end }}，查看当天课程与场次" disabled>
         <span class="calendar-day-top"><strong class="calendar-day-number">{{ $day }}</strong><span class="calendar-day-count">{{ len $sessions }} 场</span></span>
-        <span class="calendar-slots">{{ range sort $sessions "start" "asc" }}{{ $course := index (where $schedule.courses "id" .courseId) 0 }}<span class="calendar-slot{{ if eq .remaining 0 }} calendar-slot-full{{ end }}"><span>{{ .start }}</span><strong>{{ $course.title }}</strong>{{ if eq .remaining 0 }}<small>满额</small>{{ end }}</span>{{ end }}</span>
+        <span class="calendar-slots">{{ range sort $sessions "start" "asc" }}{{ $course := index (where $schedule.courses "id" .courseId) 0 }}<span class="calendar-slot{{ if eq (int .remaining) 0 }} calendar-slot-full{{ end }}"><span>{{ .start }}</span><strong>{{ $course.title }}</strong>{{ if eq (int .remaining) 0 }}<small>满额</small>{{ end }}</span>{{ end }}</span>
         {{ if not $available }}<span class="calendar-full-note">已满额</span>{{ end }}
       </button>
       {{ else }}

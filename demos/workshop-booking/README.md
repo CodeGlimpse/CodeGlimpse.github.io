@@ -1,65 +1,66 @@
-# 拾光工坊｜手作课程预约预览
+# 三间独立材料工坊
 
-独立 Hugo 静态站，展示六门原创虚构手作课程与 2026 年 10 月的十二个固定示例场次。陶艺、印刷、花艺各有两门课程，每门两场，余位范围为 0–6 人，包含满额场次。陶土橙、奶油纸与深靛蓝构成页面配色，课程封面由原生 SVG 绘制，不使用外部字体、图片、主题或运行时依赖。
+本目录可单独复制为一个 Hugo 静态站。三套场景分别拥有自己的品牌、课程、材料说明、示例期间、首页和说明页，每套六门课、十二场固定排期。日期、容量、金额与预览使用同一组核心脚本。页面不加载外部字体、图片、CDN 或远程数据，没有账户、后台或真实预约接口。
 
-可按手作分类和日期筛选，选择课程、场次及 1–6 人，查看课程、日期、时段、人数、单价与合计组成的“预约单预览”。也可直接从完整排期选场次。满额场次不可选；人数超过所选场次的示例余位时保留场次，提示余位不足并禁用预览。课程切换、筛选或人数变更都会清空旧预览；课程或日期变化导致当前场次不适用时，需要重新选场。
+| 场景 | 品牌、期间、课程 | 布局与原创本地素材 | 内容、数据目录 |
+| --- | --- | --- | --- |
+| classic | 拾光工坊，2026 年 10 月：陶艺、印刷、花艺各两门 | 综合材料展架、完整排期、常驻预约面板；六幅 CSS/SVG 手作图示 | `content/`、`data/` |
+| calendar | 岸陶工房，2026 年 11 月：手捏、拉坯、施釉各两门 | 月历先选日期、当日独立详情、整月入口；六幅陶器图示与泥料工具插画 | `variants/calendar/content/`、`variants/calendar/data/` |
+| agenda | 折页印作社，2026 年 12 月：纸艺、版画、装帧各两门 | 三步课程、场次、人数预览；折痕与对位印记、纸上工作票、六幅纸艺版画图示 | `variants/agenda/content/`、`variants/agenda/data/` |
 
-这是**虚构演示 · 预约预览**，所有品牌、课程、材料、价格和余位均为虚构示例。余位不是实时库存。页面不收集姓名或电话，没有登录、支付、后台、真实预约、存储或数据请求；不提交信息、不锁定名额。刷新页面重置选择。关闭 JavaScript 后仍展示完整六门课程与十二场排期，控件保持禁用并说明只读状态。
-
-## 三种展示模板
-
-入场券向导优先展示课程：手机步骤条保持紧凑，课程只保留一层可见标题，示意票券放在最后的核对步骤。步骤焦点通过 `data-agenda-heading` 定位，不依赖标题的视觉容器；前进或返回后会聚焦当前步骤标题。
-
-`agenda`：紫色手作入场券，按“选择课程 → 挑选场次 → 人数与预览”分成三步。选课后才可进入场次页，选场后才可进入人数页；前进、返回和顶部步骤按钮会切换真实步骤，并把焦点送到该步标题。返回保留已选内容，更换课程或日期会清除不适用的场次和旧预览；人数仍受 1–6 人与示例余位约束。关闭 JavaScript 时三个步骤全部展开，课程和十二场排期均可只读浏览，导航与预约控件保持禁用。额外加载 `static/css/agenda.css`，步骤增强在已有 `booking.js` 中按模板启用。集成地址为 `/demos/variants/workshop-booking/agenda/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'agenda'`。
-
-`site.Params.demoTemplate` 未设置时使用 `classic`，保留课程卡片、日期列表与预约预览的原有顺序。设置为 `calendar` 后，页面使用午夜蓝月视图：左侧为按周一至周日排列的完整十月日历，右侧为所选日期的课程、场次与预约单面板；窄屏按月视图、当天计划顺序排列。31 天完整保留，有排期的日期格在手机上也展示课程名和开始时间。先选日期再展开当天内容，也可选择“查看整月课程与排期”。满额日期仍能查看说明，满额场次继续禁用。说明页沿用深蓝导航与面板外观。其他模板 ID 会触发 `errorf` 构建错误。
-
-日历按钮增强现有 `#date-filter`，课程、场次、人数和金额仍由同一份 `booking.js` 状态与 `booking-core.js` 管理。切换日期会清除原先的课程、场次和预览；人数改变时仍保留所选场次并校验余位。日期按钮支持 Tab、Enter、空格，也支持方向键、Home 和 End 在有排期的日期间移动焦点。重置后回到日期入口，焦点落在仍可见的日期筛选。
-
-三版共用 `workshop-*.html` 业务内容 partial、六门课程与十二场排期，不复制数据。`calendar-page.html` 与 `agenda-page.html` 分别组织月视图和入场券向导。关闭 JavaScript 后，日历、全部课程、全部场次仍可阅读，日期与预约控件保持禁用。`css/site.css` 始终加载，两份模板 CSS 按版本加载；没有额外的 JavaScript 资产、存储或请求。
-
-集成地址为原版 `/demos/workshop-booking/` 与日历版 `/demos/variants/workshop-booking/calendar/`。模板切换入口由集成构建提供，并保持说明页的 `about/` 路由；独立站可用 `[params] demoTemplate = 'calendar'` 或 `HUGO_PARAMS_DEMOTEMPLATE=calendar` 选择外观。
+所有数据都使用 `schedule.json` basename，十八门课程的 ID、书写说明与标题互不复用，三个期间也各不相同。首页 frontmatter 保存品牌、期间、主题色、图标和独立说明文案，页头、页脚、meta、日历和说明页使用当前首页。现有集成 URL 保留：`/demos/workshop-booking/`、`/demos/variants/workshop-booking/calendar/`、`/demos/variants/workshop-booking/agenda/`。
 
 ## 独立预览与构建
 
-使用仓库约定的 Hugo 0.157.0。在本目录运行 `hugo server`；或构建到临时目录并检查带前缀的资源与导航：
+使用 Hugo 0.157.0、Python 3.10 以上。在本目录成套选择版式、内容与数据：
 
-```powershell
-hugo --destination "$env:TEMP\workshop-booking-build" --baseURL 'https://example.github.io/workshop-booking/' --minify --panicOnWarning
-python -B -X utf8 scripts/check_build.py "$env:TEMP\workshop-booking-build" --base-url 'https://example.github.io/workshop-booking/' --check-demo-pages
-```
+~~~powershell
+hugo server
+hugo server --config hugo.toml,variants/calendar/config.toml
+hugo server --config hugo.toml,variants/agenda/config.toml
+~~~
 
-示例地址用于检查子路径，不表示已部署。脚本独立检查本 demo 的首页、说明页、本地 CSS/JS、资源导航、唯一主标题、首个跳转链接、完整静态排期与演示声明，不依赖主站输出。`--check-demo-pages` 检查原始演示约束，改造成其他数据结构后可省略该选项，仅检查链接和输出文件。
+`hugo.toml` 默认为 classic；两个 variant config 同时设置 `params.demoTemplate`、`contentDir` 与 `dataDir`。陶艺日历的子路径构建示例：
 
-默认不设置 `demoCatalogURL`，独立站不显示主站返回链接。集成时由外部配置提供 `[params] demoCatalogURL`，页面才显示文字为“← 返回演示目录”的 `a[data-demo-catalog]`。这个链接是唯一有意跨出演示前缀的本地导航；集成检查需传入精确路径，例如 `--catalog-url /demos/`，带站点前缀时应使用实际目录路径。脚本只放行标记链接与传入路径的精确匹配。
+~~~powershell
+hugo --config hugo.toml,variants/calendar/config.toml --destination 'F:/agents/code/temp/workshop-calendar-build' --baseURL 'https://example.test/review/workshop-calendar/' --minify --panicOnWarning
+python -B -X utf8 scripts/check_build.py 'F:/agents/code/temp/workshop-calendar-build' --base-url 'https://example.test/review/workshop-calendar/' --check-demo-pages
+~~~
 
-## 更新课程与排期
+classic 使用 `--config hugo.toml`；agenda 使用 `--config hugo.toml,variants/agenda/config.toml`，并调整输出路径及 base URL。构建不依赖父仓库主题或脚本，不需要安装额外依赖；示例 URL 不表示已发布。
 
-- `content/_index.md`：首页标题和简介。
-- `content/about/index.md`：虚构数据边界、操作与隐私说明。
-- `data/schedule.json`：唯一课程与场次来源；静态 HTML 和内嵌脚本数据由此共同生成。
-- `layouts/partials/course-art.html`：本地 SVG 手作图案；`layouts/` 和 `static/css/site.css`：结构与响应式样式。
-- `static/js/booking-core.js`：数据校验、筛选、选择协调和整数分金额计算，支持 CommonJS 与 `window.WorkshopBooking`。
-- `static/js/booking.js`：启用静态控件、保留可操作元素的焦点、更新选中状态与页面内预览；日历日期导航和入场券步骤仅在对应模板启用。
+## 场景菜单
 
-数据结构为 `{ "month": "2026-10", "courses": [...], "sessions": [...] }`：
+主站通过 `demoTemplate`、`contentDir` 与 `dataDir` 注入当前场景。场景链接总是进入对应首页，提示“不同场景，切换后进入对应首页，临时操作将重置。”。独立模式默认没有主站入口，仅设置 `params.demoCatalogURL` 才显示“← 返回演示目录”。检查器的 `--catalog-url` 与多个 `--template-url` 只允许精确匹配的标记链接使用路径例外。
 
-| 记录 | 字段与约束 |
-| --- | --- |
-| 课程 | 唯一 `id`；`title`、`description`、`materials`、`level`、`art` 为非空字符串；`category` 为陶艺、印刷或花艺；`priceCents` 为非负安全整数分；`durationMinutes` 为正整数 |
-| 场次 | 唯一 `id`；`courseId` 对应课程；`date` 为该月份内有效 `YYYY-MM-DD`；`start`、`end` 为 `HH:mm` 且结束晚于开始，时长匹配课程；`remaining` 为 0–6 的整数 |
+## 内容、数据与视觉
 
-更新数据后重新构建即可同步静态课程、排期、日期选项与脚本。日期星期由明确 UTC 日期计算，保持跨时区一致；课程费用按 `priceCents × quantity` 计算，展示时转换为两位小数。扩大分类、月份、人数或余位范围时，应同步模板、核心校验、说明页和对应测试。
+- 各 `content/` 与 `variants/*/content/`：独立首页和排期说明。
+- 各 `data/schedule.json`：当前场景的唯一课程与排期来源；页面和内嵌 JSON 同源。
+- `layouts/partials/course-art.html`：十八幅原创 SVG 课程图示。`static/illustrations/`：陶艺工具、纸艺工具与各场景图标，全部在本地。
+- `static/css/site.css`：综合手作使用材料白 `#f0eee8`、砖色 `#a05433`、灰绿墨色 `#2f3b40`、次文 `#615f56`、纤维灰 `#cfcbbf`；本机宋体标题配材料展架。
+- `static/css/calendar.css`：矿物白 `#e5eceb`、瓷白 `#f7faf8`、青釉 `#235c61`、灰绿 `#506c6d`、坯料灰 `#b2c7c3`；完整星期网格保留课程名与开始时间。
+- `static/css/agenda.css`：纸白 `#edf0fa`、印刷蓝 `#294da5`、对位红 `#d9454a`、试印黄 `#f6cd3c`、次文 `#53658d`；真实操作顺序配折页工作票。
+- `static/js/booking-core.js`：所有场景共用数据校验、UTC 日期、容量与金额。`booking.js`：筛选、焦点、三步门槛、日历和预约预览。
 
-模板自动转义课程文字；`application/json` 内嵌数据使用 Hugo `jsonify` 默认 HTML 转义加 `safeJS`，保留对结束脚本等特殊文本的防护。动态文本通过 `textContent` 更新。筛选采用隐藏既有元素的方式保留焦点，不重新创建课程或场次按钮。
+课程字段为 `id`、`title`、`category`、`description`、`materials`、`level`、`durationMinutes`、`priceCents`、`art`。分类从当前课程推导，ID 必须唯一且安全；文本非空，分类拒绝 HTML、空格边界和保留值 all。价格为非负安全整数分，乘以最多六人仍为安全整数；时长为正整数，art 必须对应支持的本地图示。
+
+场次字段为 `id`、`courseId`、`date`、`start`、`end`、`remaining`。日期属于当前 month，年月与实际日历日期有效；24 小时时段的结束晚于开始，时长与课程一致；余位为 0—6 的整数，每门课程有场次。
+
+## 交互与演示边界
+
+选择课程后选择对应场次。分类或日期改变会清除不再符合条件的场次；换课清除旧场次。每份预览 1—6 人，不超过示例余位。满额不可选择；超额保留当前场次并提示余位不足，停用预览按钮。费用以整数分乘人数计算。
+
+日历使用当前 schedule.month 计算首日、天数与周一开始的网格。电脑日期格展示课程与时间；手机日期格保留日期、场次数和满额提示，选定一天后在详情区查看完整课程与时间，避免小字挤满七列。整月恢复全部数据。Arrow、Home、End 键移动日期焦点，Enter/Space 选择日期，重置返回日期入口。
+
+三步流程依次选择课程、挑选场次、人数与预览；下一步按选择状态启用，上一步保留状态，换课清除旧场次与预览。页面提供可见焦点与简短状态播报，动效尊重 prefers-reduced-motion。
+
+预约预览只在当前页面内存中生成，刷新、离开或切换场景即重置。不收集个人信息，不读写浏览器持久化存储，不提交信息、锁定名额、付款或发送通知。所有课程、价格和余位均为虚构固定示例。
+
+关闭 JavaScript 后六门课程、材料、价格、十二场排期仍可读，日历完整展示当月日期，三步流程全部展开；选课、筛选、人数与预览控件禁用。
 
 ## 验证
 
-从仓库根目录运行受影响测试；浏览器验证需要先由主站构建流程输出本 demo：
+`scripts/check_build.py --check-demo-pages` 检查页面、资源、子路径、声明及两份 defer 脚本，将六门静态课程和十二场排期的 ID、文案、金额、余位及时间逐项对照内嵌 JSON 和当前场景源文件。
 
-```powershell
-node --test tests/workshop-booking.test.cjs
-npx.cmd playwright test e2e/workshop-booking.spec.cjs --workers=1
-```
-
-Node 测试覆盖日期与数据、余位、课程归属、整数分金额、人数与非法 ID/筛选协调。浏览器套件通过 demo registry 覆盖三个模板及各自说明页，验证实际选课预览、离线和禁用存储、人数不足与旧摘要清除、键盘焦点、320/390 像素手机和无 JavaScript 的完整只读排期；日历另外检查周一开头的完整月格和手机格内课程时间，入场券另外检查步骤准入、前进返回、选择保留与换课失效。
+父仓库中 `node --test tests/workshop-booking.test.cjs` 覆盖三套场景、日期、时段、余位、换课、金额、无效数据和场景独立性。`e2e/workshop-booking.spec.cjs` 读取当前 dataDir，覆盖真实日期与月份、满额、超额、金额、三步、日历键盘、320/390/800/1280 像素、无存储与无 JavaScript。单独复制本目录构建时无需这些父仓库测试。

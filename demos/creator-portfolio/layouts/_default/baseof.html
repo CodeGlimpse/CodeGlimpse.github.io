@@ -7,11 +7,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {{ $description := .Site.Params.description }}
+    {{ $description := site.Home.Params.summary }}
     {{ with .Params.summary }}{{ $description = . }}{{ end }}
     <meta name="description" content="{{ $description }}">
-    <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
-    <link rel="icon" type="image/svg+xml" href="{{ "favicon.svg" | relURL }}">
+    <title>{{ if .IsHome }}{{ .Title }}{{ else }}{{ .Title }} · {{ site.Home.Title }}{{ end }}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ site.Home.Params.favicon | default "favicon.svg" | relURL }}">
     <link rel="stylesheet" href="{{ "css/site.css" | relURL }}">
     <link rel="stylesheet" href="{{ "css/demo-templates.css" | relURL }}">
     {{ if eq $template "editorial" }}<link rel="stylesheet" href="{{ "css/editorial.css" | relURL }}">{{ end }}
@@ -29,11 +29,10 @@
       <div class="shell header-inner">
         <a class="brand" href="{{ site.Home.RelPermalink }}" aria-label="返回作品集首页">
           <span class="brand-mark" aria-hidden="true"></span>
-          <span>{{ .Site.Params.siteLabel }}</span>
+          <span>{{ site.Home.Params.brand }}</span>
         </a>
         <nav class="site-nav" aria-label="主导航">
-          <a href="{{ (site.GetPage "/works").RelPermalink }}" {{ if eq .Section "works" }}aria-current="page"{{ end }}>图片作品</a>
-          <a href="{{ (site.GetPage "/projects").RelPermalink }}" {{ if eq .Section "projects" }}aria-current="page"{{ end }}>项目案例</a>
+          {{ range slice "works" "projects" }}{{ $section := site.GetPage (printf "/%s" .) }}<a href="{{ $section.RelPermalink }}"{{ if eq $.Section . }} aria-current="page"{{ end }}>{{ $section.Title }}</a>{{ end }}
         </nav>
       </div>
     </header>
@@ -43,7 +42,7 @@
 
     <footer class="site-footer">
       <div class="shell footer-inner">
-        {{ with .Site.Params.footerNote }}<p>{{ . }}</p>{{ end }}
+        {{ with site.Home.Params.footerNote }}<p>{{ . }}</p>{{ end }}
         <a href="{{ site.Home.RelPermalink }}">返回首页 ↑</a>
       </div>
     </footer>

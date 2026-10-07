@@ -2,7 +2,7 @@
 {{ $schedule := site.Data.schedule }}
 {{ $template := site.Params.demoTemplate | default "classic" }}
 {{ $context := dict "schedule" $schedule "template" $template }}
-<main id="main" class="shell booking-page" data-workshop tabindex="-1">
+<main id="main" class="shell booking-page" data-workshop data-month-summary="{{ .Params.calendarHeading }}" tabindex="-1">
   {{ if eq $template "agenda" }}
   {{ partial "agenda-page.html" (dict "page" . "context" $context) }}
   {{ else if eq $template "calendar" }}

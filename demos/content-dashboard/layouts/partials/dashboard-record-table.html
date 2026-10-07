@@ -1,4 +1,5 @@
 {{ $entries := . }}
+{{ $domains := partial "dashboard-domains.html" $entries }}
 <div class="table-wrap">
   <table class="content-table">
     <caption class="sr-only">内容记录：标题、发布日期、渠道、阅读次数、互动次数和互动率；默认按阅读次数降序。</caption>
@@ -10,7 +11,7 @@
       <tr data-entry-id="{{ .id }}">
         <td class="content-title" data-cell="title" data-label="内容">{{ .title }}</td>
         <td class="date-cell" data-cell="published" data-label="发布日期"><time datetime="{{ .published }}">{{ .published }}</time></td>
-        <td data-cell="channel" data-label="渠道"><span class="channel-badge{{ if eq .channel "博客" }} badge-blog{{ else if eq .channel "视频" }} badge-video{{ else }} badge-community{{ end }}">{{ .channel }}</span></td>
+        <td data-cell="channel" data-label="渠道"><span class="channel-badge badge-{{ $channel := .channel }}{{ range $index, $name := $domains.channels }}{{ if eq $name $channel }}{{ $index }}{{ end }}{{ end }}">{{ .channel }}</span></td>
         <td class="numeric" data-cell="views" data-label="阅读次数">{{ partial "number.html" .views }}</td>
         <td class="numeric" data-cell="interactions" data-label="互动次数">{{ partial "number.html" .interactions }}</td>
         <td class="numeric rate-cell" data-cell="rate" data-label="互动率">{{ printf "%.2f%%" $rate }}</td>

@@ -44,6 +44,12 @@ class PageChecker(HTMLParser):
         self.course_ids: list[str] = []
         self.session_ids: list[str] = []
         self.deferred_scripts: set[str] = set()
+        self.template = "classic"
+        self.current_course: str | None = None
+        self.current_session: str | None = None
+        self.course_text: dict[str, list[str]] = {}
+        self.session_text: dict[str, list[str]] = {}
+        self.session_times: dict[str, list[str]] = {}
 
     def check_url(self, raw: str) -> None:
         if not raw or raw.startswith(("#", "mailto:", "data:")):
@@ -74,6 +80,8 @@ class PageChecker(HTMLParser):
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         values = dict(attrs)
+        if tag == "body":
+            self.template = values.get("data-template") or "classic"
         if tag == "main":
             self.main_depth += 1
             self.main_count += 1
@@ -90,8 +98,15 @@ class PageChecker(HTMLParser):
             self.catalog_text = []
         if tag == "button" and values.get("data-course-id"):
             self.course_ids.append(values["data-course-id"])
+            self.current_course = values["data-course-id"]
+            self.course_text[self.current_course] = []
         if tag == "li" and values.get("data-session-id"):
             self.session_ids.append(values["data-session-id"])
+            self.current_session = values["data-session-id"]
+            self.session_text[self.current_session] = []
+            self.session_times[self.current_session] = []
+        if tag == "time" and self.current_session:
+            self.session_times[self.current_session].append(values.get("datetime") or "")
         if tag == "script":
             self.in_booking_data = values.get("id") == "booking-data" and values.get("type") == "application/json"
             if values.get("src") and "defer" in values:
@@ -113,6 +128,10 @@ class PageChecker(HTMLParser):
             self.check_url(raw)
 
     def handle_endtag(self, tag: str) -> None:
+        if tag == "button":
+            self.current_course = None
+        if tag == "li":
+            self.current_session = None
         if tag == "main":
             self.main_depth = max(0, self.main_depth - 1)
         if tag == "a" and self.catalog_text is not None:
@@ -123,6 +142,10 @@ class PageChecker(HTMLParser):
             self.in_booking_data = False
 
     def handle_data(self, data: str) -> None:
+        if self.current_course:
+            self.course_text[self.current_course].append(data)
+        if self.current_session:
+            self.session_text[self.current_session].append(data)
         if self.catalog_text is not None:
             self.catalog_text.append(data)
         if self.in_booking_data:
@@ -150,8 +173,36 @@ class PageChecker(HTMLParser):
             session_ids = [session["id"] for session in data["sessions"]]
             if len(course_ids) != 6 or len(session_ids) != 12 or sorted(course_ids) != sorted(self.course_ids) or sorted(session_ids) != sorted(self.session_ids):
                 self.errors.append(f"{self.page}: static courses and sessions must match the complete embedded schedule")
-        except (ValueError, KeyError, TypeError):
-            self.errors.append(f"{self.page}: missing or invalid application/json booking data")
+            if self.template not in ("classic", "calendar", "agenda"):
+                raise ValueError("unsupported workshop scene")
+            source = Path(__file__).resolve().parents[1]
+            folder = source if self.template == "classic" else source / "variants" / self.template
+            if data != json.loads((folder / "data/schedule.json").read_text(encoding="utf-8")):
+                raise ValueError("embedded schedule must match the selected scene data")
+            if len(set(course_ids)) != 6 or len(set(session_ids)) != 12:
+                raise ValueError("duplicate course or session IDs")
+            for course in data["courses"]:
+                text = " ".join("".join(self.course_text[course["id"]]).split())
+                cents = course["priceCents"]
+                if not isinstance(cents, int) or isinstance(cents, bool) or cents < 0 or cents * 6 > 9007199254740991:
+                    raise ValueError("unsafe integer-cent price")
+                fields = [course["title"], course["category"], course["description"], course["materials"],
+                          course["level"], f"¥{cents // 100}.{cents % 100:02d}", f"{course['durationMinutes']} 分钟"]
+                if any(field not in text for field in fields):
+                    raise ValueError(f"incomplete static course: {course['id']}")
+            for session in data["sessions"]:
+                remaining = session["remaining"]
+                if not isinstance(remaining, int) or isinstance(remaining, bool) or not 0 <= remaining <= 6:
+                    raise ValueError("invalid bounded capacity")
+                text = " ".join("".join(self.session_text[session["id"]]).split())
+                course = next(course for course in data["courses"] if course["id"] == session["courseId"])
+                if course["title"] not in text or f"示例余位 {remaining} 人" not in text:
+                    raise ValueError(f"incomplete static session: {session['id']}")
+                expected_times = [f"{session['date']}T{session[key]}:00" for key in ("start", "end")]
+                if self.session_times[session["id"]] != expected_times or not session["date"].startswith(data["month"] + "-"):
+                    raise ValueError(f"session dates and times must match source: {session['id']}")
+        except (ValueError, KeyError, TypeError, OSError, StopIteration):
+            self.errors.append(f"{self.page}: missing, incomplete or invalid application/json booking data")
 
 
 def main() -> int:

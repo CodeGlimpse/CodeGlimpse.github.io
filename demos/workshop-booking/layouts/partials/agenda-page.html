@@ -1,13 +1,13 @@
 {{ $page := .page }}
 {{ $context := .context }}
 <header class="agenda-intro">
-  <div><h1>{{ $page.Params.heading }}</h1><p>{{ $page.Params.intro }}</p></div>
+  <div><p class="eyebrow">{{ $page.Params.periodLabel }} / {{ $page.Params.sceneLabel }}</p><h1>{{ $page.Params.heading }}</h1><p>{{ $page.Params.intro }}</p></div><img class="agenda-material-art" src="{{ "illustrations/paper-tools.svg" | relURL }}" alt="本场景原创材料插画" width="280" height="180">
 </header>
 <div class="agenda-layout" data-agenda>
   <nav class="agenda-steps" aria-label="预约预览步骤">
     <button type="button" data-agenda-goto="0" aria-controls="agenda-course-step" disabled><span>01</span><strong>选择课程</strong><small>找一点新灵感</small></button>
     <button type="button" data-agenda-goto="1" aria-controls="agenda-session-step" disabled><span>02</span><strong>挑选场次</strong><small>圈出一个日子</small></button>
-    <button type="button" data-agenda-goto="2" aria-controls="agenda-preview-step" disabled><span>03</span><strong>人数与预览</strong><small>核对这张入场券</small></button>
+    <button type="button" data-agenda-goto="2" aria-controls="agenda-preview-step" disabled><span>03</span><strong>人数与预览</strong><small>核对纸上工作票</small></button>
   </nav>
   <div class="agenda-stage">
     <section id="agenda-course-step" class="agenda-step" data-agenda-step="0" aria-labelledby="agenda-course-heading">
@@ -21,8 +21,8 @@
       <div class="agenda-step-actions"><button type="button" data-agenda-back="0" disabled>← 返回课程</button><button type="button" data-agenda-next="2" disabled>下一步：人数与预览 <span aria-hidden="true">→</span></button></div>
     </section>
     <section id="agenda-preview-step" class="agenda-step" data-agenda-step="2" aria-labelledby="agenda-preview-heading">
-      <div class="agenda-step-heading"><span>STEP 03 / 03</span><h2 id="agenda-preview-heading" tabindex="-1" data-agenda-heading>核对你的手作入场券</h2><p>选好人数，再生成一份只保留在本页的预约单。</p></div>
-  <div class="agenda-admission"><span>OCT / 2026</span><strong>给自己<br>一张慢时光入场券</strong><span>{{ site.Params.demoNotice }} · 固定示例</span></div>
+      <div class="agenda-step-heading"><span>STEP 03 / 03</span><h2 id="agenda-preview-heading" tabindex="-1" data-agenda-heading>核对你的纸上工作票</h2><p>选好人数，再生成一份只保留在本页的预约单。</p></div>
+  <div class="agenda-admission"><span>{{ $page.Params.periodShort }}</span><strong>纸张与墨色<br>本页工作票</strong><span>{{ site.Params.demoNotice }} · 固定示例</span></div>
       {{ partial "workshop-booking-panel.html" $context }}
       <div class="agenda-step-actions"><button type="button" data-agenda-back="1" disabled>← 返回场次</button><span>没有信息被提交，也不会锁定名额。</span></div>
     </section>

@@ -2,13 +2,13 @@
   {
     "id": "creator-portfolio",
     "source": "demos/creator-portfolio",
-    "brand": "弧光 / PORTFOLIO",
+    "brand": "岛页 / 拾度 / 回声单元",
     "copy": {
       "zh-cn": {
         "title": "创作者作品集",
         "label": "原创虚构示例",
-        "description": "浏览图片作品与项目案例，查看电脑和手机上的作品展示。",
-        "previewAlt": "创作者作品集首页的真实页面截图，包含标题、导航和原创虚构作品",
+        "description": "浏览插画、品牌设计和数字艺术三套独立作品集，查看各自的作品与创作过程。",
+        "previewAlt": "浏览插画、品牌设计和数字艺术三套独立作品集，查看各自的作品与创作过程。",
         "features": [
           "图片画廊",
           "项目案例",
@@ -16,10 +16,10 @@
         ]
       },
       "en": {
-        "title": "Creator portfolio",
+        "title": "Creator portfolios",
         "label": "Fictional · Chinese",
-        "description": "Explore a gallery and project stories with original fictional content. Demo pages are in Chinese.",
-        "previewAlt": "Screenshot of the creator portfolio homepage, showing its heading, navigation, and original fictional artwork",
+        "description": "Explore independent illustration, brand design, and digital art collections with their own project stories.",
+        "previewAlt": "Explore independent illustration, brand design, and digital art collections with their own project stories.",
         "features": [
           "Image gallery",
           "Project stories",
@@ -62,27 +62,34 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "作品画廊",
-            "description": "浏览图片作品与项目案例，查看电脑和手机上的作品展示。",
-            "previewAlt": "创作者作品集首页的真实页面截图，包含标题、导航和原创虚构作品",
+            "name": "岛页 · 插画画廊",
+            "description": "从窗边日常到纸上风景，以叙事插画和图文项目记录观察。",
+            "previewAlt": "岛页 · 插画画廊首页的真实页面截图",
             "features": [
-              "图片画廊",
-              "项目案例",
+              "叙事插画",
+              "图文项目",
               "作品详情"
             ]
           },
           "en": {
-            "name": "Gallery",
-            "description": "Explore a gallery and project stories with original fictional content. Demo pages are in Chinese.",
-            "previewAlt": "Screenshot of the creator portfolio homepage, showing its heading, navigation, and original fictional artwork",
+            "name": "Daoye illustration",
+            "description": "Narrative illustrations and illustrated projects follow everyday observations and paper landscapes.",
+            "previewAlt": "Screenshot of the Daoye illustration homepage",
             "features": [
-              "Image gallery",
-              "Project stories",
+              "Narrative illustration",
+              "Illustrated projects",
               "Work details"
             ]
           }
         },
-        "assets": []
+        "assets": [],
+        "contentDir": "content",
+        "checks": {
+          "requiredText": [
+            "虚构演示",
+            "岛页"
+          ]
+        }
       },
       {
         "id": "editorial",
@@ -94,30 +101,37 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "钴蓝作品海报",
-            "description": "以钴蓝海报开场，沿章节导航阅读同一组作品与项目。",
-            "previewAlt": "创作者作品集「钴蓝作品海报」模板的真实页面截图",
+            "name": "拾度 · 品牌设计",
+            "description": "沿品牌项目章节浏览视觉系统、应用样稿与设计说明。",
+            "previewAlt": "拾度 · 品牌设计首页的真实页面截图",
             "features": [
-              "海报首屏",
-              "章节导航",
-              "滚动过渡"
+              "品牌系统",
+              "应用样稿",
+              "项目章节"
             ]
           },
           "en": {
-            "name": "Cobalt poster",
-            "description": "A cobalt poster opens a chapter-led journey through the same works and projects.",
-            "previewAlt": "Screenshot of the Cobalt poster template for Creator portfolio",
+            "name": "Shidu brand design",
+            "description": "Follow brand project chapters through visual systems, applications, and design decisions.",
+            "previewAlt": "Screenshot of the Shidu brand design homepage",
             "features": [
-              "Poster opening",
-              "Chapter navigation",
-              "Scroll transitions"
+              "Brand systems",
+              "Applications",
+              "Project chapters"
             ]
           }
         },
         "assets": [
           "css/editorial.css",
           "js/editorial.js"
-        ]
+        ],
+        "contentDir": "variants/editorial/content",
+        "checks": {
+          "requiredText": [
+            "虚构演示",
+            "拾度"
+          ]
+        }
       },
       {
         "id": "archive",
@@ -129,32 +143,40 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "数字档案",
-            "description": "在暗色索引中选择作品，通过并排预览查看同一份创作档案。",
-            "previewAlt": "创作者作品集「数字档案」模板的真实页面截图",
+            "name": "回声单元 · 数字艺术",
+            "description": "从作品索引选择数字图像，预览构图并阅读各自的创作规则。",
+            "previewAlt": "回声单元 · 数字艺术首页的真实页面截图",
             "features": [
-              "编号索引",
+              "作品索引",
               "并排预览",
-              "作品档案"
+              "创作规则"
             ]
           },
           "en": {
-            "name": "Digital archive",
-            "description": "Select entries in a dark index and preview the same work archive beside it.",
-            "previewAlt": "Screenshot of the Digital archive template for Creator portfolio",
+            "name": "Echo Unit digital art",
+            "description": "Select digital works from an archive, preview their compositions, and read their construction rules.",
+            "previewAlt": "Screenshot of the Echo Unit digital art homepage",
             "features": [
-              "Numbered index",
+              "Work index",
               "Split preview",
-              "Work archive"
+              "Construction rules"
             ]
           }
         },
         "assets": [
           "css/archive.css",
           "js/archive.js"
-        ]
+        ],
+        "contentDir": "variants/archive/content",
+        "checks": {
+          "requiredText": [
+            "虚构演示",
+            "回声单元"
+          ]
+        }
       }
-    ]
+    ],
+    "differentContent": true
   },
   {
     "id": "photo-portfolio",
@@ -341,13 +363,13 @@
   {
     "id": "content-dashboard",
     "source": "demos/content-dashboard",
-    "brand": "观数 / FIELDNOTES",
+    "brand": "桌边 / 灯塔 / 第七镜",
     "copy": {
       "zh-cn": {
-        "title": "内容运营看板",
+        "title": "内容看板",
         "label": "交互演示 · 虚构数据",
-        "description": "按月份、渠道与关键词筛选内容，查看同步更新的指标、图表和排序明细。",
-        "previewAlt": "内容运营看板的真实页面截图，包含筛选、汇总指标、渠道条形图和虚构内容明细",
+        "description": "从编辑部、品牌传播和视频栏目三个场景查看不同记录、渠道与统计结果。",
+        "previewAlt": "从编辑部、品牌传播和视频栏目三个场景查看不同记录、渠道与统计结果。",
         "features": [
           "组合筛选",
           "图表联动",
@@ -355,10 +377,10 @@
         ]
       },
       "en": {
-        "title": "Content dashboard",
+        "title": "Content dashboards",
         "label": "Interactive · Fictional data",
-        "description": "Filter by month, channel, and keyword to explore linked metrics, charts, and sortable records. In Chinese.",
-        "previewAlt": "Screenshot of the content dashboard with filters, summary metrics, channel bars, and fictional content records",
+        "description": "Explore distinct editorial, brand communication, and video records, channels, and reporting views.",
+        "previewAlt": "Explore distinct editorial, brand communication, and video records, channels, and reporting views.",
         "features": [
           "Combined filters",
           "Linked charts",
@@ -397,27 +419,36 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "数据总览",
-            "description": "按月份、渠道与关键词筛选内容，查看同步更新的指标、图表和排序明细。",
-            "previewAlt": "内容运营看板的真实页面截图，包含筛选、汇总指标、渠道条形图和虚构内容明细",
+            "name": "桌边 · 编辑部运营",
+            "description": "按月份和渠道整理编辑部稿件，联动查看阅读、互动和内容明细。",
+            "previewAlt": "桌边 · 编辑部运营首页的真实页面截图",
             "features": [
-              "组合筛选",
-              "图表联动",
-              "明细排序"
+              "稿件记录",
+              "渠道分布",
+              "组合筛选"
             ]
           },
           "en": {
-            "name": "Overview",
-            "description": "Filter by month, channel, and keyword to explore linked metrics, charts, and sortable records. In Chinese.",
-            "previewAlt": "Screenshot of the content dashboard with filters, summary metrics, channel bars, and fictional content records",
+            "name": "Desknote editorial desk",
+            "description": "Filter editorial articles by month and channel to inspect linked readership, engagement, and records.",
+            "previewAlt": "Screenshot of the Desknote editorial desk homepage",
             "features": [
-              "Combined filters",
-              "Linked charts",
-              "Sortable records"
+              "Editorial records",
+              "Channel distribution",
+              "Combined filters"
             ]
           }
         },
-        "assets": []
+        "assets": [],
+        "contentDir": "content",
+        "dataDir": "data",
+        "checks": {
+          "requiredText": [
+            "虚构演示",
+            "示例数据",
+            "桌边"
+          ]
+        }
       },
       {
         "id": "workspace",
@@ -429,30 +460,39 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "暗色内容工作台",
-            "description": "在应用式工作台切换总览与记录，打开抽屉查看同一批内容明细。",
-            "previewAlt": "内容运营看板「暗色内容工作台」模板的真实页面截图",
+            "name": "灯塔 · 品牌传播",
+            "description": "在传播工作台比较官网、社媒与邮件记录，展开单条数据查看详情。",
+            "previewAlt": "灯塔 · 品牌传播首页的真实页面截图",
             "features": [
-              "视图切换",
-              "侧栏筛选",
-              "明细抽屉"
+              "传播渠道",
+              "数据抽屉",
+              "月份比较"
             ]
           },
           "en": {
-            "name": "Dark workspace",
-            "description": "Switch overview and record views in an app-like workspace and inspect records in a drawer.",
-            "previewAlt": "Screenshot of the Dark workspace template for Content dashboard",
+            "name": "Lumen communications",
+            "description": "Compare website, social, and email communications in a workspace with individual record details.",
+            "previewAlt": "Screenshot of the Lumen communications homepage",
             "features": [
-              "View switching",
-              "Sidebar filters",
-              "Record drawer"
+              "Communication channels",
+              "Record drawer",
+              "Monthly comparisons"
             ]
           }
         },
         "assets": [
           "css/workspace.css",
           "js/dashboard-presentation.js"
-        ]
+        ],
+        "contentDir": "variants/workspace/content",
+        "dataDir": "variants/workspace/data",
+        "checks": {
+          "requiredText": [
+            "虚构演示",
+            "示例数据",
+            "灯塔"
+          ]
+        }
       },
       {
         "id": "report",
@@ -464,43 +504,53 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "橙色数据简报",
-            "description": "按橙白简报章节阅读相同指标和图表，按需展开记录明细。",
-            "previewAlt": "内容运营看板「橙色数据简报」模板的真实页面截图",
+            "name": "第七镜 · 视频复盘",
+            "description": "沿报告章节回看正片、幕后和预告内容，查看图表与完整记录。",
+            "previewAlt": "第七镜 · 视频复盘首页的真实页面截图",
             "features": [
-              "图表章节",
-              "范围筛选",
-              "折叠明细"
+              "栏目复盘",
+              "章节图表",
+              "完整记录"
             ]
           },
           "en": {
-            "name": "Orange report",
-            "description": "Read the same metrics and charts as an orange-and-white report with collapsible records.",
-            "previewAlt": "Screenshot of the Orange report template for Content dashboard",
+            "name": "Seventh Frame video review",
+            "description": "Review episodes, behind-the-scenes videos, and trailers in a report with charts and complete records.",
+            "previewAlt": "Screenshot of the Seventh Frame video review homepage",
             "features": [
-              "Chart chapters",
-              "Scope filters",
-              "Collapsible records"
+              "Video review",
+              "Report charts",
+              "Complete records"
             ]
           }
         },
         "assets": [
           "css/report.css",
           "js/dashboard-presentation.js"
-        ]
+        ],
+        "contentDir": "variants/report/content",
+        "dataDir": "variants/report/data",
+        "checks": {
+          "requiredText": [
+            "虚构演示",
+            "示例数据",
+            "第七镜"
+          ]
+        }
       }
-    ]
+    ],
+    "differentContent": true
   },
   {
     "id": "bookstore",
     "source": "demos/bookstore",
-    "brand": "纸间 / ZHIJIAN BOOKS",
+    "brand": "纸间 / 形间 / 周末",
     "copy": {
       "zh-cn": {
-        "title": "纸间书店",
+        "title": "主题书店",
         "label": "虚构图书 · 模拟购物袋",
-        "description": "翻看原创虚构书目，按分类和书名寻找图书，体验数量调整与购物袋合计。",
-        "previewAlt": "纸间书店的真实页面截图，包含原创书籍封面、书目筛选与模拟购物袋",
+        "description": "文学、艺术与生活三家虚构书店，各有独立书目和选书方式。",
+        "previewAlt": "文学、艺术与生活三家虚构书店，各有独立书目和选书方式。",
         "features": [
           "书目搜索",
           "购物袋",
@@ -508,10 +558,10 @@
         ]
       },
       "en": {
-        "title": "Zhijian bookstore",
+        "title": "Themed bookstores",
         "label": "Fictional books · Sample bag",
-        "description": "Explore fictional books, filter the shelves, and adjust quantities in a sample book bag. In Chinese.",
-        "previewAlt": "Screenshot of Zhijian bookstore with original book covers, catalog filters, and a sample book bag",
+        "description": "Three fictional bookstores offer independent literary, art, and everyday-living collections.",
+        "previewAlt": "Three fictional bookstores offer independent literary, art, and everyday-living collections.",
         "features": [
           "Book search",
           "Book bag",
@@ -550,27 +600,36 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "纸上书架",
-            "description": "翻看原创虚构书目，按分类和书名寻找图书，体验数量调整与购物袋合计。",
-            "previewAlt": "纸间书店的真实页面截图，包含原创书籍封面、书目筛选与模拟购物袋",
+            "name": "纸间 · 文学书店",
+            "description": "从小说、诗歌和散文书架挑选读物，在模拟购物袋中核对数量与金额。",
+            "previewAlt": "纸间 · 文学书店首页的真实页面截图",
             "features": [
-              "书目搜索",
-              "购物袋",
-              "库存约束"
+              "文学书架",
+              "书名搜索",
+              "模拟购物袋"
             ]
           },
           "en": {
-            "name": "Bookshelf",
-            "description": "Explore fictional books, filter the shelves, and adjust quantities in a sample book bag. In Chinese.",
-            "previewAlt": "Screenshot of Zhijian bookstore with original book covers, catalog filters, and a sample book bag",
+            "name": "Zhijian literature",
+            "description": "Browse novels, poetry, and essays, then review quantities and totals in a sample book bag.",
+            "previewAlt": "Screenshot of the Zhijian literature homepage",
             "features": [
-              "Book search",
-              "Book bag",
-              "Stock limits"
+              "Literary shelves",
+              "Title search",
+              "Sample book bag"
             ]
           }
         },
-        "assets": []
+        "assets": [],
+        "contentDir": "content",
+        "dataDir": "data",
+        "checks": {
+          "requiredText": [
+            "虚构演示",
+            "模拟购物袋",
+            "纸间"
+          ]
+        }
       },
       {
         "id": "catalog",
@@ -582,30 +641,39 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "深夜阅览室",
-            "description": "一次细看一本书，通过书脊切换十二本书，在抽屉里整理购物袋。",
-            "previewAlt": "纸间书店「深夜阅览室」模板的真实页面截图",
+            "name": "形间 · 艺术书房",
+            "description": "在单本展台阅读图像、设计和建筑书目，用书脊导航逐本翻看。",
+            "previewAlt": "形间 · 艺术书房首页的真实页面截图",
             "features": [
+              "艺术书目",
               "单本展台",
-              "书脊导航",
-              "购物袋抽屉"
+              "书脊导航"
             ]
           },
           "en": {
-            "name": "Night reading room",
-            "description": "Explore the same twelve books one at a time, select their spines, and organize a bag drawer.",
-            "previewAlt": "Screenshot of the Night reading room template for Zhijian bookstore",
+            "name": "Xingjian art library",
+            "description": "Explore image-making, design, and architecture books on a single-book stage with spine navigation.",
+            "previewAlt": "Screenshot of the Xingjian art library homepage",
             "features": [
-              "Book stage",
-              "Spine navigation",
-              "Bag drawer"
+              "Art collection",
+              "Single-book stage",
+              "Spine navigation"
             ]
           }
         },
         "assets": [
           "css/catalog.css",
           "js/reading-presentation.js"
-        ]
+        ],
+        "contentDir": "variants/catalog/content",
+        "dataDir": "variants/catalog/data",
+        "checks": {
+          "requiredText": [
+            "虚构演示",
+            "模拟购物袋",
+            "形间"
+          ]
+        }
       },
       {
         "id": "checklist",
@@ -617,43 +685,53 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "明黄选书台",
-            "description": "在明黄选书台对照相同书目，直接调整数量并查看常驻蓝色小票。",
-            "previewAlt": "纸间书店「明黄选书台」模板的真实页面截图",
+            "name": "周末 · 生活选书",
+            "description": "按料理、居家和自然主题比较读物，在选书清单中调整数量。",
+            "previewAlt": "周末 · 生活选书首页的真实页面截图",
             "features": [
-              "紧凑记录",
-              "行内数量",
-              "常驻小票"
+              "生活主题",
+              "清单选书",
+              "数量小票"
             ]
           },
           "en": {
-            "name": "Yellow selection desk",
-            "description": "Compare the same books at a yellow selection desk with inline quantities and a blue receipt.",
-            "previewAlt": "Screenshot of the Yellow selection desk template for Zhijian bookstore",
+            "name": "Weekend living books",
+            "description": "Compare cooking, home, and nature books while adjusting quantities directly in a reading list.",
+            "previewAlt": "Screenshot of the Weekend living books homepage",
             "features": [
-              "Compact records",
-              "Inline quantities",
-              "Permanent receipt"
+              "Everyday themes",
+              "Reading list",
+              "Quantity receipt"
             ]
           }
         },
         "assets": [
           "css/checklist.css",
           "js/reading-presentation.js"
-        ]
+        ],
+        "contentDir": "variants/checklist/content",
+        "dataDir": "variants/checklist/data",
+        "checks": {
+          "requiredText": [
+            "虚构演示",
+            "模拟购物袋",
+            "周末"
+          ]
+        }
       }
-    ]
+    ],
+    "differentContent": true
   },
   {
     "id": "workshop-booking",
     "source": "demos/workshop-booking",
-    "brand": "拾光 / HANDCRAFT STUDIO",
+    "brand": "拾光 / 岸陶 / 折页",
     "copy": {
       "zh-cn": {
-        "title": "拾光工坊",
+        "title": "手作工坊",
         "label": "虚构排期 · 预约预览",
-        "description": "挑选手作课程、日期和参与人数，查看场次名额与预约单预览。",
-        "previewAlt": "拾光工坊的真实页面截图，包含手作课程插画、示例排期与预约预览区域",
+        "description": "综合手作、陶艺和纸艺版画三个工坊，分别浏览课程与固定示例排期。",
+        "previewAlt": "综合手作、陶艺和纸艺版画三个工坊，分别浏览课程与固定示例排期。",
         "features": [
           "课程排期",
           "名额校验",
@@ -661,10 +739,10 @@
         ]
       },
       "en": {
-        "title": "Shiguang workshop",
+        "title": "Craft workshops",
         "label": "Fictional schedule · Preview",
-        "description": "Choose a craft course, session, and group size to preview a reservation with sample capacity limits. In Chinese.",
-        "previewAlt": "Screenshot of Shiguang workshop with craft illustrations, sample sessions, and a reservation preview",
+        "description": "Explore independent mixed-craft, ceramics, and paper-and-print workshops with fixed sample schedules.",
+        "previewAlt": "Explore independent mixed-craft, ceramics, and paper-and-print workshops with fixed sample schedules.",
         "features": [
           "Course schedule",
           "Capacity checks",
@@ -703,27 +781,36 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "课程展示",
-            "description": "挑选手作课程、日期和参与人数，查看场次名额与预约单预览。",
-            "previewAlt": "拾光工坊的真实页面截图，包含手作课程插画、示例排期与预约预览区域",
+            "name": "拾光 · 综合手作",
+            "description": "浏览陶艺、印刷与花艺课程，选择场次和人数查看预约预览。",
+            "previewAlt": "拾光 · 综合手作首页的真实页面截图",
             "features": [
-              "课程排期",
-              "名额校验",
+              "综合课程",
+              "场次余位",
               "预约预览"
             ]
           },
           "en": {
-            "name": "Courses",
-            "description": "Choose a craft course, session, and group size to preview a reservation with sample capacity limits. In Chinese.",
-            "previewAlt": "Screenshot of Shiguang workshop with craft illustrations, sample sessions, and a reservation preview",
+            "name": "Shiguang mixed crafts",
+            "description": "Browse pottery, printing, and flower courses, then choose a session and group size for a booking preview.",
+            "previewAlt": "Screenshot of the Shiguang mixed crafts homepage",
             "features": [
-              "Course schedule",
-              "Capacity checks",
-              "Reservation preview"
+              "Mixed courses",
+              "Session capacity",
+              "Booking preview"
             ]
           }
         },
-        "assets": []
+        "assets": [],
+        "contentDir": "content",
+        "dataDir": "data",
+        "checks": {
+          "requiredText": [
+            "虚构演示",
+            "预约预览",
+            "拾光"
+          ]
+        }
       },
       {
         "id": "calendar",
@@ -735,29 +822,38 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "午夜日历",
-            "description": "在午夜蓝日历中选择日期，再浏览同一天的课程与场次。",
-            "previewAlt": "拾光工坊「午夜日历」模板的真实页面截图",
+            "name": "岸陶 · 陶艺课程",
+            "description": "沿陶艺月历选择手捏、拉坯或施釉课程，核对时间和示例余位。",
+            "previewAlt": "岸陶 · 陶艺课程首页的真实页面截图",
             "features": [
-              "日期网格",
-              "场次面板",
-              "预约预览"
+              "陶艺月历",
+              "日期选课",
+              "余位校验"
             ]
           },
           "en": {
-            "name": "Midnight calendar",
-            "description": "Choose a date on a midnight-blue calendar to inspect the same courses and sessions.",
-            "previewAlt": "Screenshot of the Midnight calendar template for Shiguang workshop",
+            "name": "Antao ceramics",
+            "description": "Choose hand-building, wheel-throwing, or glazing courses from a ceramics calendar with sample capacity.",
+            "previewAlt": "Screenshot of the Antao ceramics homepage",
             "features": [
-              "Date grid",
-              "Session panel",
-              "Booking preview"
+              "Ceramics calendar",
+              "Date selection",
+              "Capacity checks"
             ]
           }
         },
         "assets": [
           "css/calendar.css"
-        ]
+        ],
+        "contentDir": "variants/calendar/content",
+        "dataDir": "variants/calendar/data",
+        "checks": {
+          "requiredText": [
+            "虚构演示",
+            "预约预览",
+            "岸陶"
+          ]
+        }
       },
       {
         "id": "agenda",
@@ -769,42 +865,52 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "紫色票券",
-            "description": "通过票券式步骤依次选择相同课程、场次与人数，生成预约预览。",
-            "previewAlt": "拾光工坊「紫色票券」模板的真实页面截图",
+            "name": "折页 · 纸艺版画",
+            "description": "分步选择纸艺、版画或装帧体验，核对场次后生成预约单预览。",
+            "previewAlt": "折页 · 纸艺版画首页的真实页面截图",
             "features": [
-              "课程票券",
+              "纸艺版画",
               "分步选择",
-              "预约预览"
+              "预约票券"
             ]
           },
           "en": {
-            "name": "Purple tickets",
-            "description": "Follow a ticket-style flow through the same courses, sessions, and group sizes.",
-            "previewAlt": "Screenshot of the Purple tickets template for Shiguang workshop",
+            "name": "Zheye paper and print",
+            "description": "Choose paper, printmaking, or bookbinding in a guided flow, then review a sample reservation.",
+            "previewAlt": "Screenshot of the Zheye paper and print homepage",
             "features": [
-              "Course tickets",
-              "Step-by-step flow",
-              "Booking preview"
+              "Paper and print",
+              "Guided selection",
+              "Sample ticket"
             ]
           }
         },
         "assets": [
           "css/agenda.css"
-        ]
+        ],
+        "contentDir": "variants/agenda/content",
+        "dataDir": "variants/agenda/data",
+        "checks": {
+          "requiredText": [
+            "虚构演示",
+            "预约预览",
+            "折页"
+          ]
+        }
       }
-    ]
+    ],
+    "differentContent": true
   },
   {
     "id": "trip-planner",
     "source": "demos/trip-planner",
-    "brand": "远山周末 / FARWEEK",
+    "brand": "远山 / 巷里 / 岬屿",
     "copy": {
       "zh-cn": {
-        "title": "远山周末",
+        "title": "旅行规划",
         "label": "虚构地点 · 行程规划",
-        "description": "挑选周末想去的地点，调整游览顺序，查看示意路线、时间与预算。",
-        "previewAlt": "远山周末的真实页面截图，包含虚构地点、示意地图和可编排的行程清单",
+        "description": "山野、老城和海岛三套虚构地点与地图，分别编排路线、时间和示例预算。",
+        "previewAlt": "山野、老城和海岛三套虚构地点与地图，分别编排路线、时间和示例预算。",
         "features": [
           "行程编排",
           "路线示意",
@@ -812,10 +918,10 @@
         ]
       },
       "en": {
-        "title": "Farweek trip planner",
+        "title": "Trip planners",
         "label": "Fictional places · Trip planning",
-        "description": "Arrange a day among fictional places and explore the illustrated route, estimated time, and budget. In Chinese.",
-        "previewAlt": "Screenshot of Farweek trip planner with fictional destinations, an illustrated map, and an editable itinerary",
+        "description": "Arrange routes, time, and sample budgets across independent fictional mountain, old-town, and island maps.",
+        "previewAlt": "Arrange routes, time, and sample budgets across independent fictional mountain, old-town, and island maps.",
         "features": [
           "Itinerary order",
           "Route illustration",
@@ -854,27 +960,36 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "地图规划",
-            "description": "挑选周末想去的地点，调整游览顺序，查看示意路线、时间与预算。",
-            "previewAlt": "远山周末的真实页面截图，包含虚构地点、示意地图和可编排的行程清单",
+            "name": "远山 · 山野周末",
+            "description": "从山野停靠点编排周末清单，在示意地图上查看顺序与时间。",
+            "previewAlt": "远山 · 山野周末首页的真实页面截图",
             "features": [
-              "行程编排",
+              "山野地点",
               "路线示意",
               "时间预算"
             ]
           },
           "en": {
-            "name": "Map planner",
-            "description": "Arrange a day among fictional places and explore the illustrated route, estimated time, and budget. In Chinese.",
-            "previewAlt": "Screenshot of Farweek trip planner with fictional destinations, an illustrated map, and an editable itinerary",
+            "name": "Farweek mountain weekend",
+            "description": "Arrange a weekend among mountain stops and inspect their order and time on a schematic map.",
+            "previewAlt": "Screenshot of the Farweek mountain weekend homepage",
             "features": [
-              "Itinerary order",
-              "Route illustration",
-              "Time & budget"
+              "Mountain stops",
+              "Route diagram",
+              "Time and budget"
             ]
           }
         },
-        "assets": []
+        "assets": [],
+        "contentDir": "content",
+        "dataDir": "data",
+        "checks": {
+          "requiredText": [
+            "虚构演示",
+            "行程规划",
+            "远山"
+          ]
+        }
       },
       {
         "id": "journal",
@@ -886,29 +1001,38 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "陶土旅行手记",
-            "description": "以旅行手记编排相同地点，沿时间线展开停留详情。",
-            "previewAlt": "远山周末「陶土旅行手记」模板的真实页面截图",
+            "name": "巷里 · 老城漫游",
+            "description": "把街巷、庭院和小店写进行走手记，沿时间线展开各站故事。",
+            "previewAlt": "巷里 · 老城漫游首页的真实页面截图",
             "features": [
-              "时间线",
-              "展开停留",
-              "旅行手记"
+              "老城街区",
+              "漫游手记",
+              "累计时间"
             ]
           },
           "en": {
-            "name": "Terracotta journal",
-            "description": "Arrange the same places in a travel journal with a timeline and expandable stops.",
-            "previewAlt": "Screenshot of the Terracotta journal template for Farweek trip planner",
+            "name": "Lane Letters old-town walk",
+            "description": "Collect lanes, courtyards, and small shops in a walking journal with expandable stop stories.",
+            "previewAlt": "Screenshot of the Lane Letters old-town walk homepage",
             "features": [
-              "Timeline",
-              "Expandable stops",
-              "Travel journal"
+              "Old-town blocks",
+              "Walking journal",
+              "Elapsed time"
             ]
           }
         },
         "assets": [
           "css/journal.css"
-        ]
+        ],
+        "contentDir": "variants/journal/content",
+        "dataDir": "variants/journal/data",
+        "checks": {
+          "requiredText": [
+            "虚构演示",
+            "行程规划",
+            "巷里"
+          ]
+        }
       },
       {
         "id": "workbench",
@@ -920,30 +1044,40 @@
         },
         "copy": {
           "zh-cn": {
-            "name": "蓝色地图工作台",
-            "description": "以地图为中心选择同一批地点，通过浮动面板编排路线和预算。",
-            "previewAlt": "远山周末「蓝色地图工作台」模板的真实页面截图",
+            "name": "岬屿 · 海岛慢行",
+            "description": "在海岛示意地图上选择停靠点，联动编排行程、停留与费用。",
+            "previewAlt": "岬屿 · 海岛慢行首页的真实页面截图",
             "features": [
+              "海岛地图",
               "地图选点",
-              "浮动面板",
-              "路线联动"
+              "行程面板"
             ]
           },
           "en": {
-            "name": "Blue map workspace",
-            "description": "Select the same places on a central map and arrange routes with floating planner panels.",
-            "previewAlt": "Screenshot of the Blue map workspace template for Farweek trip planner",
+            "name": "Cape Days island stroll",
+            "description": "Select island stops on a schematic map and arrange the itinerary, dwell time, and sample costs.",
+            "previewAlt": "Screenshot of the Cape Days island stroll homepage",
             "features": [
+              "Island map",
               "Map selection",
-              "Floating panels",
-              "Linked route"
+              "Itinerary panel"
             ]
           }
         },
         "assets": [
           "css/workbench.css"
-        ]
+        ],
+        "contentDir": "variants/workbench/content",
+        "dataDir": "variants/workbench/data",
+        "checks": {
+          "requiredText": [
+            "虚构演示",
+            "行程规划",
+            "岬屿"
+          ]
+        }
       }
-    ]
+    ],
+    "differentContent": true
   }
 ]

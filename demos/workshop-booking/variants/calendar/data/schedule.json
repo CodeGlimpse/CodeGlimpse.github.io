@@ -1,0 +1,169 @@
+{
+  "month": "2026-11",
+  "courses": [
+    {
+      "id": "pinch-bowl",
+      "title": "掌心捏碗",
+      "category": "手捏",
+      "description": "用指腹从泥球中心推开碗壁，观察厚薄与边缘，练习一只掌心大小的浅碗。",
+      "materials": "陶土、指压纹",
+      "durationMinutes": 90,
+      "priceCents": 15800,
+      "art": "pinch-bowl",
+      "level": "零基础"
+    },
+    {
+      "id": "coil-vase",
+      "title": "盘条小花器",
+      "category": "手捏",
+      "description": "把泥条一圈圈叠起，练习连接与收口，让陶器保留清楚可见的手作纹路。",
+      "materials": "陶土、盘条成形",
+      "durationMinutes": 120,
+      "priceCents": 19800,
+      "art": "coil-vase",
+      "level": "零基础"
+    },
+    {
+      "id": "wheel-cup",
+      "title": "拉坯直筒杯",
+      "category": "拉坯",
+      "description": "从扶稳泥团开始，尝试开孔、提拉和修口，在转动的轮盘上感受泥料的重心。",
+      "materials": "陶土、轮盘练习",
+      "durationMinutes": 120,
+      "priceCents": 23800,
+      "art": "wheel-cup",
+      "level": "零基础"
+    },
+    {
+      "id": "wheel-plate",
+      "title": "拉坯浅口盘",
+      "category": "拉坯",
+      "description": "观察泥料在轮盘上铺开的尺度，尝试压底、展口和修边，练习平稳的浅盘。",
+      "materials": "陶土、展口练习",
+      "durationMinutes": 120,
+      "priceCents": 25800,
+      "art": "wheel-plate",
+      "level": "零基础"
+    },
+    {
+      "id": "glaze-grid",
+      "title": "釉色试片册",
+      "category": "施釉",
+      "description": "在虚构素坯试片上排列六种釉色，以编号记录厚度、叠色和想象中的烧成效果。",
+      "materials": "示例素坯、釉色记录",
+      "durationMinutes": 90,
+      "priceCents": 16800,
+      "art": "glaze-grid",
+      "level": "零基础"
+    },
+    {
+      "id": "glaze-line",
+      "title": "釉下线描杯",
+      "category": "施釉",
+      "description": "沿杯身画出连续线条，比较笔触疏密与釉面留白，完成一组纸面装饰练习。",
+      "materials": "示例素坯、釉下线描",
+      "durationMinutes": 90,
+      "priceCents": 18800,
+      "art": "glaze-line",
+      "level": "零基础"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "pinch-bowl-20261101",
+      "courseId": "pinch-bowl",
+      "date": "2026-11-01",
+      "start": "10:00",
+      "end": "11:30",
+      "remaining": 4
+    },
+    {
+      "id": "pinch-bowl-20261115",
+      "courseId": "pinch-bowl",
+      "date": "2026-11-15",
+      "start": "10:00",
+      "end": "11:30",
+      "remaining": 6
+    },
+    {
+      "id": "coil-vase-20261107",
+      "courseId": "coil-vase",
+      "date": "2026-11-07",
+      "start": "10:00",
+      "end": "12:00",
+      "remaining": 2
+    },
+    {
+      "id": "coil-vase-20261121",
+      "courseId": "coil-vase",
+      "date": "2026-11-21",
+      "start": "10:00",
+      "end": "12:00",
+      "remaining": 5
+    },
+    {
+      "id": "wheel-cup-20261108",
+      "courseId": "wheel-cup",
+      "date": "2026-11-08",
+      "start": "10:00",
+      "end": "12:00",
+      "remaining": 3
+    },
+    {
+      "id": "wheel-cup-20261122",
+      "courseId": "wheel-cup",
+      "date": "2026-11-22",
+      "start": "10:00",
+      "end": "12:00",
+      "remaining": 6
+    },
+    {
+      "id": "wheel-plate-20261114",
+      "courseId": "wheel-plate",
+      "date": "2026-11-14",
+      "start": "10:00",
+      "end": "12:00",
+      "remaining": 0
+    },
+    {
+      "id": "wheel-plate-20261128",
+      "courseId": "wheel-plate",
+      "date": "2026-11-28",
+      "start": "10:00",
+      "end": "12:00",
+      "remaining": 4
+    },
+    {
+      "id": "glaze-grid-20261101",
+      "courseId": "glaze-grid",
+      "date": "2026-11-01",
+      "start": "14:00",
+      "end": "15:30",
+      "remaining": 1
+    },
+    {
+      "id": "glaze-grid-20261129",
+      "courseId": "glaze-grid",
+      "date": "2026-11-29",
+      "start": "14:00",
+      "end": "15:30",
+      "remaining": 5
+    },
+    {
+      "id": "glaze-line-20261115",
+      "courseId": "glaze-line",
+      "date": "2026-11-15",
+      "start": "14:00",
+      "end": "15:30",
+      "remaining": 6
+    },
+    {
+      "id": "glaze-line-20261121",
+      "courseId": "glaze-line",
+      "date": "2026-11-21",
+      "start": "14:00",
+      "end": "15:30",
+      "remaining": 2
+    }
+  ]
+}

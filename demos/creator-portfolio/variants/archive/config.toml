@@ -1,0 +1,4 @@
+contentDir = 'variants/archive/content'
+
+[params]
+demoTemplate = 'archive'

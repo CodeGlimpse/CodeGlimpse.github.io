@@ -1,0 +1,169 @@
+{
+  "month": "2026-12",
+  "courses": [
+    {
+      "id": "fold-lamp",
+      "title": "折纸光影罩",
+      "category": "纸艺",
+      "description": "从一张方纸开始压出重复折痕，观察侧光如何经过纸面，搭成虚构的光影模型。",
+      "materials": "厚纸、重复折痕",
+      "durationMinutes": 90,
+      "priceCents": 12800,
+      "art": "fold-lamp",
+      "level": "零基础"
+    },
+    {
+      "id": "paper-city",
+      "title": "纸上的小街角",
+      "category": "纸艺",
+      "description": "用裁切与折叠搭出门窗和转角，比较纸片的前后距离，练习一座微型纸建筑。",
+      "materials": "卡纸、空间裁切",
+      "durationMinutes": 120,
+      "priceCents": 15800,
+      "art": "paper-city",
+      "level": "零基础"
+    },
+    {
+      "id": "lino-wave",
+      "title": "刻一枚浪花版",
+      "category": "版画",
+      "description": "在虚构软版上规划浪花的黑白形状，练习刻线、滚墨和单色印刷的顺序。",
+      "materials": "示例软版、水性墨",
+      "durationMinutes": 120,
+      "priceCents": 18800,
+      "art": "lino-wave",
+      "level": "零基础"
+    },
+    {
+      "id": "two-color",
+      "title": "双色叠印明信片",
+      "category": "版画",
+      "description": "给同一张明信片设计两块印版，用对位和轻微错位比较双色叠印的节奏。",
+      "materials": "示例印版、双色墨",
+      "durationMinutes": 90,
+      "priceCents": 16800,
+      "art": "two-color",
+      "level": "零基础"
+    },
+    {
+      "id": "thread-book",
+      "title": "一册线订小书",
+      "category": "装帧",
+      "description": "折出书帖、规划穿线位置，用清楚可见的针脚把十二页虚构手记订成小书。",
+      "materials": "书纸、线订装帧",
+      "durationMinutes": 120,
+      "priceCents": 19800,
+      "art": "thread-book",
+      "level": "零基础"
+    },
+    {
+      "id": "accordion-book",
+      "title": "风琴折图像册",
+      "category": "装帧",
+      "description": "将长纸带折成连续开合的册页，安排图像与封面，观察翻阅动作如何改变画面。",
+      "materials": "长纸、风琴折装",
+      "durationMinutes": 90,
+      "priceCents": 14800,
+      "art": "accordion-book",
+      "level": "零基础"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "fold-lamp-20261205",
+      "courseId": "fold-lamp",
+      "date": "2026-12-05",
+      "start": "10:00",
+      "end": "11:30",
+      "remaining": 4
+    },
+    {
+      "id": "fold-lamp-20261219",
+      "courseId": "fold-lamp",
+      "date": "2026-12-19",
+      "start": "10:00",
+      "end": "11:30",
+      "remaining": 6
+    },
+    {
+      "id": "paper-city-20261206",
+      "courseId": "paper-city",
+      "date": "2026-12-06",
+      "start": "10:00",
+      "end": "12:00",
+      "remaining": 2
+    },
+    {
+      "id": "paper-city-20261220",
+      "courseId": "paper-city",
+      "date": "2026-12-20",
+      "start": "10:00",
+      "end": "12:00",
+      "remaining": 5
+    },
+    {
+      "id": "lino-wave-20261212",
+      "courseId": "lino-wave",
+      "date": "2026-12-12",
+      "start": "10:00",
+      "end": "12:00",
+      "remaining": 3
+    },
+    {
+      "id": "lino-wave-20261226",
+      "courseId": "lino-wave",
+      "date": "2026-12-26",
+      "start": "10:00",
+      "end": "12:00",
+      "remaining": 6
+    },
+    {
+      "id": "two-color-20261213",
+      "courseId": "two-color",
+      "date": "2026-12-13",
+      "start": "10:00",
+      "end": "11:30",
+      "remaining": 0
+    },
+    {
+      "id": "two-color-20261227",
+      "courseId": "two-color",
+      "date": "2026-12-27",
+      "start": "10:00",
+      "end": "11:30",
+      "remaining": 4
+    },
+    {
+      "id": "thread-book-20261205",
+      "courseId": "thread-book",
+      "date": "2026-12-05",
+      "start": "14:00",
+      "end": "16:00",
+      "remaining": 1
+    },
+    {
+      "id": "thread-book-20261219",
+      "courseId": "thread-book",
+      "date": "2026-12-19",
+      "start": "14:00",
+      "end": "16:00",
+      "remaining": 5
+    },
+    {
+      "id": "accordion-book-20261212",
+      "courseId": "accordion-book",
+      "date": "2026-12-12",
+      "start": "14:00",
+      "end": "15:30",
+      "remaining": 6
+    },
+    {
+      "id": "accordion-book-20261226",
+      "courseId": "accordion-book",
+      "date": "2026-12-26",
+      "start": "14:00",
+      "end": "15:30",
+      "remaining": 2
+    }
+  ]
+}

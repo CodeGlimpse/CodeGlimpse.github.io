@@ -134,7 +134,7 @@
         if (calendarMode) {
             calendarDetails.hidden = !calendarExpanded;
             calendarPrompt.hidden = calendarExpanded;
-            calendarSummary.textContent = state.date === 'all' ? '十月完整课程与排期' : core.dateLabel(state.date) + ' · 当日手作';
+            calendarSummary.textContent = state.date === 'all' ? root.dataset.monthSummary : core.dateLabel(state.date) + ' · 当日手作';
             calendarButtons.forEach(button => {
                 button.setAttribute('aria-pressed', String(date.value === button.dataset.calendarDate));
             });

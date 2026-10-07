@@ -1,0 +1,82 @@
+[
+  {
+    "id": "white-cape",
+    "name": "白岬灯塔",
+    "category": "人文",
+    "description": "沿虚构海岬的石径上行，看灯塔窗框把海面分成几格。",
+    "durationMinutes": 95,
+    "costCents": 2000,
+    "x": 51,
+    "y": 18
+  },
+  {
+    "id": "shell-bay",
+    "name": "贝壳湾",
+    "category": "自然",
+    "description": "在一处虚构浅湾沿潮线慢走，把沙纹当作今日的地图。",
+    "durationMinutes": 120,
+    "costCents": 0,
+    "x": 70,
+    "y": 33
+  },
+  {
+    "id": "salt-garden",
+    "name": "盐田花圃",
+    "category": "人文",
+    "description": "走过改造为花圃的虚构盐田，读一段关于蒸发池的设定故事。",
+    "durationMinutes": 85,
+    "costCents": 1800,
+    "x": 51,
+    "y": 43
+  },
+  {
+    "id": "wind-jetty",
+    "name": "听风栈桥",
+    "category": "自然",
+    "description": "站在内湾的短栈桥上，把风声与木板的轻响分开听。",
+    "durationMinutes": 75,
+    "costCents": 0,
+    "x": 30,
+    "y": 45
+  },
+  {
+    "id": "blue-workshop",
+    "name": "蓝染小屋",
+    "category": "人文",
+    "description": "在离岛小屋用植物纹样压染一块布，晾在背风的绳架上。",
+    "durationMinutes": 110,
+    "costCents": 5600,
+    "x": 62,
+    "y": 63
+  },
+  {
+    "id": "harbor-supper",
+    "name": "小港食堂",
+    "category": "休憩",
+    "description": "从虚构小港的长桌挑一个靠窗座位，给午后留出一顿慢饭。",
+    "durationMinutes": 80,
+    "costCents": 6500,
+    "x": 44,
+    "y": 69
+  },
+  {
+    "id": "reed-islet",
+    "name": "苇屿沙洲",
+    "category": "自然",
+    "description": "看潮水绕过虚构沙洲，沿着标记的图面走向芦苇与浅滩。",
+    "durationMinutes": 60,
+    "costCents": 0,
+    "x": 17,
+    "y": 29
+  },
+  {
+    "id": "tide-bookshop",
+    "name": "潮边书屋",
+    "category": "休憩",
+    "description": "在面朝内湾的小书屋翻一本虚构航海札记，等茶杯凉下来。",
+    "durationMinutes": 55,
+    "costCents": 2800,
+    "x": 74,
+    "y": 79
+  }
+]

@@ -1,12 +1,12 @@
 :root {
-    --cream: #f7f1e5;
-    --paper: #fffcf6;
-    --clay: #b94e31;
-    --clay-dark: #943b25;
-    --indigo: #222d45;
-    --muted: #675e53;
-    --line: #d9cebc;
-    --soft: #edd7c2;
+    --cream: #f0eee8;
+    --paper: #fbfaf7;
+    --clay: #a05433;
+    --clay-dark: #82442a;
+    --indigo: #2f3b40;
+    --muted: #615f56;
+    --line: #cfcbbf;
+    --soft: #e2d6c4;
     --serif: Georgia, 'Noto Serif SC', 'Songti SC', SimSun, serif;
 }
 
@@ -70,7 +70,7 @@ select:disabled { color: var(--muted); opacity: .8; }
 .cover-印刷 { background: #e1e4dd; }
 .cover-花艺 { background: #e5dfcb; }
 .course-art { display: block; width: 100%; height: auto; }
-.art-soft { fill: #f7f1e5; opacity: .45; }
+.art-soft { fill: #f0eee8; opacity: .45; }
 .art-lines { fill: none; stroke: #7b6c57; stroke-width: 1; opacity: .5; }
 .art-shadow { fill: #a99179; opacity: .32; }
 .art-clay { fill: var(--clay); }
@@ -131,7 +131,7 @@ dd { margin: 0; min-width: 0; overflow-wrap: anywhere; font-size: 13px; }
 .booking-status[data-tone='warning'] { color: var(--clay-dark); font-weight: 650; }
 .preview-button { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 48px; padding: 10px 14px; border: 1px solid var(--clay); border-radius: 3px; background: var(--clay); color: var(--paper); font-size: 13px; font-weight: 600; }
 .preview-button:not(:disabled):hover { background: var(--clay-dark); }
-.preview-button:disabled { border-color: #d9cebc; background: #e9e0d1; color: #746757; }
+.preview-button:disabled { border-color: #cfcbbf; background: #e9e0d1; color: #746757; }
 .reset-button { display: block; margin: 13px auto 0; padding: 6px 12px; min-height: 35px; background: transparent; border: 0; text-decoration: underline; text-underline-offset: 4px; font-size: 12px; color: var(--muted); }
 .preview-boundary { margin: 14px 0 0; font-size: 11px; color: var(--muted); }
 .booking-preview { margin-top: 24px; padding-top: 22px; border-top: 1px dashed #b9ab97; }
@@ -235,4 +235,15 @@ dd { margin: 0; min-width: 0; overflow-wrap: anywhere; font-size: 13px; }
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .course-button { transition: none; }
+}
+
+h1, .booking-panel h2, .about-card h2 { white-space: pre-line; }
+.brand-copy > span, .eyebrow { letter-spacing: .03em; }
+body[data-template="classic"] .month-stamp { border-radius: 4px 4px 45px 4px; background: #e2d6c4; transform: none; }
+body[data-template="classic"] .month-stamp strong { font-size: 30px; }
+.agenda-material-art, .calendar-prompt-illustration { width: 100%; height: auto; }
+
+@media (max-width: 580px) {
+  .workshop-title-phrase { display: block; }
+  .intro h1 { font-size: clamp(25px, 7.1vw, 30px); }
 }

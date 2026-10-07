@@ -1,0 +1,5 @@
+contentDir = 'variants/catalog/content'
+dataDir = 'variants/catalog/data'
+
+[params]
+demoTemplate = 'catalog'

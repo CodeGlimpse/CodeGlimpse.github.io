@@ -1,5 +1,6 @@
 {{ $entries := . }}
-{{ $channels := slice "博客" "视频" "社区" }}
+{{ $domains := partial "dashboard-domains.html" $entries }}
+{{ $channels := $domains.channels }}
 {{ $channelTotals := dict }}
 {{ $maxChannelViews := 0 }}
 {{ range $channels }}

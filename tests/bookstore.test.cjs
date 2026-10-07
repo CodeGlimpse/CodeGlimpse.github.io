@@ -1,13 +1,18 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const core = require('../demos/bookstore/static/js/store-core.js');
-const books = require('../demos/bookstore/data/books.json');
+const fs = require('node:fs');
+const path = require('node:path');
+const scenes = [{"id": "classic", "folder": "demos/bookstore", "categories": ["小说", "诗歌", "散文"]}, {"id": "catalog", "folder": "demos/bookstore/variants/catalog", "categories": ["图像", "设计", "建筑"]}, {"id": "checklist", "folder": "demos/bookstore/variants/checklist", "categories": ["料理", "居家", "自然"]}];
+for (const scene of scenes) {
+const books = require('../' + scene.folder + '/data/books.json');
 
-test('bookstore catalog has twelve fictional records, integer cents, and bounded stock', () => {
+test(scene.id + ': bookstore catalog has twelve fictional records, integer cents, and bounded stock', () => {
     assert.equal(books.length, 12);
     assert.equal(new Set(books.map(book => book.id)).size, 12);
     assert.equal(new Set(books.map(book => book.cover)).size, 12);
-    for (const category of ['文学', '设计', '生活']) {
+    assert.deepEqual(core.getCategories(books), scene.categories);
+    for (const category of scene.categories) {
         assert.equal(books.filter(book => book.category === category).length, 4);
     }
     for (const book of books) {
@@ -20,10 +25,12 @@ test('bookstore catalog has twelve fictional records, integer cents, and bounded
     assert.equal(core.validateBooks(books), true);
 });
 
-test('book search combines category and literal title terms with NFKC normalization', () => {
+test(scene.id + ': book search combines category and literal title terms with NFKC normalization', () => {
     const before = structuredClone(books);
-    assert.deepEqual(core.filterBooks(books, { category: '设计', query: '颜色 地图' }).map(book => book.id), ['color-map']);
-    assert.equal(core.filterBooks(books, { category: '文学', query: '颜色 地图' }).length, 0);
+    const target = books[1];
+    const query = target.title.slice(0, 2) + ' ' + target.title.slice(-2);
+    assert.deepEqual(core.filterBooks(books, { category: target.category, query }).map(book => book.id), [target.id]);
+    assert.equal(core.filterBooks(books, { category: books.find(book => book.category !== target.category).category, query }).length, 0);
     assert.equal(core.filterBooks(books, { query: books[0].author }).length, 0);
     assert.equal(core.filterBooks(books, { query: '[.*]' }).length, 0);
     assert.equal(core.filterBooks(books).length, 12);
@@ -33,7 +40,7 @@ test('book search combines category and literal title terms with NFKC normalizat
     assert.deepEqual(books, before);
 });
 
-test('bag stops at stock, rejects sold-out and unknown books, and counts pieces', () => {
+test(scene.id + ': bag stops at stock, rejects sold-out and unknown books, and counts pieces', () => {
     const bag = core.createBag(books);
     const book = books[0];
     const soldOut = books.find(row => row.stock === 0);
@@ -45,7 +52,7 @@ test('bag stops at stock, rejects sold-out and unknown books, and counts pieces'
     assert.equal(bag.snapshot().length, 1);
 });
 
-test('decrease, removal, and clear update exact totals without exposing bag state', () => {
+test(scene.id + ': decrease, removal, and clear update exact totals without exposing bag state', () => {
     const input = books.map(book => ({ ...book }));
     const bag = core.createBag(input);
     const first = books[0];
@@ -73,7 +80,7 @@ test('decrease, removal, and clear update exact totals without exposing bag stat
     assert.deepEqual(bag.snapshot(), []);
 });
 
-test('money stays in integer cents for mixed quantities and zero-price books', () => {
+test(scene.id + ': money stays in integer cents for mixed quantities and zero-price books', () => {
     const sample = [
         { ...books[0], id: 'one-cent-pattern', priceCents: 101, stock: 3 },
         { ...books[1], id: 'second-pattern', priceCents: 358, stock: 2 },
@@ -91,18 +98,37 @@ test('money stays in integer cents for mixed quantities and zero-price books', (
     assert.equal(core.formatMoney(0), '¥0.00');
 });
 
-test('invalid data and unsafe arithmetic are rejected before a bag is created', () => {
+test(scene.id + ': invalid data and unsafe arithmetic are rejected before a bag is created', () => {
     for (const priceCents of [-1, 0.01, Infinity, Number.MAX_SAFE_INTEGER + 1]) {
         assert.throws(() => core.createBag([{ ...books[0], priceCents }]), TypeError);
     }
     for (const stock of [-1, 10, 1.5]) {
         assert.throws(() => core.validateBooks([{ ...books[0], stock }]), TypeError);
     }
-    for (const change of [{ title: '' }, { author: ' ' }, { description: '' }, { category: '其他' }, { id: '../escape' }, { cover: 'unknown' }]) {
+    for (const change of [{ title: '' }, { author: ' ' }, { description: '' }, { category: '<b>其他</b>' }, { category: 'all' }, { category: ' ' }, { category: ' 小说' }, { category: 1 }, { id: '../escape' }, { cover: 'unknown' }]) {
         assert.throws(() => core.validateBooks([{ ...books[0], ...change }]), TypeError);
     }
     assert.throws(() => core.validateBooks([]), TypeError);
     assert.throws(() => core.validateBooks([books[0], { ...books[0] }]), TypeError);
     assert.throws(() => core.createBag([{ ...books[0], priceCents: Number.MAX_SAFE_INTEGER, stock: 9 }]), RangeError);
     assert.throws(() => core.formatMoney(0.5), RangeError);
+});
+
+test(scene.id + ': home and standalone config select the complete scene', () => {
+    const home = fs.readFileSync(path.resolve(__dirname, '..', scene.folder, 'content/_index.md'), 'utf8');
+    assert.match(home, /title = /);
+    for (const category of scene.categories) assert.ok(home.includes(category));
+    if (scene.id !== 'classic') {
+        const config = fs.readFileSync(path.resolve(__dirname, '..', scene.folder, 'config.toml'), 'utf8');
+        for (const key of ["demoTemplate = '" + scene.id + "'", "contentDir = 'variants/" + scene.id + "/content'", "dataDir = 'variants/" + scene.id + "/data'"]) assert.ok(config.includes(key));
+    }
+});
+
+test(scene.id + ': all new cover vectors exist locally', () => {
+    if (scene.id !== 'classic') for (const book of books) assert.ok(fs.existsSync(path.resolve(__dirname, '../demos/bookstore/static/illustrations/covers', book.cover + '.svg')));
+});
+}
+test('bookstore scenes have disjoint IDs, titles and descriptions', () => {
+    const rows = scenes.flatMap(scene => require('../' + scene.folder + '/data/books.json'));
+    for (const field of ['id', 'title', 'description']) assert.equal(new Set(rows.map(row => row[field])).size, 36);
 });

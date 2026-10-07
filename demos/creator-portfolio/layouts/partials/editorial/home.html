@@ -2,12 +2,12 @@
 {{ $projects := site.GetPage "/projects" }}
 <main id="main" class="editorial-home" tabindex="-1" data-editorial>
   <header class="editorial-poster shell" aria-labelledby="intro-title">
-    <div class="editorial-poster-meta"><p>{{ site.Params.demoNotice }}</p><span aria-hidden="true">DESIGN / IMAGE / PROCESS</span></div>
-    <h1 id="intro-title">{{ site.Params.homeHeading }}</h1>
-    <div class="editorial-poster-bottom"><span class="editorial-poster-arrow" aria-hidden="true">↓</span><p>{{ site.Params.homeIntro }}</p><span class="editorial-poster-stamp" aria-hidden="true">A<br>VISUAL<br>JOURNAL</span></div>
+    <div class="editorial-poster-meta"><p>{{ .Params.sceneLabel }}</p><span>{{ .Params.edition }}</span></div>
+    <h1 id="intro-title">{{ .Params.homeHeading }}</h1>
+    <div class="editorial-poster-bottom"><span class="editorial-poster-arrow" aria-hidden="true">↓</span><p>{{ .Params.homeIntro }}</p><span class="editorial-poster-stamp" aria-hidden="true">{{ .Params.brandShort }}<br>Studio<br>{{ .Params.brandEnglish }}</span></div>
   </header>
-  <nav class="editorial-chapter-nav shell" aria-label="作品章节" data-editorial-nav>
-    <span class="editorial-nav-label">作品目录</span>
+  <nav class="editorial-chapter-nav shell" aria-label="设计案例章节" data-editorial-nav>
+    <span class="editorial-nav-label">案例目录</span>
     <div class="editorial-chapter-links">
       {{ range $index, $page := $works.Pages.ByWeight }}<a href="#editorial-work-{{ add $index 1 }}" data-editorial-target="editorial-work-{{ add $index 1 }}"><span>{{ printf "%02d" (add $index 1) }}</span>{{ $page.Title }}</a>{{ end }}
       {{ range $index, $page := $projects.Pages.ByWeight }}<a href="#editorial-project-{{ add $index 1 }}" data-editorial-target="editorial-project-{{ add $index 1 }}"><span>{{ printf "%02d" (add (len $works.Pages) (add $index 1)) }}</span>{{ $page.Title }}</a>{{ end }}
@@ -26,4 +26,5 @@
       {{ range $index, $page := $projects.Pages.ByWeight }}{{ partial "editorial/chapter.html" (dict "page" $page "index" (add (len $works.Pages) (add $index 1)) "id" (printf "editorial-project-%d" (add $index 1))) }}{{ end }}
     </div>
   </section>
+  {{ partial "scene-about.html" . }}
 </main>

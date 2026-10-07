@@ -87,7 +87,7 @@ function buildSite(args = process.argv.slice(2), environment = process.env, run 
         // Hugo environment settings override CLI flags. Scope these values to
         // the child site, including differently cased keys on Windows.
         const demoEnvironment = Object.fromEntries(Object.entries(environment)
-            .filter(([key]) => !['HUGO_BASEURL', 'HUGO_PUBLISHDIR', 'HUGO_CONTENTDIR', 'HUGO_PARAMS_DEMOCATALOGURL', 'HUGO_PARAMS_DEMOTEMPLATE', 'HUGO_PARAMS_DEMOTEMPLATES'].includes(key.toUpperCase())));
+            .filter(([key]) => !['HUGO_BASEURL', 'HUGO_PUBLISHDIR', 'HUGO_CONTENTDIR', 'HUGO_DATADIR', 'HUGO_PARAMS_DEMOCATALOGURL', 'HUGO_PARAMS_DEMOTEMPLATE', 'HUGO_PARAMS_DEMOTEMPLATES'].includes(key.toUpperCase())));
         const demo = run('hugo', [
             '--cleanDestinationDir', '--minify', '--gc', '--panicOnWarning',
             '--baseURL', baseURL,
@@ -99,6 +99,7 @@ function buildSite(args = process.argv.slice(2), environment = process.env, run 
                 HUGO_BASEURL: baseURL,
                 HUGO_PUBLISHDIR: destination,
                 ...(demoInfo.contentDir === undefined ? {} : { HUGO_CONTENTDIR: demoInfo.contentDir }),
+                ...(demoInfo.dataDir === undefined ? {} : { HUGO_DATADIR: demoInfo.dataDir }),
                 HUGO_PARAMS_DEMOCATALOGURL: catalogURL,
                 HUGO_PARAMS_DEMOTEMPLATE: demoInfo.templateId,
                 HUGO_PARAMS_DEMOTEMPLATES: JSON.stringify(templateLinks(demoInfo, options.baseURL)),

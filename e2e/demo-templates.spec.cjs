@@ -1,15 +1,21 @@
 const { test, expect } = require('@playwright/test');
 const { createHash } = require('node:crypto');
+const path = require('node:path');
 const { DEMO_CASES, DEMO_REGISTRY } = require('../scripts/demo-registry.cjs');
 
 const embeddedData = {
-    'content-dashboard': { id: 'dashboard-data', source: require('../demos/content-dashboard/data/entries.json') },
-    bookstore: { id: 'bookstore-data', source: require('../demos/bookstore/data/books.json') },
-    'workshop-booking': { id: 'booking-data', source: require('../demos/workshop-booking/data/schedule.json') },
-    'trip-planner': { id: 'planner-data', source: require('../demos/trip-planner/data/places.json') },
+    'content-dashboard': { id: 'dashboard-data', filename: 'entries.json' },
+    bookstore: { id: 'bookstore-data', filename: 'books.json' },
+    'workshop-booking': { id: 'booking-data', filename: 'schedule.json' },
+    'trip-planner': { id: 'planner-data', filename: 'places.json' },
 };
-const portfolioCases = DEMO_CASES.filter(demo => !embeddedData[demo.id] && !demo.differentContent);
+const portfolioCases = DEMO_CASES.filter(demo => !embeddedData[demo.id]);
 const detailPattern = /^(?:works|projects)\/[^/]+\/$/;
+
+function fixtureFor(demo) {
+    const definition = embeddedData[demo.caseId];
+    return definition && { ...definition, source: require(path.resolve(__dirname, '..', demo.source, demo.dataDir || 'data', definition.filename)) };
+}
 
 function versionsFor(demoCase) {
     return DEMO_REGISTRY.filter(demo => demo.caseId === demoCase.id);
@@ -109,41 +115,44 @@ async function originalImages(page, demo, route, baseURL) {
 }
 
 for (const demoCase of DEMO_CASES.filter(demo => embeddedData[demo.id])) {
-    test(`${demoCase.id} templates embed the same complete source data`, async ({ page, baseURL }) => {
+    test(`${demoCase.id} scenes embed their own complete and distinct source data`, async ({ page, baseURL }) => {
         const versions = versionsFor(demoCase);
         expect(versions).toHaveLength(demoCase.templates.length);
-        const fixture = embeddedData[demoCase.id];
         const data = [];
         for (const demo of versions) {
+            const fixture = fixtureFor(demo);
             await openDemo(page, demo, '', baseURL);
-            data.push(await embeddedJSON(page, fixture.id));
+            const actual = await embeddedJSON(page, fixture.id);
+            expect(actual).toEqual(fixture.source);
+            data.push(JSON.stringify(actual));
         }
-        expect(data[0]).toEqual(fixture.source);
-        for (const versionData of data) expect(versionData).toEqual(fixture.source);
+        expect(new Set(data).size).toBe(demoCase.differentContent ? versions.length : 1);
     });
 }
 
 for (const demoCase of portfolioCases) {
-    const detailRoutes = demoCase.checks.pages.filter(route => detailPattern.test(route));
-    test(`${demoCase.id} templates retain the same homepage title and work links`, async ({ page, baseURL }) => {
+    const detailRoutes = [...new Set(versionsFor(demoCase).flatMap(demo => demo.checks.pages.filter(route => detailPattern.test(route))))];
+    test(`${demoCase.id} scenes retain complete work links and independent homepages`, async ({ page, baseURL }) => {
         const versions = versionsFor(demoCase);
         expect(versions).toHaveLength(demoCase.templates.length);
         expect(detailRoutes.length).toBeGreaterThan(0);
         const records = [];
         for (const demo of versions) {
             await openDemo(page, demo, '', baseURL);
-            const links = await workLinks(page, demo, baseURL, detailRoutes);
-            expect(links).toEqual([...detailRoutes].sort());
+            const ownRoutes = demo.checks.pages.filter(route => detailPattern.test(route));
+            const links = await workLinks(page, demo, baseURL, ownRoutes);
+            expect(links).toEqual([...ownRoutes].sort());
             // Compare authored content independently of presentation-only line breaks.
             records.push({ title: (await page.locator('main h1').textContent()).trim(), links });
         }
-        for (const record of records) expect(record).toEqual(records[0]);
+        expect(new Set(records.map(record => record.title)).size).toBe(demoCase.differentContent ? versions.length : 1);
     });
 
     for (const route of detailRoutes) {
-        test(`${demoCase.id} ${route} retains its title and original image content in every template`, async ({ page, baseURL }) => {
+        test(`${demoCase.id} ${route} serves authored titles and original scene media`, async ({ page, baseURL }) => {
             const records = [];
-            for (const demo of versionsFor(demoCase)) {
+            const versions = versionsFor(demoCase).filter(demo => demo.checks.pages.includes(route));
+            for (const demo of versions) {
                 await openDemo(page, demo, route, baseURL);
                 await expectTemplateNavigation(page, demo, route, baseURL);
                 records.push({
@@ -151,8 +160,15 @@ for (const demoCase of portfolioCases) {
                     images: await originalImages(page, demo, route, baseURL),
                 });
             }
-            expect(records).toHaveLength(demoCase.templates.length);
-            for (const record of records) expect(record).toEqual(records[0]);
+            expect(records).toHaveLength(versions.length);
+            for (const record of records) {
+                expect(record.title.trim()).not.toBe('');
+                expect(record.images.every(image => image.alt?.trim())).toBe(true);
+            }
+            if (demoCase.differentContent) {
+                expect(new Set(records.map(record => record.title)).size).toBe(versions.length);
+                expect(new Set(records.map(record => record.images.map(image => image.sha256).join(','))).size).toBe(versions.length);
+            } else for (const record of records) expect(record).toEqual(records[0]);
         });
     }
 }
@@ -225,7 +241,7 @@ test.describe('new templates without JavaScript', () => {
             await page.setViewportSize({ width: 320, height: 960 });
             await openDemo(page, demo, '', baseURL);
             await expectTemplateNavigation(page, demo, '', baseURL);
-            const fixture = embeddedData[demoCase.id];
+            const fixture = fixtureFor(demo);
             if (fixture) {
                 expect(await embeddedJSON(page, fixture.id)).toEqual(fixture.source);
                 await expect(page.locator('p.noscript-note')).toBeVisible();
@@ -264,7 +280,7 @@ test.describe('new templates without JavaScript', () => {
 
 test('trip journal cumulative ranges follow reordering and end at the total minutes', async ({ page, baseURL }) => {
     const demo = DEMO_REGISTRY.find(candidate => candidate.caseId === 'trip-planner' && candidate.templateId === 'journal');
-    const places = embeddedData['trip-planner'].source;
+    const places = fixtureFor(demo).source;
     const selected = places.slice(0, 3);
     await openDemo(page, demo, '', baseURL);
     await expect(page.locator('[data-trip-planner]')).toHaveAttribute('data-ready', 'true');

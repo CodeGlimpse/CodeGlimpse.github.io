@@ -6,8 +6,15 @@
 }(typeof window !== 'undefined' ? window : null, function () {
     'use strict';
 
-    const CATEGORIES = Object.freeze(['文学', '设计', '生活']);
-    const COVERS = Object.freeze(['wind', 'letter', 'rain', 'city', 'space', 'type', 'fold', 'map', 'weekend', 'plant', 'breakfast', 'repair']);
+    function getCategories(books) {
+        return [...new Set(books.map(book => book.category))];
+    }
+
+    function validCategory(value) {
+        return typeof value === 'string' && value === value.trim() && value !== 'all'
+            && /^[\p{L}\p{N}][\p{L}\p{N} &-]{0,23}$/u.test(value);
+    }
+    const COVERS = Object.freeze(['wind', 'letter', 'rain', 'city', 'space', 'type', 'fold', 'map', 'weekend', 'plant', 'breakfast', 'repair', 'art-cut', 'art-night', 'art-frame', 'art-transit', 'art-grid', 'art-type', 'art-weave', 'art-palette', 'art-room', 'art-window', 'art-courtyard', 'art-street', 'life-soup', 'life-market', 'life-bread', 'life-tea', 'life-desk', 'life-repair', 'life-light', 'life-small', 'life-leaf', 'life-garden', 'life-bird', 'life-walk']);
 
     function safeTotal(value) {
         if (!Number.isSafeInteger(value) || value < 0) throw new RangeError('Money and quantities must remain safe nonnegative integers');
@@ -21,7 +28,7 @@
         books.forEach((book) => {
             if (!book || typeof book.id !== 'string' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(book.id) || ids.has(book.id)
                 || ['title', 'author', 'description'].some(key => typeof book[key] !== 'string' || !book[key].trim())
-                || !CATEGORIES.includes(book.category) || !COVERS.includes(book.cover)
+                || !validCategory(book.category) || !COVERS.includes(book.cover)
                 || !Number.isSafeInteger(book.priceCents) || book.priceCents < 0
                 || !Number.isInteger(book.stock) || book.stock < 0 || book.stock > 9) {
                 throw new TypeError('Invalid book record');
@@ -105,5 +112,5 @@
         });
     }
 
-    return { CATEGORIES, validateBooks, normalizeQuery, filterBooks, formatMoney, createBag };
+    return { getCategories, validateBooks, normalizeQuery, filterBooks, formatMoney, createBag };
 }));

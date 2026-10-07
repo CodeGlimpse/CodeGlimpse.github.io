@@ -1,8 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const { DEMO_REGISTRY } = require('../scripts/demo-registry.cjs');
-const schedule = require('../demos/workshop-booking/data/schedule.json');
+const path = require('node:path');
 const demos = DEMO_REGISTRY.filter(demo => demo.caseId === 'workshop-booking');
-const scheduledDates = [...new Set(schedule.sessions.map(session => session.date))].sort();
 const money = cents => `¥${(cents / 100).toFixed(2)}`;
 const dateText = value => {
     const utc = new Date(`${value}T00:00:00Z`);
@@ -47,6 +46,13 @@ async function showPreviewStep(page, demo) {
 }
 
 for (const demo of demos) {
+    const schedule = require(path.resolve(__dirname, '..', demo.source, demo.dataDir || 'data', 'schedule.json'));
+    const scheduledDates = [...new Set(schedule.sessions.map(session => session.date))].sort();
+    const monthStart = new Date(schedule.month + '-01T00:00:00Z');
+    const dayCount = new Date(Date.UTC(monthStart.getUTCFullYear(), monthStart.getUTCMonth() + 1, 0)).getUTCDate();
+    const offset = (monthStart.getUTCDay() + 6) % 7;
+    const trailing = (7 - (offset + dayCount) % 7) % 7;
+    const brands = { classic: '拾光工坊', calendar: '岸陶工房', agenda: '折页印作社' };
     test.describe(demo.templateId, () => {
         test('craft and date filters lead to a complete local reservation preview with independently calculated totals', async ({ page, context, baseURL }) => {
             const externalRequests = [];
@@ -61,6 +67,9 @@ for (const demo of demos) {
                 }
             });
             await openWorkshop(page, demo);
+            expect(JSON.parse(await page.locator('#booking-data').textContent())).toEqual(schedule);
+            await expect(page.locator('.brand-copy strong')).toHaveText(brands[demo.templateId]);
+            expect(await page.locator('#category-filter option').evaluateAll(options => options.map(option => option.value))).toEqual(['all', ...new Set(schedule.courses.map(course => course.category))]);
             await context.setOffline(true);
             const session = schedule.sessions.find(item => item.remaining >= 2);
             const course = schedule.courses.find(item => item.id === session.courseId);
@@ -193,7 +202,7 @@ for (const demo of demos) {
                 await expect(page.locator('#booking-preview')).toBeVisible();
                 expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width + 1);
                 await page.goto(`/${demo.path}about/`);
-                await expect(page.locator('main h1')).toHaveText('关于这份排期');
+                await expect(page.locator('main h1')).toHaveText('关于' + brands[demo.templateId] + '的排期');
                 await expect(page.locator('main h1')).toHaveCount(1);
                 await expect(page.locator('body')).toHaveAttribute('data-template', demo.templateId);
                 expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width + 1);
@@ -201,29 +210,35 @@ for (const demo of demos) {
         });
 
         if (demo.templateId === 'calendar') {
-            test('midnight calendar uses a separate day panel and retains course names and times inside phone date cells', async ({ page }) => {
+            test('ceramic calendar keeps phone date cells readable and opens complete course and time details', async ({ page }) => {
                 await page.setViewportSize({ width: 1280, height: 1000 });
                 await openWorkshop(page, demo, { showAll: false });
                 await expect(page.locator('.calendar-workspace')).toHaveCSS('display', 'grid');
                 const month = await page.locator('.calendar-month-column').boundingBox();
                 const day = await page.locator('.calendar-day-column').boundingBox();
                 expect(day.x).toBeGreaterThanOrEqual(month.x + month.width);
+                await expect(page.locator('.calendar-slot:visible')).toHaveCount(schedule.sessions.length);
                 for (const width of [320, 390]) {
                     await page.setViewportSize({ width, height: 1000 });
-                    await expect(page.locator('.calendar-day-number:visible')).toHaveCount(31);
-                    await expect(page.locator('.calendar-slot:visible')).toHaveCount(schedule.sessions.length);
+                    await expect(page.locator('.calendar-day-number:visible')).toHaveCount(dayCount);
+                    await expect(page.locator('.calendar-slot:visible')).toHaveCount(0);
                     for (const session of schedule.sessions) {
                         const course = schedule.courses.find(item => item.id === session.courseId);
                         const cell = calendarButton(page, session.date);
-                        const slot = cell.locator('.calendar-slot').filter({ hasText: course.title }).filter({ hasText: session.start });
-                        await expect(slot.locator('strong')).toBeVisible();
-                        await expect(slot.locator('span').filter({ hasText: session.start })).toBeVisible();
+                        await expect(cell.locator('.calendar-day-count')).toHaveText(`${schedule.sessions.filter(item => item.date === session.date).length} 场`);
+                        await cell.click();
+                        await expect(page.locator('[data-calendar-details]')).toBeVisible();
+                        await expect(courseButton(page, course.id)).toBeVisible();
+                        const row = page.locator(`[data-session-id="${session.id}"]`);
+                        await expect(row).toBeVisible();
+                        await expect(row).toContainText(course.title);
+                        await expect(row).toContainText(session.start);
                     }
                     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width + 1);
                 }
             });
 
-            test('calendar opens at date entry with a complete Monday-first October grid', async ({ page }) => {
+            test('calendar opens at date entry with a complete Monday-first scene month grid', async ({ page }) => {
                 await openWorkshop(page, demo, { showAll: false });
                 await expect(page.getByLabel('排期日期', { exact: true })).toHaveValue('');
                 await expect(page.locator('[data-calendar-prompt]')).toBeVisible();
@@ -236,7 +251,7 @@ for (const demo of demos) {
                     const number = cell.querySelector('.calendar-day-number');
                     return number ? Number(number.textContent) : null;
                 }));
-                expect(days).toEqual([null, null, null, ...Array.from({ length: 31 }, (_, index) => index + 1), null]);
+                expect(days).toEqual([...Array(offset).fill(null), ...Array.from({ length: dayCount }, (_, index) => index + 1), ...Array(trailing).fill(null)]);
                 const dates = await page.locator('[data-calendar-date]:not([data-calendar-date="all"])').evaluateAll(buttons => buttons.map(button => button.dataset.calendarDate));
                 expect(dates).toEqual(scheduledDates);
                 for (const date of scheduledDates) await expect(calendarButton(page, date)).toBeEnabled();
@@ -345,7 +360,7 @@ for (const demo of demos) {
                 await expect(all).toBeFocused();
                 await expect(all).toHaveAttribute('aria-pressed', 'true');
                 await expect(page.getByLabel('排期日期', { exact: true })).toHaveValue('all');
-                await expect(page.locator('[data-calendar-summary]')).toHaveText('十月完整课程与排期');
+                await expect(page.locator('[data-calendar-summary]')).toHaveText(monthStart.getUTCFullYear() + ' 年 ' + (monthStart.getUTCMonth() + 1) + ' 月完整课程与排期');
                 await expect(page.locator('[data-course-id]:visible')).toHaveCount(schedule.courses.length);
                 await expect(page.locator('[data-session-id]:visible')).toHaveCount(schedule.sessions.length);
                 const session = schedule.sessions.find(item => item.remaining >= 3);
@@ -378,7 +393,7 @@ for (const demo of demos) {
         }
 
         if (demo.templateId === 'agenda') {
-            test('purple ticket wizard gates each step and preserves selections on back while invalidating a changed course', async ({ page }) => {
+            test('paper workshop wizard gates each step and preserves selections on back while invalidating a changed course', async ({ page }) => {
                 const pageErrors = [];
                 page.on('pageerror', error => pageErrors.push(error.message));
                 await page.setViewportSize({ width: 1280, height: 1000 });
@@ -442,20 +457,23 @@ for (const demo of demos) {
                     await expect(courseButton(page, course.id)).toContainText(course.title);
                     await expect(courseButton(page, course.id)).toBeDisabled();
                 }
-                for (const session of schedule.sessions) await expect(sessionButton(page, session.id)).toBeDisabled();
+                for (const session of schedule.sessions) {
+                    await expect(sessionButton(page, session.id)).toBeDisabled();
+                    await expect(page.locator('[data-session-id="' + session.id + '"] .session-capacity')).toHaveText(session.remaining === 0 ? '已满额 · 示例余位 0 人' : '示例余位 ' + session.remaining + ' 人');
+                }
                 await expect(page.getByLabel('手作分类', { exact: true })).toBeDisabled();
                 await expect(page.getByLabel('排期日期', { exact: true })).toBeDisabled();
                 await expect(page.getByLabel('参与人数', { exact: true })).toBeDisabled();
                 await expect(page.locator('#preview-booking')).toBeDisabled();
                 await expect(page.locator('p.noscript-note')).toBeVisible();
-                await expect(page.locator('p.noscript-note')).toContainText('只读浏览全部六门课程和十二个示例场次');
+                await expect(page.locator('p.noscript-note')).toContainText('只读浏览全部 ' + schedule.courses.length + ' 门课程和 ' + schedule.sessions.length + ' 个示例场次');
                 await expect(page.locator('#booking-preview')).toBeHidden();
                 if (demo.templateId === 'calendar') {
                     await expect(page.locator('[data-calendar-details]')).toBeVisible();
                     await expect(page.locator('[data-calendar-prompt]')).toBeHidden();
                     await expect(page.locator('[data-calendar-date]:visible')).toHaveCount(scheduledDates.length + 1);
                     for (const date of [...scheduledDates, 'all']) await expect(calendarButton(page, date)).toBeDisabled();
-                    await expect(page.locator('.calendar-day-number:visible')).toHaveCount(31);
+                    await expect(page.locator('.calendar-day-number:visible')).toHaveCount(dayCount);
                 }
                 if (demo.templateId === 'agenda') {
                     await expect(page.locator('.agenda-step[data-agenda-step]:visible')).toHaveCount(3);

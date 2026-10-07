@@ -1,5 +1,24 @@
 +++
-title = '内容概览'
-heading = '每一次更新，都有迹可循。'
-intro = '把分散的内容反馈放在一起，观察阅读、互动与渠道分布。'
+brandName = "桌边编辑部"
+brandEnglish = "DESKNOTE"
+brandGlyph = "编"
+siteTitle = "桌边编辑部｜编辑部运营看板"
+title = "编辑部运营"
+heading = "一季稿件，接着往下做。"
+intro = "选题、校样与读者来信归到一处，看看这季的发布节奏，也为下一期留下线索。"
+description = "桌边编辑部的虚构稿件运营样本：24条稿件、博客、视频与社区反馈，演示组合筛选和阅读统计。"
+sceneLabel = "编辑部运营"
+periodLabel = "2026 年第三季度"
+periodRange = "2026.07 — 2026.09"
+edition = "夏末编务记录"
+channelLabel = "内容渠道"
+overviewLabel = "稿件概览"
+dataNotice = "虚构演示 · 示例数据"
+themeColor = "#1c5660"
+art = "art/editorial-proof.svg"
+artAlt = "原创编辑校样图：段落、裁切标记与手写校改线"
+favicon = "art/editorial-mark.svg"
+noteTitle = "把反馈，带回下一期。"
+noteCopy = "阅读次数看稿件被打开的规模，互动率看每次阅读留下的反馈。两者放在一起，不急着下结论。"
+aboutSummary = "一季虚构稿件，使用一致的统计口径。"
 +++

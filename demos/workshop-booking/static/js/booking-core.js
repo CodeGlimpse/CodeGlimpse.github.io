@@ -6,7 +6,16 @@
 }(typeof window !== 'undefined' ? window : null, function () {
     'use strict';
 
-    const CATEGORIES = ['陶艺', '印刷', '花艺'];
+    function getCategories(schedule) {
+        return [...new Set(schedule.courses.map(course => course.category))];
+    }
+
+    function validCategory(value) {
+        return typeof value === 'string' && value === value.trim() && value !== 'all'
+            && /^[\p{L}\p{N}][\p{L}\p{N} &-]{0,23}$/u.test(value);
+    }
+
+    const ARTS = new Set(['clay-cup', 'clay-tray', 'print-leaf', 'print-garden', 'flower-vase', 'flower-ring', 'pinch-bowl', 'coil-vase', 'wheel-cup', 'wheel-plate', 'glaze-grid', 'glaze-line', 'fold-lamp', 'paper-city', 'lino-wave', 'two-color', 'thread-book', 'accordion-book']);
     const WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
     const TIME = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
 
@@ -24,24 +33,25 @@
 
     function formatMoney(cents) {
         if (!Number.isSafeInteger(cents) || cents < 0) return '—';
-        return '¥' + (cents / 100).toFixed(2);
+        return '¥' + Math.floor(cents / 100) + '.' + String(cents % 100).padStart(2, '0');
     }
 
     function validateSchedule(schedule) {
         if (!schedule || typeof schedule.month !== 'string' || !/^\d{4}-\d{2}$/.test(schedule.month)
-            || !Array.isArray(schedule.courses) || !schedule.courses.length || !Array.isArray(schedule.sessions)) return false;
+            || !isDate(schedule.month + '-01') || !Array.isArray(schedule.courses) || !schedule.courses.length
+            || !Array.isArray(schedule.sessions) || !schedule.sessions.length) return false;
         const courseIds = new Set();
         for (const course of schedule.courses) {
-            if (!course || typeof course.id !== 'string' || !course.id.trim() || courseIds.has(course.id)
+            if (!course || typeof course.id !== 'string' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(course.id) || courseIds.has(course.id)
                 || !['title', 'description', 'materials', 'level', 'art'].every(key => typeof course[key] === 'string' && course[key].trim())
-                || !CATEGORIES.includes(course.category)
+                || !validCategory(course.category) || !ARTS.has(course.art)
                 || !Number.isSafeInteger(course.priceCents) || course.priceCents < 0 || !Number.isSafeInteger(course.priceCents * 6)
                 || !Number.isSafeInteger(course.durationMinutes) || course.durationMinutes <= 0) return false;
             courseIds.add(course.id);
         }
         const sessionIds = new Set();
         for (const session of schedule.sessions) {
-            if (!session || typeof session.id !== 'string' || !session.id.trim() || sessionIds.has(session.id)
+            if (!session || typeof session.id !== 'string' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(session.id) || sessionIds.has(session.id)
                 || !courseIds.has(session.courseId) || !isDate(session.date) || !session.date.startsWith(schedule.month + '-')
                 || !TIME.test(session.start) || !TIME.test(session.end) || session.start >= session.end
                 || !Number.isSafeInteger(session.remaining) || session.remaining < 0 || session.remaining > 6) return false;
@@ -50,7 +60,7 @@
             if (minutes(session.end) - minutes(session.start) !== course.durationMinutes) return false;
             sessionIds.add(session.id);
         }
-        return true;
+        return schedule.courses.every(course => schedule.sessions.some(session => session.courseId === course.id));
     }
 
     function createState() {
@@ -74,7 +84,7 @@
 
     function reconcileSelection(schedule, state) {
         const next = { ...createState(), ...state };
-        if (next.category !== 'all' && !CATEGORIES.includes(next.category)) next.category = 'all';
+        if (next.category !== 'all' && !getCategories(schedule).includes(next.category)) next.category = 'all';
         if (next.date !== 'all' && !schedule.sessions.some(session => session.date === next.date)) next.date = 'all';
         const course = schedule.courses.find(item => item.id === next.courseId);
         if (!course || (next.category !== 'all' && course.category !== next.category)) {
@@ -137,5 +147,5 @@
         };
     }
 
-    return { isDate, dateLabel, formatMoney, validateSchedule, createState, visibleCourses, visibleSessions, reconcileSelection, selectCourse, selectSession, selectionResult, createPreview };
+    return { getCategories, isDate, dateLabel, formatMoney, validateSchedule, createState, visibleCourses, visibleSessions, reconcileSelection, selectCourse, selectSession, selectionResult, createPreview };
 }));

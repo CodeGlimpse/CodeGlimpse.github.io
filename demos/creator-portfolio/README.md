@@ -1,69 +1,53 @@
-# 创作者作品集演示站
+# 创作者作品集：三个独立场景
 
-这是一个可独立复制到客户自有 GitHub 仓库的 Hugo 静态站样本，用原创的虚构作品验证两种展示：图片画廊和设计项目案例。它不代表真实客户案例，也不是已经交付的本地可视化编辑器。
+这是可复制为独立 Hugo 仓库的作品集样本。每个场景独立包含自己的品牌、四篇作品详情、八张原创 SVG 和创作说明；全部为虚构演示，不代表真实客户、出版或公共设施项目。
 
-## 当前可检查的交付
+| 场景 | 内容与视觉 | 内容目录 |
+| --- | --- | --- |
+| `classic` 岛页插画 | 日常叙事、图画书与植物插画；雾蓝纸面、宋体标题和双列画廊 | `content/` |
+| `editorial` 拾度设计 | 四组虚构品牌命题；钴蓝海报、章节导航与设计应用大图 | `variants/editorial/content/` |
+| `archive` 回声单元 | 相位、色带、流场与轨道数字艺术；深靛档案、参数记录与选中预览 | `variants/archive/content/` |
 
-- 首页、图片作品列表及详情、项目案例列表及详情。
-- 四组原创 SVG 演示素材；各作品的文字与图片放在同一个页面目录中。
-- 手机与桌面布局、键盘导航、图片替代文本和基本页面描述。
-- Markdown 内容更新路径及一个供独立仓库使用的 GitHub Pages 工作流。
+三个场景各有首页、两个作品分类页和四个详情页。旧的 `works/window-light/`、`works/paper-tide/`、`projects/rain-notes/`、`projects/leaf-atlas/` 网址全部保留，场景中的作品内容完全独立。归档预览和章节导航支持键盘；关闭 JavaScript 后仍可浏览所有图文与详情。
 
-站点没有后台、登录、拖拽布局或自动 Git 提交功能。本地编辑器会在内容结构与客户更新流程验证后单独开发；首版计划仅支持 Windows、由卖家交付的站点与客户自有 GitHub 仓库。
+## 独立预览与构建
 
-## 本地预览
-
-需要 Hugo Extended 0.157.0。在此目录运行：
-
-```powershell
-hugo server
-```
-
-打开命令显示的本地地址。构建并检查类似 GitHub 项目仓库的子路径：
+需要 Hugo Extended 0.157.0。进入本目录，选一个场景：
 
 ```powershell
-hugo --destination "$env:TEMP\portfolio-demo-build" --baseURL 'https://example.github.io/portfolio-demo/' --minify --panicOnWarning
-python -B -X utf8 'scripts\check_build.py' "$env:TEMP\portfolio-demo-build" --base-url 'https://example.github.io/portfolio-demo/' --check-demo-pages
+# 岛页插画（默认）
+hugo server --config hugo.toml
+
+# 拾度设计：同时选择版式与内容
+hugo server --config hugo.toml,variants/editorial/config.toml
+
+# 回声单元：同时选择版式与内容
+hugo server --config hugo.toml,variants/archive/config.toml
 ```
 
-`example.github.io` 和 `portfolio-demo` 只是构建检查用的占位地址，不是已经上线的网址。
+无需单独设置 `HUGO_PARAMS_DEMOTEMPLATE`；若之前设置过该环境变量，先清除它，以免覆盖配置文件。独立构建不显示博客的“场景”菜单或返回目录。博客集成中的菜单进入目标场景首页，每套仍可独立复制和运行。
 
-## 同一内容的三种模板
-
-`archive`：暗色数字档案用紧凑编号索引整理作品和项目。点击独立的“预览”按钮，在并排查看器中显示原封面、标题与简介；“阅读作品”链接进入实际详情页。页面 partial 位于 `layouts/partials/archive/`，样式为 `static/css/archive.css`，呈现控制器为 `static/js/archive.js`。集成地址为 `/demos/variants/creator-portfolio/archive/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'archive'`。
-
-`classic` 保留原来的双列作品卡片；`editorial` 以钴蓝作品海报开场，沿章节导航展开大图、作品说明与项目案例。滚动时章节位置同步更新，并带有轻微图片过渡；列表与详情页采用独立海报版式。三者读取同一份 Markdown、站点参数与页面图片资源，不复制作品内容。
-
-独立预览默认选择 `classic`。在此目录设置 Hugo 参数即可切换，以下命令只选择版式，不修改内容：
+以下以拾度为例，检查 GitHub 项目仓库子路径下的本地输出：
 
 ```powershell
-$env:HUGO_PARAMS_DEMOTEMPLATE = 'editorial'
-hugo server
+hugo --config hugo.toml,variants/editorial/config.toml --destination "$env:TEMP/creator-editorial-build" --baseURL 'https://example.github.io/creator-editorial/' --minify --panicOnWarning
+python -B -X utf8 scripts/check_build.py "$env:TEMP/creator-editorial-build" --base-url 'https://example.github.io/creator-editorial/' --check-demo-pages --scene editorial
 ```
 
-构建时也使用这个环境参数，并为不同模板指定不同的 `--destination` 和 `--baseURL`。预览结束后执行 `Remove-Item Env:\HUGO_PARAMS_DEMOTEMPLATE` 可恢复默认；也可显式设置为 `classic`。其他模板名会使构建报错。模板参数在整站构建时固定，不在浏览器中存储。
+默认场景使用 `--config hugo.toml` 与 `--scene classic`；数字艺术场景使用 `variants/archive/config.toml` 与 `--scene archive`。检查包含全部七页、各套实际标题与品牌、详情正文和两张图片、图片说明及本地链接。占位域名仅用于检查，不是已上线地址。
 
-经典样式来自 `static/css/site.css`；钴蓝海报额外加载 `static/css/editorial.css` 和 `static/js/editorial.js`。海报模板的页面组织在 `layouts/partials/editorial/`，详情仍直接读取现有正文。新增脚本只增强呈现；关闭 JavaScript 时，各作品图片、文字和详情链接仍完整显示，档案预览按钮保持隐藏且不可用。页面适配 320px，并遵循减少动态效果的系统偏好。博客集成时，返回目录与模板选择入口由父站参数提供；独立构建无需博客目录或注册表。
+## 内容更新
 
-## 内容结构
+每个场景的首页 `_index.md` 保存 `title`、`brand`、`homeHeading`、`homeIntro`、简介、关于说明和页脚。每件作品是一个页面目录，目录内有 `index.md`、`cover.svg` 与 `detail.svg`。内容可以继续使用普通 Markdown；详见[更新指南](docs/UPDATE_GUIDE.md)。
 
-- `content/works/<英文短名>/index.md`：普通图片作品。
-- `content/projects/<英文短名>/index.md`：有背景、思路与展示内容的项目案例。
-- 与 `index.md` 同目录的 `cover.svg`：列表和详情页封面；正文可以引用同目录的其他图片。
-- `hugo.toml`：站点名称与演示说明。
+给客户制作时，选定一个场景，替换该场景首页品牌、所有虚构作品与图标。保留更新所需字段，并把客户已取得发布权的图片放到对应作品目录；客户自己的内容检查无需传 `--check-demo-pages` 或 `--scene`，这些选项用于核验当前演示作品。本站没有后台、登录或本地可视化编辑器。
 
-给真实客户复制时，须先替换 `hugo.toml` 中的站名、首页标题与介绍、页面描述，清空 `demoNotice` 和 `footerNote`，替换全部示例作品与图片，并按客户标识替换 `static/favicon.svg`。完成这些替换后再对外发布；当前示例文案不能代表真实客户项目。
+## 复制后发布
 
-每篇内容的开头字段包括 `title`、`summary`、`category`、`cover`、`cover_alt` 和 `weight`。`weight` 数字越小，排序越靠前。各字段的含义与更新步骤见 [更新指南](docs/UPDATE_GUIDE.md)。
+把本目录作为独立仓库根目录。客户自己创建并持有 GitHub 仓库，在 Settings → Pages 中选择 GitHub Actions。随附 `.github/workflows/pages.yml` 使用 Hugo 0.157.0，默认发布 `classic`；选择其他场景时，在工作流的 Hugo 构建命令中加入相同的 `--config hugo.toml,variants/<场景>/config.toml`。
 
-## 复制到客户仓库后发布
+这里验证的是本地构建与页面行为。没有替客户创建账户、购买域名或在客户仓库触发发布。源码、账户、域名与费用边界以实际约定和第三方条款为准。
 
-把本目录的内容作为**独立仓库根目录**，客户自己创建并持有 GitHub 仓库，在仓库的 Settings → Pages 中选择 GitHub Actions 作为发布源，随后推送到 `main`。`.github/workflows/pages.yml` 固定 Hugo 0.157.0，按 Pages 提供的地址设置构建 `baseURL`。网站源码、内容、域名与账户的权利和费用仍以双方约定及第三方服务条款为准。
+## 素材记录
 
-这里只验证了本地构建。尚未在客户仓库实际触发 GitHub Actions，也没有替客户创建账户、购买域名或部署到自有服务器。
-
-## 素材与复用
-
-本演示站的文字与 SVG 为原创虚构样例，不含客户信息。复制给客户时应替换成客户已取得公开发布权的素材。若改用第三方免费模板、字体、图标或图片，应逐项核对其商业使用、修改、署名和再分发条件。
-
-实际订单应写明已确认的源码权利边界：客户取得交付网站源码的永久使用权，制作方保留通用代码和组件的复用权。第三方材料遵守各自许可证；本地编辑器的授权范围需在其开发后另行约定。
+二十四张作品 SVG 由原创几何路径、角色造型、品牌应用图及确定性数学规则绘制，未下载照片、字体或第三方图形。[素材来源与制作记录](docs/ART_SOURCES.md)列出全部作品与复现方法。真实内容仍应使用客户有权公开发布的材料；第三方材料须按各自许可证使用。实际交付时应明确网站源码使用权和通用组件复用权。

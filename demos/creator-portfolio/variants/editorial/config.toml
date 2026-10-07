@@ -1,0 +1,4 @@
+contentDir = 'variants/editorial/content'
+
+[params]
+demoTemplate = 'editorial'

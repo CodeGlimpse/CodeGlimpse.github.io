@@ -1,0 +1,5 @@
+contentDir = 'variants/report/content'
+dataDir = 'variants/report/data'
+
+[params]
+demoTemplate = 'report'

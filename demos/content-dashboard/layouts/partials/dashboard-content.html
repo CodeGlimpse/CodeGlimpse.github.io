@@ -1,29 +1,6 @@
-{{ $entries := . }}
 <section class="panel content-panel" aria-labelledby="content-heading">
-    <div class="table-heading">
-      <div><p class="eyebrow">CONTENT LIBRARY</p><h2 id="content-heading">内容表现</h2></div>
-      <p id="result-summary" role="status" aria-live="polite" aria-atomic="true">共 {{ len $entries }} 条内容</p>
-    </div>
-    <div class="table-wrap">
-      <table class="content-table">
-        <caption class="sr-only">内容表现：标题、发布日期、渠道、阅读次数、互动次数和互动率；默认按阅读次数降序。</caption>
-        <thead><tr><th scope="col">内容标题</th><th scope="col">发布日期</th><th scope="col">渠道</th><th scope="col" class="numeric">阅读次数</th><th scope="col" class="numeric">互动次数</th><th scope="col" class="numeric">互动率</th></tr></thead>
-        <tbody id="content-rows">
-          {{ range sort $entries "views" "desc" }}
-          {{ $rate := 0.0 }}
-          {{ if gt .views 0 }}{{ $rate = div (mul (float .interactions) 100.0) (float .views) }}{{ end }}
-          <tr data-entry-id="{{ .id }}">
-            <td class="content-title" data-cell="title" data-label="内容">{{ .title }}</td>
-            <td class="date-cell" data-cell="published" data-label="发布日期"><time datetime="{{ .published }}">{{ .published }}</time></td>
-            <td data-cell="channel" data-label="渠道"><span class="channel-badge{{ if eq .channel "博客" }} badge-blog{{ else if eq .channel "视频" }} badge-video{{ else }} badge-community{{ end }}">{{ .channel }}</span></td>
-            <td class="numeric" data-cell="views" data-label="阅读量">{{ partial "number.html" .views }}</td>
-            <td class="numeric" data-cell="interactions" data-label="互动次数">{{ partial "number.html" .interactions }}</td>
-            <td class="numeric rate-cell" data-cell="rate" data-label="互动率">{{ printf "%.2f%%" $rate }}</td>
-          </tr>
-          {{ end }}
-        </tbody>
-      </table>
-    </div>
-    <div id="empty-state" class="empty-state" hidden><span class="empty-mark" aria-hidden="true">∅</span><h3>没有符合条件的内容</h3><p>试试更换月份、渠道或关键词，也可以重置筛选。</p></div>
-    <p class="table-note">互动率 = 互动次数 ÷ 阅读次数 × 100%；阅读次数为零时显示 0.00%。</p>
-  </section>
+  <div class="table-heading"><div><p class="eyebrow">逐条看稿件</p><h2 id="content-heading">内容记录</h2></div><p id="result-summary" role="status" aria-live="polite" aria-atomic="true">共 {{ len . }} 条内容</p></div>
+  {{ partial "dashboard-record-table.html" . }}
+  <div id="empty-state" class="empty-state" hidden><span class="empty-mark" aria-hidden="true">∅</span><h3>没有符合条件的内容</h3><p>试试更换月份、渠道或关键词，也可以重置筛选。</p></div>
+  <p class="table-note">互动率 = 互动次数 ÷ 阅读次数 × 100%；阅读次数为零时显示 0.00%。</p>
+</section>

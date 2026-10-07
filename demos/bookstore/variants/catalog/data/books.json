@@ -1,0 +1,122 @@
+[
+  {
+    "id": "paper-collage",
+    "title": "纸上图像拼贴",
+    "author": "陆叠",
+    "category": "图像",
+    "description": "把票根、色块与一段文字重排成图像，观察剪开的边缘如何形成新的叙事。",
+    "priceCents": 8800,
+    "stock": 5,
+    "cover": "art-cut"
+  },
+  {
+    "id": "blue-hour",
+    "title": "蓝调时刻图册",
+    "author": "许映",
+    "category": "图像",
+    "description": "用虚构街景的蓝色调记录一天将尽时的光，比较同一画面里明度的变化。",
+    "priceCents": 12650,
+    "stock": 3,
+    "cover": "art-night"
+  },
+  {
+    "id": "frame-outside",
+    "title": "画框之外的线",
+    "author": "韩弧",
+    "category": "图像",
+    "description": "从画框的留白出发，收集线条越过边界之后留下的节奏和方向。",
+    "priceCents": 6950,
+    "stock": 4,
+    "cover": "art-frame"
+  },
+  {
+    "id": "moving-poster",
+    "title": "会移动的海报",
+    "author": "唐印",
+    "category": "图像",
+    "description": "十二张想象中的城市海报，以裁切、重复和错位试验纸面上的运动感。",
+    "priceCents": 9800,
+    "stock": 0,
+    "cover": "art-transit"
+  },
+  {
+    "id": "modular-grid",
+    "title": "网格的自由边界",
+    "author": "方格",
+    "category": "设计",
+    "description": "把同一组文字放进不同尺度的网格，比较规则如何帮助或限制阅读。",
+    "priceCents": 7600,
+    "stock": 7,
+    "cover": "art-grid"
+  },
+  {
+    "id": "type-weight",
+    "title": "字形的重量",
+    "author": "林形",
+    "category": "设计",
+    "description": "沿着笔画观察字形的密度、对比和重心，用虚构字样练习有分寸的排版。",
+    "priceCents": 10980,
+    "stock": 2,
+    "cover": "art-type"
+  },
+  {
+    "id": "paper-material",
+    "title": "纸材触感档案",
+    "author": "何纹",
+    "category": "设计",
+    "description": "记录光面、纤维与压纹的纸面实验，想象印刷、触摸与阅读之间的关系。",
+    "priceCents": 8250,
+    "stock": 6,
+    "cover": "art-weave"
+  },
+  {
+    "id": "red-blue",
+    "title": "红与蓝的版面实验",
+    "author": "容序",
+    "category": "设计",
+    "description": "只用两种颜色，试做目录、海报和折页。看颜色如何组织信息的先后次序。",
+    "priceCents": 11500,
+    "stock": 4,
+    "cover": "art-palette"
+  },
+  {
+    "id": "room-section",
+    "title": "房间的剖面",
+    "author": "庄线",
+    "category": "建筑",
+    "description": "剖开十二个虚构小房间，从人的动作、桌椅尺度和天光读懂一个空间。",
+    "priceCents": 14800,
+    "stock": 9,
+    "cover": "art-room"
+  },
+  {
+    "id": "window-atlas",
+    "title": "窗的形状图鉴",
+    "author": "顾窗",
+    "category": "建筑",
+    "description": "把窗洞、窗框和投下的影子并置，观察一面墙如何与外面的世界交谈。",
+    "priceCents": 13200,
+    "stock": 3,
+    "cover": "art-window"
+  },
+  {
+    "id": "courtyard-light",
+    "title": "院落里的光线",
+    "author": "沈庭",
+    "category": "建筑",
+    "description": "用示意图描绘一天中的光线，记录转角、树影和空地带来的空间变化。",
+    "priceCents": 9650,
+    "stock": 8,
+    "cover": "art-courtyard"
+  },
+  {
+    "id": "street-model",
+    "title": "街角的纸模型",
+    "author": "尹筑",
+    "category": "建筑",
+    "description": "以纸面模型研究虚构街角的高低、转折和尺度，走进图纸与街道之间。",
+    "priceCents": 15895,
+    "stock": 1,
+    "cover": "art-street"
+  }
+]

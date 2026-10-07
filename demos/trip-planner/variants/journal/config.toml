@@ -1,0 +1,5 @@
+contentDir = 'variants/journal/content'
+dataDir = 'variants/journal/data'
+
+[params]
+demoTemplate = 'journal'

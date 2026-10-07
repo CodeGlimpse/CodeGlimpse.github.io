@@ -1,0 +1,7 @@
+{{- $months := slice -}}
+{{- $channels := slice -}}
+{{- range . -}}
+  {{- $months = $months | append (substr .published 0 7) -}}
+  {{- $channels = $channels | append .channel -}}
+{{- end -}}
+{{- return (dict "months" (sort (uniq $months)) "channels" (uniq $channels)) -}}

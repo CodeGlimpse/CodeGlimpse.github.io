@@ -1,78 +1,53 @@
-# 远山周末｜旅行行程编排演示
+# 行程编排：三个独立目的地场景
 
-这是一个独立 Hugo 静态站，以八个原创虚构地点和原创内联 SVG 地形图演示周末行程编排。站点以深松绿、米黄与橙色路线呈现地图编辑体验；它不包含真实景点、旅行推荐或地理导航资料。
+三套独立 Hugo 静态演示，共用行程逻辑，各自拥有品牌、八处原创虚构地点、描述、估算、坐标与地图地形。图面均为本地原创内联 SVG，没有外部底图、字体或图片；没有定位、预约、后台、网络数据接口或持久化。虚构地点与路线不能用于真实出行。
 
-可按自然、人文、休憩筛选地点，加入最多六处且不重复；清单支持上移、下移、移除和清空。地图连线及数字、地点数、停留时间、预算和含交通总时间跟随清单更新。筛选保留已加入的地点。
+| 场景 / 模板 | 原创内容与地图 | 版式与交互 |
+| --- | --- | --- |
+| 远山周末 / FARWEEK · `classic` | 松风脊、雾桥溪等山谷停靠点；松绿山脊、溪流与湖泊图 | 地点、地图与行程并排，窄屏顺序阅读 |
+| 巷里漫游 / LANE LETTERS · `journal` | 栖钟院、墨线巷、拾页印房等街巷片段；石板蓝街网、院落与河岸图 | 老城明信片、旅行手记与地点便签；累计时间线、可展开地点 / 站点手记 |
+| 岬屿慢行 / CAPE DAYS · `workbench` | 白岬灯塔、盐田花圃、小港食堂等离岛停靠点；蓝色群岛与潮线图 | 地图底板、可收起浮动面板、地图地点详情；地图键盘选择与加入行程 |
 
-## 页面模板
+首页 front matter 管理当前品牌、标题、简介、时期、地图名称与说明；页头、页脚、meta 与说明页始终使用当前场景。三套记录、名称和地图位置分别独立；共用的 `map-pins.html` 只负责从当前 JSON 生成点位，山谷、老城与海岛分别使用 `map-mountain.html`、`map-oldtown.html`、`map-islands.html` 的原创地形。
 
-`workbench`：电光蓝地图工作台。桌面以地图为工作区底板，地点与行程面板浮在两侧，所选地点详情位于地图下缘；窄屏改为地图、详情、地点、行程。点击地图标记，或用方向键、Home、End 移动焦点后按 Enter / 空格，可以查看对应地点并加入同一行程。浮动面板可收起和展开，路线不会因此重置；从地图加入地点会展开行程，清空时展开地点面板并恢复筛选焦点。额外加载 `static/css/workbench.css`；所有增强在已有 `planner.js` 中按模板启用。集成地址为 `/demos/variants/trip-planner/workbench/`；独立预览可设置 `$env:HUGO_PARAMS_DEMOTEMPLATE = 'workbench'`。
+## 一次选择完整场景
 
-`params.demoTemplate` 支持 `classic`、`journal` 和 `workbench`，未设置时使用 `classic`；其他值会通过 Hugo `errorf` 中止构建。
-
-| 模板 | 版式 |
-| --- | --- |
-| `classic` | 原地图编辑布局：地点列表、地图与行程面板并排，窄屏按原顺序排列 |
-| `journal` | 陶土旅行手记：笔记本主列包含累计时间线与可展开的站点手记，旁边是地点便签收藏夹，下方有手绘路线；手机依次呈现行程、地点与地图 |
-| `workbench` | 电光蓝地图工作台：地图工作区、可收起的两侧浮动面板和地点详情卡；手机依次展示地图、详情、地点与行程 |
-
-三套模板共用地点数据、业务内容、核心和控制器。原版保留 `places-panel.html`、`map-panel.html`、`itinerary-panel.html`；旅行手记使用 `journal-page.html` 与 `journal-places.html` 组织笔记本和可展开便签，地图工作台使用 `workbench-page.html` 与 `workbench-map.html` 组织地图底板与浮动面板。地点、费用、停留与 SVG 点位仍由同一份 JSON 生成。
-
-手记模板从 0 分钟起，按停留时间与每段交通 20 分钟计算各站的累计分钟范围；上移、下移和移除会重新计算。每站的手记可以展开阅读地点描述，展开状态在重排时保留，移除后清除。地点收藏夹同样可展开，添加按钮始终位于便签之外。这些范围是虚构的相对时长，不是到达时刻，也不提供真实交通或地理导航。编排按钮、焦点恢复、地图连线与汇总继续使用同一业务逻辑。
-
-所有页面加载 `css/site.css` 和共用的 `css/demo-templates.css`，`journal` 额外加载 `css/journal.css`；`body[data-template]` 标记当前模板。说明页使用同一日志风格。模板入口由 `layouts/partials/demo-templates.html` 提供，在目录入口之后、主导航之前；主站注入 `demoTemplates` 链接时保持当前详情路由。集成构建的日志地址为 `/demos/variants/trip-planner/journal/`，主站有前缀时会加上该前缀。
-
-独立预览可在 `hugo.toml` 的 `[params]` 中设置 `demoTemplate = 'journal'`，或临时设置当前 PowerShell 会话的参数：
+需要 Hugo Extended 0.157.0 与 Python 3.11+；检查器使用标准库 `tomllib`。当前本地验证环境为 Python 3.13.2，无新增依赖。在本目录运行：
 
 ```powershell
-$env:HUGO_PARAMS_DEMOTEMPLATE = 'journal'
-hugo server
-Remove-Item Env:HUGO_PARAMS_DEMOTEMPLATE
+# 远山周末
+hugo server --config hugo.toml
+# 巷里漫游
+hugo server --config hugo.toml,variants/journal/config.toml
+# 岬屿慢行
+hugo server --config hugo.toml,variants/workbench/config.toml
 ```
 
-停止预览后执行最后一条命令，即恢复默认模板。三套模板使用同一个独立构建与检查器，没有新增依赖；默认不显示主站注入的模板链接。
+替代场景配置同时选择 `params.demoTemplate`、`contentDir`、`dataDir`，不能只改外观参数后使用原地点。经典场景保留 `content/` 与 `data/places.json`；其他场景位于 `variants/<template>/content/` 与 `variants/<template>/data/places.json`，JSON basename 一致。
 
-## 演示口径
+集成地址保持 `/demos/trip-planner/`、`/demos/variants/trip-planner/journal/`、`/demos/variants/trip-planner/workbench/`。集成构建按场景选择内容与数据目录。菜单标为“场景”，说明“不同场景，切换后进入对应首页，临时操作将重置。”；从说明页切换也进入目标首页。独立站未注入目录参数时不显示主站入口。
 
-- `durationMinutes` 是每处虚构地点的固定停留时间。每一对相邻地点加 20 分钟交通时间，与示意距离和顺序无关。空行程全部为零，一处不加交通；总时间超过 480 分钟（8 小时）时提醒拆分行程。
-- `costCents` 为整数分，按地点费用相加再显示金额。费用只是体验或停留的示例预算，未包含清单之外的交通、住宿和个人消费，不能用于真实出行决策。
-- 地点、描述、地形和坐标均为原创虚构内容。地图折线只表示当前先后顺序，**非真实地理导航**，不代表道路或路线距离；原版和手记版使用橙色路线，工作台使用蓝色路线。
-- 没有定位、预约、后端、外部请求或持久化。状态仅存在页面内存中，刷新重置；不访问 localStorage 或 sessionStorage。
-- 关闭 JavaScript 时保留八个地点和基础地图，控件初始禁用；手记便签全部展开，工作台地图标记只是基础图形，成功增强后才获得按钮语义和键盘交互。移动后焦点跟随同一地点；移除后优先转到下一处或上一处，空清单时转到类型筛选。状态播报使用简短的 `aria-live` 消息。
-
-## 本地预览与独立构建
-
-需要 Hugo Extended 0.157.0、Python 3.10+。在本目录运行：
+## 独立构建与核对
 
 ```powershell
-hugo server
+hugo --config hugo.toml,variants/journal/config.toml --destination 'F:\agents\code\temp\trip-planner-journal' --baseURL 'https://example.github.io/walking/' --minify --panicOnWarning
+python -B -X utf8 scripts/check_build.py 'F:\agents\code\temp\trip-planner-journal' --base-url 'https://example.github.io/walking/' --check-demo-pages
 ```
 
-独立站默认不显示返回博客目录入口。以下命令构建一个项目子路径，`example.github.io` 只是占位示例：
+示例域名只用于检查子路径。检查器验证首页、about、脚本、素材、本地链接、唯一 `main h1` 与演示声明，然后按产物模板标记读取对应源文件，核对源 JSON、内嵌 JSON、八张静态地点卡、费用 / 停留、地图 ID / 标签 / 坐标、地图场景与初始空行程。集成检查可增加精确的 `--catalog-url /demos/` 和各场景首页 `--template-url`。它不会仅取消原来的八处静态地点要求。
 
-```powershell
-hugo --destination "$env:TEMP\trip-planner-build" --baseURL 'https://example.github.io/weekend/' --minify --panicOnWarning
-python -B -X utf8 scripts/check_build.py "$env:TEMP\trip-planner-build" --base-url 'https://example.github.io/weekend/' --check-demo-pages
-```
+## 估算口径与操作
 
-集成构建可由父站注入 `HUGO_PARAMS_DEMOCATALOGURL`，例如 `/review/demos/`。只有参数非空时，每页才出现“← 返回演示目录”。它使用参数的精确根相对地址；独立检查时传入同一个 `--catalog-url` 才允许这个标记链接离开当前 demo 的路径前缀：
+- 地点可按自然、人文、休憩筛选。行程最多六处，每处只加一次；支持上移、下移、移除、清空。筛选保留已选行程，编号与折线跟随清单顺序。
+- `durationMinutes` 为正安全整数分钟，`costCents` 为非负安全整数分。相邻两处加 20 分钟交通，与图面距离及顺序无关；一处不加交通。含交通总时间超过 480 分钟提醒减少地点或拆成两天。
+- 预算仅相加地点示例费用，再显示人民币金额，不包含清单外交通、住宿与个人消费。总量溢出会停止增强，数据不会悄悄失真。
+- 地点的 `id` 是唯一小写英文短名，名称与描述非空，类别限定自然、人文、休憩；坐标 `x`、`y` 是 0—100 范围内的有限数字。数据校验保持严格。
+- 地形和坐标全部虚构。山谷与老城的橙线、海岛的蓝线只表示清单先后，**非真实地理导航**，不表示道路、航路、距离、可通行性、潮汐或船班。
+- 手记每站累计分钟从零开始，包含前一段 20 分钟交通；不是到达时刻。重排保留已展开手记，移除后清除。地点便签可独立展开，加入按钮始终可用。
+- 工作台地图可点击，或用方向键、Home、End 移动焦点后 Enter / 空格查看地点，再加入同一行程。收起面板不清空路线；地图加入展开行程，清空展开地点并恢复筛选焦点。
+- Tab 与 Enter / 空格操作按钮；重排后焦点跟随地点，移除后转到邻近地点。关闭 JavaScript 时八处地点与基础地图可读、控件禁用，手记便签全部展开，工作台标记只有基础图形；增强成功才赋予按钮语义。
+- 当前状态仅在页面内存中，刷新或切换场景重置；不读 localStorage / sessionStorage。天气、真实路况、开放时间与体力不参与估算。
 
-```powershell
-python -B -X utf8 scripts/check_build.py "$env:TEMP\trip-planner-build" --base-url 'https://example.github.io/weekend/' --check-demo-pages --catalog-url '/review/demos/'
-```
+更新时同步对应场景首页、about、JSON 与地形素材，再运行仓库根目录的 `node --test tests/trip-planner.test.cjs` 和 `e2e/trip-planner.spec.cjs`。测试按每套实际地点核对地图顺序、估算、六处上限、焦点、便签、面板、键盘、320 / 390 / 800 / 1280px、无存储 / 网络与无 JavaScript，并保留经典山谷 315 分钟 / ¥12.00 的固定回归。最终还应逐套截图审查。
 
-上一条命令只适用于构建时已注入 `/review/demos/` 的产物。检查器默认要求首页和完整本地链接；`--check-demo-pages` 额外要求每页唯一的 `main h1`、注入时唯一的返回目录入口、about 页面、本站 CSS/两份 JS、原始八处静态地点和地图点位以及演示声明。复制或修改样例后，应同步更新这些样本约束。
-
-## 更新地点与内容
-
-- `data/places.json` 是地点数组：`id` 用唯一小写英文短名；`name` 和 `description` 是展示文字；`category` 只能是自然、人文、休憩。
-- `durationMinutes` 使用正整数分钟；`costCents` 使用非负整数分，例如 `1299` 显示为 ¥12.99；`x`、`y` 是 0–100 的示意坐标。所有汇总必须处于 JavaScript 安全整数范围。
-- 更新文字、示例费用或位置后重新构建；列表、基础 SVG 点位与 JSON 同时从这份数据生成。地形路径在 `layouts/partials/map-panel.html` 与 `workbench-map.html`，不是外部地图底图。
-- `content/about/index.md` 更新口径说明；`hugo.toml` 更新站名和页面描述；`static/css/site.css` 是默认样式，`static/css/journal.css` 是日志布局与时间线样式。
-- `static/js/planner-core.js` 提供 CommonJS 与 `window.TripPlannerCore` 接口；UI 在 `static/js/planner.js`。初始化只读页面中的 HTML 转义 JSON，不使用网络、存储或动态 HTML 拼接。
-
-仓库根目录的 `tests/trip-planner.test.cjs` 和 `e2e/trip-planner.spec.cjs` 分别覆盖核心状态边界、地图顺序、汇总、焦点、手机布局与无 JavaScript 退化。新增地点或调整估算时，人工核对并同步对应预期，再由维护者运行相关测试。
-
-模板调整后应分别检查加入、重排、移除、六处上限、地图数字和焦点恢复，核对手记累计分钟终点与含交通总时间一致，并验证手记展开状态在重排时保留、地图标记可通过键盘查看并加入地点、面板收起不会清空路线。首页与说明页需要在 320/390 像素及关闭 JavaScript 的情况下保留完整内容。
-
-本样本供内部验证。虚构演示和已实现的交互不表示任何真实客户交付、预订服务或旅游数据授权。
+虚构演示和自动检查不表示真实客户交付、预订服务或旅游资料授权。

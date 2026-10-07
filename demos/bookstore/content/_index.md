@@ -1,5 +1,20 @@
 +++
-title = '纸间书店'
-heading = '让日常，留一点空白。'
-intro = '在文字、形状和生活之间，找一本愿意慢慢翻的书。这里的十二本书都是虚构创作，邀你体验一间纸上书店。'
+title = "纸间文学书店"
+brandLatin = "纸间 / 文学与故事"
+brandMark = "纸间"
+heading = "故事有很多入口，\n从这一页开始。"
+intro = "有从小巷走来的小说，有停在雨里的诗，也有写给日常的散文。十二本虚构读物，装进一只只留在本页的购物袋。"
+summary = "纸间文学书店的十二本虚构小说、诗歌与散文，提供书名搜索和页面内模拟购物袋。"
+siteTitle = "文学书架与模拟购物袋"
+sceneLabel = "小说、诗歌、散文"
+shelfHeading = "文学书架"
+searchExample = "试试「黄昏 信」或「风」"
+shelfNote = "从故事，到一行诗。"
+closing = "一本书的最后一页，\n也是另一个故事的开始。"
+bagIntro = "把小说、诗与散文放在一起。"
+bagEmpty = "从文学书架选一本，试试你的阅读组合。"
+periodLabel = "本期选书 / 2026 秋"
+themeColor = "#eef2f5"
+favicon = "favicon.svg"
+aboutTitle = "关于纸间文学书店"
 +++

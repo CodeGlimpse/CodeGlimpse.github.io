@@ -4,5 +4,5 @@
 <article id="{{ .id }}" class="editorial-chapter" data-editorial-chapter data-chapter-number="{{ printf "%02d" .index }}">
   <div class="editorial-chapter-rail"><span aria-hidden="true">{{ printf "%02d" .index }}</span><p>{{ $page.Params.category }}</p></div>
   <figure class="editorial-image"><a href="{{ $page.RelPermalink }}" aria-label="查看{{ $page.Title }}">{{ with $cover }}<img src="{{ .RelPermalink }}" alt="{{ $page.Params.cover_alt }}" width="1200" height="800" loading="{{ $.loading | default "lazy" }}" decoding="async">{{ end }}</a></figure>
-  <div class="editorial-chapter-copy"><p class="editorial-chapter-kicker">{{ $page.Params.category }}</p><h3><a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a></h3><p>{{ $page.Params.summary }}</p><a class="editorial-chapter-action" href="{{ $page.RelPermalink }}">阅读作品 <span aria-hidden="true">↗</span></a></div>
+  <div class="editorial-chapter-copy"><p class="editorial-chapter-kicker">{{ $page.Params.category }} / {{ $page.Params.year }}</p><h3><a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a></h3><p>{{ $page.Params.summary }}</p><p class="editorial-deliverables">{{ $page.Params.deliverables }}</p><a class="editorial-chapter-action" href="{{ $page.RelPermalink }}">查看设计过程 <span aria-hidden="true">↗</span></a></div>
 </article>

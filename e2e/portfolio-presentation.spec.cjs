@@ -22,8 +22,67 @@ async function openPortfolio(page, demo, route, baseURL) {
 
 test.use({ reducedMotion: 'reduce' });
 
+const CREATOR_SCENES = {
+    classic: {
+        brand: '岛页插画', heading: '把寻常日子画成小小的岛',
+        works: ['风从窗沿经过', '纸上潮线', '雨天邮差', '庭院四季'],
+        details: ['works/window-light/', 'works/paper-tide/', 'projects/rain-notes/', 'projects/leaf-atlas/'],
+    },
+    editorial: {
+        brand: '拾度', heading: '让一个想法成为可辨认的形状',
+        works: ['折光剧场', '丘原咖啡', '行间书展', '渡口公共标识'],
+        details: ['works/window-light/', 'works/paper-tide/', 'projects/rain-notes/', 'projects/leaf-atlas/'],
+    },
+    archive: {
+        brand: '回声单元', heading: '把规则留下，把偶然展开',
+        works: ['相位花园', '折叠频谱', '流场切片', '轨道信号'],
+        details: ['works/window-light/', 'works/paper-tide/', 'projects/rain-notes/', 'projects/leaf-atlas/'],
+    },
+};
+
 for (const width of [1280, 320]) {
-    test(`digital archive previews a selected source record and opens its actual detail at ${width}px`, async ({ page, baseURL }) => {
+    for (const [templateId, scene] of Object.entries(CREATOR_SCENES)) {
+        test(`${scene.brand} keeps its independent artworks and stable details at ${width}px`, async ({ page, baseURL }) => {
+            const demo = demoFor('creator-portfolio', templateId);
+            await page.setViewportSize({ width, height: 960 });
+            await openPortfolio(page, demo, '', baseURL);
+            await expect(page.locator('main h1')).toHaveText(scene.heading);
+            await expect(page).toHaveTitle(new RegExp(scene.brand));
+            await expect(page.locator('header .brand, header .editorial-wordmark, header .archive-brand')).toContainText(scene.brand);
+            for (const title of scene.works) await expect(page.locator('main')).toContainText(title);
+            for (const [otherId, other] of Object.entries(CREATOR_SCENES)) {
+                if (otherId === templateId) continue;
+                for (const title of other.works) await expect(page.locator('main')).not.toContainText(title);
+            }
+            await expect(page.locator('body')).not.toContainText('弧光');
+            await page.keyboard.press('Tab');
+            await expect(page.locator('.skip-link')).toBeFocused();
+            await page.keyboard.press('Enter');
+            await expect(page).toHaveURL(url => url.hash === '#main');
+            await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
+            for (let index = 0; index < scene.details.length; index++) {
+                await openPortfolio(page, demo, scene.details[index], baseURL);
+                await expect(page.locator('main h1')).toHaveText(scene.works[index]);
+                await expect(page).toHaveTitle(new RegExp(scene.brand));
+                if (templateId === 'editorial') {
+                    await expect(page.locator('.editorial-case-facts')).toBeVisible();
+                    await expect(page.locator('.editorial-case-facts dt')).toHaveText(['命题类型', '制作年份', '设计内容']);
+                    for (const fact of await page.locator('.editorial-case-facts dd').all()) await expect(fact).toHaveText(/\S/);
+                }
+                await expect(page.locator('main .detail-cover img')).toBeVisible();
+                await expect(page.locator('main .prose img')).toHaveCount(1);
+                const images = page.locator('main img');
+                await expect(images).toHaveCount(2);
+                for (const image of await images.all()) {
+                    await expect(image).toHaveAttribute('alt', /\S/);
+                    await expect.poll(() => image.evaluate(element => element.complete && element.naturalWidth > 0)).toBe(true);
+                }
+                await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
+            }
+        });
+    }
+
+    test(`Echo Unit previews a source record by keyboard and opens its actual detail at ${width}px`, async ({ page, baseURL }) => {
         const demo = demoFor('creator-portfolio', 'archive');
         await page.setViewportSize({ width, height: 960 });
         await openPortfolio(page, demo, '', baseURL);
@@ -32,13 +91,15 @@ for (const width of [1280, 320]) {
         const record = root.locator('[data-archive-entry]').last();
         const sourceLink = record.locator('[data-archive-detail]');
         const title = await sourceLink.innerText();
+        expect(title).toBe('轨道信号');
         const detailURL = new URL(await sourceLink.getAttribute('href'), page.url());
         const sourceImage = record.locator('.archive-entry-media img');
         const source = await sourceImage.getAttribute('src');
         const alt = await sourceImage.getAttribute('alt');
         const previewButton = record.locator('[data-archive-preview-button]');
         await expect(previewButton).toBeEnabled();
-        await previewButton.click();
+        await previewButton.focus();
+        await page.keyboard.press('Enter');
         await expect(previewButton).toHaveAttribute('aria-pressed', 'true');
         await expect(root.locator('[data-archive-preview-button][aria-pressed="true"]')).toHaveCount(1);
         await expect(root.locator('[data-archive-preview-title]')).toHaveText(title);
@@ -48,6 +109,8 @@ for (const width of [1280, 320]) {
         await root.locator('[data-archive-preview-detail]').click();
         await expect(page).toHaveURL(url => url.pathname === detailURL.pathname);
         await expect(page.locator('main h1')).toHaveText(title);
+        await expect(page.locator('.archive-dossier-meta dt')).toHaveText(['记录编号', '媒介', '构成规则', '画布', '制作年份']);
+        await expect(page.locator('.archive-dossier-meta dd')).toHaveText(['E-04', '静态矢量生成图', '旋转椭圆 / 24 条轨道', '1200 × 800', '2026']);
     });
 
     test(`nature photo stories open their authored detail and full original at ${width}px`, async ({ page, baseURL }) => {
@@ -76,17 +139,19 @@ for (const width of [1280, 320]) {
         await expect(opener).toBeFocused();
     });
 
-    test(`cobalt chapter navigation follows the scroll location at ${width}px`, async ({ page, baseURL }) => {
+    test(`Shidu design chapters follow keyboard selection and scroll location at ${width}px`, async ({ page, baseURL }) => {
         const demo = demoFor('creator-portfolio', 'editorial');
         await page.setViewportSize({ width, height: 960 });
         await openPortfolio(page, demo, '', baseURL);
         const root = page.locator('[data-editorial]');
         await expect(root).toHaveAttribute('data-editorial-ready', 'true');
+        await expect(root.locator('.editorial-chapter-copy h3')).toHaveText(CREATOR_SCENES.editorial.works);
         const links = root.locator('[data-editorial-target]');
         const last = links.last();
         const target = await last.getAttribute('data-editorial-target');
         await expect(last).toHaveAttribute('href', `#${target}`);
-        await last.click();
+        await last.focus();
+        await page.keyboard.press('Enter');
         await expect(root.locator(`#${target}`)).toBeInViewport();
         await expect(last).toHaveAttribute('aria-current', 'location');
         await expect(root).toHaveAttribute('data-editorial-current', target);
@@ -141,5 +206,6 @@ test.describe('portfolio presentation controls without JavaScript', () => {
             await expect(button).toBeDisabled();
         }
         for (const record of await page.locator('[data-archive-entry]').all()) await expect(record).toBeVisible();
+        await expect(page.locator('[data-archive-detail]')).toHaveText(CREATOR_SCENES.archive.works);
     });
 });

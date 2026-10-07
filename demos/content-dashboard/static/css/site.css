@@ -10,6 +10,23 @@
   --focus: #146b57;
 }
 
+/* The editorial scene borrows the marks and quiet spacing of a proof sheet. */
+body[data-template="classic"] { --paper: #f2f7f9; --ink: #234d57; --line: #d2e2e6; --accent: #1c6875; --accent-soft: #e4f0f1; --focus: #195d73; }
+.editorial-proof { width: 158px; height: auto; flex-shrink: 0; border-radius: 3px; }
+body[data-template="classic"] .brand-mark { display: grid; place-items: center; padding: 0; color: #fff; font-family: "SimSun", serif; font-size: 1.3rem; border-radius: 4px; }
+body[data-template="classic"] .brand-name { font-family: "SimSun", "Songti SC", serif; letter-spacing: .02em; font-size: 1.15rem; }
+body[data-template="classic"] .dashboard-heading > div:first-child { flex: 1; min-width: 0; }
+body[data-template="classic"] .heading-intro { max-width: 32rem; }
+body[data-template="classic"] .metric-card { border-top: 3px solid #aecdd2; border-radius: 7px; }
+body[data-template="classic"] .metric-accent { border-top-color: #bd4965; background: #eef5f7; }
+body[data-template="classic"] .reading-note { background: #e5f0f3; border-color: #cbdfe4; }
+.editorial-margin-mark { position: absolute; right: 16px; bottom: 16px; padding: .2rem .35rem; border: 1px solid #ba6c7c; color: #ba6c7c; font-family: "SimSun", serif; font-size: .8rem; transform: rotate(-7deg); }
+.badge-0 { background: #e8f2ec; color: #387556; }
+.badge-1 { background: #e7f1f2; color: #42767d; }
+.badge-2 { background: #f1ede3; color: #827046; }
+@media (max-width: 960px) { .editorial-proof { width: 125px; } }
+@media (max-width: 700px) { .editorial-proof { width: 140px; align-self: end; margin-top: -4px; } body[data-template="classic"] .brand-name { font-size: 1.05rem; } body[data-template="classic"] .header-inner { gap: .65rem; } body[data-template="classic"] .site-nav { gap: .8rem; } }
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; font-size: .92rem; line-height: 1.65; }

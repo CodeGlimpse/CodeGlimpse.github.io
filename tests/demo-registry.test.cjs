@@ -36,11 +36,11 @@ test('rejects paths that escape the site or source tree', () => {
     assert.throws(() => validateDemoRegistry(entries), /Invalid demo preview/);
 });
 
-test('rejects template content directories that escape the source tree', () => {
+for (const directory of ['contentDir', 'dataDir']) test(`rejects template ${directory} paths that escape the source tree`, () => {
     for (const value of ['', null, '../escape', '/absolute', 'C:/absolute', 'folder/../../escape', 'content\\portrait', './content', 'content/%2e%2e', 'content\u0000', 'content/.. /escape', 'content.', 'content/*', 'content\u007f']) {
         const entries = structuredClone(DEMO_CASES);
-        entries[0].templates[0].contentDir = value;
-        assert.throws(() => validateDemoRegistry(entries), /Invalid template contentDir/);
+        entries[0].templates[0][directory] = value;
+        assert.throws(() => validateDemoRegistry(entries), new RegExp(`Invalid template ${directory}`));
     }
 });
 
@@ -54,6 +54,7 @@ test('expands templates with independent content checks and destinations', () =>
         for (const demo of variants) {
             const template = item.templates.find(template => template.id === demo.templateId);
             assert.equal(demo.contentDir, template.contentDir);
+            assert.equal(demo.dataDir, template.dataDir);
             assert.equal(demo.differentContent, item.differentContent === true);
             assert.deepEqual(demo.checks.pages, template.checks?.pages || item.checks.pages);
             assert.ok((template.checks?.assets || item.checks.assets).every(asset => demo.checks.assets.includes(asset)));
@@ -65,6 +66,7 @@ test('merges validated template checks without retaining replaced case assets', 
     const entries = structuredClone(DEMO_CASES);
     const item = entries[0];
     item.differentContent = true;
+    delete item.templates[0].checks;
     const template = item.templates[1];
     template.contentDir = 'content/portraits';
     template.checks = {
@@ -120,7 +122,9 @@ test('rejects conflicting templates, ambiguous defaults, and nested destinations
 });
 
 test('Python checks receive exact sibling page allowances with the deployment prefix', () => {
-    const demo = DEMO_REGISTRY.find(item => item.id === 'creator-portfolio-editorial');
+    const entries = structuredClone(DEMO_CASES);
+    entries.find(item => item.id === 'creator-portfolio').differentContent = false;
+    const demo = expandDemoRegistry(entries).find(item => item.id === 'creator-portfolio-editorial');
     const args = checkerArgs(demo, projectRoot, 'https://example.test/review/');
     assert.equal(args[args.indexOf('--base-url') + 1], 'https://example.test/review/demos/variants/creator-portfolio/editorial/');
     const allowed = args.flatMap((value, index) => value === '--template-url' ? [args[index + 1]] : []);
@@ -146,6 +150,7 @@ test('independent photography content permits only exact sibling homepages', () 
 test('shared-content allowances use the sibling actual page list', () => {
     const entries = structuredClone(DEMO_CASES);
     const item = entries[0];
+    item.differentContent = false;
     item.templates[1].checks = { pages: ['', ...item.checks.navigation, 'works/sibling-only/'] };
     const demo = expandDemoRegistry(entries).find(demo => demo.caseId === item.id && demo.templateId === item.defaultTemplate);
     const args = checkerArgs(demo, projectRoot, 'https://example.test/review/');

@@ -1,5 +1,21 @@
 +++
-title = '拾光工坊'
-heading = '给自己，留一段手作时间。'
-intro = '揉一团陶土，印一片叶影，或把秋天插进花瓶。选一门喜欢的课，看看十月里哪一场适合你。'
+title = "拾光工坊"
+brandLatin = "拾光 / 综合手作"
+brandMark = "拾"
+heading = "给自己，留一段手作时间。"
+intro = "揉一团陶土，印一片叶影，或把秋天插进花瓶。选一门喜欢的课，看看十月里哪一场适合你。"
+summary = "拾光工坊十月综合手作的六门虚构陶艺、印刷与花艺课程，提供固定排期和页面内预约预览。"
+siteTitle = "综合手作课程与预约预览"
+sceneLabel = "陶艺、印刷、花艺"
+periodLabel = "2026 年 10 月"
+periodShort = "2026 / 10"
+periodHeading = "十月手作记"
+shelfHeading = "从喜欢的手作开始"
+calendarHeading = "完整课程与排期"
+panelHeading = "这一场，留给自己。"
+materialNote = "陶土、纸张、花枝，从材料开始找一门喜欢的课。"
+closing = "揉、印、编，在动手中记录秋天。"
+themeColor = "#f0eee8"
+favicon = "favicon.svg"
+aboutTitle = "关于拾光工坊的排期"
 +++

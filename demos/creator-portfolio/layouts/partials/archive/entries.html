@@ -3,9 +3,9 @@
   {{ $cover := $page.Resources.GetMatch $page.Params.cover }}
   {{ if not $cover }}{{ errorf "Missing cover image for %s" $page.File.Path }}{{ end }}
   <li id="archive-{{ $.prefix }}-{{ add $index 1 }}" class="archive-record" data-archive-entry>
-    <span class="archive-number" aria-hidden="true">{{ printf "%02d" (add $index 1) }}</span>
+    <span class="archive-number">{{ $page.Params.recordId }}</span>
     <figure class="archive-entry-media">{{ with $cover }}<img src="{{ .RelPermalink }}" alt="{{ $page.Params.cover_alt }}" width="1200" height="800" loading="lazy" decoding="async">{{ end }}</figure>
-    <div class="archive-copy"><p class="archive-category" data-archive-category>{{ $page.Params.category }}</p><h3><a class="archive-title-link" href="{{ $page.RelPermalink }}" data-archive-detail>{{ $page.Title }}</a></h3><p class="archive-summary" data-archive-summary>{{ $page.Params.summary }}</p><div class="archive-record-actions"><button type="button" data-archive-preview-button aria-label="预览《{{ $page.Title }}》" aria-pressed="false" aria-controls="archive-preview" hidden disabled>预览 <span aria-hidden="true">◎</span></button><a class="archive-read-link" href="{{ $page.RelPermalink }}">阅读作品 ↗</a></div></div>
+    <div class="archive-copy"><p class="archive-category" data-archive-category>{{ $page.Params.category }}</p><h3><a class="archive-title-link" href="{{ $page.RelPermalink }}" data-archive-detail>{{ $page.Title }}</a></h3><p class="archive-summary" data-archive-summary>{{ $page.Params.summary }}</p><p class="archive-rule">{{ $page.Params.rule }}</p><div class="archive-record-actions"><button type="button" data-archive-preview-button aria-label="预览《{{ $page.Title }}》" aria-pressed="false" aria-controls="archive-preview" hidden disabled>预览 <span aria-hidden="true">◎</span></button><a class="archive-read-link" href="{{ $page.RelPermalink }}">阅读创作记录 ↗</a></div></div>
   </li>
   {{ end }}
 </ol>

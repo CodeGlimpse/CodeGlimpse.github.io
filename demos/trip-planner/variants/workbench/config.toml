@@ -1,0 +1,5 @@
+contentDir = 'variants/workbench/content'
+dataDir = 'variants/workbench/data'
+
+[params]
+demoTemplate = 'workbench'

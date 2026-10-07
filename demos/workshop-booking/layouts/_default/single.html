@@ -1,13 +1,12 @@
 {{ define "main" }}
+{{ $home := site.Home.Params }}
 <main id="main" class="shell about-page" tabindex="-1">
-  <header class="about-heading"><p class="eyebrow">A NOTE FROM THE WORKSHOP / {{ site.Params.demoNotice }}</p><h1>{{ .Title }}</h1><p>看见一份完整的计划，也了解它的演示边界。</p></header>
+  <header class="about-heading"><p class="eyebrow">{{ $home.periodLabel }}</p><h1>{{ .Title }}</h1><p>{{ $home.closing }} 虚构演示 · 预约预览</p></header>
   <div class="about-layout">
-    <aside class="about-card" aria-label="演示范围">
-      <span class="about-symbol" aria-hidden="true">✳</span><p class="eyebrow">SHIGUANG / OCT 2026</p><h2>慢一点，<br>做点喜欢的事。</h2>
-      <dl><div><dt>课程</dt><dd>6 门虚构手作课程</dd></div><div><dt>排期</dt><dd>2026 年 10 月 · 12 场</dd></div><div><dt>数据</dt><dd>本地固定示例余位</dd></div><div><dt>操作</dt><dd>仅在页面内查看预览</dd></div></dl>
-      <a href="{{ "" | relURL }}">返回课程与排期 <span aria-hidden="true">↗</span></a>
-    </aside>
-    <article class="prose">{{ .Content }}</article>
+    <aside class="about-card" aria-label="演示范围"><span class="about-symbol" aria-hidden="true">{{ $home.brandMark }}</span><p>{{ $home.title }}</p><h2>{{ $home.panelHeading }}</h2>
+      <dl><div><dt>课程</dt><dd>{{ len site.Data.schedule.courses }} 门虚构课程</dd></div><div><dt>排期</dt><dd>{{ $home.periodLabel }} / {{ len site.Data.schedule.sessions }} 场</dd></div><div><dt>数据</dt><dd>本地固定示例余位</dd></div><div><dt>操作</dt><dd>仅在页面内查看预览</dd></div></dl>
+      <a href="{{ site.Home.RelPermalink }}">返回课程与排期</a>
+    </aside><article class="prose">{{ .Content }}</article>
   </div>
 </main>
 {{ end }}

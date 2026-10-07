@@ -1,0 +1,5 @@
+contentDir = 'variants/calendar/content'
+dataDir = 'variants/calendar/data'
+
+[params]
+demoTemplate = 'calendar'

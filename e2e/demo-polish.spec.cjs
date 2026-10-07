@@ -70,7 +70,7 @@ for (const width of [320, 390]) {
         for (const demo of DEMO_REGISTRY) {
             await page.goto(targetPath(baseURL, demo.path));
             const toolbar = page.locator('.demo-toolbar');
-            expect((await toolbar.boundingBox()).height).toBeLessThanOrEqual(64);
+            expect((await toolbar.boundingBox()).height, demo.id).toBeLessThanOrEqual(64);
             const menu = page.locator('[data-demo-template-menu]');
             await expect(menu).toHaveJSProperty('open', false);
             await page.keyboard.press('Tab');
@@ -98,6 +98,27 @@ for (const width of [320, 390]) {
         }
     });
 }
+
+test('two-line scene menu labels remain compact with full text and usable touch targets', async ({ page, baseURL }) => {
+    await page.setViewportSize({ width: 320, height: 844 });
+    for (const demo of DEMO_REGISTRY.filter(item => item.caseId !== 'photo-portfolio')) {
+        await page.goto(targetPath(baseURL, demo.path));
+        const summary = page.locator('[data-demo-template-menu] > summary');
+        // Different system fonts can wrap the same label. Force two lines so
+        // this remains reproducible on both Windows and the Ubuntu CI runner.
+        await summary.evaluate(element => element.replaceChildren(
+            document.createTextNode('场景'), document.createElement('br'), document.createTextNode('两行场景名称')
+        ));
+        await expect(summary).toHaveText('场景两行场景名称');
+        const box = await summary.boundingBox();
+        expect(box.height, demo.id).toBeGreaterThanOrEqual(44);
+        expect((await page.locator('.demo-toolbar').boundingBox()).height, demo.id).toBeLessThanOrEqual(64);
+        expect(await page.evaluate(() => document.documentElement.scrollWidth), demo.id).toBeLessThanOrEqual(320);
+        await summary.click();
+        await expect(page.locator('[data-demo-template-menu]')).toHaveJSProperty('open', true);
+        await expect(page.locator('[data-demo-template-menu] a')).toHaveCount(3);
+    }
+});
 
 for (const width of [320, 390]) {
     test(`trip map labels remain readable, separate and inside their maps at ${width}px`, async ({ page, baseURL }) => {

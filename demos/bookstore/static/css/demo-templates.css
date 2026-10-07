@@ -2,7 +2,7 @@
 .demo-toolbar .demo-template-inner { position: relative; display: block; width: min(calc(100% - 48px), 1400px); min-height: 48px; margin: auto; padding: 0; }
 .demo-toolbar .demo-toolbar-return { position: absolute; top: 0; left: 0; display: flex; align-items: center; min-height: 48px; color: inherit; text-decoration: none; font-size: 12px; }
 .demo-toolbar .demo-template-menu { margin: 0; padding: 0; border: 0; background: transparent; }
-.demo-toolbar .demo-template-menu > summary { width: fit-content; max-width: 100%; min-height: 48px; margin-left: auto; padding: 14px 0 14px 8px; color: inherit; font: inherit; font-size: 12px; cursor: pointer; overflow-wrap: anywhere; }
+.demo-toolbar .demo-template-menu > summary { width: fit-content; max-width: 100%; min-height: 48px; margin-left: auto; padding: 12px 0 12px 8px; color: inherit; font: inherit; font-size: 12px; cursor: pointer; overflow-wrap: anywhere; }
 .demo-toolbar-return + .demo-template-menu > summary { max-width: calc(100% - 126px); }
 .demo-toolbar .demo-template-menu[open] > summary { font-weight: 700; }
 .demo-toolbar .demo-template-panel { padding: 4px 0 16px; }

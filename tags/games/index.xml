@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Games on Fernweh的个人博客</title><link>https://blog.codeglimpse.top/tags/games/</link><description>Recent content in Games on Fernweh的个人博客</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Wed, 09 Sep 2026 00:02:00 +0800</lastBuildDate><atom:link href="https://blog.codeglimpse.top/tags/games/index.xml" rel="self" type="application/rss+xml"/><item><title>反应测试为什么会多算几十毫秒：按下、松开与浏览器计时</title><link>https://blog.codeglimpse.top/p/reaction-timing/</link><pubDate>Wed, 09 Sep 2026 00:02:00 +0800</pubDate><guid>https://blog.codeglimpse.top/p/reaction-timing/</guid><description>&lt;p&gt;本站&lt;a class="link" href="https://blog.codeglimpse.top/games/reaction/" &gt;反应测试&lt;/a&gt;曾出现一个问题：同一个人在其他站点大约测得 220–250 毫秒，在这里却经常超过 300 毫秒。排查后发现，旧实现把鼠标从按下到松开的时间也算进去了。&lt;/p&gt;
+&lt;h2 id="click-往往比按下更晚"&gt;click 往往比按下更晚
+&lt;/h2&gt;&lt;p&gt;一次常见的鼠标点击包含按下、松开，随后才产生 &lt;code&gt;click&lt;/code&gt;。如果测试目标是“看到变绿后，多久按下按钮”，在 &lt;code&gt;click&lt;/code&gt; 中计时就可能测到另一个终点。&lt;/p&gt;
+&lt;p&gt;用可控的浏览器输入进行对照：变绿后 230 毫秒按下，继续按住 80 毫秒再松开。旧实现到松开时记录 &lt;strong&gt;310 毫秒&lt;/strong&gt;；修正后在按下时记录 &lt;strong&gt;230 毫秒&lt;/strong&gt;，松开不会再次计分。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://blog.codeglimpse.top/p/reaction-timing/timing.svg"
+loading="lazy"
+alt="变绿后 230 毫秒按下，310 毫秒松开；click 会包含额外的按住时间"
+&gt;&lt;/p&gt;
+&lt;p&gt;这里的 230 和 80 是测试中指定的时间，不是人的平均反应值，也不是应该给所有成绩减去的固定偏差。&lt;/p&gt;
+&lt;h2 id="先明确输入的终点"&gt;先明确输入的终点
+&lt;/h2&gt;&lt;p&gt;本站现在按以下边界结算：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;输入方式&lt;/th&gt;
+&lt;th&gt;记录时机&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;鼠标&lt;/td&gt;
+&lt;td&gt;主按钮的 &lt;code&gt;pointerdown&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;触屏&lt;/td&gt;
+&lt;td&gt;手指接触面板产生的主指针按下&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;键盘&lt;/td&gt;
+&lt;td&gt;空格或回车的首次 &lt;code&gt;keydown&lt;/code&gt;，忽略按住后的连发&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;辅助技术的虚拟激活&lt;/td&gt;
+&lt;td&gt;保留相应的 &lt;code&gt;click&lt;/code&gt; 路径，并避免重复结算&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;鼠标或触摸按下已经计分后，其后产生的兼容 &lt;code&gt;click&lt;/code&gt; 不应再开新一轮。第二个触点、非主按钮和修饰键组合也不应被当成正常反应。&lt;/p&gt;
+&lt;h2 id="用事件时间而不是处理事件时的时间"&gt;用事件时间，而不是处理事件时的时间
+&lt;/h2&gt;&lt;p&gt;事件可能先发生，再排队等待主线程处理。假设按下发生在第 230 毫秒，处理函数到第 310 毫秒才执行：直接取处理函数里的 &lt;code&gt;performance.now()&lt;/code&gt;，会把这 80 毫秒的排队时间也算进去。&lt;/p&gt;
+&lt;p&gt;因此，输入端优先采用事件的 &lt;code&gt;timeStamp&lt;/code&gt;，并把它归一到与起点一致的时间基准。当前实现的核心调用是：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;pressedAt&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;inputTime&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;event&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;timeStamp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;performance&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;now&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;performance&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;timeOrigin&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nx"&gt;state&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;respond&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;state&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;pressedAt&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;归一化会处理异常值，以及使用 Unix 时间而非页面时间基准的旧式时间戳。不能直接把两个不同时间基准的数相减。&lt;/p&gt;
+&lt;p&gt;这也影响抢跑判断：一个在变绿之前发生、却到变绿后才被处理的输入，仍应判定为抢跑。&lt;/p&gt;
+&lt;h2 id="变色与起点放到同一个绘制回调"&gt;变色与起点放到同一个绘制回调
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;setTimeout&lt;/code&gt; 到期表示回调可以运行，不代表屏幕已经变绿。若先开始计时，再等待页面显示，显示延迟也可能被算入成绩。&lt;/p&gt;
+&lt;p&gt;本站在随机等待结束后，使用同一个动画帧回调更新面板并记录起点。下面省略了暂停与状态检查，仅展示顺序：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nx"&gt;requestAnimationFrame&lt;/span&gt;&lt;span class="p"&gt;(()&lt;/span&gt; &lt;span class="p"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ready&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;state&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;arm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;state&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;performance&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;now&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;requestAnimationFrame&lt;/code&gt; 在绘制之前运行，这样能缩小脚本更新与下一次绘制之间的时序差异。&lt;strong&gt;它仍不是显示器像素真正发光的时间戳。&lt;/strong&gt; 屏幕刷新率、输入设备、浏览器和系统调度仍会影响最终测量。&lt;/p&gt;
+&lt;h2 id="暂停重开和抢跑也属于计时逻辑"&gt;暂停、重开和抢跑也属于计时逻辑
+&lt;/h2&gt;&lt;p&gt;暂停或离开游戏时，需要取消等待定时器和尚未执行的动画帧；恢复后重新等待信号，保留已经完成的成绩。否则旧回调可能突然把新一轮面板变绿。&lt;/p&gt;
+&lt;p&gt;提前按下不计入五次有效成绩。完成一次后，再按一下面板开始下一次等待。重新开始则清空本局成绩与旧任务。&lt;/p&gt;
+&lt;p&gt;比较不同站点时，尽量使用相同设备、相同输入方式和相近的前台运行条件。本站修复了可明确定位的事件终点与排队偏差，但浏览器小游戏不能替代专用测量设备。&lt;/p&gt;
+&lt;h2 id="继续阅读"&gt;继续阅读
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://blog.codeglimpse.top/games/reaction/" &gt;本站反应测试&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/CodeGlimpse/CodeGlimpse.github.io/blob/master/assets/js/games/reaction.js" target="_blank" rel="noopener"
+&gt;反应测试控制器源码&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerdown_event" target="_blank" rel="noopener"
+&gt;MDN：pointerdown&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.mozilla.org/en-US/docs/Web/API/Event/timeStamp" target="_blank" rel="noopener"
+&gt;MDN：Event.timeStamp&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame" target="_blank" rel="noopener"
+&gt;MDN：requestAnimationFrame&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

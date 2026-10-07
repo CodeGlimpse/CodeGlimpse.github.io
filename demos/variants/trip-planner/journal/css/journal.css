@@ -1,0 +1,160 @@
+body[data-template="journal"] {
+  --paper: #edf0eb; --panel: #fffef7; --pine: #526a76; --ink: #344c55; --muted: #677b80; --line: #c5d0cd; --route: #b75737; --focus: #486b84;
+  background: radial-gradient(ellipse at 85% 12%, #d9e5df 0, #edf0eb 45%); color: var(--ink);
+}
+body[data-template="journal"] .shell { width: min(1300px, calc(100% - 64px)); }
+body[data-template="journal"] .demo-catalog-bar { background: #526a76; border-color: #364c58; color: #f4f7f4; }
+body[data-template="journal"] .demo-template-switcher { background: #e7eeea; border-color: #bacdcd; color: #49636d; }
+body[data-template="journal"] .demo-template-options a { border-color: #b1c2c2; border-radius: 0; color: #49636d; background: #fffef7; }
+body[data-template="journal"] .demo-template-options a[aria-current] { background: #526a76; color: #fffef7; border-color: #526a76; }
+body[data-template="journal"] .demo-template-inner small { color: #677b80; }
+body[data-template="journal"] .header-inner { min-height: 78px; }
+body[data-template="journal"] .brand { color: #526a76; }
+body[data-template="journal"] .site-nav { color: #536d78; font-size: .8rem; }
+body[data-template="journal"] .planner-page { padding-block: 43px 70px; }
+.journal-cover { display: grid; grid-template-columns: minmax(0, 1fr) 295px; align-items: center; gap: 50px; padding-bottom: 34px; border-bottom: 1px solid #aebfc0; }
+.journal-cover .eyebrow { color: #627e89; font-size: .65rem; }
+.journal-cover h1 { font-size: clamp(32px, 3.7vw, 52px); font-weight: 500; line-height: 1.4; letter-spacing: .025em; }
+.journal-cover-copy > p:not(.eyebrow) { max-width: 700px; margin: 19px 0 20px; color: var(--muted); font-size: .87rem; line-height: 1.9; }
+.journal-disclosure { display: inline-block; padding: 5px 10px; border: 1px solid #9eb8bf; color: #526f7c; font-size: .68rem; }
+.journal-cover-art { position: relative; padding: 11px 11px 13px; border: 1px solid #b6c7c8; background: #fffef8; transform: rotate(4deg); box-shadow: 6px 7px 0 #c8997540; }
+.journal-cover-art svg { display: block; width: 100%; height: auto; background: #d5e1dd; }
+.journal-cover-art > span { display: block; padding-top: 11px; color: #526a76; font-size: .5rem; letter-spacing: .15em; }
+.journal-cover-art strong { display: block; margin-top: 2px; color: #3e5c65; font-family: "Songti SC", "SimSun", serif; font-size: .94rem; font-weight: 500; letter-spacing: .08em; }
+.journal-section-nav { display: flex; flex-wrap: wrap; gap: 12px 34px; margin: 20px 0 30px; font-size: .75rem; }
+.journal-section-nav a { padding-block: 6px; color: #4c6c7b; text-decoration: none; border-bottom: 1px solid #97acb5; }
+body[data-template="journal"] .planner-layout.journal-desk { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, .85fr); grid-template-areas: "itinerary places" "map places"; align-items: start; gap: 29px 35px; }
+body[data-template="journal"] .panel { border-radius: 0; padding: 26px; }
+body[data-template="journal"] .itinerary-panel { grid-area: itinerary; position: relative; padding: 29px 36px; background: #fffef7; border-color: #b5c6c5; box-shadow: 5px 5px 0 #d7e1db, 6px 6px 0 #aabec0; }
+body[data-template="journal"] .itinerary-panel::before { content: ""; position: absolute; width: 1px; top: 0; bottom: 0; left: 22px; background: #d7e2df; }
+body[data-template="journal"] .panel-heading { align-items: end; gap: 10px; margin-bottom: 20px; }
+body[data-template="journal"] .panel-heading h2 { font-size: 1.65rem; font-weight: 500; }
+body[data-template="journal"] .panel-kicker { color: #668593; font-size: .57rem; }
+body[data-template="journal"] .itinerary-panel .panel-heading h2 { font-size: 2rem; }
+body[data-template="journal"] .itinerary-count { padding: 4px 8px; border: 1px solid #a7bec4; background: #e8efea; color: #526c78; }
+body[data-template="journal"] .trip-totals { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding-block: 18px; }
+body[data-template="journal"] .trip-totals dt { font-size: .64rem; line-height: 1.6; }
+body[data-template="journal"] .trip-totals dd { font-size: 1.55rem; line-height: 1.5; color: #3f6372; }
+body[data-template="journal"] .trip-totals small { font-size: .56rem; margin-left: 2px; }
+body[data-template="journal"] .transfer-note, body[data-template="journal"] .journal-timing-note { color: #617b85; font-size: .7rem; line-height: 1.85; }
+body[data-template="journal"] .journal-timing-note { margin: 6px 0 0; }
+body[data-template="journal"] .itinerary-empty { margin: 0; padding-block: 42px; font-family: "Songti SC", "SimSun", serif; font-size: 1.08rem; line-height: 1.8; }
+body[data-template="journal"] .itinerary-empty span { color: #789baa; }
+body[data-template="journal"] .itinerary-list { gap: 0; margin-block: 18px 22px; }
+body[data-template="journal"] .itinerary-stop { position: relative; grid-template-columns: 37px minmax(0, 1fr); gap: 18px; padding: 20px 0 24px; border-bottom: 1px solid #ccd8d2; }
+body[data-template="journal"] .itinerary-stop::before { content: ""; position: absolute; left: 18px; width: 1px; top: 57px; bottom: -20px; background: #8eabb4; }
+body[data-template="journal"] .itinerary-stop:last-child::before { display: none; }
+body[data-template="journal"] .stop-number { position: relative; width: 37px; height: 37px; border-radius: 50%; background: #526a76; color: #f4f8f4; border: 0; font-family: Georgia, serif; font-size: 1rem; box-shadow: 0 0 0 5px #fffef7; }
+body[data-template="journal"] .stop-time { color: #526a76; margin: 0 0 9px; font-size: .7rem; letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+body[data-template="journal"] .itinerary-stop h3 { font-size: 1.45rem; margin: 0 0 11px; font-weight: 500; }
+body[data-template="journal"] .stop-meta { font-size: .74rem; margin-bottom: 10px; }
+body[data-template="journal"] .stop-details { padding: 0; margin: 0 0 13px; border: 1px dashed #afc5c9; background: #eef3ee; }
+body[data-template="journal"] .stop-details summary { min-height: 42px; padding: 10px 12px; color: #567581; cursor: pointer; font-size: .73rem; }
+body[data-template="journal"] .stop-details summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+body[data-template="journal"] .stop-details p { margin: 0; padding: 0 13px 13px; font-size: .78rem; line-height: 1.9; color: #627d85; }
+body[data-template="journal"] .stop-actions { gap: 7px; }
+body[data-template="journal"] .stop-actions button { min-height: 39px; padding: 8px 11px; border-color: #a4bdc4; border-radius: 0; color: #496c7b; background: #fffef7; }
+body[data-template="journal"] .stop-actions button:disabled { color: #82989e; border-color: #d0dcd6; }
+body[data-template="journal"] .stop-actions button[data-action="remove"] { text-decoration: underline; text-underline-offset: 4px; border-color: transparent; }
+body[data-template="journal"] .itinerary-tools { border-color: #becfcc; }
+body[data-template="journal"] .clear-button { min-height: 41px; border-radius: 0; border-color: #7e9ba5; color: #52737e; }
+body[data-template="journal"] .journal-panel-nav { margin: 15px 0 0; color: #526a76; font-size: .73rem; }
+body[data-template="journal"] .journal-panel-nav a { display: inline-block; padding-block: 8px; text-decoration: none; border-bottom: 1px solid #adc3c5; }
+body[data-template="journal"] .day-warning { background: #f6e4ce; color: #845529; border-color: #b78648; }
+body[data-template="journal"] .planner-status { color: #517280; font-size: .75rem; }
+body[data-template="journal"] .places-panel { grid-area: places; background: #d8e2db; border-color: #b2c7c7; padding: 25px 22px; }
+.journal-library-note { color: #637c83; font-size: .73rem; margin: 0 0 16px; }
+body[data-template="journal"] .place-filter { display: block; padding-bottom: 19px; border-bottom: 1px solid #b2c9cb; }
+body[data-template="journal"] .place-filter label { display: block; margin-bottom: 8px; font-size: .72rem; }
+body[data-template="journal"] .place-filter select { width: 100%; border-radius: 0; min-height: 43px; border-color: #9ab5be; background: #f8faf3; }
+body[data-template="journal"] .place-list { max-height: none; gap: 16px; padding: 0; overflow: visible; }
+body[data-template="journal"] .place-card { position: relative; border: 1px solid #adbec0; border-radius: 0; padding: 0; background: #fffef7; box-shadow: 2px 3px 0 #abc1c255; }
+body[data-template="journal"] .place-card:nth-child(2n) { background: #e8eee3; }
+.journal-place-details summary { display: flex; align-items: center; gap: 10px; padding: 17px 15px; list-style: none; cursor: pointer; }
+.journal-place-details summary::-webkit-details-marker { display: none; }
+.journal-place-details summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.field-note-number { color: #6e929f; font: 500 17px/1 Georgia, serif; align-self: start; padding-top: 5px; }
+body[data-template="journal"] .place-title { flex: 1; justify-content: start; gap: 5px; min-width: 0; }
+body[data-template="journal"] .place-title h3 { width: 100%; font-size: 1.2rem; font-weight: 500; }
+body[data-template="journal"] .category-tag { color: #6d8791; border: 0; border-radius: 0; padding: 0; font-size: .62rem; }
+.field-note-toggle { flex: 0 0 auto; color: #678b9d; font-size: 20px; }
+.journal-place-details[open] .field-note-toggle { transform: rotate(45deg); }
+.field-note-copy { padding: 0 15px 5px 42px; }
+body[data-template="journal"] .field-note-copy p { color: #647e88; font-size: .73rem; margin: 0 0 13px; line-height: 1.9; }
+body[data-template="journal"] .place-meta { color: #637e87; font-size: .65rem; gap: 5px 8px; margin-bottom: 13px; }
+body[data-template="journal"] .add-button { width: calc(100% - 30px); min-height: 40px; margin: 0 15px 15px; border: 1px solid #8cabb8; border-radius: 0; background: transparent; color: #4c6b79; font-size: .73rem; }
+body[data-template="journal"] .add-button:hover:not(:disabled) { background: #526a76; color: #fffef7; }
+body[data-template="journal"] .add-button:disabled { background: #dde5dc; border-color: #bdcecb; color: #7f959a; }
+body[data-template="journal"] .map-panel { grid-area: map; padding: 23px 0 0; border: 1px solid #afc5c7; background: #e3e8dc; color: #547480; }
+body[data-template="journal"] .map-panel .panel-heading { padding-inline: 26px; }
+body[data-template="journal"] .map-panel .panel-kicker { color: #71909d; }
+body[data-template="journal"] .map-place-ring { fill: #f5e2cb; stroke: #617d88; }
+body[data-template="journal"] .map-place-dot { fill: #617d88; }
+body[data-template="journal"] .map-place-name { fill: #3e5d68; }
+body[data-template="journal"] .route-disc { fill: #ba613f; stroke: #ffe8d1; }
+body[data-template="journal"] .route-number { fill: #fff9ee; }
+body[data-template="journal"] .map-caption { border-color: #d4b18d; padding-inline: 26px; font-size: .68rem; }
+body[data-template="journal"] .map-note { padding-inline: 26px; background: #e4c6a5; }
+body[data-template="journal"] .map-note p { color: #80573b; font-size: .7rem; }
+body[data-template="journal"] .noscript-note { border-radius: 0; background: #fffef7; font-size: .79rem; border-color: #b48260; }
+body[data-template="journal"] .about-page { max-width: 1000px; }
+body[data-template="journal"] .about-heading { padding-left: 25px; border-left: 4px solid #526a76; border-bottom: 0; }
+body[data-template="journal"] .about-heading h1 { font-weight: 500; }
+body[data-template="journal"] .prose { padding: 32px; background: #fffef7; border: 1px solid #d4b395; }
+body[data-template="journal"] .prose h2 { color: #3f6372; font-weight: 500; }
+body[data-template="journal"] .prose h2:first-child { margin-top: 0; }
+body[data-template="journal"] .site-footer { background: #e4cdb6; }
+@media (max-width: 1100px) {
+  body[data-template="journal"] .trip-totals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body[data-template="journal"] .itinerary-panel { padding-inline: 28px; }
+  .journal-cover { gap: 30px; grid-template-columns: minmax(0, 1fr) 240px; }
+}
+@media (max-width: 850px) {
+  body[data-template="journal"] .shell { width: calc(100% - 40px); }
+  body[data-template="journal"] .planner-layout.journal-desk { grid-template-columns: minmax(0, 1fr); grid-template-areas: "itinerary" "places" "map"; gap: 28px; }
+  body[data-template="journal"] .place-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  body[data-template="journal"] .trip-totals { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .journal-cover { grid-template-columns: minmax(0, 1fr); gap: 25px; }
+  .journal-cover-art { width: 270px; justify-self: end; }
+}
+@media (max-width: 580px) {
+  body[data-template="journal"] .shell { width: calc(100% - 32px); }
+  body[data-template="journal"] .planner-page { padding-block: 28px 45px; }
+  .journal-cover h1 { font-size: clamp(29px, 8.45vw, 33px); text-wrap: balance; }
+  .journal-cover-copy > p:not(.eyebrow) { font-size: .78rem; }
+  .journal-cover-art { width: 225px; transform: rotate(3deg); }
+  .journal-section-nav { gap: 9px 18px; margin-block: 17px 25px; font-size: .66rem; }
+  body[data-template="journal"] .itinerary-panel { padding: 24px 20px; }
+  body[data-template="journal"] .itinerary-panel::before { left: 10px; }
+  body[data-template="journal"] .itinerary-panel .panel-heading h2 { font-size: 1.7rem; }
+  body[data-template="journal"] .trip-totals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body[data-template="journal"] .itinerary-stop { grid-template-columns: 29px minmax(0, 1fr); gap: 12px; }
+  body[data-template="journal"] .stop-number { width: 29px; height: 29px; font-size: .87rem; }
+  body[data-template="journal"] .itinerary-stop::before { left: 14px; top: 52px; }
+  body[data-template="journal"] .itinerary-stop h3 { font-size: 1.28rem; }
+  body[data-template="journal"] .stop-time { font-size: .66rem; }
+  body[data-template="journal"] .stop-meta { font-size: .67rem; }
+  body[data-template="journal"] .stop-actions button { min-height: 40px; padding-inline: 8px; font-size: .67rem; }
+  body[data-template="journal"] .places-panel { padding: 23px 18px; }
+  body[data-template="journal"] .place-list { grid-template-columns: minmax(0, 1fr); }
+  body[data-template="journal"] .map-panel .panel-heading, body[data-template="journal"] .map-caption, body[data-template="journal"] .map-note { padding-inline: 19px; }
+  body[data-template="journal"] .map-panel .panel-heading h2 { font-size: 1.4rem; }
+  body[data-template="journal"] .prose { padding: 22px 20px; font-size: .84rem; }
+}
+.journal-title-phrase { display: inline-block; max-width: 100%; }
+@media (prefers-reduced-motion: reduce) { .journal-cover-art { transform: none; } }
+/* Old-town walking notes use roof slate, river blue and the grain of a postcard. */
+body[data-template="journal"] { --paper: #edf0eb; --surface: #fffef7; --ink: #344c55; --muted: #677b80; --accent: #526a76; --focus: #486b84; --line: #c5d0cd; background: #edf0eb; }
+body[data-template="journal"] .site-header { background: #f8faf6; border-color: #c3cfcc; }
+body[data-template="journal"] .brand, body[data-template="journal"] .site-nav a[aria-current="page"] { color: #526a76; }
+body[data-template="journal"] .journal-cover { border-color: #aebfc0; }
+body[data-template="journal"] .journal-cover .eyebrow { color: #627e89; }
+body[data-template="journal"] .journal-cover-art { padding: 10px 10px 14px; border: 1px solid #b6c7c8; background: #fffef8; box-shadow: 5px 6px 0 #bdcdca77; transform: rotate(2deg); }
+.journal-cover-art img { display: block; width: 100%; height: auto; }
+body[data-template="journal"] .journal-cover-art > span, body[data-template="journal"] .journal-cover-art strong { color: #526a76; }
+body[data-template="journal"] .terrain-map { background: #e6e4d7; }
+body[data-template="journal"] .map-place-ring { fill: #fffdf3; stroke: #617d88; }
+body[data-template="journal"] .map-place-dot { fill: #617d88; }
+body[data-template="journal"] .map-place-name { fill: #3e5d68; paint-order: stroke; stroke: #eeeadb; stroke-width: 3px; stroke-linejoin: round; }
+body[data-template="journal"] .journal-place-details summary { border-bottom-color: #d1dcd7; }
+@media (prefers-reduced-motion: reduce) { body[data-template="journal"] .journal-cover-art { transform: none; } }

@@ -1,0 +1,116 @@
+/* The photograph sets the atmosphere; the page below reads as a quiet index. */
+.gallery-cover-page { --paper: #faf9f6; --ink: #42392f; --muted: #746b60; --line: #dedbd4; --accent: #766044; --focus: #766044; color-scheme: light; background: var(--paper); color: var(--ink); }
+.gallery-cover-page .demo-template-switcher { background: #efeee9; color: #62594e; border-color: #dedbd4; }
+.gallery-cover-page .demo-template-options a { color: #62594e; border-color: #a49b8c; background: transparent; }
+.gallery-cover-page .demo-template-options a[aria-current="page"] { color: white; border-color: #766044; background: #766044; }
+.gallery-cover-page .demo-template-inner small { color: #62594e; }
+.photo-masthead { min-height: 100px; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 20px clamp(24px, 4.5vw, 80px); background: var(--paper); }
+.photo-wordmark { display: flex; align-items: baseline; gap: 22px; }
+.photo-wordmark strong { font: 500 36px/1 "Songti SC", "SimSun", Georgia, serif; letter-spacing: .12em; }
+.photo-wordmark span { font-size: 12px; color: var(--muted); }
+.photo-masthead nav { display: flex; align-items: center; gap: 34px; font-size: 13px; }
+.photo-masthead nav a { display: inline-flex; align-items: center; min-height: 44px; }
+.photo-masthead nav a:hover { text-decoration: underline; text-underline-offset: 6px; }
+.cinema-feature { --photo-height: clamp(580px, 53vw, 820px); position: relative; outline-offset: -4px; }
+.cinema-feature:focus-visible { outline: 3px solid #766044; }
+.feature-intro { position: absolute; z-index: 2; top: 0; left: 0; width: 100%; height: var(--photo-height); display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; padding: 0 clamp(24px, 6vw, 96px) 64px; background: linear-gradient(180deg, transparent 46%, #faf9f680 62%, #faf9f6ed 100%); color: var(--ink); pointer-events: none; transition: opacity .35s; }
+.feature-intro > p { margin: 0 0 20px; font-size: 13px; letter-spacing: .06em; }
+.feature-intro h1 { max-width: 100%; margin: 0; font-size: clamp(42px, 4.8vw, 76px); font-weight: 500; line-height: 1.38; letter-spacing: .035em; }
+.feature-intro h1 > span { display: block; max-width: 100%; text-wrap: balance; }
+.feature-photo { margin: 0; height: var(--photo-height); background: #e9e7e1; }
+.feature-photo > a, .feature-picture { display: block; width: 100%; height: 100%; }
+.feature-picture img { width: 100%; height: 100%; object-fit: cover; object-position: center 51%; }
+.feature-focus { position: absolute; z-index: 3; right: clamp(24px, 4.5vw, 80px); top: 26px; display: flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; padding: 10px 15px; color: var(--ink); background: #faf9f6ed; border: 1px solid #d8d1c5; border-radius: 30px; font: inherit; font-size: 12px; cursor: pointer; }
+.feature-focus > span:first-child { font: 22px/1 system-ui, sans-serif; }
+.feature-focus:hover { background: #e9e7e1; }
+.feature-focus:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+.cinema-feature[data-gallery-focus="true"] .feature-intro { opacity: 0; }
+.cinema-feature[data-gallery-focus="true"] .feature-picture img { object-fit: contain; }
+.cinema-feature .feature-work { display: grid; grid-template-columns: 210px minmax(0, 1fr) auto; align-items: center; gap: 36px; min-height: 142px; padding: 30px clamp(24px, 4.5vw, 80px); border-bottom: 1px solid var(--line); }
+.feature-work .feature-series { margin: 0 0 7px; font-size: 12px; color: var(--muted); letter-spacing: .04em; }
+.feature-work h2 { margin: 0; font-size: 30px; letter-spacing: .04em; line-height: 1.35; }
+.cinema-feature .feature-work > p { margin: 0; max-width: 31em; color: var(--muted); font-size: 14px; line-height: 1.9; }
+.feature-detail { display: flex; align-items: center; gap: 24px; min-height: 44px; font-size: 13px; }
+.feature-detail span { font-size: 22px; }
+.feature-detail:hover { text-decoration: underline; text-underline-offset: 5px; }
+.feature-navigation { display: flex; justify-content: flex-end; padding: 16px clamp(24px, 4.5vw, 80px) 0; }
+.feature-navigation .gallery-controls { gap: 26px; }
+.feature-navigation .gallery-controls button { min-height: 44px; font-size: 12px; color: var(--ink); }
+.feature-navigation .gallery-counter { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.feature-picker { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; margin: 0 clamp(24px, 4.5vw, 80px); padding: 12px 0 0; }
+.feature-choice { display: grid; grid-template-columns: 104px minmax(0, 1fr) auto; align-items: center; gap: 18px; padding: 12px 0 24px; color: var(--muted); border: 0; border-bottom: 2px solid transparent; background: transparent; text-align: left; cursor: pointer; font: inherit; }
+.feature-choice img { width: 104px; height: 72px; object-fit: cover; }
+.feature-choice small { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 400; }
+.feature-choice strong { color: var(--ink); font-family: "Songti SC", "SimSun", Georgia, serif; font-size: 20px; font-weight: 500; }
+.feature-choice-mark { align-self: end; font-size: 19px; visibility: hidden; }
+.feature-choice[aria-pressed="true"] { border-color: #766044; }
+.feature-choice[aria-pressed="true"] .feature-choice-mark { visibility: visible; }
+.feature-choice:hover img { opacity: .8; }
+.feature-choice:focus-visible { outline: 2px solid #766044; outline-offset: 5px; }
+.feature-keyboard-note { margin: 12px clamp(24px, 4.5vw, 80px) 0; font-size: 11px; color: var(--muted); }
+.photo-note { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 1320px; margin: auto; padding: 120px 64px; }
+.photo-note-title { display: flex; gap: 32px; align-items: flex-start; }
+.photo-note h2 { margin: 0; font-size: clamp(30px, 3vw, 46px); line-height: 1.5; }
+.photo-note-copy > p { font-size: 14px; line-height: 2; color: var(--muted); }
+.photo-note-copy .photo-note-lead { margin-bottom: 25px; color: var(--ink); font: 23px/1.8 "Songti SC", "SimSun", serif; }
+.photo-note-copy > a { display: inline-flex; align-items: center; gap: 40px; min-height: 44px; margin-top: 10px; border-bottom: 1px solid var(--ink); font-size: 13px; }
+.photo-index { padding: 54px clamp(24px, 4.5vw, 80px) 64px; background: #eeede7; }
+.photo-index-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 30px; padding-bottom: 32px; }
+.photo-index-heading h2 { margin: 0; font-size: 23px; }
+.photo-index-heading p { max-width: 42em; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.8; }
+.photo-index-entry { display: grid; grid-template-columns: 210px minmax(0, 1fr) auto; gap: 36px; align-items: center; padding: 24px 0; border-top: 1px solid #d1cbc0; }
+.photo-index-entry > span:first-child { color: var(--muted); font-size: 12px; }
+.photo-index-entry h3 { margin: 0; font-size: clamp(26px, 3vw, 40px); font-weight: 500; }
+.photo-index-entry > span:last-child { font-size: 24px; }
+.photo-index-entry:hover h3 { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 8px; }
+.photo-disclosure { margin: 0; padding: 24px; color: var(--muted); text-align: center; font-size: 12px; }
+.gallery-cover-page .site-footer { background: var(--paper); border-top: 1px solid var(--line); }
+.gallery-cover-page .footer-inner { padding-block: 30px; }
+.gallery-cover-page .footer-name, .gallery-cover-page .footer-inner p, .gallery-cover-page .footer-top { color: var(--muted); }
+[data-gallery-ready="true"] .feature-slide[data-current="true"] .feature-photo { animation: photo-switch .4s ease-out; }
+@keyframes photo-switch { from { opacity: .65; } to { opacity: 1; } }
+@media (max-width: 1050px) {
+  .feature-picker { gap: 24px; }
+  .feature-choice { grid-template-columns: 84px minmax(0, 1fr); gap: 14px; }
+  .feature-choice img { width: 84px; height: 62px; }
+  .feature-choice-mark { display: none; }
+  .photo-note { gap: 40px; padding: 80px 40px; }
+}
+@media (max-width: 720px) {
+  .photo-masthead { min-height: 83px; padding: 18px 20px; gap: 16px; }
+  .photo-wordmark strong { font-size: 29px; }
+  .photo-wordmark span { display: none; }
+  .photo-masthead nav { gap: 20px; font-size: 12px; }
+  .cinema-feature { --photo-height: 520px; }
+  .feature-intro { padding: 0 24px 42px; }
+  .feature-intro > p { font-size: 12px; margin-bottom: 17px; }
+  .feature-intro h1 { font-size: clamp(29px, 7.9vw, 40px); line-height: 1.5; letter-spacing: 0; }
+  .feature-focus { right: 18px; top: 18px; }
+  .cinema-feature .feature-work { grid-template-columns: minmax(0, 1fr) auto; gap: 15px 16px; padding: 24px; }
+  .feature-work h2 { font-size: 29px; }
+  .cinema-feature .feature-work > p { grid-column: 1 / -1; grid-row: 2; font-size: 13px; }
+  .feature-detail { gap: 12px; font-size: 12px; }
+  .feature-navigation { padding: 12px 24px 0; }
+  .feature-navigation .gallery-controls { width: 100%; justify-content: space-between; }
+  .feature-picker { gap: 16px; margin-inline: 24px; }
+  .feature-choice { grid-template-columns: minmax(0, 1fr); gap: 12px; padding-bottom: 16px; }
+  .feature-choice img { width: 100%; height: auto; aspect-ratio: 1.4; }
+  .feature-choice small { font-size: 10px; margin-bottom: 5px; }
+  .feature-choice strong { font-size: 17px; }
+  .feature-keyboard-note { margin-inline: 24px; font-size: 10px; }
+  .photo-note { grid-template-columns: minmax(0, 1fr); gap: 30px; padding: 70px 24px; }
+  .photo-note-title { gap: 20px; }
+  .photo-note h2 { font-size: 31px; }
+  .photo-note-copy .photo-note-lead { font-size: 22px; }
+  .photo-index { padding: 34px 24px 40px; }
+  .photo-index-heading { display: block; padding-bottom: 25px; }
+  .photo-index-heading p { margin-top: 15px; }
+  .photo-index-entry { grid-template-columns: minmax(0, 1fr) auto; gap: 10px; padding: 23px 0; }
+  .photo-index-entry > span:first-child { grid-column: 1 / -1; }
+  .photo-index-entry h3 { font-size: 30px; }
+  .photo-disclosure { font-size: 11px; line-height: 1.8; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .feature-intro { transition: none; }
+  [data-gallery-ready="true"] .feature-slide[data-current="true"] .feature-photo { animation: none; }
+}

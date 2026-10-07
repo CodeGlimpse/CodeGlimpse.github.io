@@ -1,0 +1,222 @@
+body[data-template="agenda"] {
+  --cream: #edf0fa; --paper: #fff; --clay: #294da5; --clay-dark: #294da5; --indigo: #213458; --muted: #53658d; --line: #b2c1e4;
+  background: #edf0fa; color: var(--indigo);
+}
+body[data-template="agenda"] .shell { width: min(1220px, calc(100% - 64px)); }
+body[data-template="agenda"] .demo-catalog-bar { background: #294da5; color: #edf0fa; border-color: #53658d; }
+body[data-template="agenda"] .demo-template-switcher { background: #edf0fa; border-color: #edf0fa; color: #294da5; }
+body[data-template="agenda"] .demo-template-options a { border-radius: 4px; background: #fff; border-color: #d9e0f2; color: #294da5; }
+body[data-template="agenda"] .demo-template-options a[aria-current] { background: #b2c1e4; color: #fff; border-color: #b2c1e4; }
+body[data-template="agenda"] .demo-template-inner small { color: #53658d; }
+body[data-template="agenda"] .site-header { border-color: #edf0fa; }
+body[data-template="agenda"] .header-inner { min-height: 79px; }
+body[data-template="agenda"] .brand-mark { background: #b2c1e4; color: #fff; border-radius: 50%; transform: none; }
+body[data-template="agenda"] .brand-copy strong { color: #53658d; }
+body[data-template="agenda"] .site-nav a[aria-current] { color: #b2c1e4; border-color: #b2c1e4; }
+body[data-template="agenda"] select { background: #fbf8ff; border-radius: 9px; border-color: #d9e0f2; color: #294da5; }
+.agenda-intro { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 44px; align-items: center; padding-block: 43px 37px; }
+.agenda-intro h1 { font: 700 clamp(32px, 3.7vw, 48px)/1.35 system-ui, "Microsoft YaHei", sans-serif; margin-bottom: 15px; }
+.agenda-intro > div > p:last-child { max-width: 730px; color: var(--muted); font-size: 14px; margin: 0; }
+.agenda-admission { position: relative; display: grid; gap: 12px; padding: 21px 23px; border-radius: 13px; background: #294da5; color: #fff; transform: rotate(4deg); box-shadow: 0 10px 30px #294da5; }
+.agenda-admission::after { content: ""; height: 8px; background: repeating-linear-gradient(90deg, #fff9 0 2px, transparent 2px 5px, #fff9 5px 6px, transparent 6px 10px); }
+.agenda-admission > span { font-size: 9px; letter-spacing: .09em; }
+.agenda-admission strong { font-size: 19px; line-height: 1.5; font-weight: 600; }
+.agenda-layout { padding-bottom: 65px; }
+.agenda-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 24px; }
+.agenda-steps button { display: grid; grid-template-columns: 46px minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 13px; row-gap: 2px; min-height: 91px; padding: 17px 20px; border: 1px solid #d9e0f2; border-radius: 4px; background: #ffffffa6; text-align: left; color: #294da5; }
+.agenda-steps button > span { grid-row: 1 / 3; align-self: center; color: #b2c1e4; font: 500 30px/1 Georgia, serif; }
+.agenda-steps button strong { font-size: 15px; }
+.agenda-steps button small { font-size: 10px; }
+.agenda-steps button[aria-current] { background: #b2c1e4; color: #fff; border-color: #b2c1e4; box-shadow: 0 6px 20px #53658d; }
+.agenda-steps button[aria-current] > span { color: #edf0fa; }
+.agenda-steps button.is-complete { border-color: #b2c1e4; }
+.agenda-steps button:disabled { background: #edf0fa; color: #53658d; }
+.agenda-steps button:disabled > span { color: #53658d; }
+.agenda-stage { min-width: 0; }
+.agenda-step { min-width: 0; padding: 30px; margin-bottom: 24px; border: 1px solid #d9e0f2; border-radius: 4px 4px 20px 4px; background: #fff; box-shadow: 0 16px 50px #53658d; }
+.agenda-step-heading { padding-bottom: 24px; margin-bottom: 25px; border-bottom: 1px dashed #d9e0f2; }
+.agenda-step-heading > span { display: block; color: #b2c1e4; margin-bottom: 10px; font-size: 10px; letter-spacing: .13em; }
+.agenda-step-heading h2 { font: 700 29px/1.4 system-ui, "Microsoft YaHei", sans-serif; }
+.agenda-step-heading > p { margin: 10px 0 0; color: var(--muted); font-size: 12px; }
+body[data-template="agenda"] .section-heading h2 { font: 600 21px/1.4 system-ui, "Microsoft YaHei", sans-serif; }
+body[data-template="agenda"] .filter-strip { background: #edf0fa; border-radius: 12px; margin-bottom: 24px; }
+body[data-template="agenda"] .course-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+body[data-template="agenda"] .course-button { position: relative; border-radius: 4px; border-color: #d9e0f2; background: #fff;  }
+body[data-template="agenda"] .course-button:not(:disabled):hover {  box-shadow: 0 12px 24px #53658d; }
+body[data-template="agenda"] .course-button[aria-pressed="true"] { border-color: #b2c1e4; box-shadow: 0 0 0 2px #b2c1e4; }
+body[data-template="agenda"] .course-cover { background: #edf0fa; }
+body[data-template="agenda"] .cover-印刷 { background: #edf0fa; }
+body[data-template="agenda"] .cover-花艺 { background: #f4d7e8; }
+body[data-template="agenda"] .course-art { max-height: 154px; }
+body[data-template="agenda"] .course-category { background: #fffc; color: #294da5; border-color: #53658d; }
+body[data-template="agenda"] .course-body { padding: 20px 19px 15px; }
+body[data-template="agenda"] .course-title-row { display: grid; gap: 5px; }
+body[data-template="agenda"] .course-title { font: 650 20px/1.4 system-ui, "Microsoft YaHei", sans-serif; }
+body[data-template="agenda"] .course-price { color: #b2c1e4; font-size: 16px; }
+body[data-template="agenda"] .course-description { font-size: 12px; }
+body[data-template="agenda"] .course-state { position: relative; margin-inline: -19px; padding: 15px 19px 0; border-top: 1px dashed #d9e0f2; color: #b2c1e4; }
+body[data-template="agenda"] .course-state::before, body[data-template="agenda"] .course-state::after { content: ""; position: absolute; top: -7px; width: 13px; height: 13px; border-radius: 50%; background: #fff; border: 1px solid #d9e0f2; }
+body[data-template="agenda"] .course-state::before { left: -7px; }
+body[data-template="agenda"] .course-state::after { right: -7px; }
+body[data-template="agenda"] .course-button[aria-pressed="true"] .selection-dot { background: #b2c1e4; border-color: #b2c1e4; }
+body[data-template="agenda"] .schedule-section { margin: 0; padding: 0; border: 0; }
+body[data-template="agenda"] .date-filter-row { margin-bottom: 16px; }
+body[data-template="agenda"] .session-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; border: 0; }
+body[data-template="agenda"] .session-row { position: relative; grid-template-columns: 52px minmax(0, 1fr) auto; padding: 21px 16px; gap: 13px; border: 1px solid #d9e0f2; border-radius: 12px; background: #fbf7ff; }
+body[data-template="agenda"] .session-row::before { content: ""; position: absolute; left: 80px; top: 13px; bottom: 13px; border-left: 1px dashed #d9e0f2; }
+body[data-template="agenda"] .session-row.is-selected { border-color: #b2c1e4; background: #edf0fa; box-shadow: 0 0 0 1px #b2c1e4; }
+body[data-template="agenda"] .session-row.sold-out { background: #f1edf5; }
+body[data-template="agenda"] .session-date strong { color: #b2c1e4; font-size: 32px; }
+body[data-template="agenda"] .session-info { padding-left: 8px; }
+body[data-template="agenda"] .session-info > strong { font-size: 14px; }
+body[data-template="agenda"] .session-info > span { font-size: 11px; }
+body[data-template="agenda"] .session-button { border-color: #b2c1e4; border-radius: 4px; background: #fff; padding-inline: 12px; font-size: 11px; }
+body[data-template="agenda"] .session-button[aria-pressed="true"] { background: #b2c1e4; color: #fff; border-color: #b2c1e4; }
+body[data-template="agenda"] .session-button:disabled { border-color: #d9e0f2; color: #53658d; }
+.agenda-step-actions { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; border-top: 1px solid #edf0fa; padding-top: 22px; margin-top: 28px; }
+.agenda-step-actions > p, .agenda-step-actions > span { color: var(--muted); font-size: 12px; margin: 0; }
+.agenda-step-actions button { min-height: 46px; border: 1px solid #b2c1e4; border-radius: 4px; padding: 10px 21px; background: #fff; color: #53658d; font-size: 13px; }
+.agenda-step-actions button[data-agenda-next] { background: #b2c1e4; color: #fff; border-color: #b2c1e4; margin-left: auto; }
+.agenda-step-actions button:disabled { background: #edf0fa; border-color: #d9e0f2; color: #53658d; }
+.agenda-progress-bar { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding-inline: 7px; }
+.agenda-progress-bar > p { margin: 0; color: #53658d; font-size: 12px; }
+.agenda-progress-bar .reset-button { margin: 0; flex-shrink: 0; min-height: 44px; color: #53658d; }
+body[data-template="agenda"] .booking-panel { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px 38px; max-width: 920px; margin-inline: auto; padding: 27px 30px; border: 1px solid #d9e0f2; border-radius: 18px; background: #fbf7ff; }
+body[data-template="agenda"] .booking-panel > .eyebrow, body[data-template="agenda"] .booking-panel > h2, body[data-template="agenda"] .booking-panel > .panel-intro { grid-column: 1 / -1; margin: 0; }
+body[data-template="agenda"] .booking-panel > h2 { font: 650 25px/1.4 system-ui, "Microsoft YaHei", sans-serif; }
+body[data-template="agenda"] .booking-panel > h2 br { display: none; }
+body[data-template="agenda"] .selection-summary { grid-column: 1; grid-row: span 3; margin: 4px 0 0; padding: 22px 0; align-content: start; gap: 20px; border-bottom: 0; }
+body[data-template="agenda"] .selection-summary dd { font-size: 15px; }
+body[data-template="agenda"] .quantity-field { grid-column: 2; margin-top: 4px; }
+body[data-template="agenda"] .estimate { grid-column: 2; padding-top: 10px; }
+body[data-template="agenda"] .estimate > strong { color: #b2c1e4; font-size: 34px; }
+body[data-template="agenda"] .booking-status { grid-column: 2; margin: 0; min-height: 0; }
+body[data-template="agenda"] .preview-button { grid-column: 1 / -1; border-radius: 4px; margin-top: 10px; padding-inline: 22px; background: #b2c1e4; border-color: #b2c1e4; color: #fff; }
+body[data-template="agenda"] .preview-button:disabled { background: #edf0fa; border-color: #d9e0f2; color: #53658d; }
+body[data-template="agenda"] .preview-boundary { grid-column: 1 / -1; margin: 0; }
+body[data-template="agenda"] .booking-preview { grid-column: 1 / -1; position: relative; margin-top: 9px; padding: 27px 22px; border: 1px dashed #b2c1e4; background: #fff; border-radius: 12px; }
+body[data-template="agenda"] .booking-preview::after { content: ""; display: block; width: 140px; height: 22px; margin-top: 20px; background: repeating-linear-gradient(90deg, #53658d 0 2px, transparent 2px 4px, #53658d 4px 5px, transparent 5px 9px); opacity: .4; }
+body[data-template="agenda"] .booking-preview h3 { color: #53658d; font: 650 22px/1.5 system-ui, "Microsoft YaHei", sans-serif; }
+body[data-template="agenda"] .noscript-note { background: #edf0fa; border-color: #b2c1e4; }
+body[data-template="agenda"] .about-card { background: #edf0fa; border-color: #b2c1e4; border-radius: 20px; }
+body[data-template="agenda"] .about-card h2 { font-family: system-ui, "Microsoft YaHei", sans-serif; font-size: 28px; }
+body[data-template="agenda"] .site-footer { background: #edf0fa; border-color: #d9e0f2; }
+@media (max-width: 1050px) {
+  body[data-template="agenda"] .course-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body[data-template="agenda"] .session-list { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  body[data-template="agenda"] .shell { width: calc(100% - 32px); }
+  .agenda-intro { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .agenda-admission { max-width: 400px; transform: none; }
+  .agenda-admission strong br { display: none; }
+  .agenda-steps { gap: 8px; }
+  .agenda-steps button { display: flex; flex-direction: column; align-items: start; justify-content: center; gap: 7px; min-height: 115px; padding: 13px 12px; }
+  .agenda-steps button > span { font-size: 23px; align-self: start; }
+  .agenda-steps button strong { font-size: 12px; }
+  .agenda-steps button small { font-size: 9px; }
+  .agenda-step { padding: 23px; border-radius: 18px; }
+  .agenda-step-heading h2 { font-size: 25px; }
+  body[data-template="agenda"] .booking-panel { display: block; padding: 23px; }
+  body[data-template="agenda"] .booking-panel > * + * { margin-top: 18px; }
+  body[data-template="agenda"] .booking-panel .selection-summary { padding-block: 20px; margin-top: 20px; border-bottom: 1px solid var(--line); }
+}
+@media (max-width: 580px) {
+  body[data-template="agenda"] .shell { width: calc(100% - 24px); }
+  body[data-template="agenda"] .header-inner { padding-block: 16px; min-height: 0; }
+  .agenda-intro { padding-block: 27px; }
+  .agenda-intro h1 { font-size: 31px; }
+  .agenda-intro > div > p:last-child { font-size: 12px; }
+  .agenda-steps button { padding: 12px 8px; min-height: 105px; }
+  .agenda-steps button small { display: none; }
+  .agenda-step { padding: 20px 14px; }
+  .agenda-step-heading { padding-bottom: 20px; }
+  .agenda-step-heading h2 { font-size: 23px; }
+  body[data-template="agenda"] .course-grid { grid-template-columns: minmax(0, 1fr); }
+  body[data-template="agenda"] .course-button { display: grid; grid-template-columns: 75px minmax(0, 1fr); }
+  body[data-template="agenda"] .course-cover { height: 100%; display: flex; align-items: center; }
+  body[data-template="agenda"] .course-category { left: 5px; top: 7px; font-size: 9px; padding-inline: 5px; }
+  body[data-template="agenda"] .course-body { padding: 17px 13px 14px; }
+  body[data-template="agenda"] .course-title { font-size: 18px; }
+  body[data-template="agenda"] .course-price { font-size: 14px; }
+  body[data-template="agenda"] .course-description { font-size: 11px; }
+  body[data-template="agenda"] .course-meta { font-size: 10px; }
+  body[data-template="agenda"] .course-state { margin-inline: -13px; padding-inline: 13px; font-size: 11px; }
+  body[data-template="agenda"] .session-row { grid-template-columns: 42px minmax(0, 1fr); gap: 10px 13px; padding: 18px 10px; }
+  body[data-template="agenda"] .session-row::before { left: 59px; }
+  body[data-template="agenda"] .session-info { padding-left: 6px; }
+  body[data-template="agenda"] .session-button { grid-column: 2; justify-self: start; margin-left: 6px; min-height: 44px; }
+  .agenda-step-actions { gap: 12px; margin-top: 24px; }
+  .agenda-step-actions > p { width: 100%; }
+  .agenda-step-actions button { padding-inline: 13px; font-size: 11px; }
+  body[data-template="agenda"] .booking-panel { padding: 22px 15px; border-radius: 13px; }
+  body[data-template="agenda"] .booking-panel > h2 { font-size: 23px; }
+  .agenda-progress-bar { align-items: start; gap: 8px; }
+  .agenda-progress-bar > p { font-size: 11px; padding-top: 10px; }
+}
+@media (prefers-reduced-motion: reduce) { .agenda-admission, body[data-template="agenda"] .course-button:not(:disabled):hover { transform: none; } }
+
+.agenda-intro { grid-template-columns: minmax(0, 1fr); }
+.agenda-course-title { margin-bottom: 12px; font: 700 24px/1.4 system-ui, "Microsoft YaHei", sans-serif; }
+.agenda-course-note { margin: 18px 0 0; color: var(--muted); font-size: 12px; }
+.agenda-step .agenda-admission { max-width: 320px; margin: 0 auto 28px; transform: none; }
+body[data-template="agenda"] .course-section > .section-heading > div { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+body[data-template="agenda"] .course-section > .section-heading { margin-bottom: 12px; }
+@media (max-width: 760px) {
+  .agenda-intro { padding-block: 22px; }
+  .agenda-steps { margin-bottom: 16px; }
+  .agenda-steps button { min-height: 56px; flex-direction: row; align-items: center; justify-content: start; gap: 6px; padding: 10px 8px; }
+  .agenda-steps button > span { align-self: center; font-size: 16px; }
+  .agenda-steps button small { display: none; }
+  .agenda-course-title { font-size: 21px; }
+  #agenda-course-step { position: relative; }
+  body[data-template="agenda"] .course-section > .section-heading { margin: 0; }
+  body[data-template="agenda"] #course-count { position: absolute; top: 25px; right: 15px; }
+  body[data-template="agenda"] .filter-strip { margin-bottom: 16px; padding: 12px; }
+}
+
+.agenda-intro { grid-template-columns: minmax(0, 1fr) 280px; }
+.agenda-material-art { max-width: 280px; justify-self: end; }
+.agenda-intro h1 { font-weight: 650; line-height: 1.35; }
+body[data-template="agenda"] .brand-mark { border-radius: 4px 4px 16px 4px; background: #294da5; }
+body[data-template="agenda"] .brand-copy strong { color: #294da5; }
+body[data-template="agenda"] .agenda-step { box-shadow: none; border: 1px solid #b2c1e4; }
+body[data-template="agenda"] .agenda-steps button { border-radius: 4px; box-shadow: none; }
+body[data-template="agenda"] .agenda-steps button[aria-current] { background: #294da5; color: #fff; }
+body[data-template="agenda"] .agenda-steps button[aria-current] > span { color: #fff; }
+body[data-template="agenda"] .agenda-admission { border-radius: 4px; background: #294da5; border-left: 8px solid #d9454a; box-shadow: none; color: #fff; }
+body[data-template="agenda"] .agenda-admission::after { height: 1px; background: #fff; }
+body[data-template="agenda"] .course-cover { background: #edf0fa; }
+body[data-template="agenda"] .cover-版画 { background: #f4e2dd; }
+body[data-template="agenda"] .cover-装帧 { background: #e8ead8; }
+body[data-template="agenda"] .course-category { background: #fff; color: #294da5; }
+body[data-template="agenda"] .course-state::before, body[data-template="agenda"] .course-state::after { border-radius: 0; width: 11px; height: 11px; border-color: #d9454a; background: #fff; }
+body[data-template="agenda"] .art-clay { fill: #d9454a; }
+body[data-template="agenda"] .art-paper { fill: #fff; }
+body[data-template="agenda"] .art-ink { fill: #294da5; }
+body[data-template="agenda"] .art-outline { stroke: #294da5; }
+body[data-template="agenda"] .art-cream-line { stroke: #fff; }
+body[data-template="agenda"] .agenda-step-actions button[data-agenda-next], body[data-template="agenda"] .preview-button { background: #294da5; color: #fff; }
+body[data-template="agenda"] .agenda-step-actions button:disabled, body[data-template="agenda"] .preview-button:disabled { background: #e1e6f3; color: #53658d; }
+body[data-template="agenda"] .booking-preview::after { background: repeating-linear-gradient(90deg, #d9454a 0 2px, transparent 2px 4px); }
+body[data-template="agenda"] .session-button[aria-pressed="true"] { background: #294da5; color: #fff; }
+body[data-template="agenda"] .session-info, body[data-template="agenda"] .course-description { color: #53658d; }
+body[data-template="agenda"] .demo-template-options a[aria-current] { background: #294da5; color: #fff; border-color: #294da5; }
+body[data-template="agenda"] .course-button[aria-pressed="true"] { border-color: #294da5; box-shadow: 0 0 0 2px #294da5; }
+body[data-template="agenda"] .course-button[aria-pressed="true"] .selection-dot { background: #294da5; border-color: #294da5; }
+body[data-template="agenda"] .course-button:not(:disabled):hover { box-shadow: 0 0 0 1px #294da5; }
+body[data-template="agenda"] .site-nav a[aria-current], body[data-template="agenda"] .course-price,
+body[data-template="agenda"] .course-state, body[data-template="agenda"] .session-date strong,
+body[data-template="agenda"] .estimate > strong, .agenda-step-heading > span, .agenda-steps button > span { color: #294da5; }
+body[data-template="agenda"] .agenda-steps button[aria-current] > span { color: #fff; }
+@media (max-width: 760px) {
+  .agenda-intro { grid-template-columns: minmax(0, 1fr) 72px; gap: 8px 12px; padding-block: 16px; }
+  .agenda-intro > div { display: contents; }
+  .agenda-intro .eyebrow, .agenda-intro h1 { grid-column: 1 / -1; margin: 0; }
+  .agenda-intro h1 { font-size: 28px; }
+  .agenda-intro > div > p:last-child { grid-column: 1; font-size: 13px; line-height: 1.6; }
+  .agenda-material-art { width: 72px; height: auto; justify-self: end; }
+  .agenda-steps { margin-bottom: 12px; }
+  .agenda-steps button { min-height: 48px; padding-block: 8px; }
+  body[data-template="agenda"] .filter-strip { padding: 10px; margin-bottom: 12px; }
+}

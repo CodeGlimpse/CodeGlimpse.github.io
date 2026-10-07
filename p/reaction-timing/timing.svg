@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 280" role="img" aria-labelledby="t d">
+<title id="t">按下与松开的计时差别</title><desc id="d">信号在零毫秒出现，230毫秒按下，310毫秒松开。按住的80毫秒不应计入按下反应时间。</desc>
+<rect width="540" height="280" rx="18" fill="#f3f6f8"/>
+<g font-family="system-ui,sans-serif" fill="#253746"><text x="28" y="40" font-size="21" font-weight="700">同一次输入，两个不同终点</text>
+<path d="M50 127H485" stroke="#748494" stroke-width="3"/>
+<path d="M50 115V139M340 115V139M455 115V139" stroke="#253746" stroke-width="3"/>
+<text x="50" y="80" font-size="26" font-weight="700">0 ms</text><text x="50" y="105" font-size="17">变绿</text>
+<text x="300" y="80" font-size="26" font-weight="700">230 ms</text><text x="315" y="105" font-size="17">按下</text>
+<text x="419" y="80" font-size="26" font-weight="700">310 ms</text><text x="438" y="105" font-size="17">松开</text>
+<path d="M50 174H340" stroke="#28734d" stroke-width="12" stroke-linecap="round"/><text x="50" y="206" font-size="18">按下反应：230 ms</text>
+<path d="M340 174H455" stroke="#bf7726" stroke-width="12" stroke-linecap="round"/><text x="351" y="206" font-size="17">按住 80 ms</text>
+<text x="28" y="252" font-size="16">以 click 结算，可能把按住时间也算进去。</text></g></svg>
